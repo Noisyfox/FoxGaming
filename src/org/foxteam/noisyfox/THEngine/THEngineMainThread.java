@@ -14,7 +14,7 @@
  * 2012-6-16      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noiyfox.THEngine;
+package org.foxteam.noisyfox.THEngine;
 
 import java.util.Random;
 
