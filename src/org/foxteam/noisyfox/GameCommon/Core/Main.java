@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.GameCommon.Core;
 
 import android.content.Context;
+import android.graphics.Canvas;
 
 /**
  * @ClassName:     Main
@@ -29,7 +30,8 @@ public class Main {
 	
 	private GameView gameView;
 	public static Context mContext;
-	private Runnable thread_Gaming = null;
+	
+	private GamingThread thread_Gaming = null;
 	
 	public Main(Context context){
 		mContext = context;
@@ -39,6 +41,8 @@ public class Main {
 	private void initializeCore(){
 		gameView = new GameView(mContext);
 		setupGameThread();
+		gameView.setOnTouchListener(thread_Gaming);
+		gameView.setOnKeyListener(thread_Gaming);
 	}
 	
 	private void setupGameThread(){

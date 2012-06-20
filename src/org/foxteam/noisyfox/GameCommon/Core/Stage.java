@@ -51,28 +51,15 @@ public class Stage {
 
 	/**
 	 * 静态函数 跳转到指定舞台<br>
-	 * 触发event:<br>
-	 * 当前舞台中的performer:ONSTAGECHANGE ONSTAGEEND<br>
-	 * 目标舞台中的performer:ONSTAGECHANGE ONSTAGESTART<br>
 	 */
 	public static void switchToStage(int stage) {
-		index2Stage(currentStage).broadcastEvent(
-				EventsListener.EVENT_ONSTAGECHANGE);
-		index2Stage(currentStage).broadcastEvent(
-				EventsListener.EVENT_ONSTAGEEND);
+		if (stage == currentStage)
+			return;
 		currentStage = stage;
-		index2Stage(currentStage).broadcastEvent(
-				EventsListener.EVENT_ONSTAGECHANGE);
-		index2Stage(currentStage).broadcastEvent(
-				EventsListener.EVENT_ONSTAGESTART);
-		speed = index2Stage(currentStage).getStageSpeed();
 	}
 
 	/**
 	 * 静态函数 跳转到下一个舞台<br>
-	 * 触发event:
-	 * 
-	 * @see #switchToStage(int stage)
 	 */
 	public static void nextStage() {
 		switchToStage(currentStage + 1);
@@ -80,9 +67,6 @@ public class Stage {
 
 	/**
 	 * 静态函数 跳转到上一个舞台<br>
-	 * 触发event:
-	 * 
-	 * @see #switchToStage(int stage)
 	 */
 	public static void previousStage() {
 		switchToStage(currentStage - 1);

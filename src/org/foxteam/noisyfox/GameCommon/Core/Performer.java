@@ -37,7 +37,8 @@ public class Performer {
 	private int deepth = 0;
 	protected boolean frozen = false;
 	private Sprite sprite = null;
-	private Canvas canvas = null;
+	protected boolean employed = false;
+	protected boolean performing = false;
 
 	public Performer() {
 
@@ -87,38 +88,55 @@ public class Performer {
 		case EventsListener.EVENT_ONKEYRELEASE:
 			break;
 		case EventsListener.EVENT_ONTIMER:
+			eventsListener.onTimer(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONGAMESTART:
+			eventsListener.onGameStart(this);
 			break;
 		case EventsListener.EVENT_ONGAMEPAUSE:
+			eventsListener.onGamePause(this);
 			break;
 		case EventsListener.EVENT_ONGAMERESUME:
+			eventsListener.onGameResume(this);
 			break;
 		case EventsListener.EVENT_ONGAMEEND:
+			eventsListener.onGameEnd(this);
 			break;
 		case EventsListener.EVENT_ONSTAGECHANGE:
+			eventsListener.onStageChange(this);
 			break;
 		case EventsListener.EVENT_ONSTAGESTART:
+			eventsListener.onStageStart(this);
 			break;
 		case EventsListener.EVENT_ONSTAGEEND:
+			eventsListener.onStageEnd(this);
 			break;
 		case EventsListener.EVENT_ONDRAW:
 			if (isVisible())
 				onDraw(this);
 			break;
 		case EventsListener.EVENT_ONSTEP:
+			eventsListener.onStep(this);
 			break;
 		case EventsListener.EVENT_ONSTEPSTART:
+			eventsListener.onStepStart(this);
 			break;
 		case EventsListener.EVENT_ONSTEPEND:
+			eventsListener.onStepEnd(this);
 			break;
 		case EventsListener.EVENT_ONUSERDEFINEDEVENT:
+			eventsListener.onUserDefinedEvent(this, (Integer) args[0]);
 			break;
 		}
 	}
 
 	public final void perform(int stage) {
-
+		employed = true;
+	}
+	
+	public final void dismiss(){
+		employed = false;
+		performing = false;
 	}
 
 	public final void freezeMe() {
@@ -151,6 +169,6 @@ public class Performer {
 	}
 
 	public final Canvas getCanvas() {
-		return canvas;
+		return GamingThread.canvas;
 	}
 }
