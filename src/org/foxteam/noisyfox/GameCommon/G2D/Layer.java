@@ -86,5 +86,7 @@ public abstract class Layer {
 		return visible;
 	}
 
-	public abstract void paint(Canvas c);
+	protected abstract void paint(Canvas c);
+	
+	public abstract void paint(Canvas c, int x, int y);
 }

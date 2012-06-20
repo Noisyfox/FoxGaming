@@ -29,7 +29,7 @@ public class Main {
 	
 	private GameView gameView;
 	public static Context mContext;
-	private Runnable thread_Draw = null, thread_Gaming = null;
+	private Runnable thread_Gaming = null;
 	
 	public Main(Context context){
 		mContext = context;
@@ -42,8 +42,7 @@ public class Main {
 	}
 	
 	private void setupGameThread(){
-		thread_Draw = new DrawThread(gameView.getHolder());
-		thread_Gaming = new GamingThread();
+		thread_Gaming = new GamingThread(gameView.getHolder());
 	}
 	
 	GameView getGameView(){

@@ -412,7 +412,7 @@ public class TiledLayer extends Layer {
 	 * @throws NullPointerException
 	 *             if <code>g</code> is <code>null</code>
 	 */
-	public final void paint(Canvas g) {
+	protected final void paint(Canvas g) {
 
 		if (g == null) {
 			throw new NullPointerException();
@@ -454,6 +454,11 @@ public class TiledLayer extends Layer {
 			}
 
 		}
+	}
+	
+	public final void paint(Canvas c, int x, int y) {
+		setPosition(x, y);
+		paint(c);
 	}
 
 	// private implementationv

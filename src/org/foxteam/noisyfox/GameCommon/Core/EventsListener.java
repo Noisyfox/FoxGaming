@@ -94,9 +94,6 @@ public class EventsListener {
 	public void onStageEnd(Performer unit) {
 	}
 
-	public void onDraw(Performer unit) {
-	}
-
 	public void onStep(Performer unit) {
 	}
 

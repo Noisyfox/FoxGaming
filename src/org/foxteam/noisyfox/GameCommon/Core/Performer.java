@@ -16,6 +16,10 @@
  */
 package org.foxteam.noisyfox.GameCommon.Core;
 
+import org.foxteam.noisyfox.GameCommon.G2D.Sprite;
+
+import android.graphics.Canvas;
+
 /**
  * @ClassName: Unit
  * @Description: TODO
@@ -25,32 +29,37 @@ package org.foxteam.noisyfox.GameCommon.Core;
  */
 public class Performer {
 	private EventsListener eventsListener = new EventsListener() {
-		@Override
-		public void onDraw(Performer unit) {
-
-		}
 
 	};
 
 	private boolean visible = true;
 	private int x = 0, y = 0;
 	private int deepth = 0;
-	private boolean freezed = false;
+	protected boolean frozen = false;
+	private Sprite sprite = null;
+	private Canvas canvas = null;
 
 	public Performer() {
 
 	}
-	
-	public int getDeepth(){
+
+	public final int getDeepth() {
 		return deepth;
 	}
 
-	public void setEventsListener(EventsListener eventsListener) {
+	public final void setEventsListener(EventsListener eventsListener) {
 		this.eventsListener = eventsListener;
 	}
 
-	public void callEvent(int event, Object... args) {
-		if (eventsListener == null || freezed)
+	// 最特殊的event回调函数，地位与EventsListener相同
+	// 没有重载前负责绘制默认精灵，重载后如果不手动调用绘图则会使该performer不绘制默认精灵
+	protected void onDraw(Performer unit) {
+		Canvas c = unit.getCanvas();
+		sprite.paint(c, x, y);
+	}
+
+	public final void callEvent(int event, Object... args) {
+		if (eventsListener == null || frozen)
 			return;
 		switch (event) {
 		case EventsListener.EVENT_ONCREATE:
@@ -94,6 +103,8 @@ public class Performer {
 		case EventsListener.EVENT_ONSTAGEEND:
 			break;
 		case EventsListener.EVENT_ONDRAW:
+			if (isVisible())
+				onDraw(this);
 			break;
 		case EventsListener.EVENT_ONSTEP:
 			break;
@@ -106,7 +117,40 @@ public class Performer {
 		}
 	}
 
-	public void perform(int stage) {
+	public final void perform(int stage) {
 
+	}
+
+	public final void freezeMe() {
+		frozen = true;
+	}
+
+	public final void unfreezeMe() {
+		frozen = false;
+	}
+
+	public final boolean isVisible() {
+		return visible;
+	}
+
+	public final void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public final void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public final int getX() {
+		return x;
+	}
+
+	public final int getY() {
+		return y;
+	}
+
+	public final Canvas getCanvas() {
+		return canvas;
 	}
 }
