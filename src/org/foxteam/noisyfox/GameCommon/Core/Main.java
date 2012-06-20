@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.GameCommon.Core;
 
 import android.content.Context;
-import android.graphics.Canvas;
 
 /**
  * @ClassName:     Main
