@@ -117,7 +117,6 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 						}
 					}
 				}
-
 				// 处理按键事件队列并广播EVENT_ONKEY*事件
 				synchronized (queueKeyEvent) {
 					while (!queueKeyEvent.isEmpty()) {
@@ -145,24 +144,28 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 					}
 				}
 
-				// 广播EVENT_ONDRAW事件,统一绘制图像
+				// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
+				currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
+				// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
+				canvas.drawColor(currentStage.getBackgroundColor());//绘制stage背景色
 				currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 
 				// 最后广播EVENT_ONSTEPEND事件
 				currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
-				// 控制帧速
-				long frameFinishTime = System.currentTimeMillis();
-				double speed = Stage.getSpeed();
-				long sleepTime = (long) (1.0 / speed * 1000.0)
-						- (frameFinishTime - frameStartTime);
-				try {
-					Thread.sleep(sleepTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 			}
+			//绘制
 			surfaceHolder.unlockCanvasAndPost(canvas);
 			canvas = null;
+			// 控制帧速
+			long frameFinishTime = System.currentTimeMillis();
+			double speed = Stage.getSpeed();
+			long sleepTime = (long) (1.0 / speed * 1000.0)
+					- (frameFinishTime - frameStartTime);
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

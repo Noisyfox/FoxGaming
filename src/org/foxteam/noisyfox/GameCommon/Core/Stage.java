@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.graphics.Color;
+
 /**
  * @ClassName: Stage
  * @Description: TODO
@@ -36,6 +38,7 @@ public class Stage {
 
 	private List<Performer> performers = null;
 	private double stageSpeed = 30;
+	private int backgroundColor = Color.WHITE;
 
 	public Stage() {
 		performers = new ArrayList<Performer>();
@@ -79,7 +82,7 @@ public class Stage {
 		return speed;
 	}
 
-	private void sortWithDeepth() {
+	private final void sortWithDeepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
 				@Override
@@ -97,7 +100,7 @@ public class Stage {
 		}
 	}
 
-	public void employPerformer(Performer performer) {
+	public final void employPerformer(Performer performer) {
 		synchronized (performers) {
 			if (performers.contains(performer))
 				return;
@@ -106,7 +109,7 @@ public class Stage {
 		}
 	}
 
-	public void broadcastEvent(int event, Object... args) {
+	public final void broadcastEvent(int event, Object... args) {
 		synchronized (performers) {
 			for (Performer p : performers) {
 				p.callEvent(event, args);
@@ -114,11 +117,19 @@ public class Stage {
 		}
 	}
 
-	public void setStageSpeed(double stageSpeed) {
+	public final void setStageSpeed(double stageSpeed) {
 		this.stageSpeed = stageSpeed;
 	}
 
-	public double getStageSpeed() {
+	public final double getStageSpeed() {
 		return stageSpeed;
+	}
+
+	public final void setBackgroundColor(int color) {
+		backgroundColor = color;
+	}
+
+	public final int getBackgroundColor() {
+		return backgroundColor;
 	}
 }

@@ -39,6 +39,7 @@ public class Performer {
 	private Sprite sprite = null;
 	protected boolean employed = false;
 	protected boolean performing = false;
+	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
 	public Performer() {
 
