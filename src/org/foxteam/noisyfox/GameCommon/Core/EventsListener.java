@@ -61,14 +61,14 @@ public class EventsListener {
 	public void onTouchRelease(Performer unit, int whichfinger, int x, int y) {
 	}
 
-	public void onKey(Performer unit) {
-	}
+	public void onKey(Performer unit, int keyCode) {
+	}//按键只要持续按下就持续触发
 
-	public void onKeyPress(Performer unit) {
-	}
+	public void onKeyPress(Performer unit, int keyCode) {
+	}//按键被按下的时刻触发
 
-	public void onKeyRelease(Performer unit) {
-	}
+	public void onKeyRelease(Performer unit, int keyCode) {
+	}//按键松开的时刻触发
 
 	public void onTimer(Performer unit, int timer) {
 	}

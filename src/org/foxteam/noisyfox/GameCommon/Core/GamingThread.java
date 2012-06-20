@@ -44,8 +44,9 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 	private Stage lastStage = null;
 	private Stage currentStage = null;
 	private Queue<TouchEvent> queueTouchEvent = new LinkedList<TouchEvent>();
-	// private Queue<String> queueKeyEvent = new LinkedList<String>();
+	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
 	private List<Finger> registedFingers = new ArrayList<Finger>();
+	private List<Integer> registedKeys = new ArrayList<Integer>();
 
 	public GamingThread(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
@@ -116,6 +117,34 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 						}
 					}
 				}
+
+				// 处理按键事件队列并广播EVENT_ONKEY*事件
+				synchronized (queueKeyEvent) {
+					while (!queueKeyEvent.isEmpty()) {
+						KeyboardEvent e = queueKeyEvent.poll();
+						switch (e.getEvent()) {
+						case KeyboardEvent.KEY_PRESS:
+							currentStage
+									.broadcastEvent(
+											EventsListener.EVENT_ONKEYPRESS,
+											e.getKey());
+							currentStage.broadcastEvent(
+									EventsListener.EVENT_ONKEY, e.getKey());
+							break;
+						case KeyboardEvent.KEY_HOLD:
+							currentStage.broadcastEvent(
+									EventsListener.EVENT_ONKEY, e.getKey());
+							break;
+						case KeyboardEvent.KEY_RELEASE:
+							currentStage.broadcastEvent(
+									EventsListener.EVENT_ONKEYRELEASE,
+									e.getKey());
+							break;
+						default:
+						}
+					}
+				}
+
 				// 广播EVENT_ONDRAW事件,统一绘制图像
 				currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 
@@ -139,6 +168,40 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		int action = event.getAction();
+		KeyboardEvent e = null;
+
+		int keyIndex = -1;
+		for (Integer i : registedKeys) {
+			if (i.intValue() == keyCode) {
+				keyIndex = registedKeys.indexOf(i);
+				break;
+			}
+		}
+
+		switch (action) {
+		case KeyEvent.ACTION_DOWN:
+			if (keyIndex >= 0) {
+				e = new KeyboardEvent(keyCode, KeyboardEvent.KEY_HOLD);
+			} else {
+				e = new KeyboardEvent(keyCode, KeyboardEvent.KEY_PRESS);
+				registedKeys.add(keyCode);
+			}
+			break;
+		case KeyEvent.ACTION_UP:
+			if (keyIndex >= 0) {
+				registedKeys.remove(keyIndex);
+				e = new KeyboardEvent(keyCode, KeyboardEvent.KEY_RELEASE);
+			}
+			break;
+		default:
+		}
+
+		synchronized (queueKeyEvent) {
+			if (e != null) {
+				queueKeyEvent.offer(e);
+			}
+		}
 		return true;
 	}
 
@@ -175,6 +238,10 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 					registedFingers.add(thisFinger);
 					e = new TouchEvent(thisFinger.index,
 							MotionEvent.ACTION_DOWN);
+					queueTouchEvent.offer(e);
+				} else {
+					e = new TouchEvent(thisFinger.index,
+							MotionEvent.ACTION_MOVE);
 					queueTouchEvent.offer(e);
 				}
 				break;
@@ -219,6 +286,31 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 
 		public int getFinger() {
 			return whichFinger;
+		}
+
+		public int getEvent() {
+			return event;
+		}
+	}
+
+	private class KeyboardEvent {
+		public static final int KEY_PRESS = 1;
+		public static final int KEY_RELEASE = 2;
+		public static final int KEY_HOLD = 3;
+
+		private int whichKey = -1;
+		private int event = 0;
+
+		public KeyboardEvent(int whichKey, int event) {
+			if (whichKey < 0) {
+				throw new IllegalArgumentException();
+			}
+			this.whichKey = whichKey;
+			this.event = event;
+		}
+
+		public int getKey() {
+			return whichKey;
 		}
 
 		public int getEvent() {

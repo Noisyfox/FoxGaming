@@ -82,10 +82,13 @@ public class Performer {
 					(Integer) args[1], (Integer) args[2]);
 			break;
 		case EventsListener.EVENT_ONKEY:
+			eventsListener.onKey(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEYPRESS:
+			eventsListener.onKeyPress(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEYRELEASE:
+			eventsListener.onKeyRelease(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONTIMER:
 			eventsListener.onTimer(this, (Integer) args[0]);
@@ -133,8 +136,8 @@ public class Performer {
 	public final void perform(int stage) {
 		employed = true;
 	}
-	
-	public final void dismiss(){
+
+	public final void dismiss() {
 		employed = false;
 		performing = false;
 	}
