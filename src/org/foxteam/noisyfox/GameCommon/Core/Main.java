@@ -19,36 +19,40 @@ package org.foxteam.noisyfox.GameCommon.Core;
 import android.content.Context;
 
 /**
- * @ClassName:     Main
- * @Description:   TODO
- * @author:        Noisyfox
- * @date:          2012-6-19 下午8:16:28
- *
+ * @ClassName: Main
+ * @Description: TODO
+ * @author: Noisyfox
+ * @date: 2012-6-19 下午8:16:28
+ * 
  */
 public class Main {
-	
+
 	private GameView gameView;
 	public static Context mContext;
-	
+
 	private GamingThread thread_Gaming = null;
-	
-	public Main(Context context){
+
+	public Main(Context context) {
 		mContext = context;
 		initializeCore();
 	}
-	
-	private void initializeCore(){
+
+	private void initializeCore() {
 		gameView = new GameView(mContext);
 		setupGameThread();
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
 	}
-	
-	private void setupGameThread(){
+
+	private void setupGameThread() {
 		thread_Gaming = new GamingThread(gameView.getHolder());
 	}
-	
-	GameView getGameView(){
+
+	public void gameStart() {
+		thread_Gaming.run();
+	}
+
+	GameView getGameView() {
 		return gameView;
 	}
 

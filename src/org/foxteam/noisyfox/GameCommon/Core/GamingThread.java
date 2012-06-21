@@ -71,7 +71,13 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 						lastStage
 								.broadcastEvent(EventsListener.EVENT_ONDESTORY);
 					}
+					//所有事件都必须在EVENT_ONCREATE之后
 					currentStage.broadcastEvent(EventsListener.EVENT_ONCREATE);
+					// 第一次进游戏，广播EVENT_ONGAMESTART事件
+					if (lastStage == null) {
+						currentStage
+								.broadcastEvent(EventsListener.EVENT_ONGAMESTART);
+					}
 					currentStage
 							.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
 					currentStage
@@ -147,13 +153,13 @@ public class GamingThread implements Runnable, OnTouchListener, OnKeyListener {
 				// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
 				currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
 				// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-				canvas.drawColor(currentStage.getBackgroundColor());//绘制stage背景色
+				canvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
 				currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 
 				// 最后广播EVENT_ONSTEPEND事件
 				currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
 			}
-			//绘制
+			// 绘制
 			surfaceHolder.unlockCanvasAndPost(canvas);
 			canvas = null;
 			// 控制帧速
