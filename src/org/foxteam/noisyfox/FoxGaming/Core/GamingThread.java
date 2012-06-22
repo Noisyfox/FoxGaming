@@ -40,7 +40,11 @@ public class GamingThread extends Thread implements OnTouchListener,
 		OnKeyListener, SurfaceHolder.Callback {
 
 	public static Canvas canvas = null;
-	public static double SPS = 0;// step per second,每秒循环的次数，也就是帧速
+	private static double SPS = 0;// step per second,每秒循环的次数，也就是帧速
+	private static long allStepCount = 0;
+	private static long gameStartTime = 0;
+	private static List<Finger> registedFingers = new ArrayList<Finger>();
+	private static List<Integer> registedKeys = new ArrayList<Integer>();
 
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
@@ -49,12 +53,25 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private boolean processing = false;
 	private Stage lastStage = null;
 	private Stage currentStage = null;
-	private Queue<TouchEvent> queueTouchEvent = new LinkedList<TouchEvent>();
+	private List<TouchEvent> queueTouchEvent = new ArrayList<TouchEvent>();
 	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
-	private List<Finger> registedFingers = new ArrayList<Finger>();
-	private List<Integer> registedKeys = new ArrayList<Integer>();
 	private long stepCount = 0;
-	private long allStepCount = 0;
+
+	public static double getSPS() {
+		return SPS;
+	}
+
+	public static long getStepCount() {
+		return allStepCount;
+	}
+
+	public static long getGameRunTime() {
+		return System.currentTimeMillis() - gameStartTime;
+	}
+
+	public static int getFingerCount() {
+		return registedFingers.size();
+	}
 
 	public GamingThread(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
@@ -67,6 +84,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 			long SPS_startTime = System.currentTimeMillis();
 			while (running && processing) {
 				long frameStartTime = System.currentTimeMillis();
+				if (gameStartTime == 0)
+					gameStartTime = System.currentTimeMillis();
 				// 全局参数准备
 				canvas = surfaceHolder.lockCanvas();// 获取画布
 				currentStage = Stage.index2Stage(Stage.getCurrentStage());
@@ -103,7 +122,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 					// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
 					synchronized (queueTouchEvent) {
 						while (!queueTouchEvent.isEmpty()) {
-							TouchEvent e = queueTouchEvent.poll();
+							TouchEvent e = queueTouchEvent.get(0);
+							queueTouchEvent.remove(0);
 							int fingerIndex = e.getFinger();
 							Finger finger = null;
 							for (Finger f : registedFingers) {
@@ -289,11 +309,25 @@ public class GamingThread extends Thread implements OnTouchListener,
 					registedFingers.add(thisFinger);
 					e = new TouchEvent(thisFinger.index,
 							MotionEvent.ACTION_DOWN);
-					queueTouchEvent.offer(e);
+					for (int i = 0; i < queueTouchEvent.size();) {
+						if (queueTouchEvent.get(i).getFinger() == thisFinger.index) {
+							queueTouchEvent.remove(i);
+						} else {
+							i++;
+						}
+					}
+					queueTouchEvent.add(e);
 				} else {
 					e = new TouchEvent(thisFinger.index,
 							MotionEvent.ACTION_MOVE);
-					queueTouchEvent.offer(e);
+					for (int i = 0; i < queueTouchEvent.size();) {
+						if (queueTouchEvent.get(i).getFinger() == thisFinger.index) {
+							queueTouchEvent.remove(i);
+						} else {
+							i++;
+						}
+					}
+					queueTouchEvent.add(e);
 				}
 				Log.d("finger", fingerIndex + ";" + fingerID);
 				break;
@@ -302,7 +336,14 @@ public class GamingThread extends Thread implements OnTouchListener,
 					f.x = (int) event.getX(event.findPointerIndex(f.id));
 					f.y = (int) event.getY(event.findPointerIndex(f.id));
 					e = new TouchEvent(f.index, MotionEvent.ACTION_MOVE);
-					queueTouchEvent.offer(e);
+					for (int i = 0; i < queueTouchEvent.size();) {
+						if (queueTouchEvent.get(i).getFinger() == f.index) {
+							queueTouchEvent.remove(i);
+						} else {
+							i++;
+						}
+					}
+					queueTouchEvent.add(e);
 				}
 				break;
 			case MotionEvent.ACTION_POINTER_UP:
@@ -310,7 +351,14 @@ public class GamingThread extends Thread implements OnTouchListener,
 				if (registed) {
 					registedFingers.remove(thisFinger);
 					e = new TouchEvent(thisFinger.index, MotionEvent.ACTION_UP);
-					queueTouchEvent.offer(e);
+					for (int i = 0; i < queueTouchEvent.size();) {
+						if (queueTouchEvent.get(i).getFinger() == thisFinger.index) {
+							queueTouchEvent.remove(i);
+						} else {
+							i++;
+						}
+					}
+					queueTouchEvent.add(e);
 				}
 				break;
 			default:

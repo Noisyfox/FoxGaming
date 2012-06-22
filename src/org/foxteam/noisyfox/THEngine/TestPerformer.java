@@ -49,7 +49,6 @@ public class TestPerformer extends Performer {
 				x2 = x;
 				y2 = y;
 			} else {
-
 				x3 = x;
 				y3 = y;
 			}
@@ -64,7 +63,6 @@ public class TestPerformer extends Performer {
 				x2 = x;
 				y2 = y;
 			} else {
-
 				x3 = x;
 				y3 = y;
 			}
@@ -79,7 +77,7 @@ public class TestPerformer extends Performer {
 	protected void onDraw(Performer unit) {
 		Paint p = new Paint();
 		p.setColor(Color.BLACK);
-		unit.getCanvas().drawText(GamingThread.SPS + "", 50, 50, p);
+		unit.getCanvas().drawText(GamingThread.getSPS() + "", 50, 50, p);
 		unit.getCanvas().drawText("1", x1, y1, p);
 		unit.getCanvas().drawText("2", x2, y2, p);
 		unit.getCanvas().drawText("3", x3, y3, p);
