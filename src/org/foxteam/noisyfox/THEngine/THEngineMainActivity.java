@@ -10,12 +10,14 @@ public class THEngineMainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		GameCore fg = new GameCore(this);
-		GameView v = fg.getGameView();
+		GameCore gc = new GameCore(this);
+		GameView v = gc.getGameView();
 		setContentView(v);
+		new Stage();
+		gc.gameStart();
 	}
 
-	//private THEngineMainThread mainThread;
+	// private THEngineMainThread mainThread;
 
 	/** Called when the activity is first created. */
 	// @Override
@@ -27,6 +29,5 @@ public class THEngineMainActivity extends Activity {
 	// v.getHolder().addCallback(mainThread);
 	// v.setOnTouchListener(mainThread);
 	// }
-	
-	
+
 }

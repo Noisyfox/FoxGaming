@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * @ClassName: Main
@@ -40,6 +41,7 @@ public class GameCore {
 	private void initializeCore() {
 		gameView = new GameView(mContext);
 		setupGameThread();
+		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
 	}
@@ -49,7 +51,7 @@ public class GameCore {
 	}
 
 	public void gameStart() {
-		thread_Gaming.run();
+		thread_Gaming.start();
 	}
 
 	public GameView getGameView() {

@@ -47,6 +47,10 @@ public class Stage {
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
+		// 如果当前创建的stage是游戏中惟一的一个stage则自动将其设置为活动的stage
+		if (stageIndex == 0) {
+			currentStage = 0;
+		}
 	}
 
 	public Stage(int index) {
