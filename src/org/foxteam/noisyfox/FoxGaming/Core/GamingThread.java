@@ -53,7 +53,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private boolean processing = false;
 	private Stage lastStage = null;
 	private Stage currentStage = null;
-	private List<TouchEvent> queueTouchEvent = new ArrayList<TouchEvent>();
+	private List<TouchEvent> listTouchEvent = new ArrayList<TouchEvent>();
 	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
 	private long stepCount = 0;
 
@@ -120,41 +120,30 @@ public class GamingThread extends Thread implements OnTouchListener,
 							.broadcastEvent(EventsListener.EVENT_ONSTEPSTART);
 
 					// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
-					synchronized (queueTouchEvent) {
-						while (!queueTouchEvent.isEmpty()) {
-							TouchEvent e = queueTouchEvent.get(0);
-							queueTouchEvent.remove(0);
-							int fingerIndex = e.getFinger();
-							Finger finger = null;
-							for (Finger f : registedFingers) {
-								if (f.index == fingerIndex) {
-									finger = f;
-									break;
-								}
-							}
-							if (finger != null) {
-								switch (e.getEvent()) {
-								case MotionEvent.ACTION_DOWN:
-									currentStage.broadcastEvent(
-											EventsListener.EVENT_ONTOUCHPRESS,
-											fingerIndex, finger.x, finger.y);
-									currentStage.broadcastEvent(
-											EventsListener.EVENT_ONTOUCH,
-											fingerIndex, finger.x, finger.y);
-									break;
-								case MotionEvent.ACTION_MOVE:
-									currentStage.broadcastEvent(
-											EventsListener.EVENT_ONTOUCH,
-											fingerIndex, finger.x, finger.y);
-									break;
-								case MotionEvent.ACTION_UP:
-									currentStage
-											.broadcastEvent(
-													EventsListener.EVENT_ONTOUCHRELEASE,
-													fingerIndex);
-									break;
-								default:
-								}
+					synchronized (listTouchEvent) {
+						while (!listTouchEvent.isEmpty()) {
+							TouchEvent e = listTouchEvent.get(0);
+							listTouchEvent.remove(0);
+							switch (e.event) {
+							case MotionEvent.ACTION_DOWN:
+								currentStage.broadcastEvent(
+										EventsListener.EVENT_ONTOUCHPRESS,
+										e.whichFinger, e.x, e.y);
+								currentStage.broadcastEvent(
+										EventsListener.EVENT_ONTOUCH,
+										e.whichFinger, e.x, e.y);
+								break;
+							case MotionEvent.ACTION_MOVE:
+								currentStage.broadcastEvent(
+										EventsListener.EVENT_ONTOUCH,
+										e.whichFinger, e.x, e.y);
+								break;
+							case MotionEvent.ACTION_UP:
+								currentStage.broadcastEvent(
+										EventsListener.EVENT_ONTOUCHRELEASE,
+										e.whichFinger, e.x, e.y);
+								break;
+							default:
 							}
 						}
 					}
@@ -264,135 +253,156 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		// 重写的触屏逻辑
+		synchronized (listTouchEvent) {
 
-		final int action = event.getAction();
-		// Get the action and pointer ID. NOTE: ACTION_POINTER_ID_MASK
-		// gets you the pointer index, NOT the ID.
-		final int pact = action & MotionEvent.ACTION_MASK;
-		int pid = 0;
-		if (pact == MotionEvent.ACTION_POINTER_DOWN
-				|| pact == MotionEvent.ACTION_POINTER_UP) {
-			final int pind = (action & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
-			pid = event.getPointerId(pind);
-		} else if (pact == MotionEvent.ACTION_DOWN) {
-			pid = event.getPointerId(0);
-		}
-
-		int fingerIndex = event.getActionIndex();
-		int fingerID = pid;
-		Finger thisFinger = null;
-		for (Finger f : registedFingers) {
-			if (f.id == fingerID) {
-				thisFinger = f;
-				break;
+			final int fingerCount = event.getPointerCount();
+			final int action = event.getActionMasked();
+			final int actionID = event.getPointerId(event.getActionIndex());// 仅在非ACTION_MOVE事件中做手指的唯一标记
+			int fingerIndex = -1;
+			for (int i = 0; i < fingerCount; i++) {
+				if (event.getPointerId(i) == actionID) {
+					fingerIndex = i;
+					break;
+				}
 			}
-		}
 
-		boolean registed = true;
-		if (thisFinger == null) {
-			thisFinger = new Finger();
-			registed = false;
-		}
+			boolean registed = false;
+			Finger registedF = null;
 
-		thisFinger.index = fingerIndex;
-		thisFinger.id = fingerID;
-		thisFinger.x = (int) event.getX(fingerIndex);
-		thisFinger.y = (int) event.getY(fingerIndex);
+			for (Finger f : registedFingers) {
+				if (f.id == actionID) {
+					registed = true;
+					registedF = f;
+					break;
+				}
+			}
 
-		TouchEvent e = null;
+			boolean eventExist = false;
 
-		synchronized (queueTouchEvent) {
-			switch (pact) {
+			switch (action) {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
 				if (!registed) {
-					registedFingers.add(thisFinger);
-					e = new TouchEvent(thisFinger.index,
-							MotionEvent.ACTION_DOWN);
-					for (int i = 0; i < queueTouchEvent.size();) {
-						if (queueTouchEvent.get(i).getFinger() == thisFinger.index) {
-							queueTouchEvent.remove(i);
+					Finger f = new Finger();
+					f.id = actionID;
+					registedFingers.add(f);
+
+					for (int i = 0; i < listTouchEvent.size();) {
+						TouchEvent e = listTouchEvent.get(i);
+						if (e.whichFinger == actionID) {
+							eventExist = true;
+							if (e.event == MotionEvent.ACTION_DOWN) {
+								e.x = (int) event.getX(fingerIndex);
+								e.y = (int) event.getY(fingerIndex);
+							} else if (e.event == MotionEvent.ACTION_MOVE) {
+								e.x = (int) event.getX(fingerIndex);
+								e.y = (int) event.getY(fingerIndex);
+							} else if (e.event == MotionEvent.ACTION_UP) {
+								listTouchEvent.remove(i);
+							}
+							break;
 						} else {
 							i++;
 						}
 					}
-					queueTouchEvent.add(e);
-				} else {
-					e = new TouchEvent(thisFinger.index,
-							MotionEvent.ACTION_MOVE);
-					for (int i = 0; i < queueTouchEvent.size();) {
-						if (queueTouchEvent.get(i).getFinger() == thisFinger.index) {
-							queueTouchEvent.remove(i);
-						} else {
-							i++;
-						}
-					}
-					queueTouchEvent.add(e);
+
 				}
-				Log.d("finger", fingerIndex + ";" + fingerID);
+				if (!eventExist) {
+					TouchEvent ne = new TouchEvent(actionID,
+							MotionEvent.ACTION_DOWN,
+							(int) event.getX(fingerIndex),
+							(int) event.getY(fingerIndex));
+					listTouchEvent.add(ne);
+				}
 				break;
+				
 			case MotionEvent.ACTION_MOVE:
 				for (Finger f : registedFingers) {
-					f.x = (int) event.getX(event.findPointerIndex(f.id));
-					f.y = (int) event.getY(event.findPointerIndex(f.id));
-					e = new TouchEvent(f.index, MotionEvent.ACTION_MOVE);
-					for (int i = 0; i < queueTouchEvent.size();) {
-						if (queueTouchEvent.get(i).getFinger() == f.index) {
-							queueTouchEvent.remove(i);
-						} else {
-							i++;
+					eventExist = false;
+					for (int i = 0; i < fingerCount; i++) {
+						if (event.getPointerId(i) == f.id) {
+							fingerIndex = i;
 						}
 					}
-					queueTouchEvent.add(e);
+					for (TouchEvent e : listTouchEvent) {
+						if (f.id == e.whichFinger) {
+							e.x = (int) event.getX(fingerIndex);
+							e.y = (int) event.getY(fingerIndex);
+							eventExist = true;
+						}
+					}
+					if (!eventExist) {
+						TouchEvent ne = new TouchEvent(f.id,
+								MotionEvent.ACTION_MOVE,
+								(int) event.getX(fingerIndex),
+								(int) event.getY(fingerIndex));
+						listTouchEvent.add(ne);
+					}
 				}
 				break;
-			case MotionEvent.ACTION_POINTER_UP:
+				
 			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_POINTER_UP:
 				if (registed) {
-					registedFingers.remove(thisFinger);
-					e = new TouchEvent(thisFinger.index, MotionEvent.ACTION_UP);
-					for (int i = 0; i < queueTouchEvent.size();) {
-						if (queueTouchEvent.get(i).getFinger() == thisFinger.index) {
-							queueTouchEvent.remove(i);
+					for (int i = 0; i < listTouchEvent.size();) {
+						TouchEvent e = listTouchEvent.get(i);
+						if (e.whichFinger == actionID) {
+							eventExist = true;
+							if (e.event == MotionEvent.ACTION_DOWN) {
+								listTouchEvent.remove(i);
+							} else if (e.event == MotionEvent.ACTION_MOVE) {
+								TouchEvent ne = new TouchEvent(actionID,
+										MotionEvent.ACTION_UP,
+										(int) event.getX(fingerIndex),
+										(int) event.getY(fingerIndex));
+								listTouchEvent.remove(i);
+								listTouchEvent.add(ne);
+							} else if (e.event == MotionEvent.ACTION_UP) {
+								e.x = (int) event.getX(fingerIndex);
+								e.y = (int) event.getY(fingerIndex);
+							}
+							break;
 						} else {
 							i++;
 						}
 					}
-					queueTouchEvent.add(e);
+					registedFingers.remove(registedF);
+				}
+				if (!eventExist) {
+					TouchEvent ne = new TouchEvent(actionID,
+							MotionEvent.ACTION_UP,
+							(int) event.getX(fingerIndex),
+							(int) event.getY(fingerIndex));
+					listTouchEvent.add(ne);
 				}
 				break;
-			default:
 			}
 		}
+		
 		return true;
 	}
 
 	private class Finger {
 		int id = 0;
-		int index = 0;
-		int x = 0;
-		int y = 0;
 	}
 
 	private class TouchEvent {
-		private int whichFinger = -1;
-		private int event = 0;
+		public int whichFinger = -1;
+		public int event = 0;
+		public int x = 0;
+		public int y = 0;
 
-		public TouchEvent(int whichFinger, int event) {
+		public TouchEvent(int whichFinger, int event, int x, int y) {
 			if (whichFinger < 0) {
 				throw new IllegalArgumentException();
 			}
 			this.whichFinger = whichFinger;
 			this.event = event;
+			this.x = x;
+			this.y = y;
 		}
 
-		public int getFinger() {
-			return whichFinger;
-		}
-
-		public int getEvent() {
-			return event;
-		}
 	}
 
 	private class KeyboardEvent {
