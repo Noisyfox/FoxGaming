@@ -112,26 +112,29 @@ public class GamingThread extends Thread implements OnTouchListener,
 									break;
 								}
 							}
-							switch (e.getEvent()) {
-							case MotionEvent.ACTION_DOWN:
-								currentStage.broadcastEvent(
-										EventsListener.EVENT_ONTOUCHPRESS,
-										fingerIndex, finger.x, finger.y);
-								currentStage.broadcastEvent(
-										EventsListener.EVENT_ONTOUCH,
-										fingerIndex, finger.x, finger.y);
-								break;
-							case MotionEvent.ACTION_MOVE:
-								currentStage.broadcastEvent(
-										EventsListener.EVENT_ONTOUCH,
-										fingerIndex, finger.x, finger.y);
-								break;
-							case MotionEvent.ACTION_UP:
-								currentStage.broadcastEvent(
-										EventsListener.EVENT_ONTOUCHRELEASE,
-										fingerIndex);
-								break;
-							default:
+							if (finger != null) {
+								switch (e.getEvent()) {
+								case MotionEvent.ACTION_DOWN:
+									currentStage.broadcastEvent(
+											EventsListener.EVENT_ONTOUCHPRESS,
+											fingerIndex, finger.x, finger.y);
+									currentStage.broadcastEvent(
+											EventsListener.EVENT_ONTOUCH,
+											fingerIndex, finger.x, finger.y);
+									break;
+								case MotionEvent.ACTION_MOVE:
+									currentStage.broadcastEvent(
+											EventsListener.EVENT_ONTOUCH,
+											fingerIndex, finger.x, finger.y);
+									break;
+								case MotionEvent.ACTION_UP:
+									currentStage
+											.broadcastEvent(
+													EventsListener.EVENT_ONTOUCHRELEASE,
+													fingerIndex);
+									break;
+								default:
+								}
 							}
 						}
 					}
@@ -296,8 +299,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 				break;
 			case MotionEvent.ACTION_MOVE:
 				for (Finger f : registedFingers) {
-					f.x = (int) event.getX(f.index);
-					f.y = (int) event.getY(f.index);
+					f.x = (int) event.getX(event.findPointerIndex(f.id));
+					f.y = (int) event.getY(event.findPointerIndex(f.id));
 					e = new TouchEvent(f.index, MotionEvent.ACTION_MOVE);
 					queueTouchEvent.offer(e);
 				}
