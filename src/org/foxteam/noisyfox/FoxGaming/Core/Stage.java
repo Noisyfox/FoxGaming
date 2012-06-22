@@ -14,7 +14,7 @@
  * 2012-6-19      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.GameCommon.Core;
+package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,9 +39,19 @@ public class Stage {
 	private List<Performer> performers = null;
 	private double stageSpeed = 30;
 	private int backgroundColor = Color.WHITE;
+	private int stageIndex = -1;
+	private boolean available = false;
 
 	public Stage() {
 		performers = new ArrayList<Performer>();
+		stages.add(this);
+		stageIndex = stages.size() - 1;
+		available = true;
+	}
+
+	public Stage(int index) {
+		this();
+		setStageIndex(index);
 	}
 
 	public static int getCurrentStage() {
@@ -49,6 +59,9 @@ public class Stage {
 	}
 
 	protected static Stage index2Stage(int stageIndex) {
+		if (stageIndex < 0 || stageIndex > stages.size() - 1) {
+			throw new IllegalArgumentException("不存在的stage");
+		}
 		return stages.get(stageIndex);
 	}
 
@@ -100,7 +113,14 @@ public class Stage {
 		}
 	}
 
+	// 保证该stage不被异常调用
+	private final void ensureAvailable() {
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+	}
+
 	public final void employPerformer(Performer performer) {
+		ensureAvailable();
 		synchronized (performers) {
 			if (performers.contains(performer))
 				return;
@@ -110,6 +130,7 @@ public class Stage {
 	}
 
 	public final void broadcastEvent(int event, Object... args) {
+		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
 				p.callEvent(event, args);
@@ -118,18 +139,67 @@ public class Stage {
 	}
 
 	public final void setStageSpeed(double stageSpeed) {
+		ensureAvailable();
 		this.stageSpeed = stageSpeed;
 	}
 
 	public final double getStageSpeed() {
+		ensureAvailable();
 		return stageSpeed;
 	}
 
 	public final void setBackgroundColor(int color) {
+		ensureAvailable();
 		backgroundColor = color;
 	}
 
 	public final int getBackgroundColor() {
+		ensureAvailable();
 		return backgroundColor;
+	}
+
+	public final int getStageIndex() {
+		ensureAvailable();
+		return stageIndex;
+	}
+
+	public final void setStageIndex(int index) {
+		ensureAvailable();
+		if (index < 0 || index > stages.size() - 1) {
+			throw new IllegalArgumentException("不存在的stage");
+		}
+		if (index2Stage(currentStage).equals(this)) {
+			throw new IllegalArgumentException("无法改变当前活动的stage");
+		}
+		stages.remove(this);
+		stages.add(index, this);
+		for (int i = Math.min(index, stageIndex); i <= Math.max(index,
+				stageIndex); i++) {
+			stages.get(i).stageIndex = i;
+		}
+	}
+
+	public final void closeStage() {
+		ensureAvailable();
+		available = false;
+		if (index2Stage(currentStage).equals(this)) {
+			throw new IllegalArgumentException("无法移除当前活动的stage");
+		}
+		stages.remove(this);// 移除stage记录
+		for (int i = stageIndex; i < stages.size(); i++) {// 重新构建index
+			stages.get(i).stageIndex = i;
+		}
+		// 移除stage中所有performer
+		for (Performer p : performers) {
+			p.dismiss();
+		}
+		performers.clear();
+	}
+
+	/**
+	 * 静态函数 移除指定index的stage<br>
+	 */
+	public final static void closeStage(int stageIndex) {
+		index2Stage(stageIndex).closeStage();
 	}
 }

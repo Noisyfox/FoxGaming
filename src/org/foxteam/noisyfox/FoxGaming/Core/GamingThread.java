@@ -14,7 +14,7 @@
  * 2012-6-19      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.GameCommon.Core;
+package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

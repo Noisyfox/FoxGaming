@@ -14,9 +14,9 @@
  * 2012-6-19      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.GameCommon.Core;
+package org.foxteam.noisyfox.FoxGaming.Core;
 
-import org.foxteam.noisyfox.GameCommon.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 
 import android.graphics.Canvas;
 
@@ -141,6 +141,7 @@ public class Performer {
 	public final void dismiss() {
 		employed = false;
 		performing = false;
+		callEvent(EventsListener.EVENT_ONDESTORY);
 	}
 
 	public final void freezeMe() {

@@ -14,7 +14,7 @@
  * 2012-6-16      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.GameCommon.G2D;
+package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import android.graphics.Canvas;
 

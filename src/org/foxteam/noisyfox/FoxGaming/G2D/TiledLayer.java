@@ -1,4 +1,4 @@
-package org.foxteam.noisyfox.GameCommon.G2D;
+package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

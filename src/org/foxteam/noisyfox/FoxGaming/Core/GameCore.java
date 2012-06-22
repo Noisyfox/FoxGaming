@@ -14,7 +14,7 @@
  * 2012-6-19      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.GameCommon.Core;
+package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.content.Context;
 
@@ -25,14 +25,14 @@ import android.content.Context;
  * @date: 2012-6-19 下午8:16:28
  * 
  */
-public class Main {
+public class GameCore {
 
 	private GameView gameView;
 	public static Context mContext;
 
 	private GamingThread thread_Gaming = null;
 
-	public Main(Context context) {
+	public GameCore(Context context) {
 		mContext = context;
 		initializeCore();
 	}
@@ -52,7 +52,7 @@ public class Main {
 		thread_Gaming.run();
 	}
 
-	GameView getGameView() {
+	public GameView getGameView() {
 		return gameView;
 	}
 
