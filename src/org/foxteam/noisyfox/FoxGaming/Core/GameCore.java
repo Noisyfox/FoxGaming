@@ -54,6 +54,18 @@ public class GameCore {
 		thread_Gaming.start();
 	}
 
+	public void gameEnd() {
+		thread_Gaming.gameEnd();
+		while (thread_Gaming.isAlive()) {//等待游戏线程结束
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public GameView getGameView() {
 		return gameView;
 	}

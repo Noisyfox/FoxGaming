@@ -36,10 +36,13 @@ import android.view.View.OnTouchListener;
  * @date: 2012-6-19 下午8:12:06
  * 
  */
-public class GamingThread extends Thread implements OnTouchListener, OnKeyListener,
-		SurfaceHolder.Callback {
+public class GamingThread extends Thread implements OnTouchListener,
+		OnKeyListener, SurfaceHolder.Callback {
 
 	public static Canvas canvas = null;
+	public static double SPS = 0;// step per second,每秒循环的次数，也就是帧速
+
+	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
 	private SurfaceHolder surfaceHolder;
 	private boolean running = true;
@@ -50,6 +53,8 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
 	private List<Finger> registedFingers = new ArrayList<Finger>();
 	private List<Integer> registedKeys = new ArrayList<Integer>();
+	private long stepCount = 0;
+	private long allStepCount = 0;
 
 	public GamingThread(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
@@ -59,13 +64,13 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 	public void run() {
 		// 游戏主循环
 		while (running) {
-			while (processing) {
-				Log.d("fg","step start");
+			long SPS_startTime = System.currentTimeMillis();
+			while (running && processing) {
 				long frameStartTime = System.currentTimeMillis();
 				// 全局参数准备
 				canvas = surfaceHolder.lockCanvas();// 获取画布
 				currentStage = Stage.index2Stage(Stage.getCurrentStage());
-				if (currentStage != null) {
+				if (currentStage != null && canvas != null) {
 					// 先准备stage
 					if (currentStage != lastStage) {// stage发生变化
 						if (lastStage != null) {// 不是第一次进游戏，处理上一个stage
@@ -124,7 +129,7 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 							case MotionEvent.ACTION_UP:
 								currentStage.broadcastEvent(
 										EventsListener.EVENT_ONTOUCHRELEASE,
-										fingerIndex, finger.x, finger.y);
+										fingerIndex);
 								break;
 							default:
 							}
@@ -166,20 +171,33 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 					currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
 				}
 				// 绘制
-				surfaceHolder.unlockCanvasAndPost(canvas);
+				if (canvas != null)
+					surfaceHolder.unlockCanvasAndPost(canvas);
 				canvas = null;
 				// 控制帧速
+				stepCount++;
+				allStepCount++;
 				long frameFinishTime = System.currentTimeMillis();
+				if (frameFinishTime - SPS_startTime >= SPS_COUNT_INTERVAL_MILLIS) {
+					SPS = stepCount
+							/ ((frameFinishTime - SPS_startTime) / 1000.0);
+					stepCount = 0;
+					SPS_startTime = frameFinishTime;
+				}
 				double speed = Stage.getSpeed();
 				long sleepTime = (long) (1.0 / speed * 1000.0)
 						- (frameFinishTime - frameStartTime);
 				try {
-					Thread.sleep(sleepTime);
+					if (sleepTime > 0)
+						Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+		// 退出游戏主循环，即游戏结束
+		// 广播EVENT_ONGAMEEND事件
+		currentStage.broadcastEvent(EventsListener.EVENT_ONGAMEEND);
 	}
 
 	@Override
@@ -224,8 +242,21 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 
+		final int action = event.getAction();
+		// Get the action and pointer ID. NOTE: ACTION_POINTER_ID_MASK
+		// gets you the pointer index, NOT the ID.
+		final int pact = action & MotionEvent.ACTION_MASK;
+		int pid = 0;
+		if (pact == MotionEvent.ACTION_POINTER_DOWN
+				|| pact == MotionEvent.ACTION_POINTER_UP) {
+			final int pind = (action & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+			pid = event.getPointerId(pind);
+		} else if (pact == MotionEvent.ACTION_DOWN) {
+			pid = event.getPointerId(0);
+		}
+
 		int fingerIndex = event.getActionIndex();
-		int fingerID = event.getPointerId(fingerIndex);
+		int fingerID = pid;
 		Finger thisFinger = null;
 		for (Finger f : registedFingers) {
 			if (f.id == fingerID) {
@@ -248,8 +279,9 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 		TouchEvent e = null;
 
 		synchronized (queueTouchEvent) {
-			switch (event.getAction()) {
+			switch (pact) {
 			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
 				if (!registed) {
 					registedFingers.add(thisFinger);
 					e = new TouchEvent(thisFinger.index,
@@ -260,14 +292,17 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 							MotionEvent.ACTION_MOVE);
 					queueTouchEvent.offer(e);
 				}
+				Log.d("finger", fingerIndex + ";" + fingerID);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				if (registed) {
-					e = new TouchEvent(thisFinger.index,
-							MotionEvent.ACTION_MOVE);
+				for (Finger f : registedFingers) {
+					f.x = (int) event.getX(f.index);
+					f.y = (int) event.getY(f.index);
+					e = new TouchEvent(f.index, MotionEvent.ACTION_MOVE);
 					queueTouchEvent.offer(e);
 				}
 				break;
+			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
 				if (registed) {
 					registedFingers.remove(thisFinger);
@@ -334,6 +369,11 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 		}
 	}
 
+	public final void gameEnd() {
+		processing = false;
+		running = false;
+	}
+
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -343,13 +383,14 @@ public class GamingThread extends Thread implements OnTouchListener, OnKeyListen
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.d("fg","surfaceCreated");
+		Log.d("fg", "surfaceCreated");
 		processing = true;
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		processing = false;
+		// running = false;
 	}
 
 }

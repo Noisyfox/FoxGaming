@@ -28,8 +28,7 @@ import android.graphics.Canvas;
  * 
  */
 public class Performer {
-	private EventsListener eventsListener = new EventsListener() {
-
+	private EventsListener eventsListener= new EventsListener() {
 	};
 
 	private boolean visible = true;
@@ -42,7 +41,6 @@ public class Performer {
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
 	public Performer() {
-
 	}
 
 	public final int getDeepth() {
@@ -56,8 +54,10 @@ public class Performer {
 	// 最特殊的event回调函数，地位与EventsListener相同
 	// 没有重载前负责绘制默认精灵，重载后如果不手动调用绘图则会使该performer不绘制默认精灵
 	protected void onDraw(Performer unit) {
-		Canvas c = unit.getCanvas();
-		sprite.paint(c, x, y);
+		if (sprite != null) {
+			Canvas c = unit.getCanvas();
+			sprite.paint(c, x, y);
+		}
 	}
 
 	public final void callEvent(int event, Object... args) {
@@ -79,8 +79,7 @@ public class Performer {
 					(Integer) args[1], (Integer) args[2]);
 			break;
 		case EventsListener.EVENT_ONTOUCHRELEASE:
-			eventsListener.onTouchRelease(this, (Integer) args[0],
-					(Integer) args[1], (Integer) args[2]);
+			eventsListener.onTouchRelease(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEY:
 			eventsListener.onKey(this, (Integer) args[0]);

@@ -58,7 +58,7 @@ public class EventsListener {
 	public void onTouchPress(Performer unit, int whichfinger, int x, int y) {
 	}// 当有新的手指按下的时刻触发
 
-	public void onTouchRelease(Performer unit, int whichfinger, int x, int y) {
+	public void onTouchRelease(Performer unit, int whichfinger) {
 	}// 当有手指离开触屏时触发
 
 	public void onKey(Performer unit, int keyCode) {

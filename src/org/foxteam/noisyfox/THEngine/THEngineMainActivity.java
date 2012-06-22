@@ -13,21 +13,10 @@ public class THEngineMainActivity extends Activity {
 		GameCore gc = new GameCore(this);
 		GameView v = gc.getGameView();
 		setContentView(v);
-		new Stage();
+		Stage s = new Stage();
+		Performer p = new TestPerformer();
+		s.employPerformer(p);
 		gc.gameStart();
 	}
-
-	// private THEngineMainThread mainThread;
-
-	/** Called when the activity is first created. */
-	// @Override
-	// public void onCreate(Bundle savedInstanceState) {
-	// super.onCreate(savedInstanceState);
-	// SurfaceView v = new THEngineMainView(this);
-	// setContentView(v);
-	// mainThread = new THEngineMainThread(v.getHolder());
-	// v.getHolder().addCallback(mainThread);
-	// v.setOnTouchListener(mainThread);
-	// }
 
 }
