@@ -82,7 +82,7 @@ public class TestPerformer extends Performer {
 				GameCore.mContext.getResources(),
 				org.foxteam.noiyfox.THEngine.R.drawable.button);
 		s.loadFromBitmap(b);
-		s.setOffset(b.getWidth() / 2, 0);
+		s.setOffset(s.getWidth() / 2, 0);
 		sc = new SpriteConvertor();
 		sc.setRotation(60);
 		sc.setScale(1, 0.5);
