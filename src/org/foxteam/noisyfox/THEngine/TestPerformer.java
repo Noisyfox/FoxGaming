@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * @ClassName: TestPerformer
@@ -74,6 +75,7 @@ public class TestPerformer extends Performer {
 
 	MySprite s;
 	SpriteConvertor sc;
+	GraphicCollision g1, g2, g3;
 
 	public TestPerformer() {
 		this.setEventsListener(eventsListener);
@@ -87,6 +89,16 @@ public class TestPerformer extends Performer {
 		sc.setRotation(60);
 		sc.setScale(1, 0.5);
 		sc.setAlpha(0.5);
+
+		g1 = new GraphicCollision();
+		g1.addPoint(0, 0);
+
+		g2 = new GraphicCollision();
+		g2.addCircle(190, 190, 70);
+
+		g3 = new GraphicCollision();
+		int[][] v = { { 190, 600 }, { 220, 600 }, { 220, 670 }, { 190, 670 } };
+		g3.addPolygon(v, true);
 	}
 
 	@Override
@@ -99,6 +111,19 @@ public class TestPerformer extends Performer {
 		unit.getCanvas().drawText("3", x3, y3, p);
 		s.draw(unit.getCanvas(), x1, y1, sc);
 		unit.getCanvas().drawPoint(x1, y1, p);
+		unit.getCanvas().drawCircle(190, 190, 70, p);
+		unit.getCanvas().drawRect(190, 600, 220, 670, p);
+		g1.setPosition(x1, y1);
+		if (g1.isCollisionWith(g2)) {
+			Paint p2 = new Paint();
+			p2.setColor(Color.RED);
+			unit.getCanvas().drawCircle(190, 190, 70, p2);
+		}
+		if (g1.isCollisionWith(g3)) {
+			Paint p2 = new Paint();
+			p2.setColor(Color.RED);
+			unit.getCanvas().drawRect(190, 600, 220, 670, p2);
+		}
 	}
 
 }
