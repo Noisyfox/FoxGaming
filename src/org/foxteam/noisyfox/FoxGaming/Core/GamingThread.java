@@ -253,6 +253,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		//MotionEvent.
 		// 重写的触屏逻辑
 		synchronized (listTouchEvent) {
 

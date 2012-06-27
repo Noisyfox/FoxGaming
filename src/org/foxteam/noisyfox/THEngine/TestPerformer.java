@@ -17,7 +17,10 @@
 package org.foxteam.noisyfox.THEngine;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
+import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 
@@ -69,8 +72,20 @@ public class TestPerformer extends Performer {
 		}
 	};
 
+	MySprite s;
+	SpriteConvertor sc;
+
 	public TestPerformer() {
 		this.setEventsListener(eventsListener);
+		s = new MySprite();
+		Bitmap b = BitmapFactory.decodeResource(
+				GameCore.mContext.getResources(),
+				org.foxteam.noiyfox.THEngine.R.drawable.button);
+		s.loadFromBitmap(b);
+		s.setOffset(b.getWidth() / 2, 0);
+		sc = new SpriteConvertor();
+		sc.setRotation(60);
+		sc.setScale(1, 0.5);
 	}
 
 	@Override
@@ -81,6 +96,8 @@ public class TestPerformer extends Performer {
 		unit.getCanvas().drawText("1", x1, y1, p);
 		unit.getCanvas().drawText("2", x2, y2, p);
 		unit.getCanvas().drawText("3", x3, y3, p);
+		s.draw(unit.getCanvas(), x1, y1, sc);
+		unit.getCanvas().drawPoint(x1, y1, p);
 	}
 
 }
