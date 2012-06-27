@@ -86,6 +86,7 @@ public class TestPerformer extends Performer {
 		sc = new SpriteConvertor();
 		sc.setRotation(60);
 		sc.setScale(1, 0.5);
+		sc.setAlpha(0.5);
 	}
 
 	@Override

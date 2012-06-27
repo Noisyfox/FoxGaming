@@ -20,7 +20,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
 /**
  * @ClassName: MySprite
@@ -176,6 +175,7 @@ public class MySprite {
 		Paint paint = new Paint();
 		Matrix m = spriteConvertor.getConvertMatrix(offsetX, offsetY);
 		m.postTranslate(x - offsetX, y - offsetY);
+		paint.setAlpha((int) (255.0 * spriteConvertor.getAlpha()));
 		c.drawBitmap(bmp, m, paint);
 	}
 }

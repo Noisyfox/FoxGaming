@@ -19,16 +19,17 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import android.graphics.Matrix;
 
 /**
- * @ClassName:     SpriteConvertor
- * @Description:   TODO
- * @author:        Noisyfox
- * @date:          2012-6-27 上午10:43:57
- *
+ * @ClassName: SpriteConvertor
+ * @Description: TODO
+ * @author: Noisyfox
+ * @date: 2012-6-27 上午10:43:57
+ * 
  */
 public class SpriteConvertor {
 	private double XScale = 1;
 	private double YScale = 1;
 	private double rotation = 0;// 角度制
+	private double alpha = 1;
 
 	public SpriteConvertor() {
 
@@ -53,6 +54,19 @@ public class SpriteConvertor {
 
 	public final double getYScale() {
 		return YScale;
+	}
+
+	public final void setAlpha(double alpha) {
+		if (alpha > 1) {
+			alpha = 1;
+		} else if (alpha < 0) {
+			alpha = 0;
+		}
+		this.alpha = alpha;
+	}
+
+	public final double getAlpha() {
+		return alpha;
 	}
 
 	public final Matrix getConvertMatrix() {
