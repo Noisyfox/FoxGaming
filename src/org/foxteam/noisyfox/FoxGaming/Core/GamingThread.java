@@ -45,6 +45,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private static long gameStartTime = 0;
 	private static List<Finger> registedFingers = new ArrayList<Finger>();
 	private static List<Integer> registedKeys = new ArrayList<Integer>();
+	private static List<Integer> blockedKeys = new ArrayList<Integer>();
 
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
@@ -71,6 +72,21 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	public static int getFingerCount() {
 		return registedFingers.size();
+	}
+
+	// 屏蔽系统对指定按键的响应，比如返回键
+	public static void blockKeyFromSystem(int keyCode, boolean unblock) {
+		if (!unblock) {
+			blockedKeys.add(keyCode);
+		} else {
+			for (int i = 0; i < blockedKeys.size();) {
+				if (blockedKeys.get(i) == keyCode) {
+					blockedKeys.remove(i);
+				} else {
+					i++;
+				}
+			}
+		}
 	}
 
 	public GamingThread(SurfaceHolder surfaceHolder) {
@@ -250,7 +266,13 @@ public class GamingThread extends Thread implements OnTouchListener,
 				queueKeyEvent.offer(e);
 			}
 		}
-		return true;
+
+		for (int i : blockedKeys) {
+			if (keyCode == i) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

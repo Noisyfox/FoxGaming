@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.app.Activity;
+import android.view.KeyEvent;
 
 /**
  * @ClassName: Main
@@ -44,6 +45,9 @@ public class GameCore {
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
+
+		//屏蔽系统对 返回键 的响应
+		GamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
 	}
 
 	private void setupGameThread() {
