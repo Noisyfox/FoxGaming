@@ -90,7 +90,7 @@ public class TestPerformer extends Performer {
 		sc.setAlpha(0.5);
 
 		g1 = new GraphicCollision();
-		//g1.addPoint(0, 0);
+		// g1.addPoint(0, 0);
 		g1.addCircle(0, 0, 10);
 
 		g2 = new GraphicCollision();

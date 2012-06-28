@@ -206,4 +206,14 @@ public class Stage {
 	public final static void closeStage(int stageIndex) {
 		index2Stage(stageIndex).closeStage();
 	}
+
+	//处理定时器
+	protected final void processAlarm() {
+		ensureAvailable();
+		synchronized (performers) {
+			for (Performer p : performers) {
+				p.goAlarm();
+			}
+		}
+	}
 }

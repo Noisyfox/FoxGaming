@@ -32,7 +32,7 @@ public class EventsListener {
 	public final static int EVENT_ONKEY = 6;
 	public final static int EVENT_ONKEYPRESS = 7;
 	public final static int EVENT_ONKEYRELEASE = 8;
-	public final static int EVENT_ONTIMER = 9;
+	public final static int EVENT_ONALARM = 9;
 	public final static int EVENT_ONGAMESTART = 10;
 	public final static int EVENT_ONGAMEPAUSE = 11;
 	public final static int EVENT_ONGAMERESUME = 12;
@@ -70,11 +70,11 @@ public class EventsListener {
 	public void onKeyRelease(Performer performer, int keyCode) {
 	}// 按键松开的时刻触发
 
-	public void onTimer(Performer performer, int timer) {
-	}
+	public void onAlarm(Performer performer, int timer) {
+	}// 定时器事件，在 EVENT_ONSTEPSTART 事件之后触发
 
 	public void onGameStart(Performer performer) {
-	}// 游戏开始时广播的事件，在向第一个stage广播完EVENT_ONCREATE事件后广播，整个游戏中第二个触发的事件
+	}// 游戏开始时广播的事件，在向第一个stage广播完 EVENT_ONCREATE 事件后广播，整个游戏中第二个触发的事件
 
 	public void onGamePause(Performer performer) {
 	}
@@ -90,19 +90,19 @@ public class EventsListener {
 
 	public void onStageStart(Performer performer) {
 	}// 切换stage时目标stage里所有performer都会接收到该事件，在EVENT_ONCREATE 和
-		// EVENT_ONSTAGECHANGE事件之后
+		// EVENT_ONSTAGECHANGE 事件之后
 
 	public void onStageEnd(Performer performer) {
-	}// 切换stage时前一个stage里所有performer都会接收到该事件，在EVENT_ONSTAGECHANGE事件之后
+	}// 切换stage时前一个stage里所有performer都会接收到该事件，在 EVENT_ONSTAGECHANGE 事件之后
 
 	public void onStep(Performer performer) {
-	}// 每一此循环都会触发，在画布绘制(EVENT_ONDRAW事件)之前触发
+	}// 每一此循环都会触发，在画布绘制(EVENT_ONDRAW 事件)之前触发
 
 	public void onStepStart(Performer performer) {
 	}// 每一个游戏循环最先的一个事件（切换stage时触发的event除外)
 
 	public void onStepEnd(Performer performer) {
-	}// 每一个游戏循环最后的一个事件（EVENT_ONUSERDEFINEDEVENT除外)
+	}// 每一个游戏循环最后的一个事件（EVENT_ONUSERDEFINEDEVENT 除外)
 
 	public void onUserDefinedEvent(Performer performer, int event) {
 	}// 只会在程序中手动调用

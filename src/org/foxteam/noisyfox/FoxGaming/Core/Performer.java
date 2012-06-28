@@ -16,6 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 
 import android.graphics.Canvas;
@@ -31,6 +34,7 @@ public class Performer {
 	private EventsListener eventsListener = new EventsListener() {
 	};
 
+	private List<Alarm> alarms;
 	private boolean visible = true;
 	private int x = 0, y = 0;
 	private int deepth = 0;
@@ -41,6 +45,11 @@ public class Performer {
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
 	public Performer() {
+		alarms = new ArrayList<Alarm>();
+		for (int i = 0; i < 10; i++) {
+			Alarm a = new Alarm();
+			alarms.add(a);
+		}
 	}
 
 	public final int getDeepth() {
@@ -90,8 +99,8 @@ public class Performer {
 		case EventsListener.EVENT_ONKEYRELEASE:
 			eventsListener.onKeyRelease(this, (Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONTIMER:
-			eventsListener.onTimer(this, (Integer) args[0]);
+		case EventsListener.EVENT_ONALARM:
+			eventsListener.onAlarm(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONGAMESTART:
 			eventsListener.onGameStart(this);
@@ -175,4 +184,61 @@ public class Performer {
 	public final Canvas getCanvas() {
 		return GamingThread.canvas;
 	}
+
+	public final void setAlarm(int alarm, int step, boolean repeat) {
+		Alarm a = alarms.get(alarm);
+		a.setSteps = step;
+		a.repeat = repeat;
+	}
+
+	public final void startAlarm(int alarm) {
+		Alarm a = alarms.get(alarm);
+		a.remainSteps = a.setSteps;
+		a.start = true;
+	}
+
+	public final void stopAlarm(int alarm) {
+		Alarm a = alarms.get(alarm);
+		a.start = false;
+	}
+
+	public final int getAlarmRemainStep(int alarm) {
+		Alarm a = alarms.get(alarm);
+		return a.remainSteps;
+	}
+
+	public final boolean isAlarmStart(int alarm) {
+		Alarm a = alarms.get(alarm);
+		return a.start;
+	}
+
+	protected final void goAlarm() {
+		for (int i = 0; i < alarms.size(); i++) {
+			Alarm a = alarms.get(i);
+			if (a.start) {
+				if (a.remainSteps > 0) {
+					a.remainSteps -= 1;
+					if (a.remainSteps == 0) {
+						callEvent(EventsListener.EVENT_ONALARM, i);
+						if (a.repeat) {
+							a.remainSteps = a.setSteps;
+						} else {
+							a.start = false;
+						}
+					}
+				} else {
+					a.start = false;
+					a.remainSteps = 0;
+				}
+			}
+		}
+	}
+
+	private class Alarm {
+		public boolean start = false;
+		public int setSteps = 0;
+		public int remainSteps = 0;
+		public boolean repeat = false;
+	}
+
 }
