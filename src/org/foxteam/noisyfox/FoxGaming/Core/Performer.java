@@ -1,5 +1,5 @@
 /**
- * FileName:     Unit.java
+ * FileName:     performer.java
  * @Description: TODO
  * All rights Reserved, Designed By Noisyfox
  * Copyright:    Copyright(C) 2012
@@ -21,14 +21,14 @@ import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 import android.graphics.Canvas;
 
 /**
- * @ClassName: Unit
+ * @ClassName: performer
  * @Description: TODO
  * @author: Noisyfox
  * @date: 2012-6-19 下午9:21:05
  * 
  */
 public class Performer {
-	private EventsListener eventsListener= new EventsListener() {
+	private EventsListener eventsListener = new EventsListener() {
 	};
 
 	private boolean visible = true;
@@ -53,9 +53,9 @@ public class Performer {
 
 	// 最特殊的event回调函数，地位与EventsListener相同
 	// 没有重载前负责绘制默认精灵，重载后如果不手动调用绘图则会使该performer不绘制默认精灵
-	protected void onDraw(Performer unit) {
+	protected void onDraw(Performer performer) {
 		if (sprite != null) {
-			Canvas c = unit.getCanvas();
+			Canvas c = performer.getCanvas();
 			sprite.paint(c, x, y);
 		}
 	}
