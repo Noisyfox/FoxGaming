@@ -37,7 +37,7 @@ public class Performer {
 	private List<Alarm> alarms;
 	private boolean visible = true;
 	private int x = 0, y = 0;
-	private int deepth = 0;
+	private int depth = 0;
 	protected boolean frozen = false;
 	private Sprite sprite = null;
 	protected boolean employed = false;
@@ -52,8 +52,8 @@ public class Performer {
 		}
 	}
 
-	public final int getDeepth() {
-		return deepth;
+	public final int getDepth() {
+		return depth;
 	}
 
 	public final void setEventsListener(EventsListener eventsListener) {

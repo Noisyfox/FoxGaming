@@ -99,13 +99,13 @@ public class Stage {
 		return speed;
 	}
 
-	private final void sortWithDeepth() {
+	private final void sortWithDepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
 				@Override
 				public int compare(Performer lhs, Performer rhs) {
-					int p1 = lhs.getDeepth();
-					int p2 = rhs.getDeepth();
+					int p1 = lhs.getDepth();
+					int p2 = rhs.getDepth();
 					if (p1 > p2)
 						return -1;
 					if (p1 < p2)
@@ -129,7 +129,7 @@ public class Stage {
 			if (performers.contains(performer))
 				return;
 			performers.add(performer);
-			sortWithDeepth();
+			sortWithDepth();
 		}
 	}
 
