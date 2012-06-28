@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * @ClassName: Main

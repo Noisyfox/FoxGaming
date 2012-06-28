@@ -227,12 +227,18 @@ public class GraphicCollision {
 					if ((b1 && (!b2)) || ((!b1) && b2)) {
 						return true;
 					}
+					if (b1 && b2 && pol2.filled()) {
+						return true;
+					}
 					continue;
 				}
 				if (!pol1.isLine() && pol2.isLine()) {
 					boolean b1 = pointInPolygon(pol2.getVertex(0), pol1);
 					boolean b2 = pointInPolygon(pol2.getVertex(1), pol1);
 					if ((b1 && (!b2)) || ((!b1) && b2)) {
+						return true;
+					}
+					if (b1 && b2 && pol1.filled()) {
 						return true;
 					}
 					continue;
@@ -387,8 +393,8 @@ public class GraphicCollision {
 			}
 			// 先判断两个端点是不是都在圆内
 			if (hasIn && !hasOut) {
-				// 都在圆内，无交点
-				return false;
+				// 都在圆内，判断圆是否实心
+				return c.filled();
 			}
 			// 判断圆心是不是在线段两侧
 			if (dotProduct(p1, c, p2) * dotProduct(p2, c, p1) <= 0) {

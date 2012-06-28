@@ -253,7 +253,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		//MotionEvent.
 		// 重写的触屏逻辑
 		synchronized (listTouchEvent) {
 
@@ -317,7 +316,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 					listTouchEvent.add(ne);
 				}
 				break;
-				
+
 			case MotionEvent.ACTION_MOVE:
 				for (Finger f : registedFingers) {
 					eventExist = false;
@@ -342,7 +341,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 					}
 				}
 				break;
-				
+
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_POINTER_UP:
 				if (registed) {
@@ -380,7 +379,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 				break;
 			}
 		}
-		
+
 		return true;
 	}
 
