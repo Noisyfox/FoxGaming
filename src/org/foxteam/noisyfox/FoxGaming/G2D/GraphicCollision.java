@@ -32,8 +32,8 @@ public class GraphicCollision {
 	List<Circle> circles = new ArrayList<Circle>();
 	List<Point> points = new ArrayList<Point>();
 
-	int x = 0;
-	int y = 0;
+	int baseX = 0;
+	int baseY = 0;
 
 	public GraphicCollision() {
 
@@ -86,19 +86,40 @@ public class GraphicCollision {
 	}
 
 	public final void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
+		int dx = x - baseX;
+		int dy = y - baseY;
+		for (Point p : points) {
+			p.move(dx, dy);
+		}
+		for (Circle c : circles) {
+			c.move(dx, dy);
+		}
+		for (Polygon pol : polygons) {
+			for (Point p : pol.vertex) {
+				p.move(dx, dy);
+			}
+		}
+		baseX = x;
+		baseY = y;
+	}
+
+	// 判断一个点是否在一个圆内
+	private boolean pointInCircle(Point p, Circle c) {
+		int d2 = p.squareDistance(c);
+		if (d2 <= (c.getR() * c.getR())) {
+			return true;
+		}
+		return false;
 	}
 
 	// 判断一个点是否在一个夹角内
-	private boolean inAngle(int x, int y, int vertexX, int vertexY, int p1X,
-			int p1Y, int p2X, int p2Y) {
-		x -= vertexX;
-		y -= vertexY;
-		p1X -= vertexX;
-		p1Y -= vertexY;
-		p2X -= vertexX;
-		p2Y -= vertexY;
+	private boolean pointInAngle(Point point, Point vertex, Point p1, Point p2) {
+		int x = point.getX() - vertex.getX();
+		int y = point.getY() - vertex.getY();
+		int p1X = p1.getX() - vertex.getX();
+		int p1Y = p1.getY() - vertex.getY();
+		int p2X = p2.getX() - vertex.getX();
+		int p2Y = p2.getY() - vertex.getY();
 
 		int v1 = x * p1Y - y * p1X;
 		int v2 = x * p2Y - y * p2X;
@@ -108,13 +129,125 @@ public class GraphicCollision {
 		return false;
 	}
 
+	// 判断两条线段是否相交
+	private boolean lineVSline(Point l1P1, Point l1P2, Point l2P1, Point l2P2) {
+		return pointInAngle(l1P2, l1P1, l2P1, l2P2)
+				&& pointInAngle(l2P2, l2P1, l1P1, l1P2);
+	}
+
+	// 判断点是否在多边形内
+	private boolean pointInPolygon(Point p, Polygon pol) {
+		if (!pol.isLine()) {
+			int nVertex = pol.getVertexNumber();
+			boolean collision = true;
+			for (int i = 0; i < nVertex; i++) {
+				if (!pointInAngle(p, pol.getVertex(i), pol.getVertex(i - 1),
+						pol.getVertex(i + 1))) {
+					collision = false;
+					break;
+				}
+			}
+			if (collision) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 数量积
+	private int dotProduct(Point vertex, Point p1, Point p2) {
+		int x1, y1;
+		int x2, y2;
+
+		x1 = p1.getX() - vertex.getX();
+		y1 = p1.getY() - vertex.getY();
+		x2 = p2.getX() - vertex.getX();
+		y2 = p2.getY() - vertex.getY();
+		return x1 * x2 + y1 * y2;
+	}
+
+	// 点到直线距离平方
+	private int squareDistanceFromPointToLine(Point point, Point p1, Point p2) {
+		int dp = dotProduct(p1, point, p2);
+		int dp2 = dp * dp;
+		int p1p22 = p1.squareDistance(p2);
+		int projectionSquareLength = dp2 / p1p22;
+		return point.squareDistance(p1) - projectionSquareLength;
+	}
+
+	// 判断圆与直线（线段）有无交点
+	private boolean circleVSline(Circle c, Point p1, Point p2, boolean segment) {
+		if (segment) {// 线段
+			boolean hasIn = false;
+			boolean hasOut = false;
+			if (pointInCircle(p1, c)) {
+				hasIn = true;
+			} else {
+				hasOut = true;
+			}
+			if (pointInCircle(p2, c)) {
+				hasIn = true;
+			} else {
+				hasOut = true;
+			}
+			// 先判断两个端点是不是都在圆内
+			if (hasIn && !hasOut) {
+				// 都在圆内，无交点
+				return false;
+			}
+			// 判断圆心是不是在线段两侧
+			if (dotProduct(p1, c, p2) * dotProduct(p2, c, p1) <= 0) {
+				// 在线段两侧，则只需要验证两个端点即可
+				if (hasOut && !hasIn) {
+					return false;
+				}
+				return true;
+			}
+		}
+		// 直线或者圆心在线段上方，只需判断圆心到直线距离即可
+		int squareDistance = squareDistanceFromPointToLine(c, p1, p2);
+		return squareDistance <= c.getR() * c.getR();
+	}
+
+	// private final static int CIRCLE_IN_ANGLE = 1;// 圆在角内
+	// private final static int CIRCLE_AGANST_ANGLE = 2;// 圆与角相交
+	// private final static int ANGLE_IN_CIRCLE = 3;// 角在圆内
+	// private final static int ANGLE_AWAY_CIRCLE = 4;// 角在圆外
+	//
+	// private int circleVSangle(Circle c, Point vertex, Point p1, Point p2) {
+	// boolean hasIn = false;
+	// boolean hasOut = false;
+	// if (pointInCircle(vertex, c)) {
+	// hasIn = true;
+	// } else {
+	// hasOut = true;
+	// }
+	// if (pointInCircle(p1, c)) {
+	// hasIn = true;
+	// } else {
+	// hasOut = true;
+	// }
+	// if (pointInCircle(p2, c)) {
+	// hasIn = true;
+	// } else {
+	// hasOut = true;
+	// }
+	// if (hasIn && hasOut) {
+	// return CIRCLE_AGANST_ANGLE;
+	// } else if (hasIn) {
+	// return ANGLE_IN_CIRCLE;
+	// }
+	// boolean b1 = circleVSline(c, p1, vertex, true);
+	// boolean b2 = circleVSline(c, p2, vertex, true);
+	// if(b1 || b2)return CIRCLE_AGANST_ANGLE;
+	// }
+
 	public final boolean isCollisionWith(GraphicCollision target) {
 		// 优先进行点的判断
 		// 点与点
 		for (Point p1 : points) {
 			for (Point p2 : target.points) {
-				if (p1.getX(x) == p2.getX(target.x)
-						&& p1.getY(y) == p2.getY(target.y)) {
+				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
 					return true;
 				}
 			}
@@ -123,11 +256,16 @@ public class GraphicCollision {
 		for (Circle c : target.circles) {
 			for (Point p1 : points) {
 				if (c.filled()) {
-					int d2 = (p1.getX(x) - c.getX(target.x))
-							* (p1.getX(x) - c.getX(target.x))
-							+ (p1.getY(y) - c.getY(target.y))
-							* (p1.getY(y) - c.getY(target.y));
-					if (d2 <= (c.getR() * c.getR())) {
+					if (pointInCircle(p1, c)) {
+						return true;
+					}
+				}
+			}
+		}
+		for (Circle c : circles) {
+			for (Point p1 : target.points) {
+				if (c.filled()) {
+					if (pointInCircle(p1, c)) {
 						return true;
 					}
 				}
@@ -136,28 +274,151 @@ public class GraphicCollision {
 		// 点与多边形
 		for (Polygon pol : target.polygons) {
 			for (Point p : points) {
-				if (pol.filled() && !pol.isLine) {
-					int nVertex = pol.getVertexNumber();
-					boolean collision = true;
-					for (int i = 0; i < nVertex; i++) {
-						if (!inAngle(p.getX(x), p.getY(y), pol.getVertex(i)
-								.getX(target.x), pol.getVertex(i)
-								.getY(target.y),
-								pol.getVertex(i - 1).getX(target.x), pol
-										.getVertex(i - 1).getY(target.y), pol
-										.getVertex(i + 1).getX(target.x), pol
-										.getVertex(i + 1).getY(target.y))) {
-							collision = false;
-							break;
-						}
+				if (pol.filled()) {
+					if (pointInPolygon(p, pol)) {
+						return true;
 					}
-					if (collision) {
+				}
+			}
+		}
+		for (Polygon pol : polygons) {
+			for (Point p : target.points) {
+				if (pol.filled()) {
+					if (pointInPolygon(p, pol)) {
 						return true;
 					}
 				}
 			}
 		}
 
+		// 接下来判断圆
+		// 圆与圆
+		for (Circle c1 : circles) {
+			for (Circle c2 : target.circles) {
+				int d2 = c1.squareDistance(c2);
+				int r2 = (c1.getR() + c2.getR()) * (c1.getR() + c2.getR());
+				int r22 = (c1.getR() - c2.getR()) * (c1.getR() - c2.getR());
+				// 两圆相交、相切
+				if (d2 <= r2 && d2 >= r22) {
+					return true;
+				}
+
+				// 两圆内含
+				if (c1.getR() < c2.getR() && c2.filled() && d2 < r22) {
+					return true;
+				}
+				if (c1.getR() > c2.getR() && c1.filled() && d2 < r22) {
+					return true;
+				}
+			}
+		}
+		// 圆与多边形
+		for (Polygon pol : target.polygons) {
+			for (Circle c : circles) {
+				if (pol.isLine()) {
+					// 圆与线段
+					if (circleVSline(c, pol.getVertex(0), pol.getVertex(1),
+							true)) {
+						return true;
+					}
+					continue;
+				}
+				// 圆与多边形
+				// 有任何一边与圆相交
+				for (int i = 0; i < pol.getEdgeNumber(); i++) {
+					if (circleVSline(c, pol.getVertex(i), pol.getVertex(i + 1),
+							true)) {
+						return true;
+					}
+				}
+				// 没有边相交，则判断是否有包含关系
+				if (pointInCircle(pol.getVertex(0), c)) {
+					if (c.filled()) {
+						return true;
+					}
+				} else if (pol.filled()) {
+					if (pointInPolygon(c, pol)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		// 最后是多边形
+		// 两条直线
+		for (Polygon pol1 : target.polygons) {
+			for (Polygon pol2 : polygons) {
+				if (pol1.isLine() && pol2.isLine()) {
+					if (lineVSline(pol1.getVertex(0), pol1.getVertex(1),
+							pol2.getVertex(0), pol2.getVertex(1))) {
+						return true;
+					}
+					continue;
+				}
+			}
+		}
+		// 直线和多边形
+		for (Polygon pol1 : target.polygons) {
+			for (Polygon pol2 : polygons) {
+				if (pol1.isLine() && !pol2.isLine()) {
+					boolean b1 = pointInPolygon(pol1.getVertex(0), pol2);
+					boolean b2 = pointInPolygon(pol1.getVertex(1), pol2);
+					if ((b1 && (!b2)) || ((!b1) && b2)) {
+						return true;
+					}
+					continue;
+				}
+				if (!pol1.isLine() && pol2.isLine()) {
+					boolean b1 = pointInPolygon(pol2.getVertex(0), pol1);
+					boolean b2 = pointInPolygon(pol2.getVertex(1), pol1);
+					if ((b1 && (!b2)) || ((!b1) && b2)) {
+						return true;
+					}
+					continue;
+				}
+			}
+		}
+		// 多边形和多边形
+		for (Polygon pol1 : target.polygons) {
+			for (Polygon pol2 : polygons) {
+				if (!pol1.isLine() && !pol2.isLine()) {
+					{
+						boolean hasIn = false;
+						boolean hasOut = false;
+						int nVertex = pol1.getVertexNumber();
+						for (int i = 0; i < nVertex; i++) {
+							if (pointInPolygon(pol1.getVertex(i), pol2)) {
+								hasIn = true;
+							} else {
+								hasOut = true;
+							}
+						}
+						if (hasIn && hasOut) {
+							return true;
+						} else if (hasIn && pol2.filled()) {
+							return true;
+						}
+					}
+					{
+						boolean hasIn = false;
+						boolean hasOut = false;
+						int nVertex = pol2.getVertexNumber();
+						for (int i = 0; i < nVertex; i++) {
+							if (pointInPolygon(pol2.getVertex(i), pol1)) {
+								hasIn = true;
+							} else {
+								hasOut = true;
+							}
+						}
+						if (hasIn && hasOut) {
+							return true;
+						} else if (hasIn && pol1.filled()) {
+							return true;
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 
@@ -207,8 +468,10 @@ public class GraphicCollision {
 		}
 
 		public final Point getVertex(int vertexIndex) {
-			while(vertexIndex < 0)vertexIndex += num_vertexs;
-			while(vertexIndex >= num_vertexs)vertexIndex -= num_vertexs;
+			while (vertexIndex < 0)
+				vertexIndex += num_vertexs;
+			while (vertexIndex >= num_vertexs)
+				vertexIndex -= num_vertexs;
 			return vertex[vertexIndex];
 		}
 
@@ -256,28 +519,36 @@ public class GraphicCollision {
 	}
 
 	private class Point {
-		int x;
-		int y;
+		int x = 0;
+		int y = 0;
 
 		public Point(int x, int y) {
+			setPosition(x, y);
+		}
+
+		public void setPosition(int x, int y) {
 			this.x = x;
 			this.y = y;
 		}
 
-		public int getX() {
-			return getX(0);
+		public void move(int dx, int dy) {
+			x += dx;
+			y += dy;
 		}
 
-		public int getX(int positionX) {
-			return x + positionX;
+		public int getX() {
+			return x;
 		}
 
 		public int getY() {
-			return getY(0);
+			return y;
 		}
 
-		public int getY(int positionY) {
-			return y + positionY;
+		// 得到两点距离的平方
+		public int squareDistance(Point p2) {
+			return (x - p2.getX()) * (x - p2.getX()) + (y - p2.getY())
+					* (y - p2.getY());
 		}
+
 	}
 }

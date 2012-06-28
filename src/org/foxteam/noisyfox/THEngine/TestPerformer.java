@@ -91,7 +91,8 @@ public class TestPerformer extends Performer {
 		sc.setAlpha(0.5);
 
 		g1 = new GraphicCollision();
-		g1.addPoint(0, 0);
+		//g1.addPoint(0, 0);
+		g1.addCircle(0, 0, 10);
 
 		g2 = new GraphicCollision();
 		g2.addCircle(190, 190, 70);
@@ -124,6 +125,7 @@ public class TestPerformer extends Performer {
 			p2.setColor(Color.RED);
 			unit.getCanvas().drawRect(190, 600, 220, 670, p2);
 		}
+		unit.getCanvas().drawCircle(x1, y1, 10, p);
 	}
 
 }
