@@ -80,7 +80,7 @@ public class TestPerformer extends Performer {
 		this.setEventsListener(eventsListener);
 		s = new MySprite();
 		Bitmap b = BitmapFactory.decodeResource(
-				GameCore.mContext.getResources(),
+				GameCore.mainActivity.getResources(),
 				org.foxteam.noiyfox.THEngine.R.drawable.button);
 		s.loadFromBitmap(b);
 		s.setOffset(s.getWidth() / 2, 0);

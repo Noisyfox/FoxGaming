@@ -16,7 +16,7 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
-import android.content.Context;
+import android.app.Activity;
 
 /**
  * @ClassName: Main
@@ -28,18 +28,19 @@ import android.content.Context;
 public class GameCore {
 
 	private GameView gameView;
-	public static Context mContext;
+	public static Activity mainActivity;
 
 	private GamingThread thread_Gaming = null;
 
-	public GameCore(Context context) {
-		mContext = context;
+	public GameCore(Activity mainActivity) {
+		GameCore.mainActivity = mainActivity;
 		initializeCore();
 	}
 
 	private void initializeCore() {
-		gameView = new GameView(mContext);
+		gameView = new GameView(mainActivity);
 		setupGameThread();
+		Audio.initAudio(mainActivity);
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
@@ -55,7 +56,7 @@ public class GameCore {
 
 	public void gameEnd() {
 		thread_Gaming.gameEnd();
-		while (thread_Gaming.isAlive()) {//等待游戏线程结束
+		while (thread_Gaming.isAlive()) {// 等待游戏线程结束
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
