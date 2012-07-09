@@ -41,12 +41,11 @@ public class GameCore {
 	private void initializeCore() {
 		gameView = new GameView(mainActivity);
 		setupGameThread();
-		Audio.initAudio(mainActivity);
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
 
-		//屏蔽系统对 返回键 的响应
+		// 屏蔽系统对 返回键 的响应
 		GamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
 	}
 
