@@ -33,12 +33,13 @@ import android.media.SoundPool;
 public final class SimpleSoundEffect implements
 		SoundPool.OnLoadCompleteListener {
 
+	public static int AUDIO_SOUNDPOOL_MAXSTREAMS = 10;
+	public static int AUDIO_SOUNDPOOL_QUALITY = 90;
+
 	private static SimpleSoundEffect simpleSoundEffect = new SimpleSoundEffect();
 	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
 	private static List<Integer> soundLoading = new ArrayList<Integer>();
 	private static SoundPool soundPool = null;
-	public static int AUDIO_SOUNDPOOL_MAXSTREAMS = 10;
-	public static int AUDIO_SOUNDPOOL_QUALITY = 90;
 	private static int volume = 100;
 
 	private static int lastAudioId = -1;
@@ -98,5 +99,9 @@ public final class SimpleSoundEffect implements
 			}
 		}
 	}
-	
+
+	public static SimpleSoundEffect getInstance() {
+		return simpleSoundEffect;
+	}
+
 }
