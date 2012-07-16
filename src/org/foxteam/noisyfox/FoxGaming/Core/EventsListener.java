@@ -77,10 +77,10 @@ public class EventsListener {
 	}// 游戏开始时广播的事件，在向第一个stage广播完 EVENT_ONCREATE 事件后广播，整个游戏中第二个触发的事件
 
 	public void onGamePause(Performer performer) {
-	}
+	}// 游戏暂停时广播的事件
 
 	public void onGameResume(Performer performer) {
-	}
+	}// 游戏恢复时广播的事件
 
 	public void onGameEnd(Performer performer) {
 	}// 游戏结束时的stage里的performer都会接收到该事件，是整个游戏里最后发出的事件

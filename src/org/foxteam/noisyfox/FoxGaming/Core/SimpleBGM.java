@@ -137,6 +137,14 @@ public final class SimpleBGM {
 		}
 	}
 
+	public static void freeAll() {
+		sounds.clear();
+		if (mediaPlayer == null)
+			return;
+		mediaPlayer.release();
+		mediaPlayer = null;
+	}
+
 	public static SimpleBGM getInstance() {
 		return simpleBGM;
 	}

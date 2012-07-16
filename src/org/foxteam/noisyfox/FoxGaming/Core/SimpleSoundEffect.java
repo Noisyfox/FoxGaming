@@ -79,6 +79,20 @@ public final class SimpleSoundEffect {
 			}
 		}
 	}
+	
+	/**
+	 * Call when game is paused
+	 */
+	public static void onPause() {
+		soundPool.autoPause();
+	}
+
+	/**
+	 * Call when game is resumed
+	 */
+	public static void onResume() {
+		soundPool.autoResume();
+	}
 
 	public static SimpleSoundEffect getInstance() {
 		return simpleSoundEffect;

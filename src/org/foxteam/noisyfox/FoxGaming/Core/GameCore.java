@@ -1,5 +1,5 @@
 /**
- * FileName:     Main.java
+ * FileName:     GameCore.java
  * @Description: TODO
  * All rights Reserved, Designed By Noisyfox
  * Copyright:    Copyright(C) 2012
@@ -22,7 +22,7 @@ import android.media.AudioManager;
 import android.view.KeyEvent;
 
 /**
- * @ClassName: Main
+ * @ClassName: GameCore
  * @Description: TODO
  * @author: Noisyfox
  * @date: 2012-6-19 下午8:16:28
@@ -41,10 +41,10 @@ public final class GameCore {
 		if (inited) {
 			throw new RuntimeException();
 		}
-		
+
 		GameCore.mainActivity = mainActivity;
 		initializeCore();
-		
+
 		inited = true;
 	}
 
@@ -66,19 +66,23 @@ public final class GameCore {
 	}
 
 	public void gameStart() {
-		thread_Gaming.start();
+		thread_Gaming.gameStart();
 	}
 
 	public void gameEnd() {
 		thread_Gaming.gameEnd();
-		while (thread_Gaming.isAlive()) {// 等待游戏线程结束
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	}
+
+	/*
+	 * 需要手动在Activity的onPause里调用，否则游戏不会自动暂停
+	 */
+	public void gamePause() {
+		thread_Gaming.gamePause();
+	}
+
+	// 需要手动在Activity的onResume里调用，否则游戏不会自动恢复
+	public void gameResume() {
+		thread_Gaming.gameResume();
 	}
 
 	public GameView getGameView() {
