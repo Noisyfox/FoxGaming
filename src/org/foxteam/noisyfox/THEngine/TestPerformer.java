@@ -43,6 +43,7 @@ public class TestPerformer extends Performer {
 	int y3 = 0;
 
 	private int soundId;
+	private int bgmId;
 
 	private EventsListener eventsListener = new EventsListener() {
 
@@ -50,6 +51,9 @@ public class TestPerformer extends Performer {
 		public void onCreate(Performer performer) {
 			soundId = SimpleSoundEffect
 					.loadSoundEffect(org.foxteam.noisyfox.THEngine.R.raw.test_soundeffect);
+			bgmId = SimpleBGM
+					.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
+			SimpleBGM.play(bgmId, true);
 		}
 
 		@Override
@@ -90,9 +94,9 @@ public class TestPerformer extends Performer {
 	public TestPerformer() {
 		this.setEventsListener(eventsListener);
 		s = new Sprite();
-		Bitmap b = BitmapFactory
-				.decodeResource(GameCore.getMainContext().getResources(),
-						org.foxteam.noisyfox.THEngine.R.drawable.button);
+		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+				.getResources(),
+				org.foxteam.noisyfox.THEngine.R.drawable.button);
 		s.loadFromBitmap(b);
 		s.setOffset(s.getWidth() / 2, 0);
 		sc = new SpriteConvertor();
