@@ -18,6 +18,7 @@ package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.view.KeyEvent;
 
 /**
@@ -45,7 +46,9 @@ public final class GameCore {
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
-
+		
+		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		
 		// 屏蔽系统对 返回键 的响应
 		GamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
 	}
