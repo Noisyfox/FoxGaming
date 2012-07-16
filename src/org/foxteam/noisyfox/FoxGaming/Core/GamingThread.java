@@ -89,7 +89,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		}
 	}
 
-	public GamingThread(SurfaceHolder surfaceHolder) {
+	protected GamingThread(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
 	}
 

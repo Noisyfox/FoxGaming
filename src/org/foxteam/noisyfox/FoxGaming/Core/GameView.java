@@ -34,7 +34,7 @@ public class GameView extends SurfaceView {
 	 * @param:          @param context
 	 * @throws
 	 */
-	public GameView(Context context) {
+	protected GameView(Context context) {
 		super(context);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
