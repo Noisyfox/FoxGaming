@@ -83,13 +83,13 @@ public class TestPerformer extends Performer {
 		}
 	};
 
-	MySprite s;
+	Sprite s;
 	SpriteConvertor sc;
 	GraphicCollision g1, g2, g3;
 
 	public TestPerformer() {
 		this.setEventsListener(eventsListener);
-		s = new MySprite();
+		s = new Sprite();
 		Bitmap b = BitmapFactory
 				.decodeResource(GameCore.getMainContext().getResources(),
 						org.foxteam.noisyfox.THEngine.R.drawable.button);

@@ -65,7 +65,7 @@ public class Performer {
 	protected void onDraw(Performer performer) {
 		if (sprite != null) {
 			Canvas c = performer.getCanvas();
-			sprite.paint(c, x, y);
+			sprite.draw(c, x, y);
 		}
 	}
 
