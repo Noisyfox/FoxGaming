@@ -49,7 +49,7 @@ public class TestPerformer extends Performer {
 		@Override
 		public void onCreate(Performer performer) {
 			soundId = SimpleSoundEffect
-					.loadSoundEffect(org.foxteam.noiyfox.THEngine.R.raw.test_soundeffect);
+					.loadSoundEffect(org.foxteam.noisyfox.THEngine.R.raw.test_soundeffect);
 		}
 
 		@Override
@@ -92,7 +92,7 @@ public class TestPerformer extends Performer {
 		s = new MySprite();
 		Bitmap b = BitmapFactory
 				.decodeResource(GameCore.getMainContext().getResources(),
-						org.foxteam.noiyfox.THEngine.R.drawable.button);
+						org.foxteam.noisyfox.THEngine.R.drawable.button);
 		s.loadFromBitmap(b);
 		s.setOffset(s.getWidth() / 2, 0);
 		sc = new SpriteConvertor();
