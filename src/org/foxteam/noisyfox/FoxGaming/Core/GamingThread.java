@@ -147,14 +147,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 								currentStage.broadcastEvent(
 										EventsListener.EVENT_ONTOUCHPRESS,
 										e.whichFinger, e.x, e.y);
-								currentStage.broadcastEvent(
-										EventsListener.EVENT_ONTOUCH,
-										e.whichFinger, e.x, e.y);
-								break;
-							case MotionEvent.ACTION_MOVE:
-								currentStage.broadcastEvent(
-										EventsListener.EVENT_ONTOUCH,
-										e.whichFinger, e.x, e.y);
 								break;
 							case MotionEvent.ACTION_UP:
 								currentStage.broadcastEvent(
@@ -164,6 +156,10 @@ public class GamingThread extends Thread implements OnTouchListener,
 							default:
 							}
 						}
+					}
+					for (Finger f : registedFingers) {
+						currentStage.broadcastEvent(
+								EventsListener.EVENT_ONTOUCH, f.id, f.x, f.y);
 					}
 					// 处理按键事件队列并广播EVENT_ONKEY*事件
 					synchronized (queueKeyEvent) {
@@ -310,6 +306,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 				if (!registed) {
 					Finger f = new Finger();
 					f.id = actionID;
+					f.x = (int) event.getX(fingerIndex);
+					f.y = (int) event.getY(fingerIndex);
 					registedFingers.add(f);
 
 					for (int i = 0; i < listTouchEvent.size();) {
@@ -317,9 +315,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 						if (e.whichFinger == actionID) {
 							eventExist = true;
 							if (e.event == MotionEvent.ACTION_DOWN) {
-								e.x = (int) event.getX(fingerIndex);
-								e.y = (int) event.getY(fingerIndex);
-							} else if (e.event == MotionEvent.ACTION_MOVE) {
 								e.x = (int) event.getX(fingerIndex);
 								e.y = (int) event.getY(fingerIndex);
 							} else if (e.event == MotionEvent.ACTION_UP) {
@@ -343,25 +338,12 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 			case MotionEvent.ACTION_MOVE:
 				for (Finger f : registedFingers) {
-					eventExist = false;
 					for (int i = 0; i < fingerCount; i++) {
 						if (event.getPointerId(i) == f.id) {
 							fingerIndex = i;
+							f.x = (int) event.getX(fingerIndex);
+							f.y = (int) event.getY(fingerIndex);
 						}
-					}
-					for (TouchEvent e : listTouchEvent) {
-						if (f.id == e.whichFinger) {
-							e.x = (int) event.getX(fingerIndex);
-							e.y = (int) event.getY(fingerIndex);
-							eventExist = true;
-						}
-					}
-					if (!eventExist) {
-						TouchEvent ne = new TouchEvent(f.id,
-								MotionEvent.ACTION_MOVE,
-								(int) event.getX(fingerIndex),
-								(int) event.getY(fingerIndex));
-						listTouchEvent.add(ne);
 					}
 				}
 				break;
@@ -375,13 +357,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 							eventExist = true;
 							if (e.event == MotionEvent.ACTION_DOWN) {
 								listTouchEvent.remove(i);
-							} else if (e.event == MotionEvent.ACTION_MOVE) {
-								TouchEvent ne = new TouchEvent(actionID,
-										MotionEvent.ACTION_UP,
-										(int) event.getX(fingerIndex),
-										(int) event.getY(fingerIndex));
-								listTouchEvent.remove(i);
-								listTouchEvent.add(ne);
 							} else if (e.event == MotionEvent.ACTION_UP) {
 								e.x = (int) event.getX(fingerIndex);
 								e.y = (int) event.getY(fingerIndex);
@@ -409,6 +384,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	private class Finger {
 		int id = 0;
+		int x = 0;
+		int y = 0;
 	}
 
 	private class TouchEvent {
