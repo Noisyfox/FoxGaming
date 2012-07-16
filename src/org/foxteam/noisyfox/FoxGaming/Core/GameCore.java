@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.KeyEvent;
 
 /**
@@ -26,10 +27,10 @@ import android.view.KeyEvent;
  * @date: 2012-6-19 下午8:16:28
  * 
  */
-public class GameCore {
+public final class GameCore {
 
 	private GameView gameView;
-	public static Activity mainActivity;
+	private static Activity mainActivity;
 
 	private GamingThread thread_Gaming = null;
 
@@ -71,6 +72,14 @@ public class GameCore {
 
 	public GameView getGameView() {
 		return gameView;
+	}
+
+	public static Context getMainContext() {
+		return mainActivity;
+	}
+
+	public static Activity getMainActivity() {
+		return mainActivity;
 	}
 
 }

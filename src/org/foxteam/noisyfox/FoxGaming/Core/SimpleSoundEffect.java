@@ -16,10 +16,7 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import android.media.AudioManager;
 import android.media.SoundPool;
 
@@ -30,16 +27,14 @@ import android.media.SoundPool;
  * @date: 2012-7-9 下午4:56:49
  * 
  */
-public final class SimpleSoundEffect implements
-		SoundPool.OnLoadCompleteListener {
+public final class SimpleSoundEffect {
 
-	public static int AUDIO_SOUNDPOOL_MAXSTREAMS = 10;
-	public static int AUDIO_SOUNDPOOL_QUALITY = 90;
+	public static final int AUDIO_SOUNDPOOL_MAXSTREAMS = 10;
+	public static final int AUDIO_SOUNDPOOL_QUALITY = 90;
 
 	private static SimpleSoundEffect simpleSoundEffect = new SimpleSoundEffect();
 	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
-	private static List<Integer> soundLoading = new ArrayList<Integer>();
-	private static SoundPool soundPool = null;
+	private static SoundPool soundPool;
 	private static int volume = 100;
 
 	private static int lastAudioId = -1;
@@ -47,28 +42,13 @@ public final class SimpleSoundEffect implements
 	private SimpleSoundEffect() {
 		soundPool = new SoundPool(AUDIO_SOUNDPOOL_MAXSTREAMS,
 				AudioManager.STREAM_MUSIC, AUDIO_SOUNDPOOL_QUALITY);
-		soundPool.setOnLoadCompleteListener(this);
 	}
 
 	public static int loadSoundEffect(int resId) {
 		lastAudioId++;
-		int soundId = soundPool.load(GameCore.mainActivity, resId, 1);
-		// if (soundId)
-		soundLoading.add(soundId);
+		int soundId = soundPool.load(GameCore.getMainContext(), resId, 1);
 		sounds.put(lastAudioId, soundId);
-		while (soundLoading.contains(soundId)) {
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		return lastAudioId;
-	}
-
-	@Override
-	public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-		soundLoading.remove((Integer) sampleId);
 	}
 
 	public static void play(int soundId) {
