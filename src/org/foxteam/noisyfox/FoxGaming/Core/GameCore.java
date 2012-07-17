@@ -30,7 +30,7 @@ import android.view.KeyEvent;
  */
 public final class GameCore {
 
-	private GameView gameView;
+	private static GameView gameView;
 	private static Activity mainActivity;
 
 	private GamingThread thread_Gaming = null;
@@ -82,7 +82,7 @@ public final class GameCore {
 		thread_Gaming.gameResume();
 	}
 
-	public GameView getGameView() {
+	public static GameView getGameView() {
 		return gameView;
 	}
 

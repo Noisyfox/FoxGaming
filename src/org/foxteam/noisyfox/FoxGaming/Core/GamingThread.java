@@ -39,6 +39,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 		OnKeyListener, SurfaceHolder.Callback {
 
 	protected static Canvas canvas = null;
+	protected static int width = 0;
+	protected static int height = 0;
 
 	private static final int STATEFLAG_WAITING = 0;// 线程刚被创建，尚未开始运作
 	private static final int STATEFLAG_STOPING = 1;
@@ -534,8 +536,10 @@ public class GamingThread extends Thread implements OnTouchListener,
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		// TODO Auto-generated method stub
-
+		if (width != 0)
+			GamingThread.width = width;
+		if (height != 0)
+			GamingThread.height = height;
 	}
 
 	@Override

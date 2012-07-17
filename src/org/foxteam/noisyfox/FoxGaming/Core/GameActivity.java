@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
 	private void prepareEngine() {
 		Debug.print("prepareEngine()");
 		gameEngine = new GameCore(this);
-		setContentView(gameEngine.getGameView());
+		setContentView(GameCore.getGameView());
 	}
 
 	/**
