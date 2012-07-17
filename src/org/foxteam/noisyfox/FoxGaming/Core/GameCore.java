@@ -63,6 +63,7 @@ public final class GameCore {
 
 	private void setupGameThread() {
 		thread_Gaming = new GamingThread(gameView.getHolder());
+		thread_Gaming.start();
 	}
 
 	public void gameStart() {
@@ -73,14 +74,10 @@ public final class GameCore {
 		thread_Gaming.gameEnd();
 	}
 
-	/*
-	 * 需要手动在Activity的onPause里调用，否则游戏不会自动暂停
-	 */
 	public void gamePause() {
 		thread_Gaming.gamePause();
 	}
 
-	// 需要手动在Activity的onResume里调用，否则游戏不会自动恢复
 	public void gameResume() {
 		thread_Gaming.gameResume();
 	}

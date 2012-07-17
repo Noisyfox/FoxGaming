@@ -40,6 +40,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	protected static Canvas canvas = null;
 
+	private static final int STATEFLAG_WAITING = 0;// 线程刚被创建，尚未开始运作
 	private static final int STATEFLAG_STOPING = 1;
 	private static final int STATEFLAG_STOPED = 2;
 	private static final int STATEFLAG_RUNNING = 3;
@@ -99,10 +100,20 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	protected GamingThread(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
+		currentState = STATEFLAG_WAITING;
 	}
 
 	@Override
 	public void run() {
+		while (currentState == STATEFLAG_WAITING) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		SPS_startTime = System.currentTimeMillis();
 
 		// 游戏主循环
@@ -482,12 +493,12 @@ public class GamingThread extends Thread implements OnTouchListener,
 	}
 
 	protected final void gameStart() {
-		if (currentState != STATEFLAG_STOPED) {
+		if (currentState != STATEFLAG_STOPED
+				&& currentState != STATEFLAG_WAITING) {
 			return;
 		}
 
 		currentState = STATEFLAG_RUNNING;
-		this.start();
 	}
 
 	protected final void gameEnd() {
