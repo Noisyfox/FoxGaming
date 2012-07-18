@@ -160,6 +160,14 @@ public class Performer {
 		frozen = false;
 	}
 
+	public final void bindSprite(Sprite sprite) {
+		this.sprite = sprite;
+	}
+
+	public final Sprite getSprite() {
+		return sprite;
+	}
+
 	public final boolean isVisible() {
 		return visible;
 	}

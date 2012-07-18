@@ -85,6 +85,14 @@ public class GamingThread extends Thread implements OnTouchListener,
 		return registedFingers.size();
 	}
 
+	public static int getScreenWidth() {
+		return width;
+	}
+
+	public static int getScreenHeight() {
+		return height;
+	}
+
 	// 屏蔽系统对指定按键的响应，比如返回键
 	public static void blockKeyFromSystem(int keyCode, boolean unblock) {
 		if (!unblock) {

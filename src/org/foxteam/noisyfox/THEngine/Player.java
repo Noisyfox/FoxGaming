@@ -17,6 +17,10 @@
 package org.foxteam.noisyfox.THEngine;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
+import org.foxteam.noisyfox.FoxGaming.G2D.*;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /**
  * @ClassName: Player
@@ -27,12 +31,27 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
  */
 public class Player extends Performer {
 
+	private Point fingerStart = null;
+	private Point fingerStartPerformer = null;
+
 	private EventsListener eventsListener = new EventsListener() {
 
 		@Override
 		public void onCreate(Performer performer) {
-			// TODO Auto-generated method stub
-			super.onCreate(performer);
+			Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+					.getResources(),
+					org.foxteam.noisyfox.THEngine.R.drawable.player);
+
+			Sprite playerSprite = new Sprite();
+			playerSprite.loadFromBitmap(b);
+			playerSprite.setOffset(playerSprite.getWidth() / 2,
+					playerSprite.getHeight() / 2);
+
+			performer.bindSprite(playerSprite);
+			performer.setPosition(GamingThread.getScreenWidth() / 2,
+					GamingThread.getScreenHeight() - playerSprite.getHeight()
+							/ 2);
+
 		}
 
 		@Override
@@ -43,23 +62,22 @@ public class Player extends Performer {
 
 		@Override
 		public void onTouch(Performer performer, int whichfinger, int x, int y) {
-			// TODO Auto-generated method stub
-			super.onTouch(performer, whichfinger, x, y);
+			performer.setPosition(
+					fingerStartPerformer.getX() + x - fingerStart.getX(),
+					fingerStartPerformer.getY() + y - fingerStart.getY());
 		}
 
 		@Override
 		public void onTouchPress(Performer performer, int whichfinger, int x,
 				int y) {
-			// TODO Auto-generated method stub
-			super.onTouchPress(performer, whichfinger, x, y);
+			if (whichfinger == 0) {
+				fingerStart = new Point(x, y);
+				fingerStartPerformer = new Point(performer.getX(),
+						performer.getY());
+			}
 		}
 
 	};
-
-	@Override
-	protected void onDraw(Performer performer) {
-
-	}
 
 	public Player() {
 		this.setEventsListener(eventsListener);

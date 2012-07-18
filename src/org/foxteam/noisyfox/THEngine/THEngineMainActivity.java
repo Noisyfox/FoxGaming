@@ -13,6 +13,9 @@ public class THEngineMainActivity extends GameActivity {
 		Stage s = new Stage();
 		Performer p = new SystemControl();
 		s.employPerformer(p);
+		p = new Player();
+		s.employPerformer(p);
+		
 		Background bkg = new Background();
 
 		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
