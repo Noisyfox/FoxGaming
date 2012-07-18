@@ -104,8 +104,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 		this.surfaceHolder = surfaceHolder;
 		currentState = STATEFLAG_WAITING;
 	}
-	
-	protected void setSurfaceHolder(SurfaceHolder surfaceHolder){
+
+	protected void setSurfaceHolder(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
 	}
 
@@ -182,6 +182,9 @@ public class GamingThread extends Thread implements OnTouchListener,
 		if (currentStage != null && canvas != null) {
 			// 先准备stage
 			if (currentStage != lastStage) {// stage发生变化
+				// 全局变量应用
+				Stage.speed = currentStage.getStageSpeed();
+
 				if (lastStage != null) {// 不是第一次进游戏，处理上一个stage
 					lastStage
 							.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);

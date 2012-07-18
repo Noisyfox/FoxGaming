@@ -36,7 +36,7 @@ public class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
 	private static int currentStage = -1;// 当前活动的stage
-	private static double speed = 30;// 当前活动的stage的speed
+	protected static double speed = 30;// 当前活动的stage的speed
 
 	private List<Performer> performers = null;
 	private double stageSpeed = 30;
