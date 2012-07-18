@@ -11,19 +11,19 @@ public class THEngineMainActivity extends GameActivity {
 	@Override
 	public void onEngineReady() {
 		Stage s = new Stage();
-		Performer p = new TestPerformer();
+		Performer p = new SystemControl();
 		s.employPerformer(p);
 		Background bkg = new Background();
 
 		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
 				.getResources(),
-				org.foxteam.noisyfox.THEngine.R.drawable.background_1);
+				org.foxteam.noisyfox.THEngine.R.drawable.background);
 		bkg.loadFromBitmap(b);
 		bkg.setAdaptation(Background.ADAPTATION_SMART);
-		bkg.setSpeed(1, 0);
-		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_RIGHT_BOTTOM);
+		bkg.setSpeed(0, 1);
+		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
 		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_REPEATING);
-		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_MAXUSAGE);
+		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_NONE);
 		s.setBackground(bkg);
 	}
 
