@@ -38,14 +38,14 @@ public final class GameCore {
 	private static boolean inited = false;
 
 	public GameCore(Activity mainActivity) {
-		if (inited) {
-			throw new RuntimeException();
-		}
-
 		GameCore.mainActivity = mainActivity;
-		initializeCore();
+		if (inited) {
+			//onActivityRecreated();
+		} else {
+			initializeCore();
 
-		inited = true;
+			inited = true;
+		}
 	}
 
 	private void initializeCore() {
@@ -59,6 +59,17 @@ public final class GameCore {
 
 		// 屏蔽系统对 返回键 的响应
 		GamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
+	}
+
+	protected void onActivityRecreated() {
+		gameView = new GameView(mainActivity);
+		thread_Gaming.setSurfaceHolder(gameView.getHolder());
+
+		gameView.getHolder().addCallback(thread_Gaming);
+		gameView.setOnTouchListener(thread_Gaming);
+		gameView.setOnKeyListener(thread_Gaming);
+		
+		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
 	private void setupGameThread() {

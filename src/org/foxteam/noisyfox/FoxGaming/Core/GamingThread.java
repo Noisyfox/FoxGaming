@@ -104,6 +104,10 @@ public class GamingThread extends Thread implements OnTouchListener,
 		this.surfaceHolder = surfaceHolder;
 		currentState = STATEFLAG_WAITING;
 	}
+	
+	protected void setSurfaceHolder(SurfaceHolder surfaceHolder){
+		this.surfaceHolder = surfaceHolder;
+	}
 
 	@Override
 	public void run() {

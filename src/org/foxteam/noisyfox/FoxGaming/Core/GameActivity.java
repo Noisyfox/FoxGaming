@@ -93,23 +93,24 @@ public class GameActivity extends Activity {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Debug.print("onCreate()");
 		if (activityCreated) {
-			Debug.error("GameActivity already created");
-			finish();
-			return;
+			Debug.print("GameActivity already been created");
+			gameEngine.onActivityRecreated();
+			setContentView(GameCore.getGameView());
+		} else {
+			onCreate();
+
+			prepareEngine();
+			onEngineReady();
+
+			Debug.print("Game start!");
+			gameEngine.gameStart();
+
+			activityCreated = true;
 		}
-		onCreate();
-
-		prepareEngine();
-		onEngineReady();
-
-		Debug.print("Game start!");
-		gameEngine.gameStart();
-
-		activityCreated = true;
 	}
 
 	@Override
