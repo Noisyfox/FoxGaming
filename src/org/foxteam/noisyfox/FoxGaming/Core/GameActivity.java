@@ -17,7 +17,9 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 /**
  * @ClassName: GameActivity
@@ -28,6 +30,10 @@ import android.os.Bundle;
  */
 public class GameActivity extends Activity {
 	private static boolean activityCreated = false;// 只允许有一个GameActivity
+	private static boolean forcePortrait = false;
+	private static boolean forceLandscape = false;
+	private static boolean forceFullscreen = false;
+
 	protected static GameCore gameEngine = null;
 
 	/* ******************************************************** */
@@ -54,6 +60,46 @@ public class GameActivity extends Activity {
 
 	/* ******************************************************** */
 	// Normal function
+	/**
+	 * Forces the engine to stick to a portrait screen.<br>
+	 * This will be applied each time the main Activity be created( or
+	 * recreated)
+	 */
+	public void forcePortrait() {
+		forcePortrait = true;
+		forceLandscape = false;
+	}
+
+	/**
+	 * Forces the engine to stick to a landscape screen<br>
+	 * This will be applied each time the main Activity be created( or
+	 * recreated)
+	 */
+	public void forceLandscape() {
+		forcePortrait = false;
+		forceLandscape = true;
+	}
+
+	/**
+	 * @return TRUE if the engine is being forced into portrait mode
+	 */
+	public boolean isForcePortrait() {
+		return forcePortrait;
+	}
+
+	/**
+	 * @return TRUE if the engine is being forced into landscape mode
+	 */
+	public boolean isForceLandscape() {
+		return forceLandscape;
+	}
+
+	/**
+	 * Forces the Activity to be shown fullscreen ie, no titlebar
+	 */
+	public void forceFullscreen() {
+		forceFullscreen = true;
+	}
 
 	/* ******************************************************** */
 	// Override-able function
@@ -111,6 +157,21 @@ public class GameActivity extends Activity {
 
 			activityCreated = true;
 		}
+
+		// 应用参数
+		if (forceFullscreen) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			getWindow().clearFlags(
+					WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+			getWindow().requestFeature(android.view.Window.FEATURE_NO_TITLE);
+		}
+		if (forceLandscape) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
+		if (forcePortrait) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+
 	}
 
 	@Override
