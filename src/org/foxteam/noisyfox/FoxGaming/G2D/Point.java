@@ -24,6 +24,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
  * 
  */
 public class Point {
+
 	int x = 0;
 	int y = 0;
 
@@ -55,4 +56,7 @@ public class Point {
 				* (y - p2.getY());
 	}
 
+	public boolean equals(Point p) {
+		return p.x == x && p.y == y;
+	}
 }

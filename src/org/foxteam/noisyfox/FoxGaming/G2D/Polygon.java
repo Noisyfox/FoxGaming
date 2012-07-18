@@ -36,10 +36,9 @@ public class Polygon {
 		}
 
 		// 判断有无点重合
-		for (int i = 0; i < vertex.length; i++) {
+		for (int i = 0; i < vertex.length - 1; i++) {
 			for (int j = i + 1; j < vertex.length; j++) {
-				if (vertex[i].getX() == vertex[j].getX()
-						&& vertex[i].getY() == vertex[j].getY()) {
+				if (vertex[i].equals(vertex[j])) {
 					throw new IllegalArgumentException();
 				}
 			}

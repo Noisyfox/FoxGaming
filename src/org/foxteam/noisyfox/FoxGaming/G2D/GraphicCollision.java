@@ -81,7 +81,11 @@ public class GraphicCollision {
 			v[i] = new Point(vertex[i][0], vertex[i][1]);
 		}
 
-		Polygon p = new Polygon(v, fill);
+		addPolygon(v, fill);
+	}
+
+	public final void addPolygon(Point[] vertex, boolean fill) {
+		Polygon p = new Polygon(vertex, fill);
 		polygons.add(p);
 	}
 
