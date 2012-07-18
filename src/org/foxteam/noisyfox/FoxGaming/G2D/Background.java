@@ -19,7 +19,6 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -90,7 +89,7 @@ public class Background {
 	private float speed_y = 0;
 
 	private int adaptation = ADAPTATION_PLACE;
-	private int option_alignment = ADAPTATION_OPTION_ALIGNMENT_LEFT_TOP;
+	private int option_alignment = ADAPTATION_OPTION_ALIGNMENT_ANCHORPOINT;
 	private int option_draw = ADAPTATION_OPTION_DRAW_SINGLE;
 	private int option_scale = ADAPTATION_OPTION_SCALE_NONE;
 
@@ -113,7 +112,7 @@ public class Background {
 
 		this.adaptation = adaptation;
 
-		switch (adaptation) {
+		switch (this.adaptation) {
 		case ADAPTATION_PLACE:
 			setSpeed(0, 0);
 			xOffset = 0;
@@ -145,7 +144,7 @@ public class Background {
 
 	// 设置对齐方式
 	public void setAlignment(int alignment) {
-		if (alignment < 1 || alignment > 12) {
+		if (alignment < 1 || alignment > 16) {
 			throw new IllegalArgumentException();
 		}
 
@@ -189,18 +188,45 @@ public class Background {
 			float xScaleFull = 1;// x轴方向如果要填充满需要的拉伸大小
 			float yScaleFull = 1;// y轴方向如果要填充满需要的拉伸大小
 			if (option_alignment == ADAPTATION_OPTION_ALIGNMENT_ANCHORPOINT) {
-				xScaleFull = Math
-						.max((float) anchorPointScreen.getX()
-								/ (float) anchorPointBitmap.getX(),
-								(float) (width - anchorPointScreen.getX())
-										/ (float) (sourceImage.getWidth() - anchorPointBitmap
-												.getX()));
-				yScaleFull = Math
-						.max((float) anchorPointScreen.getY()
-								/ (float) anchorPointBitmap.getY(),
-								(float) (height - anchorPointScreen.getY())
-										/ (float) (sourceImage.getHeight() - anchorPointBitmap
-												.getY()));
+				if (anchorPointBitmap.getX() == 0
+						&& sourceImage.getWidth() - anchorPointBitmap.getX() == 0) {
+
+				} else if (anchorPointBitmap.getX() == 0) {
+					xScaleFull = (float) (width - anchorPointScreen.getX())
+							/ (float) (sourceImage.getWidth() - anchorPointBitmap
+									.getX());
+				} else if (sourceImage.getWidth() - anchorPointBitmap.getX() == 0) {
+					xScaleFull = (float) anchorPointScreen.getX()
+							/ (float) anchorPointBitmap.getX();
+				} else {
+					xScaleFull = Math
+							.max((float) anchorPointScreen.getX()
+									/ (float) anchorPointBitmap.getX(),
+									(float) (width - anchorPointScreen.getX())
+											/ (float) (sourceImage.getWidth() - anchorPointBitmap
+													.getX()));
+				}
+
+				if (anchorPointBitmap.getY() == 0
+						&& sourceImage.getHeight() - anchorPointBitmap.getY() == 0) {
+
+				} else if (anchorPointBitmap.getY() == 0) {
+					yScaleFull = (float) (height - anchorPointScreen.getY())
+							/ (float) (sourceImage.getHeight() - anchorPointBitmap
+									.getY());
+				} else if (sourceImage.getHeight() - anchorPointBitmap.getY() == 0) {
+					yScaleFull = (float) anchorPointScreen.getY()
+							/ (float) anchorPointBitmap.getY();
+				} else {
+					yScaleFull = Math
+							.max((float) anchorPointScreen.getY()
+									/ (float) anchorPointBitmap.getY(),
+									(float) (height - anchorPointScreen.getY())
+											/ (float) (sourceImage.getHeight() - anchorPointBitmap
+													.getY()));
+
+				}
+
 			} else {
 				xScaleFull = (float) width / (float) sourceImage.getWidth();
 				yScaleFull = (float) height / (float) sourceImage.getHeight();
