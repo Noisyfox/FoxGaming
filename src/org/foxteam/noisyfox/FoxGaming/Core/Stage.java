@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.foxteam.noisyfox.FoxGaming.G2D.Background;
+
 import android.graphics.Color;
 
 /**
@@ -39,6 +41,7 @@ public class Stage {
 	private List<Performer> performers = null;
 	private double stageSpeed = 30;
 	private int backgroundColor = Color.WHITE;
+	private Background background = null;
 	private int stageIndex = -1;
 	private boolean available = false;
 
@@ -97,6 +100,13 @@ public class Stage {
 	 */
 	public static double getSpeed() {
 		return speed;
+	}
+
+	/**
+	 * 静态函数 获取当前活动的stage的background<br>
+	 */
+	public static Background getCurrentBackground() {
+		return index2Stage(currentStage).getBackground();
 	}
 
 	private final void sortWithDepth() {
@@ -162,6 +172,16 @@ public class Stage {
 		return backgroundColor;
 	}
 
+	public final void setBackground(Background background) {
+		ensureAvailable();
+		this.background = background;
+	}
+
+	public final Background getBackground() {
+		ensureAvailable();
+		return background;
+	}
+
 	public final int getStageIndex() {
 		ensureAvailable();
 		return stageIndex;
@@ -207,7 +227,7 @@ public class Stage {
 		index2Stage(stageIndex).closeStage();
 	}
 
-	//处理定时器
+	// 处理定时器
 	protected final void processAlarm() {
 		ensureAvailable();
 		synchronized (performers) {

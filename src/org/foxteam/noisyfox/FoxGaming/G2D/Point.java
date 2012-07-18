@@ -28,6 +28,10 @@ public class Point {
 	int x = 0;
 	int y = 0;
 
+	public Point() {
+
+	}
+
 	public Point(int x, int y) {
 		setPosition(x, y);
 	}
