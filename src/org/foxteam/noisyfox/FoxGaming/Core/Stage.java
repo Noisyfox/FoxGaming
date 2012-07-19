@@ -113,6 +113,13 @@ public class Stage {
 		return index2Stage(currentStage).getBackground();
 	}
 
+	/**
+	 * 静态函数 获取当前活动的stage的中的Performer数量<br>
+	 */
+	public static int getPerformerCount() {
+		return index2Stage(currentStage).performers.size();
+	}
+
 	protected final void sortWithDepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
