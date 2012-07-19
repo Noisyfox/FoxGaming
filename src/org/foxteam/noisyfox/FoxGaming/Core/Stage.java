@@ -36,10 +36,10 @@ public class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
 	private static int currentStage = -1;// 当前活动的stage
-	protected static double speed = 30;// 当前活动的stage的speed
+	protected static float speed = 30f;// 当前活动的stage的speed
 
 	private List<Performer> performers = null;
-	private double stageSpeed = 30;
+	private float stageSpeed = 30f;
 	private int backgroundColor = Color.WHITE;
 	private Background background = null;
 	private int stageIndex = -1;
@@ -98,7 +98,7 @@ public class Stage {
 	/**
 	 * 静态函数 获取当前活动的stage的speed<br>
 	 */
-	public static double getSpeed() {
+	public static float getSpeed() {
 		return speed;
 	}
 
@@ -152,12 +152,12 @@ public class Stage {
 		}
 	}
 
-	public final void setStageSpeed(double stageSpeed) {
+	public final void setStageSpeed(float stageSpeed) {
 		ensureAvailable();
 		this.stageSpeed = stageSpeed;
 	}
 
-	public final double getStageSpeed() {
+	public final float getStageSpeed() {
 		ensureAvailable();
 		return stageSpeed;
 	}

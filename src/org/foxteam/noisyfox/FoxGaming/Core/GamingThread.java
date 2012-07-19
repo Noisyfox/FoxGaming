@@ -50,7 +50,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private static final int STATEFLAG_PAUSED = 5;
 	private static final int STATEFLAG_RESUME = 6;
 
-	private static double SPS = 1;// step per second,每秒循环的次数，也就是帧速
+	private static float SPS = 1f;// step per second,每秒循环的次数，也就是帧速
 	private static long allStepCount = 0;
 	private static long gameStartTime = 0;
 	private static List<Finger> registedFingers = new ArrayList<Finger>();
@@ -69,7 +69,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private long SPS_startTime;
 	private int currentState = STATEFLAG_STOPED;
 
-	public static double getSPS() {
+	public static float getSPS() {
 		return SPS;
 	}
 
@@ -285,11 +285,11 @@ public class GamingThread extends Thread implements OnTouchListener,
 		allStepCount++;
 		long frameFinishTime = System.currentTimeMillis();
 		if (frameFinishTime - SPS_startTime >= SPS_COUNT_INTERVAL_MILLIS) {
-			SPS = stepCount / ((frameFinishTime - SPS_startTime) / 1000.0);
+			SPS = stepCount / ((frameFinishTime - SPS_startTime) / 1000.0f);
 			stepCount = 0;
 			SPS_startTime = frameFinishTime;
 		}
-		double speed = Stage.getSpeed();
+		float speed = Stage.getSpeed();
 		long sleepTime = (long) (1.0 / speed * 1000.0)
 				- (frameFinishTime - frameStartTime);
 		try {

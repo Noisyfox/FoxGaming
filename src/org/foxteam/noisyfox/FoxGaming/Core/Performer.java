@@ -36,7 +36,7 @@ public class Performer {
 
 	private List<Alarm> alarms;
 	private boolean visible = true;
-	private int x = 0, y = 0;
+	private float x = 0, y = 0;
 	private int depth = 0;
 	protected boolean frozen = false;
 	private Sprite sprite = null;
@@ -65,7 +65,7 @@ public class Performer {
 	protected void onDraw(Performer performer) {
 		if (sprite != null) {
 			Canvas c = performer.getCanvas();
-			sprite.draw(c, x, y);
+			sprite.draw(c, (int) x, (int) y);
 		}
 	}
 
@@ -176,16 +176,16 @@ public class Performer {
 		this.visible = visible;
 	}
 
-	public final void setPosition(int x, int y) {
+	public final void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public final int getX() {
+	public final float getX() {
 		return x;
 	}
 
-	public final int getY() {
+	public final float getY() {
 		return y;
 	}
 
