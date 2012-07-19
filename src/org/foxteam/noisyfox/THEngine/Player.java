@@ -21,9 +21,6 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
 /**
  * @ClassName: Player
@@ -48,8 +45,6 @@ public class Player extends Performer {
 			currentPoint.setPosition((int) performer.getX(),
 					(int) performer.getY());
 
-			Debug.print(currentPoint.squareDistance(targetPoint) + ":"
-					+ moveSpeed * moveSpeed);
 			if ((float) currentPoint.squareDistance(targetPoint) <= moveSpeed
 					* moveSpeed) {
 				performer.setPosition(targetPoint.getX(), targetPoint.getY());
@@ -92,6 +87,9 @@ public class Player extends Performer {
 					(int) performer.getY());
 			currentPoint = new Point((int) performer.getX(),
 					(int) performer.getY());
+
+			performer.setAlarm(0, (int) (Stage.getSpeed() * 0.5f), true);
+			performer.startAlarm(0);
 
 		}
 
@@ -141,22 +139,32 @@ public class Player extends Performer {
 			}
 		}
 
+		@Override
+		public void onTouchRelease(Performer performer, int whichfinger) {
+			if (whichfinger == 0) {
+				targetPoint.setPosition((int) performer.getX(),
+						(int) performer.getY());
+			}
+		}
+
+		@Override
+		public void onAlarm(Performer performer, int whichAlarm) {
+			if (whichAlarm == 0) {
+				PlayerBullet b = new PlayerBullet((int) performer.getX(),
+						(int) performer.getY()
+								- performer.getSprite().getOffsetY());
+				b.setDepth(1);
+			}
+		}
 	};
 
 	public Player() {
 		this.setEventsListener(eventsListener);
-
 	}
 
 	@Override
 	protected void onDraw(Performer performer) {
 		super.onDraw(performer);
-
-		Paint p = new Paint();
-		p.setColor(Color.BLACK);
-		Canvas c = performer.getCanvas();
-		c.drawCircle(targetPoint.getX(), targetPoint.getY(), 3, p);
-
 	}
 
 }

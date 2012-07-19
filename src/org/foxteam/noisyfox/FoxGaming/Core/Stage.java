@@ -44,9 +44,13 @@ public class Stage {
 	private Background background = null;
 	private int stageIndex = -1;
 	private boolean available = false;
+	private List<Performer> employingPerformer = null;
+	private List<Performer> dismissingPerformer = null;
 
 	public Stage() {
 		performers = new ArrayList<Performer>();
+		employingPerformer = new ArrayList<Performer>();
+		dismissingPerformer = new ArrayList<Performer>();
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
@@ -109,7 +113,7 @@ public class Stage {
 		return index2Stage(currentStage).getBackground();
 	}
 
-	private final void sortWithDepth() {
+	protected final void sortWithDepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
 				@Override
@@ -127,19 +131,68 @@ public class Stage {
 		}
 	}
 
+	private static void updateStageIndex() {
+		for (int i = 0; i < stages.size(); i++) {// 重新构建index
+			stages.get(i).stageIndex = i;
+			for (Performer p : stages.get(i).performers) {
+				p.stage = i;
+			}
+		}
+	}
+
 	// 保证该stage不被异常调用
 	private final void ensureAvailable() {
 		if (!available)
 			throw new RuntimeException("无法操作一个已经不存在的stage");
 	}
 
-	public final void employPerformer(Performer performer) {
+	protected final void employPerformer(Performer performer) {
 		ensureAvailable();
-		synchronized (performers) {
-			if (performers.contains(performer))
+		synchronized (employingPerformer) {
+			if (employingPerformer.contains(performer)) {
 				return;
-			performers.add(performer);
-			sortWithDepth();
+			}
+			employingPerformer.add(performer);
+		}
+	}
+
+	protected final void employPerformer() {
+		synchronized (performers) {
+			synchronized (employingPerformer) {
+				for (Performer p : employingPerformer) {
+					if (performers.contains(p))
+						continue;
+					performers.add(p);
+					p.callEvent(EventsListener.EVENT_ONCREATE);
+				}
+				sortWithDepth();
+				employingPerformer.clear();
+			}
+		}
+	}
+
+	protected final void dismissPerformer(Performer performer) {
+		ensureAvailable();
+		synchronized (dismissingPerformer) {
+			if (dismissingPerformer.contains(performer)) {
+				return;
+			}
+			dismissingPerformer.add(performer);
+		}
+	}
+
+	protected final void dismissPerformer() {
+		synchronized (performers) {
+			synchronized (dismissingPerformer) {
+				for (Performer p : dismissingPerformer) {
+					if (!performers.contains(p))
+						continue;
+					performers.remove(p);
+					p.callEvent(EventsListener.EVENT_ONDESTORY);
+				}
+				sortWithDepth();
+				dismissingPerformer.clear();
+			}
 		}
 	}
 
@@ -197,27 +250,25 @@ public class Stage {
 		}
 		stages.remove(this);
 		stages.add(index, this);
-		for (int i = Math.min(index, stageIndex); i <= Math.max(index,
-				stageIndex); i++) {
-			stages.get(i).stageIndex = i;
-		}
+		updateStageIndex();
 	}
 
 	public final void closeStage() {
 		ensureAvailable();
-		available = false;
 		if (index2Stage(currentStage).equals(this)) {
 			throw new IllegalArgumentException("无法移除当前活动的stage");
 		}
-		stages.remove(this);// 移除stage记录
-		for (int i = stageIndex; i < stages.size(); i++) {// 重新构建index
-			stages.get(i).stageIndex = i;
-		}
+
 		// 移除stage中所有performer
 		for (Performer p : performers) {
 			p.dismiss();
 		}
 		performers.clear();
+
+		stages.remove(this);// 移除stage记录
+
+		updateStageIndex();
+		available = false;
 	}
 
 	/**

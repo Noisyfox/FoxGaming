@@ -12,10 +12,10 @@ public class THEngineMainActivity extends GameActivity {
 	public void onEngineReady() {
 		Stage s = new Stage();
 		Performer p = new SystemControl();
-		s.employPerformer(p);
+		p.perform(s.getStageIndex());
 		p = new Player();
-		s.employPerformer(p);
-		
+		p.perform(s.getStageIndex());
+
 		Background bkg = new Background();
 
 		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()

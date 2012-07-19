@@ -200,7 +200,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 					lastStage.broadcastEvent(EventsListener.EVENT_ONDESTORY);
 				}
 				// 所有事件都必须在EVENT_ONCREATE之后
-				currentStage.broadcastEvent(EventsListener.EVENT_ONCREATE);
+				currentStage.employPerformer();
 				// 第一次进游戏，广播EVENT_ONGAMESTART事件
 				if (lastStage == null) {
 					currentStage
@@ -209,6 +209,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 				currentStage.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
 				currentStage.broadcastEvent(EventsListener.EVENT_ONSTAGESTART);
 				lastStage = currentStage;
+			} else {
+				currentStage.employPerformer();
 			}
 			// 处理当前场景的performer
 			// 最先广播EVENT_ONSTEPSTART事件
@@ -271,6 +273,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 			if (currentStage.getBackground() != null)
 				currentStage.getBackground().doAndDraw(canvas, height, width);// 绘制背景
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
+
+			currentStage.dismissPerformer();
 
 			// 最后广播EVENT_ONSTEPEND事件
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);

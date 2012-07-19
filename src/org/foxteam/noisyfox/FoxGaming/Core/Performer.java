@@ -42,6 +42,7 @@ public class Performer {
 	private Sprite sprite = null;
 	protected boolean employed = false;
 	protected boolean performing = false;
+	protected int stage = -1;
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
 	public Performer() {
@@ -50,10 +51,6 @@ public class Performer {
 			Alarm a = new Alarm();
 			alarms.add(a);
 		}
-	}
-
-	public final int getDepth() {
-		return depth;
 	}
 
 	public final void setEventsListener(EventsListener eventsListener) {
@@ -143,13 +140,23 @@ public class Performer {
 	}
 
 	public final void perform(int stage) {
+		if (employed) {
+			Debug.warning("Performer already been employed!");
+		}
+
+		Stage.index2Stage(stage).employPerformer(this);
+
 		employed = true;
+		this.stage = stage;
 	}
 
 	public final void dismiss() {
+		if (!employed) {
+			Debug.warning("Can't dismiss an unemployed performer!");
+		}
 		employed = false;
 		performing = false;
-		callEvent(EventsListener.EVENT_ONDESTORY);
+		Stage.index2Stage(stage).dismissPerformer(this);
 	}
 
 	public final void freezeMe() {
@@ -168,12 +175,23 @@ public class Performer {
 		return sprite;
 	}
 
-	public final boolean isVisible() {
-		return visible;
+	public final void setDepth(int depth) {
+		this.depth = depth;
+		if (employed) {
+			Stage.index2Stage(this.stage).sortWithDepth();
+		}
+	}
+
+	public final int getDepth() {
+		return depth;
 	}
 
 	public final void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public final boolean isVisible() {
+		return visible;
 	}
 
 	public final void setPosition(float x, float y) {

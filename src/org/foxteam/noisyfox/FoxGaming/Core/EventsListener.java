@@ -70,7 +70,7 @@ public class EventsListener {
 	public void onKeyRelease(Performer performer, int keyCode) {
 	}// 按键松开的时刻触发
 
-	public void onAlarm(Performer performer, int timer) {
+	public void onAlarm(Performer performer, int whichAlarm) {
 	}// 定时器事件，在 EVENT_ONSTEPSTART 事件之后触发
 
 	public void onGameStart(Performer performer) {
