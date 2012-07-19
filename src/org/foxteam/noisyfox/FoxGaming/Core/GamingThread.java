@@ -216,7 +216,9 @@ public class GamingThread extends Thread implements OnTouchListener,
 			// 最先广播EVENT_ONSTEPSTART事件
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPSTART);
 			// 处理定时器事件
-			currentStage.processAlarm();
+			currentStage.operateAlarm();
+			// 计算碰撞
+			currentStage.operateCollision();
 
 			// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
 			synchronized (listTouchEvent) {

@@ -44,7 +44,8 @@ public class EventsListener {
 	public final static int EVENT_ONSTEP = 18;
 	public final static int EVENT_ONSTEPSTART = 19;
 	public final static int EVENT_ONSTEPEND = 20;
-	public final static int EVENT_ONUSERDEFINEDEVENT = 21;
+	public final static int EVENT_ONCOLLISIONWITH = 21;
+	public final static int EVENT_ONUSERDEFINEDEVENT = 22;
 
 	public void onCreate(Performer performer) {
 	}// 当一个performer被创建时接收到的第一个事件，优先于其它所有事件
@@ -103,6 +104,9 @@ public class EventsListener {
 
 	public void onStepEnd(Performer performer) {
 	}// 每一个游戏循环最后的一个事件（EVENT_ONUSERDEFINEDEVENT 除外)
+
+	public void onCollisionWith(Performer performer, Performer target) {
+	}// 当与指定类型的 Performer 发生碰撞的时候触发，只有主动请求碰撞检测的 Performer 会接收到该事件
 
 	public void onUserDefinedEvent(Performer performer, int event) {
 	}// 只会在程序中手动调用

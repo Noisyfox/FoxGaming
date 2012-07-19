@@ -38,7 +38,7 @@ public class Stage {
 	private static int currentStage = -1;// 当前活动的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
 
-	private List<Performer> performers = null;
+	protected List<Performer> performers = null;
 	private float stageSpeed = 30f;
 	private int backgroundColor = Color.WHITE;
 	private Background background = null;
@@ -286,11 +286,37 @@ public class Stage {
 	}
 
 	// 处理定时器
-	protected final void processAlarm() {
+	protected final void operateAlarm() {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
 				p.goAlarm();
+			}
+		}
+	}
+
+	protected final void operateCollision() {
+		synchronized (performers) {
+			for (Performer p : performers) {
+				synchronized (p) {
+					
+					if (p.collisionMask != null && !p.frozen) {
+						for (Performer tp : p.requiredCollisionDetection) {
+
+							if (tp.stage == currentStage && !tp.frozen
+									&& tp.collisionMask != null) {
+
+								if (p.collisionMask
+										.isCollisionWith(tp.collisionMask)) {
+
+									p.callEvent(
+											EventsListener.EVENT_ONCOLLISIONWITH,
+											tp);
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}

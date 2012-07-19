@@ -17,9 +17,10 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
 import android.graphics.Canvas;
 
@@ -31,8 +32,7 @@ import android.graphics.Canvas;
  * 
  */
 public class Performer {
-	private EventsListener eventsListener = new EventsListener() {
-	};
+	private EventsListener eventsListener = null;
 
 	private List<Alarm> alarms;
 	private boolean visible = true;
@@ -43,6 +43,9 @@ public class Performer {
 	protected boolean employed = false;
 	protected boolean performing = false;
 	protected int stage = -1;
+	protected GraphicCollision collisionMask = null;
+	protected List<Performer> requiredCollisionDetection = new ArrayList<Performer>();
+
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
 	public Performer() {
@@ -133,6 +136,9 @@ public class Performer {
 		case EventsListener.EVENT_ONSTEPEND:
 			eventsListener.onStepEnd(this);
 			break;
+		case EventsListener.EVENT_ONCOLLISIONWITH:
+			eventsListener.onCollisionWith(this, (Performer) args[0]);
+			break;
 		case EventsListener.EVENT_ONUSERDEFINEDEVENT:
 			eventsListener.onUserDefinedEvent(this, (Integer) args[0]);
 			break;
@@ -173,6 +179,26 @@ public class Performer {
 
 	public final Sprite getSprite() {
 		return sprite;
+	}
+
+	public final void bindCollisionMask(GraphicCollision collisionMask) {
+		this.collisionMask = collisionMask;
+	}
+
+	public final GraphicCollision getCollisionMask() {
+		return collisionMask;
+	}
+
+	public final void requireCollisionDetection(Performer target) {
+		if (requiredCollisionDetection.contains(target)) {
+			return;
+		}
+
+		requiredCollisionDetection.add(target);
+	}
+
+	public final void cancelCollisionDetection(Performer target) {
+		requiredCollisionDetection.remove(target);
 	}
 
 	public final void setDepth(int depth) {
