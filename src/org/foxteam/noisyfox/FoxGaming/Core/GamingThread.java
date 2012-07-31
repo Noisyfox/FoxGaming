@@ -182,6 +182,36 @@ public class GamingThread extends Thread implements OnTouchListener,
 		SimpleBGM.freeAll();
 	}
 
+	// 使用当前房间图像刷新显示（而不是使用绘图事件）。
+	public void screenRefresh() {
+		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
+		if (targetCanvas != null) {
+			// 处理视角
+			if (currentStage.activatedViews.size() == 0) {
+				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
+			} else {
+				for (Views v : currentStage.activatedViews) {
+					targetCanvas.save();
+					targetCanvas.clipRect(v.targetView);
+					Matrix m = new Matrix();
+					m.reset();
+					m.postScale(v.targetView.width() / v.sourceView.width(),
+							v.targetView.height() / v.sourceView.height(),
+							v.sourceView.centerX(), v.sourceView.centerY());
+					m.postRotate(v.sourceAngle, v.sourceView.centerX(),
+							v.sourceView.centerY());
+					m.postTranslate(
+							v.targetView.centerX() - v.sourceView.centerX(),
+							v.targetView.centerY() - v.sourceView.centerY());
+					targetCanvas.drawBitmap(bufferBitmap, m, null);
+					targetCanvas.restore();
+				}
+			}
+
+			surfaceHolder.unlockCanvasAndPost(targetCanvas);
+		}
+	}
+
 	// 主游戏逻辑,负责一个 step 的逻辑处理
 	private void gameLogic() {
 		long frameStartTime = System.currentTimeMillis();
@@ -295,32 +325,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
 		}
 		// 绘制
-		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
-		if (targetCanvas != null) {
-			// 处理视角
-			if (currentStage.activatedViews.size() == 0) {
-				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
-			} else {
-				for (Views v : currentStage.activatedViews) {
-					targetCanvas.save();
-					targetCanvas.clipRect(v.targetView);
-					Matrix m = new Matrix();
-					m.reset();
-					m.postScale(v.targetView.width() / v.sourceView.width(),
-							v.targetView.height() / v.sourceView.height(),
-							v.sourceView.centerX(), v.sourceView.centerY());
-					m.postRotate(v.sourceAngle, v.sourceView.centerX(),
-							v.sourceView.centerY());
-					m.postTranslate(
-							v.targetView.centerX() - v.sourceView.centerX(),
-							v.targetView.centerY() - v.sourceView.centerY());
-					targetCanvas.drawBitmap(bufferBitmap, m, null);
-					targetCanvas.restore();
-				}
-			}
-
-			surfaceHolder.unlockCanvasAndPost(targetCanvas);
-		}
+		screenRefresh();
 
 		// 控制帧速
 		stepCount++;
