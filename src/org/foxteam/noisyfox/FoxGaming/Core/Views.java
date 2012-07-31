@@ -100,4 +100,32 @@ public final class Views {
 		return targetView.width();
 	}
 
+	public int coordinateScreen2Stage_X(int x, int y) {
+		float dx = (float) x - targetView.centerX();
+		float dy = (float) y - targetView.centerY();
+		dx /= targetView.width() / sourceView.width();
+		dy /= targetView.height() / sourceView.height();
+		float x0 = dx * (float) Math.cos(Math.toRadians(sourceAngle)) - dy
+				* (float) Math.sin(Math.toRadians(sourceAngle));
+		// float y0 = dy * (float) Math.cos(Math.toRadians(sourceAngle)) + dx
+		// * (float) Math.sin(Math.toRadians(sourceAngle));
+		x0 += sourceView.centerX();
+		// y0 += sourceView.centerY();
+		return (int) x0;
+	}
+
+	public int coordinateScreen2Stage_Y(int x, int y) {
+		float dx = (float) x - targetView.centerX();
+		float dy = (float) y - targetView.centerY();
+		dx /= targetView.width() / sourceView.width();
+		dy /= targetView.height() / sourceView.height();
+		// float x0 = dx * (float) Math.cos(Math.toRadians(sourceAngle)) - dy
+		// * (float) Math.sin(Math.toRadians(sourceAngle));
+		float y0 = dy * (float) Math.cos(Math.toRadians(sourceAngle)) + dx
+				* (float) Math.sin(Math.toRadians(sourceAngle));
+		// x0 += sourceView.centerX();
+		y0 += sourceView.centerY();
+		return (int) y0;
+	}
+
 }

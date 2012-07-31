@@ -574,7 +574,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 		processing = false;
 		currentState = STATEFLAG_STOPING;
-		gameResume();
 	}
 
 	protected final void gamePause() {
