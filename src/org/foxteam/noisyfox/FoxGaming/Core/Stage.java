@@ -124,6 +124,21 @@ public final class Stage {
 		return currentStage.performers.size();
 	}
 
+	/**
+	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
+	 */
+	public static Performer[] getPerformersByClass(Class<Performer> c) {
+		List<Performer> per = new ArrayList<Performer>();
+
+		for (Performer p : currentStage.performers) {
+			if (c.isInstance(p)) {
+				per.add(p);
+			}
+		}
+
+		return (Performer[]) per.toArray();
+	}
+
 	protected void sortWithDepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
