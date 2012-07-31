@@ -17,10 +17,13 @@
 package org.foxteam.noisyfox.THEngine;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 /**
  * @ClassName: PlayerBullet
@@ -43,6 +46,11 @@ public class PlayerBullet extends Bullet {
 			bulletSprite.setOffset(bulletSprite.getWidth() / 2, 0);
 
 			performer.bindSprite(bulletSprite);
+
+			GraphicCollision co = new GraphicCollision();
+			co.addCircle(0, 7, 5, true);
+			Debug.print(bulletSprite.getWidth() + "");
+
 		}
 
 		@Override
@@ -51,16 +59,25 @@ public class PlayerBullet extends Bullet {
 					- performer.getSprite().getOffsetY() < 0) {
 				performer.dismiss();
 			}
-			
+
 			performer.setPosition(performer.getX(), performer.getY() - 300f
 					/ Stage.getSpeed());
 		}
 
 	};
 
+	@Override
+	protected void onDraw(Performer performer) {
+		super.onDraw(performer);
+		Canvas c = performer.getCanvas();
+		Paint p = new Paint();
+		p.setColor(Color.BLACK);
+		c.drawCircle(getX(), getY() + 7, 5, p);
+	}
+
 	public PlayerBullet(int x, int y) {
 		this.setEventsListener(eventsListener);
-		this.perform(Stage.getCurrentStage());
+		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
 

@@ -75,11 +75,12 @@ public class Player extends Performer {
 					playerSprite.getHeight() / 2);
 
 			performer.bindSprite(playerSprite);
-			performer.setPosition(GamingThread.getScreenWidth() / 2,
-					GamingThread.getScreenHeight() - playerSprite.getHeight()
-							/ 2);
+			performer.setPosition(Stage.getCurrentStage().getWidth() / 2, Stage
+					.getCurrentStage().getHeight()
+					- playerSprite.getHeight()
+					/ 2);
 
-			moveSpeed = 500f / Stage.getSpeed();
+			moveSpeed = 700f / Stage.getSpeed();
 
 			fingerStart = new Point(0, 0);
 			fingerStartPerformer = new Point(0, 0);
@@ -108,9 +109,9 @@ public class Player extends Performer {
 				if (xt - performer.getSprite().getOffsetX() < 0) {
 					xt = performer.getSprite().getOffsetX();
 				} else if (xt + performer.getSprite().getWidth()
-						- performer.getSprite().getOffsetX() > GamingThread
-						.getScreenWidth()) {
-					xt = GamingThread.getScreenWidth()
+						- performer.getSprite().getOffsetX() > Stage
+						.getCurrentStage().getWidth()) {
+					xt = Stage.getCurrentStage().getWidth()
 							- (performer.getSprite().getWidth() - performer
 									.getSprite().getOffsetX());
 				}
@@ -118,9 +119,9 @@ public class Player extends Performer {
 				if (yt - performer.getSprite().getOffsetY() < 0) {
 					yt = performer.getSprite().getOffsetY();
 				} else if (yt + performer.getSprite().getHeight()
-						- performer.getSprite().getOffsetY() > GamingThread
-						.getScreenHeight()) {
-					yt = GamingThread.getScreenHeight()
+						- performer.getSprite().getOffsetY() > Stage
+						.getCurrentStage().getHeight()) {
+					yt = Stage.getCurrentStage().getHeight()
 							- (performer.getSprite().getHeight() - performer
 									.getSprite().getOffsetY());
 				}

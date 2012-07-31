@@ -18,6 +18,10 @@ package org.foxteam.noisyfox.THEngine;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
 /**
  * @ClassName: SystemControl
  * @Description: TODO
@@ -26,6 +30,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
  * 
  */
 public class SystemControl extends Performer {
+
 	private int bgmId;
 
 	private EventsListener eventsListener = new EventsListener() {
@@ -35,8 +40,25 @@ public class SystemControl extends Performer {
 			bgmId = SimpleBGM
 					.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
 			SimpleBGM.play(bgmId, true);
+			Views v = new Views();
+			v.setPositionFromScreen(0, 0);
+			v.setPositionFromStage(0, 0);
+			v.setSizeFromScreen(GamingThread.getScreenWidth(),
+					GamingThread.getScreenHeight());
+			v.setSizeFromStage(Stage.getCurrentStage().getWidth(), Stage
+					.getCurrentStage().getHeight());
+			v.setAngleFromStage(0);
+			Stage.getCurrentStage().addView(v);
 		}
 	};
+
+	@Override
+	protected void onDraw(Performer performer) {
+		Canvas c = performer.getCanvas();
+		Paint p = new Paint();
+		p.setColor(Color.BLACK);
+		c.drawText(Stage.getPerformerCount() + "", 10, 10, p);
+	}
 
 	public SystemControl() {
 		this.setEventsListener(eventsListener);

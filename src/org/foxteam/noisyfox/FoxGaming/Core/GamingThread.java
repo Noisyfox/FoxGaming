@@ -199,7 +199,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 					currentStage.getHeight(), Bitmap.Config.ARGB_8888);
 			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
 		}
-		if (currentStage != null && bufferCanvas != null) {
+		if (currentStage != null) {
 			// 先准备stage
 			if (currentStage != lastStage) {// stage发生变化
 				// 全局变量应用
@@ -285,8 +285,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 			bufferCanvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
 			if (currentStage.getBackground() != null)
-				currentStage.getBackground().doAndDraw(bufferCanvas, height,
-						width);// 绘制背景
+				currentStage.getBackground().doAndDraw(bufferCanvas,
+						currentStage.height, currentStage.width);// 绘制背景
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 
 			currentStage.dismissPerformer();
