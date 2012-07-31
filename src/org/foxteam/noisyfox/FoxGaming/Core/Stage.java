@@ -32,13 +32,16 @@ import android.graphics.Color;
  * @date: 2012-6-19 下午8:29:50
  * 
  */
-public class Stage {
+public final class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
 	private static int currentStage = -1;// 当前活动的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
 
 	protected List<Performer> performers = null;
+	protected List<Views> activatedViews = null;
+	protected int width = 480;// stage 的宽
+	protected int height = 800;// stage 的高
 	private float stageSpeed = 30f;
 	private int backgroundColor = Color.WHITE;
 	private Background background = null;
@@ -49,6 +52,7 @@ public class Stage {
 
 	public Stage() {
 		performers = new ArrayList<Performer>();
+		activatedViews = new ArrayList<Views>();
 		employingPerformer = new ArrayList<Performer>();
 		dismissingPerformer = new ArrayList<Performer>();
 		stages.add(this);
@@ -120,7 +124,7 @@ public class Stage {
 		return index2Stage(currentStage).performers.size();
 	}
 
-	protected final void sortWithDepth() {
+	protected void sortWithDepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
 				@Override
@@ -148,12 +152,12 @@ public class Stage {
 	}
 
 	// 保证该stage不被异常调用
-	private final void ensureAvailable() {
+	private void ensureAvailable() {
 		if (!available)
 			throw new RuntimeException("无法操作一个已经不存在的stage");
 	}
 
-	protected final void employPerformer(Performer performer) {
+	protected void employPerformer(Performer performer) {
 		ensureAvailable();
 		synchronized (employingPerformer) {
 			if (employingPerformer.contains(performer)) {
@@ -163,7 +167,7 @@ public class Stage {
 		}
 	}
 
-	protected final void employPerformer() {
+	protected void employPerformer() {
 		synchronized (performers) {
 			synchronized (employingPerformer) {
 				for (Performer p : employingPerformer) {
@@ -178,7 +182,7 @@ public class Stage {
 		}
 	}
 
-	protected final void dismissPerformer(Performer performer) {
+	protected void dismissPerformer(Performer performer) {
 		ensureAvailable();
 		synchronized (dismissingPerformer) {
 			if (dismissingPerformer.contains(performer)) {
@@ -188,7 +192,7 @@ public class Stage {
 		}
 	}
 
-	protected final void dismissPerformer() {
+	protected void dismissPerformer() {
 		synchronized (performers) {
 			synchronized (dismissingPerformer) {
 				for (Performer p : dismissingPerformer) {
@@ -203,7 +207,7 @@ public class Stage {
 		}
 	}
 
-	public final void broadcastEvent(int event, Object... args) {
+	public void broadcastEvent(int event, Object... args) {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
@@ -212,42 +216,74 @@ public class Stage {
 		}
 	}
 
-	public final void setStageSpeed(float stageSpeed) {
+	public void addView(Views view) {
+		if (activatedViews.contains(view)) {
+			Debug.warning("View already activated!");
+			return;
+		}
+		activatedViews.add(view);
+	}
+
+	public int getViewNumber() {
+		return activatedViews.size();
+	}
+
+	public void removeView(Views view) {
+		if (!activatedViews.contains(view)) {
+			Debug.warning("View not activated!");
+			return;
+		}
+		activatedViews.remove(view);
+	}
+
+	public void removeView(int index) {
+		activatedViews.remove(index);
+	}
+
+	public void setSize(int height, int width) {
+		this.height = height;
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setStageSpeed(float stageSpeed) {
 		ensureAvailable();
 		this.stageSpeed = stageSpeed;
 	}
 
-	public final float getStageSpeed() {
-		ensureAvailable();
+	public float getStageSpeed() {
 		return stageSpeed;
 	}
 
-	public final void setBackgroundColor(int color) {
-		ensureAvailable();
+	public void setBackgroundColor(int color) {
 		backgroundColor = color;
 	}
 
-	public final int getBackgroundColor() {
-		ensureAvailable();
+	public int getBackgroundColor() {
 		return backgroundColor;
 	}
 
-	public final void setBackground(Background background) {
-		ensureAvailable();
+	public void setBackground(Background background) {
 		this.background = background;
 	}
 
-	public final Background getBackground() {
-		ensureAvailable();
+	public Background getBackground() {
 		return background;
 	}
 
-	public final int getStageIndex() {
+	public int getStageIndex() {
 		ensureAvailable();
 		return stageIndex;
 	}
 
-	public final void setStageIndex(int index) {
+	public void setStageIndex(int index) {
 		ensureAvailable();
 		if (index < 0 || index > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
@@ -260,7 +296,7 @@ public class Stage {
 		updateStageIndex();
 	}
 
-	public final void closeStage() {
+	public void closeStage() {
 		ensureAvailable();
 		if (index2Stage(currentStage).equals(this)) {
 			throw new IllegalArgumentException("无法移除当前活动的stage");
@@ -281,12 +317,12 @@ public class Stage {
 	/**
 	 * 静态函数 移除指定index的stage<br>
 	 */
-	public final static void closeStage(int stageIndex) {
+	public static void closeStage(int stageIndex) {
 		index2Stage(stageIndex).closeStage();
 	}
 
 	// 处理定时器
-	protected final void operateAlarm() {
+	protected void operateAlarm() {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
@@ -295,11 +331,12 @@ public class Stage {
 		}
 	}
 
-	protected final void operateCollision() {
+	protected void operateCollision() {
+		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
 				synchronized (p) {
-					
+
 					if (p.collisionMask != null && !p.frozen) {
 						for (Performer tp : p.requiredCollisionDetection) {
 

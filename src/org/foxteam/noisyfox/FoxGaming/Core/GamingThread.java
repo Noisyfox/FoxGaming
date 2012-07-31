@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -38,7 +41,8 @@ import android.view.View.OnTouchListener;
 public class GamingThread extends Thread implements OnTouchListener,
 		OnKeyListener, SurfaceHolder.Callback {
 
-	protected static Canvas canvas = null;
+	protected static Canvas bufferCanvas = null;
+	protected static Bitmap bufferBitmap = null;
 	protected static int width = 0;
 	protected static int height = 0;
 
@@ -185,9 +189,17 @@ public class GamingThread extends Thread implements OnTouchListener,
 			gameStartTime = System.currentTimeMillis();
 
 		// 全局参数准备
-		canvas = surfaceHolder.lockCanvas();// 获取画布
 		currentStage = Stage.index2Stage(Stage.getCurrentStage());
-		if (currentStage != null && canvas != null) {
+		// 准备缓冲画布
+		if (bufferBitmap == null
+				|| bufferBitmap.getWidth() != currentStage.getWidth()
+				|| bufferBitmap.getHeight() != currentStage.getHeight()) {
+
+			bufferBitmap = Bitmap.createBitmap(currentStage.getWidth(),
+					currentStage.getHeight(), Bitmap.Config.ARGB_8888);
+			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
+		}
+		if (currentStage != null && bufferCanvas != null) {
 			// 先准备stage
 			if (currentStage != lastStage) {// stage发生变化
 				// 全局变量应用
@@ -271,9 +283,10 @@ public class GamingThread extends Thread implements OnTouchListener,
 			// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-			canvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
+			bufferCanvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
 			if (currentStage.getBackground() != null)
-				currentStage.getBackground().doAndDraw(canvas, height, width);// 绘制背景
+				currentStage.getBackground().doAndDraw(bufferCanvas, height,
+						width);// 绘制背景
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 
 			currentStage.dismissPerformer();
@@ -282,9 +295,28 @@ public class GamingThread extends Thread implements OnTouchListener,
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
 		}
 		// 绘制
-		if (canvas != null)
-			surfaceHolder.unlockCanvasAndPost(canvas);
-		canvas = null;
+		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
+		if (targetCanvas != null) {
+			// 处理视角
+			if (currentStage.activatedViews.size() == 0) {
+				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
+			} else {
+				for (Views v : currentStage.activatedViews) {
+					targetCanvas.save();
+					targetCanvas.rotate(-v.sourceAngle, v.targetView.centerX(),
+							v.targetView.centerY());
+					targetCanvas.drawBitmap(bufferBitmap,
+							new Rect((int) v.sourceView.left,
+									(int) v.sourceView.top,
+									(int) v.sourceView.right,
+									(int) v.sourceView.bottom), v.targetView,
+							null);
+					targetCanvas.restore();
+				}
+			}
+
+			surfaceHolder.unlockCanvasAndPost(targetCanvas);
+		}
 
 		// 控制帧速
 		stepCount++;
