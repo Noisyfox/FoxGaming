@@ -23,7 +23,7 @@ import java.util.Queue;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.graphics.Matrix;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -189,7 +189,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 			gameStartTime = System.currentTimeMillis();
 
 		// 全局参数准备
-		currentStage = Stage.index2Stage(Stage.getCurrentStage());
+		currentStage = Stage.getCurrentStage();
 		// 准备缓冲画布
 		if (bufferBitmap == null
 				|| bufferBitmap.getWidth() != currentStage.getWidth()
@@ -303,14 +303,18 @@ public class GamingThread extends Thread implements OnTouchListener,
 			} else {
 				for (Views v : currentStage.activatedViews) {
 					targetCanvas.save();
-					targetCanvas.rotate(-v.sourceAngle, v.targetView.centerX(),
-							v.targetView.centerY());
-					targetCanvas.drawBitmap(bufferBitmap,
-							new Rect((int) v.sourceView.left,
-									(int) v.sourceView.top,
-									(int) v.sourceView.right,
-									(int) v.sourceView.bottom), v.targetView,
-							null);
+					targetCanvas.clipRect(v.targetView);
+					Matrix m = new Matrix();
+					m.reset();
+					m.postScale(v.targetView.width() / v.sourceView.width(),
+							v.targetView.height() / v.sourceView.height(),
+							v.sourceView.centerX(), v.sourceView.centerY());
+					m.postRotate(v.sourceAngle, v.sourceView.centerX(),
+							v.sourceView.centerY());
+					m.postTranslate(
+							v.targetView.centerX() - v.sourceView.centerX(),
+							v.targetView.centerY() - v.sourceView.centerY());
+					targetCanvas.drawBitmap(bufferBitmap, m, null);
 					targetCanvas.restore();
 				}
 			}

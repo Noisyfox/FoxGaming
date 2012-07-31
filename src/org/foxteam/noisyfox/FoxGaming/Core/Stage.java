@@ -35,7 +35,7 @@ import android.graphics.Color;
 public final class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
-	private static int currentStage = -1;// 当前活动的stage
+	private static Stage currentStage = null;// 当前活动的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
 
 	protected List<Performer> performers = null;
@@ -60,7 +60,7 @@ public final class Stage {
 		available = true;
 		// 如果当前创建的stage是游戏中惟一的一个stage则自动将其设置为活动的stage
 		if (stageIndex == 0) {
-			currentStage = 0;
+			currentStage = this;
 		}
 	}
 
@@ -69,11 +69,11 @@ public final class Stage {
 		setStageIndex(index);
 	}
 
-	public static int getCurrentStage() {
+	public static Stage getCurrentStage() {
 		return currentStage;
 	}
 
-	protected static Stage index2Stage(int stageIndex) {
+	public static Stage index2Stage(int stageIndex) {
 		if (stageIndex < 0 || stageIndex > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
 		}
@@ -84,23 +84,23 @@ public final class Stage {
 	 * 静态函数 跳转到指定舞台<br>
 	 */
 	public static void switchToStage(int stage) {
-		if (stage == currentStage)
+		if (index2Stage(stage) == currentStage)
 			return;
-		currentStage = stage;
+		currentStage = index2Stage(stage);
 	}
 
 	/**
 	 * 静态函数 跳转到下一个舞台<br>
 	 */
 	public static void nextStage() {
-		switchToStage(currentStage + 1);
+		switchToStage(currentStage.stageIndex + 1);
 	}
 
 	/**
 	 * 静态函数 跳转到上一个舞台<br>
 	 */
 	public static void previousStage() {
-		switchToStage(currentStage - 1);
+		switchToStage(currentStage.stageIndex - 1);
 	}
 
 	/**
@@ -114,14 +114,14 @@ public final class Stage {
 	 * 静态函数 获取当前活动的stage的background<br>
 	 */
 	public static Background getCurrentBackground() {
-		return index2Stage(currentStage).getBackground();
+		return currentStage.getBackground();
 	}
 
 	/**
 	 * 静态函数 获取当前活动的stage的中的Performer数量<br>
 	 */
 	public static int getPerformerCount() {
-		return index2Stage(currentStage).performers.size();
+		return currentStage.performers.size();
 	}
 
 	protected void sortWithDepth() {
@@ -288,7 +288,7 @@ public final class Stage {
 		if (index < 0 || index > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
 		}
-		if (index2Stage(currentStage).equals(this)) {
+		if (currentStage.equals(this)) {
 			throw new IllegalArgumentException("无法改变当前活动的stage");
 		}
 		stages.remove(this);
@@ -298,7 +298,7 @@ public final class Stage {
 
 	public void closeStage() {
 		ensureAvailable();
-		if (index2Stage(currentStage).equals(this)) {
+		if (currentStage.equals(this)) {
 			throw new IllegalArgumentException("无法移除当前活动的stage");
 		}
 
@@ -340,8 +340,8 @@ public final class Stage {
 					if (p.collisionMask != null && !p.frozen) {
 						for (Performer tp : p.requiredCollisionDetection) {
 
-							if (tp.stage == currentStage && !tp.frozen
-									&& tp.collisionMask != null) {
+							if (index2Stage(tp.stage) == currentStage
+									&& !tp.frozen && tp.collisionMask != null) {
 
 								if (p.collisionMask
 										.isCollisionWith(tp.collisionMask)) {

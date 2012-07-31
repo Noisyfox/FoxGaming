@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
@@ -181,8 +180,15 @@ public class Performer {
 		return sprite;
 	}
 
+	private void updateCollisionMask() {
+		if (collisionMask != null) {
+			collisionMask.setPosition((int) x, (int) y);
+		}
+	}
+
 	public final void bindCollisionMask(GraphicCollision collisionMask) {
 		this.collisionMask = collisionMask;
+		updateCollisionMask();
 	}
 
 	public final GraphicCollision getCollisionMask() {
@@ -223,6 +229,7 @@ public class Performer {
 	public final void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
+		updateCollisionMask();
 	}
 
 	public final float getX() {
@@ -234,7 +241,7 @@ public class Performer {
 	}
 
 	public final Canvas getCanvas() {
-		return GamingThread.canvas;
+		return GamingThread.bufferCanvas;
 	}
 
 	public final void setAlarm(int alarm, int step, boolean repeat) {
