@@ -29,7 +29,7 @@ public class Point {
 	int y = 0;
 
 	public Point() {
-
+		this(0, 0);
 	}
 
 	public Point(int x, int y) {
@@ -63,4 +63,10 @@ public class Point {
 	public boolean equals(Point p) {
 		return p.x == x && p.y == y;
 	}
+
+	@Override
+	public String toString() {
+		return x + "," + y;
+	}
+
 }

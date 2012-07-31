@@ -40,13 +40,19 @@ public class SystemControl extends Performer {
 			bgmId = SimpleBGM
 					.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
 			SimpleBGM.play(bgmId, true);
+
+			Stage.getCurrentStage()
+					.setSize(GamingThread.getScreenHeight(), 550);
+
 			Views v = new Views();
 			v.setPositionFromScreen(0, 0);
-			v.setPositionFromStage(0, 0);
+			v.setPositionFromStage(
+					(Stage.getCurrentStage().getWidth() - GamingThread
+							.getScreenWidth()) / 2, 0);
 			v.setSizeFromScreen(GamingThread.getScreenWidth(),
 					GamingThread.getScreenHeight());
-			v.setSizeFromStage(Stage.getCurrentStage().getWidth(), Stage
-					.getCurrentStage().getHeight());
+			v.setSizeFromStage(GamingThread.getScreenWidth(),
+					GamingThread.getScreenHeight());
 			v.setAngleFromStage(0);
 			Stage.getCurrentStage().addView(v);
 		}

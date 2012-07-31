@@ -243,6 +243,10 @@ public final class Stage {
 		return activatedViews.size();
 	}
 
+	public Views getView(int index) {
+		return activatedViews.get(index);
+	}
+
 	public void removeView(Views view) {
 		if (!activatedViews.contains(view)) {
 			Debug.warning("View not activated!");

@@ -26,12 +26,13 @@ public class THEngineMainActivity extends GameActivity {
 		bkg.setSpeed(0, 1);
 		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
 		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_REPEATING);
-		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_NONE);
+		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
 		s.setBackground(bkg);
 	}
 
 	@Override
 	public void onCreate() {
+		this.forcePortrait();
 	}
 
 }

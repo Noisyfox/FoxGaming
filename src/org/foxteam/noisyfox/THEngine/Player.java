@@ -31,40 +31,31 @@ import android.graphics.BitmapFactory;
  */
 public class Player extends Performer {
 
-	private Point fingerStart = null;
-	private Point fingerStartPerformer = null;
-	private Point targetPoint = null;
-	private Point currentPoint = null;
+	Views mainView = null;
 
-	private float moveSpeed = 0;
+	Point meOnScreen = null;
+	Point fingerPressStart = null;
+	Point meStart = null;
 
 	private EventsListener eventsListener = new EventsListener() {
 
 		@Override
 		public void onStep(Performer performer) {
-			currentPoint.setPosition((int) performer.getX(),
-					(int) performer.getY());
+			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
+			mainView.setPositionFromStage(
+					(Stage.getCurrentStage().getWidth() - GamingThread
+							.getScreenWidth()) * per, 0);
 
-			if ((float) currentPoint.squareDistance(targetPoint) <= moveSpeed
-					* moveSpeed) {
-				performer.setPosition(targetPoint.getX(), targetPoint.getY());
-			} else {
-				float k = (float) Math.sqrt((float) (moveSpeed * moveSpeed)
-						/ (float) currentPoint.squareDistance(targetPoint));
-				performer.setPosition(
-						(float) currentPoint.getX()
-								+ k
-								* (float) (targetPoint.getX() - currentPoint
-										.getX()),
-						(float) currentPoint.getY()
-								+ k
-								* (float) (targetPoint.getY() - currentPoint
-										.getY()));
-			}
+			performer.setPosition(mainView.coordinateScreen2Stage_X(
+					meOnScreen.getX(), meOnScreen.getY()), mainView
+					.coordinateScreen2Stage_Y(meOnScreen.getX(),
+							meOnScreen.getY()));
 		}
 
 		@Override
 		public void onCreate(Performer performer) {
+			mainView = Stage.getCurrentStage().getView(0);
+
 			Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
 					.getResources(),
 					org.foxteam.noisyfox.THEngine.R.drawable.player);
@@ -75,19 +66,19 @@ public class Player extends Performer {
 					playerSprite.getHeight() / 2);
 
 			performer.bindSprite(playerSprite);
-			performer.setPosition(Stage.getCurrentStage().getWidth() / 2, Stage
-					.getCurrentStage().getHeight()
-					- playerSprite.getHeight()
-					/ 2);
 
-			moveSpeed = 700f / Stage.getSpeed();
+			meOnScreen = new Point((int) mainView.getWidthFromScreen() / 2,
+					(int) mainView.getHeightFromScreen()
+							- playerSprite.getHeight()
+							+ playerSprite.getOffsetY());
 
-			fingerStart = new Point(0, 0);
-			fingerStartPerformer = new Point(0, 0);
-			targetPoint = new Point((int) performer.getX(),
-					(int) performer.getY());
-			currentPoint = new Point((int) performer.getX(),
-					(int) performer.getY());
+			performer.setPosition(mainView.coordinateScreen2Stage_X(
+					meOnScreen.getX(), meOnScreen.getY()), mainView
+					.coordinateScreen2Stage_Y(meOnScreen.getX(),
+							meOnScreen.getY()));
+
+			fingerPressStart = new Point();
+			meStart = new Point();
 
 			performer.setAlarm(0, (int) (Stage.getSpeed() * 0.5f), true);
 			performer.startAlarm(0);
@@ -103,30 +94,121 @@ public class Player extends Performer {
 		@Override
 		public void onTouch(Performer performer, int whichfinger, int x, int y) {
 			if (whichfinger == 0) {
-				int xt = fingerStartPerformer.getX() + x - fingerStart.getX();
-				int yt = fingerStartPerformer.getY() + y - fingerStart.getY();
+				int dx = x - fingerPressStart.getX();
+				int dy = y - fingerPressStart.getY();
+				int myX = meStart.getX() + dx;
+				int myY = meStart.getY() + dy;
+				int realX = mainView.coordinateScreen2Stage_X(myX, myY);
+				int realY = mainView.coordinateScreen2Stage_Y(myX, myY);
 
-				if (xt - performer.getSprite().getOffsetX() < 0) {
-					xt = performer.getSprite().getOffsetX();
-				} else if (xt + performer.getSprite().getWidth()
-						- performer.getSprite().getOffsetX() > Stage
-						.getCurrentStage().getWidth()) {
-					xt = Stage.getCurrentStage().getWidth()
-							- (performer.getSprite().getWidth() - performer
-									.getSprite().getOffsetX());
+				if (realX < performer.getSprite().getOffsetX()) {
+
+					if (realX < performer.getSprite().getOffsetX() - 5) {
+						int fingerXReal = mainView.coordinateScreen2Stage_X(
+								fingerPressStart.getX(),
+								fingerPressStart.getY());
+						int fingerYReal = mainView.coordinateScreen2Stage_Y(
+								fingerPressStart.getX(),
+								fingerPressStart.getY());
+
+						fingerPressStart.setPosition(
+								mainView.coordinateStage2Screen_X(fingerXReal
+										- performer.getSprite().getOffsetX()
+										+ realX, fingerYReal),
+								fingerPressStart.getY());
+					}
+
+					realX = performer.getSprite().getOffsetX();
+
+				} else if (realX > Stage.getCurrentStage().getWidth()
+						- performer.getSprite().getWidth()
+						+ performer.getSprite().getOffsetX()) {
+
+					if (realX > Stage.getCurrentStage().getWidth()
+							- performer.getSprite().getWidth()
+							+ performer.getSprite().getOffsetX() + 5) {
+						int fingerXReal = mainView.coordinateScreen2Stage_X(
+								fingerPressStart.getX(),
+								fingerPressStart.getY());
+						int fingerYReal = mainView.coordinateScreen2Stage_Y(
+								fingerPressStart.getX(),
+								fingerPressStart.getY());
+
+						fingerPressStart.setPosition(mainView
+								.coordinateStage2Screen_X(fingerXReal
+										+ realX
+										- (Stage.getCurrentStage().getWidth()
+												- performer.getSprite()
+														.getWidth() + performer
+												.getSprite().getOffsetX()),
+										fingerYReal), fingerPressStart.getY());
+					}
+
+					realX = Stage.getCurrentStage().getWidth()
+							- performer.getSprite().getWidth()
+							+ performer.getSprite().getOffsetX();
+
 				}
 
-				if (yt - performer.getSprite().getOffsetY() < 0) {
-					yt = performer.getSprite().getOffsetY();
-				} else if (yt + performer.getSprite().getHeight()
-						- performer.getSprite().getOffsetY() > Stage
-						.getCurrentStage().getHeight()) {
-					yt = Stage.getCurrentStage().getHeight()
-							- (performer.getSprite().getHeight() - performer
-									.getSprite().getOffsetY());
+				if (realY < performer.getSprite().getOffsetY()) {
+
+					if (realY < performer.getSprite().getOffsetY() - 5) {
+						int fingerXReal = mainView.coordinateScreen2Stage_X(
+								fingerPressStart.getX(),
+								fingerPressStart.getX());
+						int fingerYReal = mainView.coordinateScreen2Stage_Y(
+								fingerPressStart.getY(),
+								fingerPressStart.getY());
+
+						fingerPressStart.setPosition(fingerPressStart.getX(),
+								mainView.coordinateStage2Screen_Y(fingerXReal,
+										fingerYReal
+												- performer.getSprite()
+														.getOffsetY() + realY));
+					}
+
+					realY = performer.getSprite().getOffsetY();
+
+				} else if (realY > Stage.getCurrentStage().getHeight()
+						- performer.getSprite().getHeight()
+						+ performer.getSprite().getOffsetY()) {
+
+					if (realY > Stage.getCurrentStage().getHeight()
+							- performer.getSprite().getHeight()
+							+ performer.getSprite().getOffsetY() + 5) {
+						int fingerXReal = mainView.coordinateScreen2Stage_X(
+								fingerPressStart.getX(),
+								fingerPressStart.getX());
+						int fingerYReal = mainView.coordinateScreen2Stage_Y(
+								fingerPressStart.getY(),
+								fingerPressStart.getY());
+
+						fingerPressStart
+								.setPosition(
+										fingerPressStart.getX(),
+										mainView.coordinateStage2Screen_Y(
+												fingerXReal,
+												fingerYReal
+														+ realY
+														- (Stage.getCurrentStage()
+																.getHeight()
+																- performer
+																		.getSprite()
+																		.getHeight() + performer
+																.getSprite()
+																.getOffsetY())));
+					}
+
+					realY = Stage.getCurrentStage().getHeight()
+							- performer.getSprite().getHeight()
+							+ performer.getSprite().getOffsetY();
+
 				}
 
-				targetPoint.setPosition(xt, yt);
+				myX = mainView.coordinateStage2Screen_X(realX, realY);
+				myY = mainView.coordinateStage2Screen_Y(realX, realY);
+
+				meOnScreen.setPosition(myX, myY);
 			}
 		}
 
@@ -134,17 +216,15 @@ public class Player extends Performer {
 		public void onTouchPress(Performer performer, int whichfinger, int x,
 				int y) {
 			if (whichfinger == 0) {
-				fingerStart.setPosition(x, y);
-				fingerStartPerformer.setPosition(targetPoint.getX(),
-						targetPoint.getY());
+				fingerPressStart.setPosition(x, y);
+				meStart.setPosition(meOnScreen.getX(), meOnScreen.getY());
 			}
 		}
 
 		@Override
 		public void onTouchRelease(Performer performer, int whichfinger) {
 			if (whichfinger == 0) {
-				targetPoint.setPosition((int) performer.getX(),
-						(int) performer.getY());
+
 			}
 		}
 
