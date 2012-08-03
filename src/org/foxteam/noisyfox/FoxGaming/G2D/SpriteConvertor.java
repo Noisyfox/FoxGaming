@@ -30,7 +30,8 @@ public class SpriteConvertor {
 	private double YScale = 1;
 	private double rotation = 0;// 角度制
 	private double alpha = 1;
-
+	private Matrix matrix = new Matrix();
+	
 	public SpriteConvertor() {
 
 	}
@@ -74,7 +75,6 @@ public class SpriteConvertor {
 	}
 
 	public final Matrix getConvertMatrix(int offsetX, int offsetY) {
-		Matrix matrix = new Matrix();
 		matrix.reset();
 		matrix.postScale((float) XScale, (float) YScale, offsetX, offsetY);
 		matrix.postRotate((float) rotation, offsetX, offsetY);

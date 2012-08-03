@@ -56,6 +56,19 @@ public class SystemControl extends Performer {
 			v.setAngleFromStage(0);
 			Stage.getCurrentStage().addView(v);
 		}
+
+		@Override
+		public void onStep(Performer performer) {
+			MyDebug.print(GamingThread.getSPS() + "");
+		}
+
+		@Override
+		public void onTouchRelease(Performer performer, int whichfinger) {
+			if(whichfinger==1){
+				GameActivity.getGameCore().gameEnd();
+			}
+		}
+
 	};
 
 	@Override
@@ -63,7 +76,8 @@ public class SystemControl extends Performer {
 		Canvas c = performer.getCanvas();
 		Paint p = new Paint();
 		p.setColor(Color.BLACK);
-		c.drawText(Stage.getPerformerCount() + "", 10, 10, p);
+		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS(), 10,
+				10, p);
 	}
 
 	public SystemControl() {

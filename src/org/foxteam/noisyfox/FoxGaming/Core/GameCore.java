@@ -40,7 +40,7 @@ public final class GameCore {
 	public GameCore(Activity mainActivity) {
 		GameCore.mainActivity = mainActivity;
 		if (inited) {
-			//onActivityRecreated();
+			// onActivityRecreated();
 		} else {
 			initializeCore();
 
@@ -68,7 +68,7 @@ public final class GameCore {
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
-		
+
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
@@ -82,7 +82,7 @@ public final class GameCore {
 	}
 
 	public void gameEnd() {
-		thread_Gaming.gameEnd();
+		mainActivity.finish();
 	}
 
 	public void gamePause() {

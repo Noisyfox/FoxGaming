@@ -19,7 +19,7 @@ package org.foxteam.noisyfox.FoxGaming.Core;
 import android.util.Log;
 
 /**
- * @ClassName: Debug
+ * @ClassName: MyDebug
  * @Description: Functions and helpers to aid debugging and engine reports.
  *               DebugMode can be toggled to avoid using the print command. This
  *               is a copy from Rokon by Richard.
@@ -27,7 +27,7 @@ import android.util.Log;
  * @date: 2012-7-17 下午12:41:58
  * 
  */
-public class Debug {
+public class MyDebug {
 	private static String tag = "FoxGmaing";
 	protected static boolean debugMode = true;
 
@@ -43,7 +43,7 @@ public class Debug {
 	 *            any valid String for LogCat tags
 	 */
 	public static void setDebugTag(String tag) {
-		Debug.tag = tag;
+		MyDebug.tag = tag;
 	}
 
 	/**

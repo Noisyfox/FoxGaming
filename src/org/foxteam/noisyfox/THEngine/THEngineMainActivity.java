@@ -11,6 +11,7 @@ public class THEngineMainActivity extends GameActivity {
 	@Override
 	public void onEngineReady() {
 		Stage s = new Stage();
+		s.setStageSpeed(30);
 		Performer p = new SystemControl();
 		p.perform(s.getStageIndex());
 		p = new Player();

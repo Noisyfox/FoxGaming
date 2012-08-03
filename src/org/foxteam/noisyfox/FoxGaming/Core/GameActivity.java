@@ -43,7 +43,7 @@ public class GameActivity extends Activity {
 	 * Flags debugMode as true, Debug.print will output to LogCat
 	 */
 	public static final void debugMode() {
-		Debug.debugMode = true;
+		MyDebug.debugMode = true;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class GameActivity extends Activity {
 	 * LogCat
 	 */
 	public static final void normalMode() {
-		Debug.debugMode = false;
+		MyDebug.debugMode = false;
 	}
 
 	public static final GameCore getGameCore() {
@@ -121,7 +121,7 @@ public class GameActivity extends Activity {
 	// System function
 
 	private void prepareEngine() {
-		Debug.print("prepareEngine()");
+		MyDebug.print("prepareEngine()");
 		gameEngine = new GameCore(this);
 		setContentView(GameCore.getGameView());
 	}
@@ -132,7 +132,7 @@ public class GameActivity extends Activity {
 	 * shouldn't need to call this yourself
 	 */
 	public void dispose() {
-		Debug.print("dispose()");
+		MyDebug.print("dispose()");
 		activityCreated = false;
 		gameEngine.gameEnd();
 		System.gc();
@@ -141,18 +141,19 @@ public class GameActivity extends Activity {
 	@Override
 	protected final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Debug.print("onCreate()");
+		MyDebug.print("onCreate()");
 		if (activityCreated) {
-			Debug.print("GameActivity already been created");
+			MyDebug.print("GameActivity already been created");
 			gameEngine.onActivityRecreated();
 			setContentView(GameCore.getGameView());
 		} else {
+			//Debug.startMethodTracing("fox.trace");
 			onCreate();
 
 			prepareEngine();
 			onEngineReady();
 
-			Debug.print("Game start!");
+			MyDebug.print("Game start!");
 			gameEngine.gameStart();
 
 			activityCreated = true;
@@ -176,9 +177,10 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		Debug.print("onDestroy()");
+		MyDebug.print("onDestroy()");
 		if (isFinishing()) {
 			dispose();
+			//Debug.stopMethodTracing();
 		}
 		super.onDestroy();
 	}

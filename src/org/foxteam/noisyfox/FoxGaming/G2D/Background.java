@@ -18,8 +18,6 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 
 /**
@@ -351,8 +349,6 @@ public class Background {
 		y += yOffset;
 
 		// 绘制
-		Paint p = new Paint();
-		p.setColor(Color.BLACK);
 		Rect from = new Rect(0, 0, sourceImage.getWidth(),
 				sourceImage.getHeight());
 
@@ -392,13 +388,13 @@ public class Background {
 					Rect to = new Rect(xt + i * imageWidth, yt + j
 							* imageHeight, xt + (i + 1) * imageWidth, yt
 							+ (j + 1) * imageHeight);
-					c.drawBitmap(sourceImage, from, to, p);
+					c.drawBitmap(sourceImage, from, to, null);
 				}
 			}
 
 		} else {
 			Rect to = new Rect(x, y, x + imageWidth, y + imageHeight);
-			c.drawBitmap(sourceImage, from, to, p);
+			c.drawBitmap(sourceImage, from, to, null);
 		}
 
 		xOffset += speed_x;

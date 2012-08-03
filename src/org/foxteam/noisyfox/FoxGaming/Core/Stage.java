@@ -233,7 +233,7 @@ public final class Stage {
 
 	public void addView(Views view) {
 		if (activatedViews.contains(view)) {
-			Debug.warning("View already activated!");
+			MyDebug.warning("View already activated!");
 			return;
 		}
 		activatedViews.add(view);
@@ -249,7 +249,7 @@ public final class Stage {
 
 	public void removeView(Views view) {
 		if (!activatedViews.contains(view)) {
-			Debug.warning("View not activated!");
+			MyDebug.warning("View not activated!");
 			return;
 		}
 		activatedViews.remove(view);

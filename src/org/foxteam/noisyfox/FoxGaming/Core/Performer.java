@@ -146,7 +146,7 @@ public class Performer {
 
 	public final void perform(int stage) {
 		if (employed) {
-			Debug.warning("Performer already been employed!");
+			MyDebug.warning("Performer already been employed!");
 		}
 
 		Stage.index2Stage(stage).employPerformer(this);
@@ -157,7 +157,7 @@ public class Performer {
 
 	public final void dismiss() {
 		if (!employed) {
-			Debug.warning("Can't dismiss an unemployed performer!");
+			MyDebug.warning("Can't dismiss an unemployed performer!");
 		}
 		employed = false;
 		performing = false;

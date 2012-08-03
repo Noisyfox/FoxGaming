@@ -40,13 +40,9 @@ public class Sprite {
 	private int numberFrames; // = 0;
 
 	/**
-	 * list of X coordinates of individual frames
+	 * list of frames
 	 */
-	private int[] frameCoordsX;
-	/**
-	 * list of Y coordinates of individual frames
-	 */
-	private int[] frameCoordsY;
+	private Bitmap[] frames;
 
 	/**
 	 * Width of each frame in the source image
@@ -104,15 +100,14 @@ public class Sprite {
 		sourceImage = image;
 		numberFrames = horizontalNumber * verticalNumber;
 
-		frameCoordsX = new int[numberFrames];
-		frameCoordsY = new int[numberFrames];
+		frames = new Bitmap[numberFrames];
 
 		int currentFrame = 0;
 
 		for (int yy = 0; yy < imageH; yy += frameHeight) {
 			for (int xx = 0; xx < imageW; xx += frameWidth) {
-				frameCoordsX[currentFrame] = xx;
-				frameCoordsY[currentFrame] = yy;
+				frames[currentFrame] = Bitmap.createBitmap(sourceImage, xx, yy,
+						srcFrameWidth, srcFrameHeight);
 				currentFrame++;
 			}
 		}
@@ -164,18 +159,21 @@ public class Sprite {
 	}
 
 	public final void draw(Canvas c, int x, int y) {
-		draw(c, x, y, new SpriteConvertor());
+		draw(c, x, y, null);
 	}
 
 	public final void draw(Canvas c, int x, int y,
 			SpriteConvertor spriteConvertor) {
-		Bitmap bmp = Bitmap.createBitmap(sourceImage,
-				frameCoordsX[currentFrame], frameCoordsY[currentFrame],
-				srcFrameWidth, srcFrameHeight);
-		Paint paint = new Paint();
-		Matrix m = spriteConvertor.getConvertMatrix(offsetX, offsetY);
-		m.postTranslate(x - offsetX, y - offsetY);
-		paint.setAlpha((int) (255.0 * spriteConvertor.getAlpha()));
-		c.drawBitmap(bmp, m, paint);
+
+		if (spriteConvertor != null) {
+			Paint paint = new Paint();
+			Matrix m = spriteConvertor.getConvertMatrix(offsetX, offsetY);
+			m.postTranslate(x - offsetX, y - offsetY);
+			paint.setAlpha((int) (255.0 * spriteConvertor.getAlpha()));
+			c.drawBitmap(frames[currentFrame], m, paint);
+		} else {
+			c.drawBitmap(frames[currentFrame], x - offsetX, y - offsetY, null);
+		}
+
 	}
 }

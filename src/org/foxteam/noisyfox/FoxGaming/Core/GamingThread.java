@@ -72,6 +72,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private long stepCount = 0;
 	private long SPS_startTime;
 	private int currentState = STATEFLAG_STOPED;
+	private Matrix viewMatrix = new Matrix();
 
 	public static float getSPS() {
 		return SPS;
@@ -193,17 +194,17 @@ public class GamingThread extends Thread implements OnTouchListener,
 				for (Views v : currentStage.activatedViews) {
 					targetCanvas.save();
 					targetCanvas.clipRect(v.targetView);
-					Matrix m = new Matrix();
-					m.reset();
-					m.postScale(v.targetView.width() / v.sourceView.width(),
+					viewMatrix.reset();
+					viewMatrix.postScale(
+							v.targetView.width() / v.sourceView.width(),
 							v.targetView.height() / v.sourceView.height(),
 							v.sourceView.centerX(), v.sourceView.centerY());
-					m.postRotate(v.sourceAngle, v.sourceView.centerX(),
-							v.sourceView.centerY());
-					m.postTranslate(
-							v.targetView.centerX() - v.sourceView.centerX(),
-							v.targetView.centerY() - v.sourceView.centerY());
-					targetCanvas.drawBitmap(bufferBitmap, m, null);
+					viewMatrix.postRotate(v.sourceAngle,
+							v.sourceView.centerX(), v.sourceView.centerY());
+					viewMatrix.postTranslate(v.targetView.centerX()
+							- v.sourceView.centerX(), v.targetView.centerY()
+							- v.sourceView.centerY());
+					targetCanvas.drawBitmap(bufferBitmap, viewMatrix, null);
 					targetCanvas.restore();
 				}
 			}
@@ -314,9 +315,10 @@ public class GamingThread extends Thread implements OnTouchListener,
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 			bufferCanvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
-			if (currentStage.getBackground() != null)
+			if (currentStage.getBackground() != null) {// 绘制背景
 				currentStage.getBackground().doAndDraw(bufferCanvas,
-						currentStage.height, currentStage.width);// 绘制背景
+						currentStage.height, currentStage.width);
+			}
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 
 			currentStage.dismissPerformer();
@@ -331,19 +333,20 @@ public class GamingThread extends Thread implements OnTouchListener,
 		stepCount++;
 		allStepCount++;
 		long frameFinishTime = System.currentTimeMillis();
-		if (frameFinishTime - SPS_startTime >= SPS_COUNT_INTERVAL_MILLIS) {
-			SPS = stepCount / ((frameFinishTime - SPS_startTime) / 1000.0f);
-			stepCount = 0;
-			SPS_startTime = frameFinishTime;
-		}
 		float speed = Stage.getSpeed();
-		long sleepTime = (long) (1.0 / speed * 1000.0)
+		long sleepTime = (long) (1.0f / speed * 1000.0f)
 				- (frameFinishTime - frameStartTime);
 		try {
 			if (sleepTime > 0)
 				Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+		frameFinishTime = System.currentTimeMillis();
+		if (frameFinishTime - SPS_startTime >= SPS_COUNT_INTERVAL_MILLIS) {
+			SPS = (float) (stepCount / ((frameFinishTime - SPS_startTime) / 1000.0));
+			stepCount = 0;
+			SPS_startTime = frameFinishTime;
 		}
 	}
 
