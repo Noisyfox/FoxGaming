@@ -82,6 +82,7 @@ public final class GameCore {
 	}
 
 	public void gameEnd() {
+		thread_Gaming.gameEnd();
 		mainActivity.finish();
 	}
 

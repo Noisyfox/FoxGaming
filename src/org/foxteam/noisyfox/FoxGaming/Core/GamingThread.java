@@ -181,6 +181,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 		// 清理
 		SimpleSoundEffect.freeAll();
 		SimpleBGM.freeAll();
+		
+		MyDebug.print("Gaming thread exit.");
 	}
 
 	// 使用当前房间图像刷新显示（而不是使用绘图事件）。

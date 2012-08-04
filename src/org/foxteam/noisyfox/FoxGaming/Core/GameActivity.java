@@ -134,7 +134,6 @@ public class GameActivity extends Activity {
 	public void dispose() {
 		MyDebug.print("dispose()");
 		activityCreated = false;
-		gameEngine.gameEnd();
 		System.gc();
 	}
 
@@ -147,7 +146,7 @@ public class GameActivity extends Activity {
 			gameEngine.onActivityRecreated();
 			setContentView(GameCore.getGameView());
 		} else {
-			//Debug.startMethodTracing("fox.trace");
+			// Debug.startMethodTracing("fox.trace");
 			onCreate();
 
 			prepareEngine();
@@ -178,11 +177,12 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		MyDebug.print("onDestroy()");
+		super.onDestroy();
 		if (isFinishing()) {
 			dispose();
-			//Debug.stopMethodTracing();
+			// Debug.stopMethodTracing();
+			MyDebug.forceExit();
 		}
-		super.onDestroy();
 	}
 
 	@Override
