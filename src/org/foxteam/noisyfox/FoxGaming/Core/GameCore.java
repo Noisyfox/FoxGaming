@@ -31,14 +31,19 @@ import android.view.KeyEvent;
 public final class GameCore {
 
 	private static GameView gameView;
-	private static Activity mainActivity;
+	protected static Activity mainActivity;
 
 	private GamingThread thread_Gaming = null;
 
 	private static boolean inited = false;
 
+	//protected Display display;
+
 	public GameCore(Activity mainActivity) {
 		GameCore.mainActivity = mainActivity;
+		//display = ((WindowManager) mainActivity
+		//		.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		
 		if (inited) {
 			// onActivityRecreated();
 		} else {
@@ -62,6 +67,11 @@ public final class GameCore {
 	}
 
 	protected void onActivityRecreated() {
+		MyDebug.print("OnActivityRecreated");
+		gameView.getHolder().removeCallback(thread_Gaming);
+		gameView.setOnTouchListener(null);
+		gameView.setOnKeyListener(null);
+
 		gameView = new GameView(mainActivity);
 		thread_Gaming.setSurfaceHolder(gameView.getHolder());
 

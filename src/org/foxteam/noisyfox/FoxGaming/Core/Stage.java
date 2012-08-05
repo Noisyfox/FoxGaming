@@ -158,10 +158,16 @@ public final class Stage {
 	}
 
 	private static void updateStageIndex() {
-		for (int i = 0; i < stages.size(); i++) {// 重新构建index
-			stages.get(i).stageIndex = i;
-			for (Performer p : stages.get(i).performers) {
-				p.stage = i;
+		synchronized (stages) {
+			for (int i = 0; i < stages.size(); i++) {// 重新构建index
+				stages.get(i).stageIndex = i;
+				
+				synchronized (stages.get(i).performers) {
+					for (Performer p : stages.get(i).performers) {
+						p.stage = i;
+					}
+				}
+				
 			}
 		}
 	}
@@ -376,4 +382,5 @@ public final class Stage {
 			}
 		}
 	}
+
 }

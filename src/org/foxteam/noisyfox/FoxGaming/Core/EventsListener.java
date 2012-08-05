@@ -46,6 +46,7 @@ public class EventsListener {
 	public final static int EVENT_ONSTEPEND = 20;
 	public final static int EVENT_ONCOLLISIONWITH = 21;
 	public final static int EVENT_ONUSERDEFINEDEVENT = 22;
+	public final static int EVENT_ONSCREENSIZECHANGED = 23;
 
 	public void onCreate(Performer performer) {
 	}// 当一个performer被创建时接收到的第一个事件，优先于其它所有事件
@@ -107,6 +108,9 @@ public class EventsListener {
 
 	public void onCollisionWith(Performer performer, Performer target) {
 	}// 当与指定类型的 Performer 发生碰撞的时候触发，只有主动请求碰撞检测的 Performer 会接收到该事件
+
+	public void onScreenSizeChanged(Performer performer, int width, int height) {
+	}// 当屏幕尺寸发生变化时（如改变屏幕方向）触发
 
 	public void onUserDefinedEvent(Performer performer, int event) {
 	}// 只会在程序中手动调用

@@ -45,6 +45,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	protected static Bitmap bufferBitmap = null;
 	protected static int width = 0;
 	protected static int height = 0;
+	protected static int screenRotation = 0;
 
 	private static final int STATEFLAG_WAITING = 0;// 线程刚被创建，尚未开始运作
 	private static final int STATEFLAG_STOPING = 1;
@@ -67,6 +68,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private boolean processing = false;
 	private Stage lastStage = null;
 	private Stage currentStage = null;
+	private int lastScreenWidth = 0;
+	private int lastScreenHeight = 0;
 	private List<TouchEvent> listTouchEvent = new ArrayList<TouchEvent>();
 	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
 	private long stepCount = 0;
@@ -181,7 +184,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		// 清理
 		SimpleSoundEffect.freeAll();
 		SimpleBGM.freeAll();
-		
+
 		MyDebug.print("Gaming thread exit.");
 	}
 
@@ -189,6 +192,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 	public void screenRefresh() {
 		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
 		if (targetCanvas != null) {
+			targetCanvas.drawARGB(255, 255, 255, 255);
+			
 			// 处理视角
 			if (currentStage.activatedViews.size() == 0) {
 				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
@@ -228,6 +233,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 				|| bufferBitmap.getWidth() != currentStage.getWidth()
 				|| bufferBitmap.getHeight() != currentStage.getHeight()) {
 
+			MyDebug.print("Buffer bitmap recreated");
+
 			bufferBitmap = Bitmap.createBitmap(currentStage.getWidth(),
 					currentStage.getHeight(), Bitmap.Config.ARGB_8888);
 			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
@@ -264,6 +271,15 @@ public class GamingThread extends Thread implements OnTouchListener,
 			currentStage.operateAlarm();
 			// 计算碰撞
 			currentStage.operateCollision();
+			// 检测屏幕尺寸变化
+			if (width != lastScreenWidth || height != lastScreenHeight) {
+				lastScreenHeight = height;
+				lastScreenWidth = width;
+				currentStage
+						.broadcastEvent(
+								EventsListener.EVENT_ONSCREENSIZECHANGED,
+								width, height);
+			}
 
 			// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
 			synchronized (listTouchEvent) {
@@ -604,10 +620,16 @@ public class GamingThread extends Thread implements OnTouchListener,
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		if (width != 0)
+		MyDebug.print("serface changed");
+		if (width != 0 && height != 0) {
+			if (GamingThread.width == 0 && GamingThread.height == 0) {
+				lastScreenHeight = height;
+				lastScreenWidth = width;
+			}
 			GamingThread.width = width;
-		if (height != 0)
 			GamingThread.height = height;
+		}
+		MyDebug.print(width + "," + height);
 	}
 
 	@Override

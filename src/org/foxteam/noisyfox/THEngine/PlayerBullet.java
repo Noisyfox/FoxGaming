@@ -49,7 +49,7 @@ public class PlayerBullet extends Bullet {
 
 			GraphicCollision co = new GraphicCollision();
 			co.addCircle(0, 7, 5, true);
-			MyDebug.print(bulletSprite.getWidth() + "");
+			//MyDebug.print(bulletSprite.getWidth() + "");
 
 		}
 

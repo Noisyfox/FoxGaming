@@ -141,6 +141,10 @@ public class Performer {
 		case EventsListener.EVENT_ONUSERDEFINEDEVENT:
 			eventsListener.onUserDefinedEvent(this, (Integer) args[0]);
 			break;
+		case EventsListener.EVENT_ONSCREENSIZECHANGED:
+			eventsListener.onScreenSizeChanged(this, (Integer) args[0],
+					(Integer) args[1]);
+			break;
 		}
 	}
 
