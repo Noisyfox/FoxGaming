@@ -77,6 +77,17 @@ public class Player extends Performer {
 			performer.setAlarm(0, (int) (Stage.getSpeed() * 0.5f), true);
 			performer.startAlarm(0);
 
+			//添加碰撞检测遮罩
+			GraphicCollision co = new GraphicCollision();
+			int[][] vertex1 = { { -21, -7 }, { -23, 4 }, { 23, 4 }, { 21, -7 } };
+			co.addPolygon(vertex1, true);
+			int[][] vertex2 = { { -11, 4 }, { -10, 19 }, { 0, 28 }, { 10, 19 },
+					{ 11, 4 } };
+			co.addPolygon(vertex2, true);
+			int[][] vertex3 = { { 0, -28 }, { -17, -7 }, { 17, -7 } };
+			co.addPolygon(vertex3, true);
+			performer.bindCollisionMask(co);
+
 		}
 
 		@Override
@@ -240,6 +251,7 @@ public class Player extends Performer {
 	@Override
 	protected void onDraw(Performer performer) {
 		super.onDraw(performer);
+		performer.getCollisionMask().draw(performer.getCanvas());
 	}
 
 }

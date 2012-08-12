@@ -28,8 +28,6 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
  */
 public class PlayerBullet extends Bullet {
 
-	GraphicCollision co;
-
 	private EventsListener eventsListener = new EventsListener() {
 
 		@Override
@@ -42,7 +40,7 @@ public class PlayerBullet extends Bullet {
 
 			performer.bindSprite(bulletSprite);
 
-			co = new GraphicCollision();
+			GraphicCollision co = new GraphicCollision();
 			co.addCircle(0, 8, 5, true);
 			// MyDebug.print(bulletSprite.getWidth() + "");
 			performer.bindCollisionMask(co);
@@ -50,13 +48,13 @@ public class PlayerBullet extends Bullet {
 
 		@Override
 		public void onStep(Performer performer) {
+			performer.setPosition(performer.getX(), performer.getY() - 300f
+					/ Stage.getSpeed());
+			
 			if (performer.getY() + performer.getSprite().getHeight()
 					- performer.getSprite().getOffsetY() < 0) {
 				performer.dismiss();
 			}
-
-			performer.setPosition(performer.getX(), performer.getY() - 300f
-					/ Stage.getSpeed());
 		}
 
 	};
@@ -64,7 +62,7 @@ public class PlayerBullet extends Bullet {
 	@Override
 	protected void onDraw(Performer performer) {
 		super.onDraw(performer);
-		co.draw(performer.getCanvas());
+		performer.getCollisionMask().draw(performer.getCanvas());
 	}
 
 	public PlayerBullet(int x, int y) {
