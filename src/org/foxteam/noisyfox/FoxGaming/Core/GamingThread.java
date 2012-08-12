@@ -193,7 +193,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
 		if (targetCanvas != null) {
 			targetCanvas.drawARGB(255, 255, 255, 255);
-			
+
 			// 处理视角
 			if (currentStage.activatedViews.size() == 0) {
 				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
@@ -238,6 +238,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 			bufferBitmap = Bitmap.createBitmap(currentStage.getWidth(),
 					currentStage.getHeight(), Bitmap.Config.ARGB_8888);
 			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
+			// bufferCanvas.setDrawFilter(new PaintFlagsDrawFilter(0,
+			// Paint.ANTI_ALIAS_FLAG));
 		}
 		if (currentStage != null) {
 			// 先准备stage

@@ -37,9 +37,6 @@ public class PlayerBullet extends Bullet {
 
 		@Override
 		public void onCreate(Performer performer) {
-			//Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-			//		.getResources(),
-			//		org.foxteam.noisyfox.THEngine.R.drawable.bullet);
 
 			Sprite bulletSprite = new Sprite();
 			bulletSprite.loadFromBitmap(

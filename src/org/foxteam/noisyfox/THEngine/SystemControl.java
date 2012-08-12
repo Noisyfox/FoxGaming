@@ -18,10 +18,6 @@ package org.foxteam.noisyfox.THEngine;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
 /**
  * @ClassName: SystemControl
  * @Description: TODO
@@ -41,32 +37,44 @@ public class SystemControl extends Performer {
 					.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
 			SimpleBGM.play(bgmId, true);
 
-			Stage.getCurrentStage()
-					.setSize(GamingThread.getScreenHeight(), 320);
+			// 计算缩放比率
+			float k = (float) GamingThread.getScreenWidth() * 1.15f / 320f;
+
+			Stage.getCurrentStage().setSize(
+					(int) ((float) GamingThread.getScreenHeight() / k), 320);
 
 			Views v = new Views();
-			v.setPositionFromScreen(0, 0);
-			v.setPositionFromStage(
-					(Stage.getCurrentStage().getWidth() - GamingThread
-							.getScreenWidth()) / 2, 0);
+			
 			v.setSizeFromScreen(GamingThread.getScreenWidth(),
 					GamingThread.getScreenHeight());
-			v.setSizeFromStage(GamingThread.getScreenWidth(),
-					GamingThread.getScreenHeight());
+			v.setSizeFromStage(
+					(int) ((float) GamingThread.getScreenWidth() / k),
+					(int) ((float) GamingThread.getScreenHeight() / k));
+			
+			v.setPositionFromScreen(0, 0);
+			v.setPositionFromStage(
+					(Stage.getCurrentStage().getWidth() - v.getWidthFromStage()) / 2, 0);
+
 			v.setAngleFromStage(0);
 			Stage.getCurrentStage().addView(v);
+			
+			Player p = new Player();
+			p.perform(Stage.getCurrentStage().getStageIndex());
+			
+			new HUD();
 		}
 
 		@Override
 		public void onScreenSizeChanged(Performer performer, int width,
 				int height) {
-			MyDebug.print("Screen size changed");
-			Stage.getCurrentStage().setSize(height, 320);
-			Views v = Stage.getCurrentStage().getView(0);
-			v.setSizeFromScreen(GamingThread.getScreenWidth(),
-					GamingThread.getScreenHeight());
-			v.setSizeFromStage(GamingThread.getScreenWidth(),
-					GamingThread.getScreenHeight());
+			// MyDebug.print("Screen size changed");
+
+			// Stage.getCurrentStage().setSize(height, 320);
+			// Views v = Stage.getCurrentStage().getView(0);
+			// v.setSizeFromScreen(GamingThread.getScreenWidth(),
+			// GamingThread.getScreenHeight());
+			// v.setSizeFromStage(GamingThread.getScreenWidth(),
+			// GamingThread.getScreenHeight());
 
 		}
 
@@ -85,11 +93,7 @@ public class SystemControl extends Performer {
 
 	@Override
 	protected void onDraw(Performer performer) {
-		Canvas c = performer.getCanvas();
-		Paint p = new Paint();
-		p.setColor(Color.BLACK);
-		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS(), 10,
-				10, p);
+
 	}
 
 	public SystemControl() {

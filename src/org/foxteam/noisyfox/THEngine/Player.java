@@ -39,9 +39,10 @@ public class Player extends Performer {
 		@Override
 		public void onStep(Performer performer) {
 			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
+
 			mainView.setPositionFromStage(
-					(Stage.getCurrentStage().getWidth() - GamingThread
-							.getScreenWidth()) * per, 0);
+					(Stage.getCurrentStage().getWidth() - mainView
+							.getWidthFromStage()) * per, 0);
 
 			performer.setPosition(mainView.coordinateScreen2Stage_X(
 					meOnScreen.getX(), meOnScreen.getY()), mainView
@@ -53,16 +54,11 @@ public class Player extends Performer {
 		public void onCreate(Performer performer) {
 			mainView = Stage.getCurrentStage().getView(0);
 
-			//Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-			//		.getResources(),
-			//		org.foxteam.noisyfox.THEngine.R.drawable.player);
-
 			Sprite playerSprite = new Sprite();
 			playerSprite.loadFromBitmap(
 					org.foxteam.noisyfox.THEngine.R.drawable.player, false);
 			playerSprite.setOffset(playerSprite.getWidth() / 2,
 					playerSprite.getHeight() / 2);
-
 			performer.bindSprite(playerSprite);
 
 			meOnScreen = new Point((int) mainView.getWidthFromScreen() / 2,

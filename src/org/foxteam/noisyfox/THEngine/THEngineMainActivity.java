@@ -14,8 +14,8 @@ public class THEngineMainActivity extends GameActivity {
 		s.setStageSpeed(30);
 		Performer p = new SystemControl();
 		p.perform(s.getStageIndex());
-		p = new Player();
-		p.perform(s.getStageIndex());
+		//p = new Player();
+		//p.perform(s.getStageIndex());
 
 		Background bkg = new Background();
 
