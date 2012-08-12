@@ -19,12 +19,6 @@ package org.foxteam.noisyfox.THEngine;
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
-//import android.graphics.Bitmap;
-//import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
 /**
  * @ClassName: PlayerBullet
  * @Description: TODO
@@ -33,6 +27,9 @@ import android.graphics.Paint;
  * 
  */
 public class PlayerBullet extends Bullet {
+
+	GraphicCollision co;
+
 	private EventsListener eventsListener = new EventsListener() {
 
 		@Override
@@ -41,14 +38,14 @@ public class PlayerBullet extends Bullet {
 			Sprite bulletSprite = new Sprite();
 			bulletSprite.loadFromBitmap(
 					org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
-			bulletSprite.setOffset(bulletSprite.getWidth() / 2, 0);
+			bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
 
 			performer.bindSprite(bulletSprite);
 
-			GraphicCollision co = new GraphicCollision();
-			co.addCircle(0, 7, 5, true);
+			co = new GraphicCollision();
+			co.addCircle(0, 8, 5, true);
 			// MyDebug.print(bulletSprite.getWidth() + "");
-
+			performer.bindCollisionMask(co);
 		}
 
 		@Override
@@ -67,10 +64,7 @@ public class PlayerBullet extends Bullet {
 	@Override
 	protected void onDraw(Performer performer) {
 		super.onDraw(performer);
-		Canvas c = performer.getCanvas();
-		Paint p = new Paint();
-		p.setColor(Color.BLACK);
-		c.drawCircle(getX(), getY() + 7, 5, p);
+		co.draw(performer.getCanvas());
 	}
 
 	public PlayerBullet(int x, int y) {

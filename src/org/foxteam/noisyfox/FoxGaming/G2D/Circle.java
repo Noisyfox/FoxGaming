@@ -16,6 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 /**
  * @ClassName: Circle
  * @Description: 2D基础图形类--圆
@@ -45,4 +48,17 @@ public class Circle extends Point {
 	public final boolean filled() {
 		return fill;
 	}
+
+	@Override
+	public void draw(Canvas c) {
+		
+		paint.reset();
+		
+		if (!fill) {
+			paint.setStyle(Paint.Style.STROKE);
+		}
+
+		c.drawCircle(x, y, r, paint);
+	}
+
 }

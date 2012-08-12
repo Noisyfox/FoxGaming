@@ -16,6 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 /**
  * @ClassName: Point
  * @Description: 2D基础图形类--点
@@ -27,6 +30,7 @@ public class Point {
 
 	int x = 0;
 	int y = 0;
+	protected Paint paint = new Paint();
 
 	public Point() {
 		this(0, 0);
@@ -67,6 +71,11 @@ public class Point {
 	@Override
 	public String toString() {
 		return x + "," + y;
+	}
+
+	public void draw(Canvas c) {
+		paint.reset();
+		c.drawPoint(x, y, paint);
 	}
 
 }

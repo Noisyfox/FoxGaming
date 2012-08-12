@@ -19,6 +19,8 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Canvas;
+
 /**
  * @ClassName: GraphicCollision
  * @Description: TODO
@@ -291,6 +293,18 @@ public class GraphicCollision {
 			}
 		}
 		return false;
+	}
+
+	public void draw(Canvas c) {
+		for (Point p : points) {
+			p.draw(c);
+		}
+		for (Circle ci : circles) {
+			ci.draw(c);
+		}
+		for (Polygon pol : polygons) {
+			pol.draw(c);
+		}
 	}
 
 	// 静态函数，判断多个target之间是否发生碰撞

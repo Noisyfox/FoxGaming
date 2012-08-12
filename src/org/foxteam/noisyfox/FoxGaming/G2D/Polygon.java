@@ -16,6 +16,10 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+
 /**
  * @ClassName: Polygon
  * @Description: 2D基础图形类--多边形
@@ -29,6 +33,7 @@ public class Polygon {
 	int num_vertexs = 0;
 	boolean isLine = false;
 	boolean fill = false;
+	Paint paint =  new Paint();
 
 	public Polygon(Point[] vertex, boolean fill) {
 		if (vertex.length <= 1) {
@@ -77,6 +82,25 @@ public class Polygon {
 
 	public final boolean isLine() {
 		return isLine;
+	}
+
+	public void draw(Canvas c) {
+		
+		paint.reset();
+		if (!fill) {
+			paint.setStyle(Paint.Style.STROKE);
+		}
+
+		Path path1 = new Path();
+		for (int i = 0; i < vertex.length; i++) {
+			if (i == 0) {
+				path1.moveTo(vertex[i].x, vertex[i].y);
+			} else {
+				path1.lineTo(vertex[i].x, vertex[i].y);
+			}
+		}
+		path1.close();
+		c.drawPath(path1, paint);
 	}
 
 }
