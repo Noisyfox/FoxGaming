@@ -16,7 +16,12 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
+import java.io.InputStream;
+
+import org.foxteam.noisyfox.FoxGaming.Core.GameCore;
+
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -71,6 +76,35 @@ public class Sprite {
 	public final void loadFromBitmap(Bitmap bitmap, int horizontalNumber,
 			int verticalNumber) {
 		initializeFrames(bitmap, horizontalNumber, verticalNumber);
+	}
+
+	public void loadFromBitmap(int resId, boolean cDensityDpi) {
+		Bitmap b = null;
+		if (cDensityDpi) {
+			b = BitmapFactory.decodeResource(GameCore.getMainContext()
+					.getResources(), resId);
+		} else {
+			InputStream is = GameCore.getMainContext().getResources()
+					.openRawResource(resId);
+			b = BitmapFactory.decodeStream(is);
+		}
+
+		loadFromBitmap(b);
+	}
+
+	public void loadFromBitmap(int resId, boolean cDensityDpi,
+			int horizontalNumber, int verticalNumber) {
+		Bitmap b = null;
+		if (cDensityDpi) {
+			b = BitmapFactory.decodeResource(GameCore.getMainContext()
+					.getResources(), resId);
+		} else {
+			InputStream is = GameCore.getMainContext().getResources()
+					.openRawResource(resId);
+			b = BitmapFactory.decodeStream(is);
+		}
+
+		loadFromBitmap(b, horizontalNumber, verticalNumber);
 	}
 
 	private void initializeFrames(Bitmap image, int horizontalNumber,

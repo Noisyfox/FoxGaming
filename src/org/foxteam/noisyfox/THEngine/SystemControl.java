@@ -42,7 +42,7 @@ public class SystemControl extends Performer {
 			SimpleBGM.play(bgmId, true);
 
 			Stage.getCurrentStage()
-					.setSize(GamingThread.getScreenHeight(), 550);
+					.setSize(GamingThread.getScreenHeight(), 320);
 
 			Views v = new Views();
 			v.setPositionFromScreen(0, 0);
@@ -61,13 +61,13 @@ public class SystemControl extends Performer {
 		public void onScreenSizeChanged(Performer performer, int width,
 				int height) {
 			MyDebug.print("Screen size changed");
-			Stage.getCurrentStage().setSize(height, 550);
+			Stage.getCurrentStage().setSize(height, 320);
 			Views v = Stage.getCurrentStage().getView(0);
 			v.setSizeFromScreen(GamingThread.getScreenWidth(),
 					GamingThread.getScreenHeight());
 			v.setSizeFromStage(GamingThread.getScreenWidth(),
 					GamingThread.getScreenHeight());
-			
+
 		}
 
 		@Override

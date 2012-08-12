@@ -19,9 +19,6 @@ package org.foxteam.noisyfox.THEngine;
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 /**
  * @ClassName: Player
  * @Description: TODO
@@ -56,12 +53,13 @@ public class Player extends Performer {
 		public void onCreate(Performer performer) {
 			mainView = Stage.getCurrentStage().getView(0);
 
-			Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-					.getResources(),
-					org.foxteam.noisyfox.THEngine.R.drawable.player);
+			//Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+			//		.getResources(),
+			//		org.foxteam.noisyfox.THEngine.R.drawable.player);
 
 			Sprite playerSprite = new Sprite();
-			playerSprite.loadFromBitmap(b);
+			playerSprite.loadFromBitmap(
+					org.foxteam.noisyfox.THEngine.R.drawable.player, false);
 			playerSprite.setOffset(playerSprite.getWidth() / 2,
 					playerSprite.getHeight() / 2);
 

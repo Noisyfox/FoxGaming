@@ -3,8 +3,8 @@ package org.foxteam.noisyfox.THEngine;
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.Background;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+//import android.graphics.Bitmap;
+//import android.graphics.BitmapFactory;
 
 public class THEngineMainActivity extends GameActivity {
 
@@ -19,10 +19,11 @@ public class THEngineMainActivity extends GameActivity {
 
 		Background bkg = new Background();
 
-		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-				.getResources(),
-				org.foxteam.noisyfox.THEngine.R.drawable.background);
-		bkg.loadFromBitmap(b);
+		//Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+		//		.getResources(),
+		//		org.foxteam.noisyfox.THEngine.R.drawable.background);
+		bkg.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.background,
+				false);
 		bkg.setAdaptation(Background.ADAPTATION_SMART);
 		bkg.setSpeed(0, 1);
 		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);

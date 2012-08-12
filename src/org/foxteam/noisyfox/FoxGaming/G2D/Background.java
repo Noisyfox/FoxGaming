@@ -16,7 +16,12 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
+import java.io.InputStream;
+
+import org.foxteam.noisyfox.FoxGaming.Core.GameCore;
+
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
@@ -100,6 +105,20 @@ public class Background {
 
 	public void loadFromBitmap(Bitmap bitmap) {
 		sourceImage = bitmap;
+	}
+
+	public void loadFromBitmap(int resId, boolean cDensityDpi) {
+		Bitmap b = null;
+		if (cDensityDpi) {
+			b = BitmapFactory.decodeResource(GameCore.getMainContext()
+					.getResources(), resId);
+		} else {
+			InputStream is = GameCore.getMainContext().getResources()
+					.openRawResource(resId);
+			b = BitmapFactory.decodeStream(is);
+		}
+		
+		loadFromBitmap(b);
 	}
 
 	// 设置自适应方式

@@ -19,8 +19,8 @@ package org.foxteam.noisyfox.THEngine;
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+//import android.graphics.Bitmap;
+//import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -37,19 +37,20 @@ public class PlayerBullet extends Bullet {
 
 		@Override
 		public void onCreate(Performer performer) {
-			Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-					.getResources(),
-					org.foxteam.noisyfox.THEngine.R.drawable.bullet);
+			//Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+			//		.getResources(),
+			//		org.foxteam.noisyfox.THEngine.R.drawable.bullet);
 
 			Sprite bulletSprite = new Sprite();
-			bulletSprite.loadFromBitmap(b);
+			bulletSprite.loadFromBitmap(
+					org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
 			bulletSprite.setOffset(bulletSprite.getWidth() / 2, 0);
 
 			performer.bindSprite(bulletSprite);
 
 			GraphicCollision co = new GraphicCollision();
 			co.addCircle(0, 7, 5, true);
-			//MyDebug.print(bulletSprite.getWidth() + "");
+			// MyDebug.print(bulletSprite.getWidth() + "");
 
 		}
 

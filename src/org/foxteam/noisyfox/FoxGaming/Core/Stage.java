@@ -157,17 +157,24 @@ public final class Stage {
 		}
 	}
 
+	/**
+	 * @Title: updateStageIndex
+	 * @Description: 重新构建index
+	 * @param:
+	 * @return: void
+	 * @throws
+	 */
 	private static void updateStageIndex() {
 		synchronized (stages) {
-			for (int i = 0; i < stages.size(); i++) {// 重新构建index
+			for (int i = 0; i < stages.size(); i++) {
 				stages.get(i).stageIndex = i;
-				
+
 				synchronized (stages.get(i).performers) {
 					for (Performer p : stages.get(i).performers) {
 						p.stage = i;
 					}
 				}
-				
+
 			}
 		}
 	}
