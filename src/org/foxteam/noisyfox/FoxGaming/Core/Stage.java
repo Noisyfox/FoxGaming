@@ -48,13 +48,17 @@ public final class Stage {
 	private int stageIndex = -1;
 	private boolean available = false;
 	private List<Performer> employingPerformer = null;
+	private List<Performer> emploiedPerformer = null;
 	private List<Performer> dismissingPerformer = null;
+	private List<Performer> dismissedPerformer = null;
 
 	public Stage() {
 		performers = new ArrayList<Performer>();
 		activatedViews = new ArrayList<Views>();
 		employingPerformer = new ArrayList<Performer>();
 		dismissingPerformer = new ArrayList<Performer>();
+		emploiedPerformer = new ArrayList<Performer>();
+		dismissedPerformer = new ArrayList<Performer>();
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
@@ -202,12 +206,16 @@ public final class Stage {
 					if (performers.contains(p))
 						continue;
 					performers.add(p);
-					p.callEvent(EventsListener.EVENT_ONCREATE);
+					emploiedPerformer.add(p);
 				}
 				sortWithDepth();
 				employingPerformer.clear();
 			}
 		}
+		for (Performer p : emploiedPerformer) {
+			p.callEvent(EventsListener.EVENT_ONCREATE);
+		}
+		emploiedPerformer.clear();
 	}
 
 	protected void dismissPerformer(Performer performer) {
@@ -227,12 +235,16 @@ public final class Stage {
 					if (!performers.contains(p))
 						continue;
 					performers.remove(p);
-					p.callEvent(EventsListener.EVENT_ONDESTORY);
+					dismissedPerformer.add(p);
 				}
 				sortWithDepth();
 				dismissingPerformer.clear();
 			}
 		}
+		for (Performer p : dismissedPerformer) {
+			p.callEvent(EventsListener.EVENT_ONDESTORY);
+		}
+		dismissedPerformer.clear();
 	}
 
 	public void broadcastEvent(int event, Object... args) {
