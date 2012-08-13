@@ -236,7 +236,7 @@ public class Player extends Performer {
 		@Override
 		public void onAlarm(Performer performer, int whichAlarm) {
 			if (whichAlarm == 0) {
-				PlayerBullet b = new PlayerBullet((int) performer.getX(),
+				Bullet_Player b = new Bullet_Player((int) performer.getX(),
 						(int) performer.getY()
 								- performer.getSprite().getOffsetY());
 				b.setDepth(1);

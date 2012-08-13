@@ -1,5 +1,5 @@
 /**
- * FileName:     PlayerBullet.java
+ * FileName:     Bullet_Player.java
  * @Description: TODO
  * All rights Reserved, Designed By Noisyfox
  * Copyright:    Copyright(C) 2012
@@ -20,13 +20,13 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
 /**
- * @ClassName: PlayerBullet
+ * @ClassName: Bullet_Player
  * @Description: TODO
  * @author: Noisyfox
  * @date: 2012-7-19 下午3:11:09
  * 
  */
-public class PlayerBullet extends Bullet {
+public class Bullet_Player extends Bullet {
 
 	private EventsListener eventsListener = new EventsListener() {
 
@@ -44,13 +44,15 @@ public class PlayerBullet extends Bullet {
 			co.addCircle(0, 8, 5, true);
 			// MyDebug.print(bulletSprite.getWidth() + "");
 			performer.bindCollisionMask(co);
+			
+			performer.requireCollisionDetection(Enemy.class);
 		}
 
 		@Override
 		public void onStep(Performer performer) {
 			performer.setPosition(performer.getX(), performer.getY() - 300f
 					/ Stage.getSpeed());
-			
+
 			if (performer.getY() + performer.getSprite().getHeight()
 					- performer.getSprite().getOffsetY() < 0) {
 				performer.dismiss();
@@ -65,7 +67,7 @@ public class PlayerBullet extends Bullet {
 		performer.getCollisionMask().draw(performer.getCanvas());
 	}
 
-	public PlayerBullet(int x, int y) {
+	public Bullet_Player(int x, int y) {
 		this.setEventsListener(eventsListener);
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
