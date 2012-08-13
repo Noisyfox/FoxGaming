@@ -29,38 +29,37 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
 public class Bullet_Player extends Bullet {
 
 	@Override
-	protected void onCreate(Performer performer) {
+	protected void onCreate() {
 
 		Sprite bulletSprite = new Sprite();
 		bulletSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
 
-		performer.bindSprite(bulletSprite);
+		this.bindSprite(bulletSprite);
 
 		GraphicCollision co = new GraphicCollision();
 		co.addCircle(0, 8, 5, true);
 		// MyDebug.print(bulletSprite.getWidth() + "");
-		performer.bindCollisionMask(co);
+		this.bindCollisionMask(co);
 
-		performer.requireCollisionDetection(Enemy.class);
+		this.requireCollisionDetection(Enemy.class);
 	}
 
 	@Override
-	protected void onStep(Performer performer) {
-		performer.setPosition(performer.getX(),
-				performer.getY() - 300f / Stage.getSpeed());
+	protected void onStep() {
+		this.setPosition(this.getX(), this.getY() - 300f / Stage.getSpeed());
 
-		if (performer.getY() + performer.getSprite().getHeight()
-				- performer.getSprite().getOffsetY() < 0) {
-			performer.dismiss();
+		if (this.getY() + this.getSprite().getHeight()
+				- this.getSprite().getOffsetY() < 0) {
+			this.dismiss();
 		}
 	}
 
 	@Override
-	protected void onDraw(Performer performer) {
-		super.onDraw(performer);
-		performer.getCollisionMask().draw(performer.getCanvas());
+	protected void onDraw() {
+		super.onDraw();
+		this.getCollisionMask().draw(this.getCanvas());
 	}
 
 	public Bullet_Player(int x, int y) {

@@ -30,7 +30,7 @@ public class SystemControl extends Performer {
 	private int bgmId;
 
 	@Override
-	protected void onCreate(Performer performer) {
+	protected void onCreate() {
 		bgmId = SimpleBGM.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
 		SimpleBGM.play(bgmId, true);
 
@@ -62,8 +62,7 @@ public class SystemControl extends Performer {
 	}
 
 	@Override
-	protected void onScreenSizeChanged(Performer performer, int width,
-			int height) {
+	protected void onScreenSizeChanged(int width, int height) {
 		// MyDebug.print("Screen size changed");
 
 		// Stage.getCurrentStage().setSize(height, 320);
@@ -76,18 +75,18 @@ public class SystemControl extends Performer {
 	}
 
 	@Override
-	protected void onStep(Performer performer) {
+	protected void onStep() {
 	}
 
 	@Override
-	protected void onTouchRelease(Performer performer, int whichfinger) {
+	protected void onTouchRelease(int whichfinger) {
 		if (whichfinger == 1) {
 			GameActivity.getGameCore().gameEnd();
 		}
 	}
 
 	@Override
-	protected void onDraw(Performer performer) {
+	protected void onDraw() {
 
 	}
 

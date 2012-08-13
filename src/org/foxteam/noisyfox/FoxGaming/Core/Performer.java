@@ -58,9 +58,9 @@ public class Performer extends EventsListener {
 
 	// 没有重载前负责绘制默认精灵，重载后如果不手动调用绘图则会使该performer不绘制默认精灵
 	@Override
-	protected void onDraw(Performer performer) {
+	protected void onDraw() {
 		if (sprite != null) {
-			Canvas c = performer.getCanvas();
+			Canvas c = this.getCanvas();
 			sprite.draw(c, (int) x, (int) y);
 		}
 	}
@@ -70,76 +70,76 @@ public class Performer extends EventsListener {
 			return;
 		switch (event) {
 		case EventsListener.EVENT_ONCREATE:
-			this.onCreate(this);
+			this.onCreate();
 			break;
 		case EventsListener.EVENT_ONDESTORY:
-			this.onDestory(this);
+			this.onDestory();
 			break;
 		case EventsListener.EVENT_ONTOUCH:
-			this.onTouch(this, (Integer) args[0], (Integer) args[1],
+			this.onTouch((Integer) args[0], (Integer) args[1],
 					(Integer) args[2]);
 			break;
 		case EventsListener.EVENT_ONTOUCHPRESS:
-			this.onTouchPress(this, (Integer) args[0], (Integer) args[1],
+			this.onTouchPress((Integer) args[0], (Integer) args[1],
 					(Integer) args[2]);
 			break;
 		case EventsListener.EVENT_ONTOUCHRELEASE:
-			this.onTouchRelease(this, (Integer) args[0]);
+			this.onTouchRelease((Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEY:
-			this.onKey(this, (Integer) args[0]);
+			this.onKey((Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEYPRESS:
-			this.onKeyPress(this, (Integer) args[0]);
+			this.onKeyPress((Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEYRELEASE:
-			this.onKeyRelease(this, (Integer) args[0]);
+			this.onKeyRelease((Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONALARM:
-			this.onAlarm(this, (Integer) args[0]);
+			this.onAlarm((Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONGAMESTART:
-			this.onGameStart(this);
+			this.onGameStart();
 			break;
 		case EventsListener.EVENT_ONGAMEPAUSE:
-			this.onGamePause(this);
+			this.onGamePause();
 			break;
 		case EventsListener.EVENT_ONGAMERESUME:
-			this.onGameResume(this);
+			this.onGameResume();
 			break;
 		case EventsListener.EVENT_ONGAMEEND:
-			this.onGameEnd(this);
+			this.onGameEnd();
 			break;
 		case EventsListener.EVENT_ONSTAGECHANGE:
-			this.onStageChange(this);
+			this.onStageChange();
 			break;
 		case EventsListener.EVENT_ONSTAGESTART:
-			this.onStageStart(this);
+			this.onStageStart();
 			break;
 		case EventsListener.EVENT_ONSTAGEEND:
-			this.onStageEnd(this);
+			this.onStageEnd();
 			break;
 		case EventsListener.EVENT_ONDRAW:
 			if (isVisible())
-				onDraw(this);
+				onDraw();
 			break;
 		case EventsListener.EVENT_ONSTEP:
-			this.onStep(this);
+			this.onStep();
 			break;
 		case EventsListener.EVENT_ONSTEPSTART:
-			this.onStepStart(this);
+			this.onStepStart();
 			break;
 		case EventsListener.EVENT_ONSTEPEND:
-			this.onStepEnd(this);
+			this.onStepEnd();
 			break;
 		case EventsListener.EVENT_ONCOLLISIONWITH:
-			this.onCollisionWith(this, (Performer) args[0]);
+			this.onCollisionWith((Performer) args[0]);
 			break;
 		case EventsListener.EVENT_ONUSERDEFINEDEVENT:
-			this.onUserDefinedEvent(this, (Integer) args[0]);
+			this.onUserDefinedEvent((Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONSCREENSIZECHANGED:
-			this.onScreenSizeChanged(this, (Integer) args[0], (Integer) args[1]);
+			this.onScreenSizeChanged((Integer) args[0], (Integer) args[1]);
 			break;
 		}
 	}

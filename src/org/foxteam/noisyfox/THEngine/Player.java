@@ -35,14 +35,14 @@ public class Player extends Performer {
 	Point meStart = null;
 
 	@Override
-	protected void onStep(Performer performer) {
+	protected void onStep() {
 		float per = meOnScreen.getX() / mainView.getWidthFromScreen();
 
 		mainView.setPositionFromStage(
 				(Stage.getCurrentStage().getWidth() - mainView
 						.getWidthFromStage()) * per, 0);
 
-		performer.setPosition(
+		this.setPosition(
 				mainView.coordinateScreen2Stage_X(meOnScreen.getX(),
 						meOnScreen.getY()),
 				mainView.coordinateScreen2Stage_Y(meOnScreen.getX(),
@@ -50,7 +50,7 @@ public class Player extends Performer {
 	}
 
 	@Override
-	protected void onCreate(Performer performer) {
+	protected void onCreate() {
 		mainView = Stage.getCurrentStage().getView(0);
 
 		Sprite playerSprite = new Sprite();
@@ -58,13 +58,13 @@ public class Player extends Performer {
 				org.foxteam.noisyfox.THEngine.R.drawable.player, false);
 		playerSprite.setOffset(playerSprite.getWidth() / 2,
 				playerSprite.getHeight() / 2);
-		performer.bindSprite(playerSprite);
+		this.bindSprite(playerSprite);
 
 		meOnScreen = new Point((int) mainView.getWidthFromScreen() / 2,
 				(int) mainView.getHeightFromScreen() - playerSprite.getHeight()
 						+ playerSprite.getOffsetY());
 
-		performer.setPosition(
+		this.setPosition(
 				mainView.coordinateScreen2Stage_X(meOnScreen.getX(),
 						meOnScreen.getY()),
 				mainView.coordinateScreen2Stage_Y(meOnScreen.getX(),
@@ -73,8 +73,8 @@ public class Player extends Performer {
 		fingerPressStart = new Point();
 		meStart = new Point();
 
-		performer.setAlarm(0, (int) (Stage.getSpeed() * 0.5f), true);
-		performer.startAlarm(0);
+		this.setAlarm(0, (int) (Stage.getSpeed() * 0.5f), true);
+		this.startAlarm(0);
 
 		// 添加碰撞检测遮罩
 		GraphicCollision co = new GraphicCollision();
@@ -85,18 +85,18 @@ public class Player extends Performer {
 		co.addPolygon(vertex2, true);
 		int[][] vertex3 = { { 0, -28 }, { -17, -7 }, { 17, -7 } };
 		co.addPolygon(vertex3, true);
-		performer.bindCollisionMask(co);
+		this.bindCollisionMask(co);
 
 	}
 
 	@Override
-	protected void onDestory(Performer performer) {
+	protected void onDestory() {
 		// TODO Auto-generated method stub
-		super.onDestory(performer);
+		super.onDestory();
 	}
 
 	@Override
-	protected void onTouch(Performer performer, int whichfinger, int x, int y) {
+	protected void onTouch(int whichfinger, int x, int y) {
 		if (whichfinger == 0) {
 			int dx = x - fingerPressStart.getX();
 			int dy = y - fingerPressStart.getY();
@@ -105,60 +105,55 @@ public class Player extends Performer {
 			int realX = mainView.coordinateScreen2Stage_X(myX, myY);
 			int realY = mainView.coordinateScreen2Stage_Y(myX, myY);
 
-			if (realX < performer.getSprite().getOffsetX()) {
+			if (realX < this.getSprite().getOffsetX()) {
 
-				if (realX < performer.getSprite().getOffsetX() - 5) {
+				if (realX < this.getSprite().getOffsetX() - 5) {
 					int fingerXReal = mainView.coordinateScreen2Stage_X(
 							fingerPressStart.getX(), fingerPressStart.getY());
 					int fingerYReal = mainView.coordinateScreen2Stage_Y(
 							fingerPressStart.getX(), fingerPressStart.getY());
 
-					fingerPressStart.setPosition(
-							mainView.coordinateStage2Screen_X(fingerXReal
-									- performer.getSprite().getOffsetX()
-									+ realX, fingerYReal),
-							fingerPressStart.getY());
+					fingerPressStart.setPosition(mainView
+							.coordinateStage2Screen_X(fingerXReal
+									- this.getSprite().getOffsetX() + realX,
+									fingerYReal), fingerPressStart.getY());
 				}
 
-				realX = performer.getSprite().getOffsetX();
+				realX = this.getSprite().getOffsetX();
 
 			} else if (realX > Stage.getCurrentStage().getWidth()
-					- performer.getSprite().getWidth()
-					+ performer.getSprite().getOffsetX()) {
+					- this.getSprite().getWidth()
+					+ this.getSprite().getOffsetX()) {
 
 				if (realX > Stage.getCurrentStage().getWidth()
-						- performer.getSprite().getWidth()
-						+ performer.getSprite().getOffsetX() + 5) {
+						- this.getSprite().getWidth()
+						+ this.getSprite().getOffsetX() + 5) {
 					int fingerXReal = mainView.coordinateScreen2Stage_X(
 							fingerPressStart.getX(), fingerPressStart.getY());
 					int fingerYReal = mainView.coordinateScreen2Stage_Y(
 							fingerPressStart.getX(), fingerPressStart.getY());
 
-					fingerPressStart
-							.setPosition(
-									mainView.coordinateStage2Screen_X(
-											fingerXReal
-													+ realX
-													- (Stage.getCurrentStage()
-															.getWidth()
-															- performer
-																	.getSprite()
-																	.getWidth() + performer
-															.getSprite()
-															.getOffsetX()),
-											fingerYReal), fingerPressStart
-											.getY());
+					fingerPressStart.setPosition(mainView
+							.coordinateStage2Screen_X(
+									fingerXReal
+											+ realX
+											- (Stage.getCurrentStage()
+													.getWidth()
+													- this.getSprite()
+															.getWidth() + this
+													.getSprite().getOffsetX()),
+									fingerYReal), fingerPressStart.getY());
 				}
 
 				realX = Stage.getCurrentStage().getWidth()
-						- performer.getSprite().getWidth()
-						+ performer.getSprite().getOffsetX();
+						- this.getSprite().getWidth()
+						+ this.getSprite().getOffsetX();
 
 			}
 
-			if (realY < performer.getSprite().getOffsetY()) {
+			if (realY < this.getSprite().getOffsetY()) {
 
-				if (realY < performer.getSprite().getOffsetY() - 5) {
+				if (realY < this.getSprite().getOffsetY() - 5) {
 					int fingerXReal = mainView.coordinateScreen2Stage_X(
 							fingerPressStart.getX(), fingerPressStart.getX());
 					int fingerYReal = mainView.coordinateScreen2Stage_Y(
@@ -166,20 +161,19 @@ public class Player extends Performer {
 
 					fingerPressStart.setPosition(fingerPressStart.getX(),
 							mainView.coordinateStage2Screen_Y(fingerXReal,
-									fingerYReal
-											- performer.getSprite()
-													.getOffsetY() + realY));
+									fingerYReal - this.getSprite().getOffsetY()
+											+ realY));
 				}
 
-				realY = performer.getSprite().getOffsetY();
+				realY = this.getSprite().getOffsetY();
 
 			} else if (realY > Stage.getCurrentStage().getHeight()
-					- performer.getSprite().getHeight()
-					+ performer.getSprite().getOffsetY()) {
+					- this.getSprite().getHeight()
+					+ this.getSprite().getOffsetY()) {
 
 				if (realY > Stage.getCurrentStage().getHeight()
-						- performer.getSprite().getHeight()
-						+ performer.getSprite().getOffsetY() + 5) {
+						- this.getSprite().getHeight()
+						+ this.getSprite().getOffsetY() + 5) {
 					int fingerXReal = mainView.coordinateScreen2Stage_X(
 							fingerPressStart.getX(), fingerPressStart.getX());
 					int fingerYReal = mainView.coordinateScreen2Stage_Y(
@@ -194,16 +188,15 @@ public class Player extends Performer {
 													+ realY
 													- (Stage.getCurrentStage()
 															.getHeight()
-															- performer
-																	.getSprite()
-																	.getHeight() + performer
+															- this.getSprite()
+																	.getHeight() + this
 															.getSprite()
 															.getOffsetY())));
 				}
 
 				realY = Stage.getCurrentStage().getHeight()
-						- performer.getSprite().getHeight()
-						+ performer.getSprite().getOffsetY();
+						- this.getSprite().getHeight()
+						+ this.getSprite().getOffsetY();
 
 			}
 
@@ -215,8 +208,7 @@ public class Player extends Performer {
 	}
 
 	@Override
-	protected void onTouchPress(Performer performer, int whichfinger, int x,
-			int y) {
+	protected void onTouchPress(int whichfinger, int x, int y) {
 		if (whichfinger == 0) {
 			fingerPressStart.setPosition(x, y);
 			meStart.setPosition(meOnScreen.getX(), meOnScreen.getY());
@@ -224,25 +216,25 @@ public class Player extends Performer {
 	}
 
 	@Override
-	protected void onTouchRelease(Performer performer, int whichfinger) {
+	protected void onTouchRelease(int whichfinger) {
 		if (whichfinger == 0) {
 
 		}
 	}
 
 	@Override
-	protected void onAlarm(Performer performer, int whichAlarm) {
+	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {
-			Bullet_Player b = new Bullet_Player((int) performer.getX(),
-					(int) performer.getY() - performer.getSprite().getOffsetY());
+			Bullet_Player b = new Bullet_Player((int) this.getX(),
+					(int) this.getY() - this.getSprite().getOffsetY());
 			b.setDepth(1);
 		}
 	}
 
 	@Override
-	protected void onDraw(Performer performer) {
-		super.onDraw(performer);
-		performer.getCollisionMask().draw(performer.getCanvas());
+	protected void onDraw() {
+		super.onDraw();
+		this.getCollisionMask().draw(this.getCanvas());
 	}
 
 	public Player() {

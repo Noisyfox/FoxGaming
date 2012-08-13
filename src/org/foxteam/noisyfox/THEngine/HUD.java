@@ -34,20 +34,20 @@ public class HUD extends Performer {
 	Views mainView = null;
 
 	@Override
-	protected void onCreate(Performer performer) {
+	protected void onCreate() {
 		mainView = Stage.getCurrentStage().getView(0);
 	}
 
 	@Override
-	protected void onDraw(Performer performer) {
+	protected void onDraw() {
 		this.setPosition(mainView.getXFromStage(), mainView.getYFromStage());
 
-		Canvas c = performer.getCanvas();
+		Canvas c = this.getCanvas();
 		Paint p = new Paint();
 		p.setColor(Color.BLACK);
 		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS()
 				+ "," + Stage.getPerformersByClass(Bullet.class).length,
-				performer.getX() + 10, performer.getY() + 10, p);
+				this.getX() + 10, this.getY() + 10, p);
 	}
 
 	public HUD() {

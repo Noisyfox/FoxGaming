@@ -50,7 +50,7 @@ public class TestPerformer extends Performer {
 	GraphicCollision g1, g2, g3;
 
 	@Override
-	protected void onCreate(Performer performer) {
+	protected void onCreate() {
 		soundId = SimpleSoundEffect
 				.loadSoundEffect(org.foxteam.noisyfox.THEngine.R.raw.test_soundeffect);
 		bgmId = SimpleBGM.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
@@ -58,8 +58,7 @@ public class TestPerformer extends Performer {
 	}
 
 	@Override
-	protected void onTouchPress(Performer performer, int whichfinger, int x,
-			int y) {
+	protected void onTouchPress(int whichfinger, int x, int y) {
 		if (whichfinger == 0) {
 			x1 = x;
 			y1 = y;
@@ -74,7 +73,7 @@ public class TestPerformer extends Performer {
 	}
 
 	@Override
-	protected void onTouch(Performer performer, int whichfinger, int x, int y) {
+	protected void onTouch(int whichfinger, int x, int y) {
 		if (whichfinger == 0) {
 			x1 = x;
 			y1 = y;
@@ -88,29 +87,29 @@ public class TestPerformer extends Performer {
 	}
 
 	@Override
-	protected void onDraw(Performer performer) {
+	protected void onDraw() {
 		Paint p = new Paint();
 		p.setColor(Color.BLACK);
-		performer.getCanvas().drawText(GamingThread.getSPS() + "", 50, 50, p);
-		performer.getCanvas().drawText("1", x1, y1, p);
-		performer.getCanvas().drawText("2", x2, y2, p);
-		performer.getCanvas().drawText("3", x3, y3, p);
-		s.draw(performer.getCanvas(), x1, y1, sc);
-		performer.getCanvas().drawPoint(x1, y1, p);
-		performer.getCanvas().drawCircle(190, 190, 70, p);
-		performer.getCanvas().drawRect(190, 600, 220, 670, p);
+		this.getCanvas().drawText(GamingThread.getSPS() + "", 50, 50, p);
+		this.getCanvas().drawText("1", x1, y1, p);
+		this.getCanvas().drawText("2", x2, y2, p);
+		this.getCanvas().drawText("3", x3, y3, p);
+		s.draw(this.getCanvas(), x1, y1, sc);
+		this.getCanvas().drawPoint(x1, y1, p);
+		this.getCanvas().drawCircle(190, 190, 70, p);
+		this.getCanvas().drawRect(190, 600, 220, 670, p);
 		g1.setPosition(x1, y1);
 		if (g1.isCollisionWith(g2)) {
 			Paint p2 = new Paint();
 			p2.setColor(Color.RED);
-			performer.getCanvas().drawCircle(190, 190, 70, p2);
+			this.getCanvas().drawCircle(190, 190, 70, p2);
 		}
 		if (g1.isCollisionWith(g3)) {
 			Paint p2 = new Paint();
 			p2.setColor(Color.RED);
-			performer.getCanvas().drawRect(190, 600, 220, 670, p2);
+			this.getCanvas().drawRect(190, 600, 220, 670, p2);
 		}
-		performer.getCanvas().drawCircle(x1, y1, 10, p);
+		this.getCanvas().drawCircle(x1, y1, 10, p);
 	}
 
 	public TestPerformer() {
