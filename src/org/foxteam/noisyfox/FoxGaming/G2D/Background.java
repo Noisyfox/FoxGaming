@@ -35,15 +35,18 @@ import android.graphics.Rect;
 public class Background {
 
 	/**
+	 * 预设1<br>
 	 * 仅仅是在设置好的位置显示出来，不进行任何适应操作，强制为锚点对齐方式<br>
 	 * 不支持大部分的背景操作
 	 */
 	public static final int ADAPTATION_PLACE = 1;
 	/**
+	 * 预设2<br>
 	 * 拉伸到整个屏幕，不支持背景运动
 	 */
 	public static final int ADAPTATION_STRETCHING = 2;
 	/**
+	 * 预设3<br>
 	 * 填充整个屏幕，强制为锚点对齐方式，不支持背景运动
 	 */
 	public static final int ADAPTATION_PADDING = 3;
@@ -85,6 +88,7 @@ public class Background {
 	 * Source image
 	 */
 	private Bitmap sourceImage = null;
+
 	private Point anchorPointBitmap = new Point(0, 0);
 	private Point anchorPointScreen = new Point(0, 0);
 
@@ -186,9 +190,17 @@ public class Background {
 		option_scale = scaleMode;
 	}
 
-	public void setSpeed(float xSpeed, float ySpeed) {
-		speed_x = xSpeed;
-		speed_y = ySpeed;
+	public void setSpeed(float HSpeed, float VSpeed) {
+		speed_x = HSpeed;
+		speed_y = VSpeed;
+	}
+
+	public float getHSpeed() {
+		return speed_x;
+	}
+
+	public float getVSpeed() {
+		return speed_y;
 	}
 
 	public void setAnchorPoint(Point bitmap, Point screen) {
