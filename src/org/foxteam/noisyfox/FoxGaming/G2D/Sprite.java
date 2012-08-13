@@ -79,21 +79,11 @@ public class Sprite {
 	}
 
 	public void loadFromBitmap(int resId, boolean cDensityDpi) {
-		Bitmap b = null;
-		if (cDensityDpi) {
-			b = BitmapFactory.decodeResource(GameCore.getMainContext()
-					.getResources(), resId);
-		} else {
-			InputStream is = GameCore.getMainContext().getResources()
-					.openRawResource(resId);
-			b = BitmapFactory.decodeStream(is);
-		}
-
-		loadFromBitmap(b);
+		loadFromBitmap(resId, 1, 1, cDensityDpi);
 	}
 
-	public void loadFromBitmap(int resId, boolean cDensityDpi,
-			int horizontalNumber, int verticalNumber) {
+	public void loadFromBitmap(int resId, int horizontalNumber,
+			int verticalNumber, boolean cDensityDpi) {
 		Bitmap b = null;
 		if (cDensityDpi) {
 			b = BitmapFactory.decodeResource(GameCore.getMainContext()
