@@ -44,6 +44,8 @@ public class Performer {
 	protected int stage = -1;
 	protected GraphicCollision collisionMask = null;
 	protected List<Performer> requiredCollisionDetection = new ArrayList<Performer>();
+	@SuppressWarnings("rawtypes")
+	protected List<Class> requiredClassCollisionDetection = new ArrayList<Class>();
 
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
@@ -207,8 +209,23 @@ public class Performer {
 		requiredCollisionDetection.add(target);
 	}
 
+	// 检测所有属于 targer 类的 Performer
+	@SuppressWarnings("rawtypes")
+	public final void requireCollisionDetection(Class target) {
+		if (requiredClassCollisionDetection.contains(target)) {
+			return;
+		}
+
+		requiredClassCollisionDetection.add(target);
+	}
+
 	public final void cancelCollisionDetection(Performer target) {
 		requiredCollisionDetection.remove(target);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public final void cancelClassCollisionDetection(Class target) {
+		requiredClassCollisionDetection.remove(target);
 	}
 
 	public final void setDepth(int depth) {

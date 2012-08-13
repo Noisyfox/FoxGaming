@@ -131,7 +131,8 @@ public final class Stage {
 	/**
 	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
 	 */
-	public static Performer[] getPerformersByClass(Class<Performer> c) {
+	@SuppressWarnings("rawtypes")
+	public static Performer[] getPerformersByClass(Class c) {
 		List<Performer> per = new ArrayList<Performer>();
 
 		for (Performer p : currentStage.performers) {
@@ -140,7 +141,9 @@ public final class Stage {
 			}
 		}
 
-		return (Performer[]) per.toArray();
+		Performer[] p = new Performer[per.size()];
+
+		return per.toArray(p);
 	}
 
 	protected void sortWithDepth() {
@@ -396,6 +399,23 @@ public final class Stage {
 								}
 							}
 						}
+
+						for (Performer p2 : performers) {
+							if (p2 != p
+									&& p2.collisionMask != null
+									&& !p2.frozen
+									&& p.requiredClassCollisionDetection
+											.contains(p2.getClass())) {
+								if (p.collisionMask
+										.isCollisionWith(p2.collisionMask)) {
+
+									p.callEvent(
+											EventsListener.EVENT_ONCOLLISIONWITH,
+											p2);
+								}
+							}
+						}
+
 					}
 				}
 			}
