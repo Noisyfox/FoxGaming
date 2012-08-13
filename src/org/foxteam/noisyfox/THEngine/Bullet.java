@@ -20,7 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 
 /**
  * @ClassName: Bullet
- * @Description: TODO
+ * @Description: 基础子弹类
  * @author: Noisyfox
  * @date: 2012-7-19 下午3:09:41
  * 
@@ -30,5 +30,5 @@ public abstract class Bullet extends Performer {
 	public Bullet() {
 
 	}
-	
+
 }

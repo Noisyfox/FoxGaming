@@ -144,7 +144,7 @@ public class GameActivity extends Activity {
 		if (activityCreated) {
 			MyDebug.print("GameActivity already been created");
 			gameEngine.onActivityRecreated();
-			//MyDebug.print("setContentView");
+			// MyDebug.print("setContentView");
 			setContentView(GameCore.getGameView());
 		} else {
 			// Debug.startMethodTracing("fox.trace");

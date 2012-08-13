@@ -117,7 +117,7 @@ public class Background {
 					.openRawResource(resId);
 			b = BitmapFactory.decodeStream(is);
 		}
-		
+
 		loadFromBitmap(b);
 	}
 

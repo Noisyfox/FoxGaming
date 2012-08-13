@@ -28,38 +28,34 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
  */
 public class Bullet_Player extends Bullet {
 
-	private EventsListener eventsListener = new EventsListener() {
+	@Override
+	protected void onCreate(Performer performer) {
 
-		@Override
-		public void onCreate(Performer performer) {
+		Sprite bulletSprite = new Sprite();
+		bulletSprite.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
+		bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
 
-			Sprite bulletSprite = new Sprite();
-			bulletSprite.loadFromBitmap(
-					org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
-			bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
+		performer.bindSprite(bulletSprite);
 
-			performer.bindSprite(bulletSprite);
+		GraphicCollision co = new GraphicCollision();
+		co.addCircle(0, 8, 5, true);
+		// MyDebug.print(bulletSprite.getWidth() + "");
+		performer.bindCollisionMask(co);
 
-			GraphicCollision co = new GraphicCollision();
-			co.addCircle(0, 8, 5, true);
-			// MyDebug.print(bulletSprite.getWidth() + "");
-			performer.bindCollisionMask(co);
-			
-			performer.requireCollisionDetection(Enemy.class);
+		performer.requireCollisionDetection(Enemy.class);
+	}
+
+	@Override
+	protected void onStep(Performer performer) {
+		performer.setPosition(performer.getX(),
+				performer.getY() - 300f / Stage.getSpeed());
+
+		if (performer.getY() + performer.getSprite().getHeight()
+				- performer.getSprite().getOffsetY() < 0) {
+			performer.dismiss();
 		}
-
-		@Override
-		public void onStep(Performer performer) {
-			performer.setPosition(performer.getX(), performer.getY() - 300f
-					/ Stage.getSpeed());
-
-			if (performer.getY() + performer.getSprite().getHeight()
-					- performer.getSprite().getOffsetY() < 0) {
-				performer.dismiss();
-			}
-		}
-
-	};
+	}
 
 	@Override
 	protected void onDraw(Performer performer) {
@@ -68,7 +64,6 @@ public class Bullet_Player extends Bullet {
 	}
 
 	public Bullet_Player(int x, int y) {
-		this.setEventsListener(eventsListener);
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}

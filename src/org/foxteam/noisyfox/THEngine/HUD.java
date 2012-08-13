@@ -33,14 +33,10 @@ public class HUD extends Performer {
 
 	Views mainView = null;
 
-	private EventsListener eventsListener = new EventsListener() {
-
-		@Override
-		public void onCreate(Performer performer) {
-			mainView = Stage.getCurrentStage().getView(0);
-		}
-
-	};
+	@Override
+	protected void onCreate(Performer performer) {
+		mainView = Stage.getCurrentStage().getView(0);
+	}
 
 	@Override
 	protected void onDraw(Performer performer) {
@@ -49,12 +45,12 @@ public class HUD extends Performer {
 		Canvas c = performer.getCanvas();
 		Paint p = new Paint();
 		p.setColor(Color.BLACK);
-		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS(),
+		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS()
+				+ "," + Stage.getPerformersByClass(Bullet.class).length,
 				performer.getX() + 10, performer.getY() + 10, p);
 	}
 
 	public HUD() {
-		this.setEventsListener(eventsListener);
 		this.setDepth(-1000);
 		this.perform(Stage.getCurrentStage().getStageIndex());
 	}

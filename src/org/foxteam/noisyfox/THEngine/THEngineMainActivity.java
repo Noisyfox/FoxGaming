@@ -14,14 +14,14 @@ public class THEngineMainActivity extends GameActivity {
 		s.setStageSpeed(30);
 		Performer p = new SystemControl();
 		p.perform(s.getStageIndex());
-		//p = new Player();
-		//p.perform(s.getStageIndex());
+		// p = new Player();
+		// p.perform(s.getStageIndex());
 
 		Background bkg = new Background();
 
-		//Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-		//		.getResources(),
-		//		org.foxteam.noisyfox.THEngine.R.drawable.background);
+		// Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+		// .getResources(),
+		// org.foxteam.noisyfox.THEngine.R.drawable.background);
 		bkg.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.background,
 				false);
 		bkg.setAdaptation(Background.ADAPTATION_SMART);

@@ -51,9 +51,9 @@ public class Circle extends Point {
 
 	@Override
 	public void draw(Canvas c) {
-		
+
 		paint.reset();
-		
+
 		if (!fill) {
 			paint.setStyle(Paint.Style.STROKE);
 		}

@@ -45,75 +45,46 @@ public class TestPerformer extends Performer {
 	private int soundId;
 	private int bgmId;
 
-	private EventsListener eventsListener = new EventsListener() {
-
-		@Override
-		public void onCreate(Performer performer) {
-			soundId = SimpleSoundEffect
-					.loadSoundEffect(org.foxteam.noisyfox.THEngine.R.raw.test_soundeffect);
-			bgmId = SimpleBGM
-					.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
-			SimpleBGM.play(bgmId, true);
-		}
-
-		@Override
-		public void onTouchPress(Performer performer, int whichfinger, int x,
-				int y) {
-			if (whichfinger == 0) {
-				x1 = x;
-				y1 = y;
-			} else if (whichfinger == 1) {
-				x2 = x;
-				y2 = y;
-			} else {
-				x3 = x;
-				y3 = y;
-			}
-			SimpleSoundEffect.play(soundId);
-		}
-
-		@Override
-		public void onTouch(Performer performer, int whichfinger, int x, int y) {
-			if (whichfinger == 0) {
-				x1 = x;
-				y1 = y;
-			} else if (whichfinger == 1) {
-				x2 = x;
-				y2 = y;
-			} else {
-				x3 = x;
-				y3 = y;
-			}
-		}
-	};
-
 	Sprite s;
 	SpriteConvertor sc;
 	GraphicCollision g1, g2, g3;
 
-	public TestPerformer() {
-		this.setEventsListener(eventsListener);
-		s = new Sprite();
-		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
-				.getResources(),
-				org.foxteam.noisyfox.THEngine.R.drawable.button);
-		s.loadFromBitmap(b);
-		s.setOffset(s.getWidth() / 2, 0);
-		sc = new SpriteConvertor();
-		sc.setRotation(60);
-		sc.setScale(1, 0.5);
-		sc.setAlpha(0.5);
+	@Override
+	protected void onCreate(Performer performer) {
+		soundId = SimpleSoundEffect
+				.loadSoundEffect(org.foxteam.noisyfox.THEngine.R.raw.test_soundeffect);
+		bgmId = SimpleBGM.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
+		SimpleBGM.play(bgmId, true);
+	}
 
-		g1 = new GraphicCollision();
-		// g1.addPoint(0, 0);
-		g1.addCircle(0, 0, 10);
+	@Override
+	protected void onTouchPress(Performer performer, int whichfinger, int x,
+			int y) {
+		if (whichfinger == 0) {
+			x1 = x;
+			y1 = y;
+		} else if (whichfinger == 1) {
+			x2 = x;
+			y2 = y;
+		} else {
+			x3 = x;
+			y3 = y;
+		}
+		SimpleSoundEffect.play(soundId);
+	}
 
-		g2 = new GraphicCollision();
-		g2.addCircle(190, 190, 70);
-
-		g3 = new GraphicCollision();
-		int[][] v = { { 190, 600 }, { 220, 600 }, { 220, 670 }, { 190, 670 } };
-		g3.addPolygon(v, true);
+	@Override
+	protected void onTouch(Performer performer, int whichfinger, int x, int y) {
+		if (whichfinger == 0) {
+			x1 = x;
+			y1 = y;
+		} else if (whichfinger == 1) {
+			x2 = x;
+			y2 = y;
+		} else {
+			x3 = x;
+			y3 = y;
+		}
 	}
 
 	@Override
@@ -140,6 +111,30 @@ public class TestPerformer extends Performer {
 			performer.getCanvas().drawRect(190, 600, 220, 670, p2);
 		}
 		performer.getCanvas().drawCircle(x1, y1, 10, p);
+	}
+
+	public TestPerformer() {
+		s = new Sprite();
+		Bitmap b = BitmapFactory.decodeResource(GameCore.getMainContext()
+				.getResources(),
+				org.foxteam.noisyfox.THEngine.R.drawable.button);
+		s.loadFromBitmap(b);
+		s.setOffset(s.getWidth() / 2, 0);
+		sc = new SpriteConvertor();
+		sc.setRotation(60);
+		sc.setScale(1, 0.5);
+		sc.setAlpha(0.5);
+
+		g1 = new GraphicCollision();
+		// g1.addPoint(0, 0);
+		g1.addCircle(0, 0, 10);
+
+		g2 = new GraphicCollision();
+		g2.addCircle(190, 190, 70);
+
+		g3 = new GraphicCollision();
+		int[][] v = { { 190, 600 }, { 220, 600 }, { 220, 670 }, { 190, 670 } };
+		g3.addPolygon(v, true);
 	}
 
 }

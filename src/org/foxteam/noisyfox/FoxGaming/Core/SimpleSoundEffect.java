@@ -79,7 +79,7 @@ public final class SimpleSoundEffect {
 			}
 		}
 	}
-	
+
 	/**
 	 * Call when game is paused
 	 */

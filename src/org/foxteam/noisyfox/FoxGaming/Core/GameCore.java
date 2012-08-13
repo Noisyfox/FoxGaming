@@ -37,13 +37,13 @@ public final class GameCore {
 
 	private static boolean inited = false;
 
-	//protected Display display;
+	// protected Display display;
 
 	public GameCore(Activity mainActivity) {
 		GameCore.mainActivity = mainActivity;
-		//display = ((WindowManager) mainActivity
-		//		.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-		
+		// display = ((WindowManager) mainActivity
+		// .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+
 		if (inited) {
 			// onActivityRecreated();
 		} else {

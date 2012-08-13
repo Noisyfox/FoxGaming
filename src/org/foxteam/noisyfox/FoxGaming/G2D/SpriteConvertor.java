@@ -31,7 +31,7 @@ public class SpriteConvertor {
 	private double rotation = 0;// 角度制
 	private double alpha = 1;
 	private Matrix matrix = new Matrix();
-	
+
 	public SpriteConvertor() {
 
 	}

@@ -20,18 +20,18 @@ import android.content.Context;
 import android.view.SurfaceView;
 
 /**
- * @ClassName:     MainView
- * @Description:   TODO
- * @author:        Noisyfox
- * @date:          2012-6-19 下午8:02:22
- *
+ * @ClassName: MainView
+ * @Description: TODO
+ * @author: Noisyfox
+ * @date: 2012-6-19 下午8:02:22
+ * 
  */
 public class GameView extends SurfaceView {
 
 	/**
-	 * @Title:          MainView
-	 * @Description:    TODO
-	 * @param:          @param context
+	 * @Title: MainView
+	 * @Description: TODO
+	 * @param: @param context
 	 * @throws
 	 */
 	protected GameView(Context context) {

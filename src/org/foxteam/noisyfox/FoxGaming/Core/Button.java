@@ -17,11 +17,11 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 /**
- * @ClassName:     Button
- * @Description:   TODO
- * @author:        Noisyfox
- * @date:          2012-7-18 下午10:39:16
- *
+ * @ClassName: Button
+ * @Description: TODO
+ * @author: Noisyfox
+ * @date: 2012-7-18 下午10:39:16
+ * 
  */
 public class Button extends Performer {
 

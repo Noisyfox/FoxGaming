@@ -30,8 +30,7 @@ import android.graphics.Canvas;
  * @date: 2012-6-19 下午9:21:05
  * 
  */
-public class Performer {
-	private EventsListener eventsListener = null;
+public class Performer extends EventsListener {
 
 	private List<Alarm> alarms;
 	private boolean visible = true;
@@ -57,12 +56,8 @@ public class Performer {
 		}
 	}
 
-	public final void setEventsListener(EventsListener eventsListener) {
-		this.eventsListener = eventsListener;
-	}
-
-	// 最特殊的event回调函数，地位与EventsListener相同
 	// 没有重载前负责绘制默认精灵，重载后如果不手动调用绘图则会使该performer不绘制默认精灵
+	@Override
 	protected void onDraw(Performer performer) {
 		if (sprite != null) {
 			Canvas c = performer.getCanvas();
@@ -71,81 +66,80 @@ public class Performer {
 	}
 
 	public final void callEvent(int event, Object... args) {
-		if (eventsListener == null || frozen)
+		if (frozen)
 			return;
 		switch (event) {
 		case EventsListener.EVENT_ONCREATE:
-			eventsListener.onCreate(this);
+			this.onCreate(this);
 			break;
 		case EventsListener.EVENT_ONDESTORY:
-			eventsListener.onDestory(this);
+			this.onDestory(this);
 			break;
 		case EventsListener.EVENT_ONTOUCH:
-			eventsListener.onTouch(this, (Integer) args[0], (Integer) args[1],
+			this.onTouch(this, (Integer) args[0], (Integer) args[1],
 					(Integer) args[2]);
 			break;
 		case EventsListener.EVENT_ONTOUCHPRESS:
-			eventsListener.onTouchPress(this, (Integer) args[0],
-					(Integer) args[1], (Integer) args[2]);
+			this.onTouchPress(this, (Integer) args[0], (Integer) args[1],
+					(Integer) args[2]);
 			break;
 		case EventsListener.EVENT_ONTOUCHRELEASE:
-			eventsListener.onTouchRelease(this, (Integer) args[0]);
+			this.onTouchRelease(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEY:
-			eventsListener.onKey(this, (Integer) args[0]);
+			this.onKey(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEYPRESS:
-			eventsListener.onKeyPress(this, (Integer) args[0]);
+			this.onKeyPress(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONKEYRELEASE:
-			eventsListener.onKeyRelease(this, (Integer) args[0]);
+			this.onKeyRelease(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONALARM:
-			eventsListener.onAlarm(this, (Integer) args[0]);
+			this.onAlarm(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONGAMESTART:
-			eventsListener.onGameStart(this);
+			this.onGameStart(this);
 			break;
 		case EventsListener.EVENT_ONGAMEPAUSE:
-			eventsListener.onGamePause(this);
+			this.onGamePause(this);
 			break;
 		case EventsListener.EVENT_ONGAMERESUME:
-			eventsListener.onGameResume(this);
+			this.onGameResume(this);
 			break;
 		case EventsListener.EVENT_ONGAMEEND:
-			eventsListener.onGameEnd(this);
+			this.onGameEnd(this);
 			break;
 		case EventsListener.EVENT_ONSTAGECHANGE:
-			eventsListener.onStageChange(this);
+			this.onStageChange(this);
 			break;
 		case EventsListener.EVENT_ONSTAGESTART:
-			eventsListener.onStageStart(this);
+			this.onStageStart(this);
 			break;
 		case EventsListener.EVENT_ONSTAGEEND:
-			eventsListener.onStageEnd(this);
+			this.onStageEnd(this);
 			break;
 		case EventsListener.EVENT_ONDRAW:
 			if (isVisible())
 				onDraw(this);
 			break;
 		case EventsListener.EVENT_ONSTEP:
-			eventsListener.onStep(this);
+			this.onStep(this);
 			break;
 		case EventsListener.EVENT_ONSTEPSTART:
-			eventsListener.onStepStart(this);
+			this.onStepStart(this);
 			break;
 		case EventsListener.EVENT_ONSTEPEND:
-			eventsListener.onStepEnd(this);
+			this.onStepEnd(this);
 			break;
 		case EventsListener.EVENT_ONCOLLISIONWITH:
-			eventsListener.onCollisionWith(this, (Performer) args[0]);
+			this.onCollisionWith(this, (Performer) args[0]);
 			break;
 		case EventsListener.EVENT_ONUSERDEFINEDEVENT:
-			eventsListener.onUserDefinedEvent(this, (Integer) args[0]);
+			this.onUserDefinedEvent(this, (Integer) args[0]);
 			break;
 		case EventsListener.EVENT_ONSCREENSIZECHANGED:
-			eventsListener.onScreenSizeChanged(this, (Integer) args[0],
-					(Integer) args[1]);
+			this.onScreenSizeChanged(this, (Integer) args[0], (Integer) args[1]);
 			break;
 		}
 	}
