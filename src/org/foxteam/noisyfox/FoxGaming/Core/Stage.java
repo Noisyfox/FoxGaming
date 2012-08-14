@@ -407,17 +407,18 @@ public final class Stage {
 						}
 
 						for (Performer p2 : performers) {
-							if (p2 != p
-									&& p2.collisionMask != null
-									&& !p2.frozen
-									&& p.requiredClassCollisionDetection
-											.contains(p2.getClass())) {
-								if (p.collisionMask
-										.isCollisionWith(p2.collisionMask)) {
+							if (p2 != p && p2.collisionMask != null
+									&& !p2.frozen) {
+								for (Class c : p.requiredClassCollisionDetection) {
+									if (c.isInstance(p2)) {
+										if (p.collisionMask
+												.isCollisionWith(p2.collisionMask)) {
 
-									p.callEvent(
-											EventsListener.EVENT_ONCOLLISIONWITH,
-											p2);
+											p.callEvent(
+													EventsListener.EVENT_ONCOLLISIONWITH,
+													p2);
+										}
+									}
 								}
 							}
 						}
