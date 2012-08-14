@@ -227,7 +227,7 @@ public class Player extends Performer {
 		if (whichAlarm == 0) {
 			Bullet_Player b = new Bullet_Player((int) this.getX(),
 					(int) this.getY() - this.getSprite().getOffsetY());
-			b.setDepth(1);
+			b.setDepth(this.getDepth() + 1);
 		}
 	}
 
