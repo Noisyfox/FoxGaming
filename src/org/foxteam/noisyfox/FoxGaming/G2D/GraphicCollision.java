@@ -22,6 +22,9 @@ import java.util.List;
 import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * @ClassName: GraphicCollision
@@ -32,15 +35,20 @@ import android.graphics.Canvas;
  */
 public class GraphicCollision {
 
+	private static Paint p = new Paint();
+
 	List<Polygon> polygons = new ArrayList<Polygon>();
 	List<Circle> circles = new ArrayList<Circle>();
 	List<Point> points = new ArrayList<Point>();
+	Rect reducedArea = new Rect(0, 0, 0, 0);
 
 	int baseX = 0;
 	int baseY = 0;
 
 	public GraphicCollision() {
-
+		p.setColor(Color.RED);
+		p.setStyle(Paint.Style.STROKE);
+		p.setAlpha(100);
 	}
 
 	public final void addCircle(int x, int y, int r) {
@@ -50,6 +58,11 @@ public class GraphicCollision {
 	public final void addCircle(int x, int y, int r, boolean fill) {
 		Circle c = new Circle(x, y, r, fill);
 		circles.add(c);
+
+		reducedArea.left = Math.min(x - r, reducedArea.left);
+		reducedArea.top = Math.min(y - r, reducedArea.top);
+		reducedArea.right = Math.max(x + r, reducedArea.right);
+		reducedArea.bottom = Math.max(y + r, reducedArea.bottom);
 	}
 
 	public final void addTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
@@ -71,6 +84,11 @@ public class GraphicCollision {
 	public final void addPoint(int x, int y) {
 		Point p = new Point(x, y);
 		points.add(p);
+
+		reducedArea.left = Math.min(x, reducedArea.left);
+		reducedArea.top = Math.min(y, reducedArea.top);
+		reducedArea.right = Math.max(x, reducedArea.right);
+		reducedArea.bottom = Math.max(y, reducedArea.bottom);
 	}
 
 	public final void addPolygon(int[][] vertex, boolean fill) {
@@ -91,6 +109,13 @@ public class GraphicCollision {
 	public final void addPolygon(Point[] vertex, boolean fill) {
 		Polygon p = new Polygon(vertex, fill);
 		polygons.add(p);
+
+		for (Point v : p.vertex) {
+			reducedArea.left = Math.min(v.x, reducedArea.left);
+			reducedArea.top = Math.min(v.y, reducedArea.top);
+			reducedArea.right = Math.max(v.x, reducedArea.right);
+			reducedArea.bottom = Math.max(v.y, reducedArea.bottom);
+		}
 	}
 
 	public final void setPosition(int x, int y) {
@@ -107,11 +132,19 @@ public class GraphicCollision {
 				p.move(dx, dy);
 			}
 		}
+
+		reducedArea.offset(dx, dy);
+
 		baseX = x;
 		baseY = y;
 	}
 
 	public final boolean isCollisionWith(GraphicCollision target) {
+		// 粗略判断范围
+		if (!MathsHelper.rectVSrect(reducedArea, target.reducedArea)) {
+			return false;
+		}
+
 		// 优先进行点的判断
 		// 点与点
 		for (Point p1 : points) {
@@ -314,6 +347,7 @@ public class GraphicCollision {
 		for (Polygon pol : polygons) {
 			pol.draw(c);
 		}
+		c.drawRect(reducedArea, p);
 	}
 
 	// 静态函数，判断多个target之间是否发生碰撞

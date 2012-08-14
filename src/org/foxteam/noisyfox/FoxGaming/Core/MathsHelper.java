@@ -20,6 +20,8 @@ import org.foxteam.noisyfox.FoxGaming.G2D.Circle;
 import org.foxteam.noisyfox.FoxGaming.G2D.Point;
 import org.foxteam.noisyfox.FoxGaming.G2D.Polygon;
 
+import android.graphics.Rect;
+
 /**
  * @ClassName: MathsHelper
  * @Description: 静态数学计算函数
@@ -137,6 +139,29 @@ public final class MathsHelper {
 		// 直线或者圆心在线段上方，只需判断圆心到直线距离即可
 		int squareDistance = squareDistanceFromPointToLine(c, p1, p2);
 		return squareDistance <= c.getR() * c.getR();
+	}
+
+	// 判断两个 Rect 是否相交
+	public static boolean rectVSrect(Rect rect1, Rect rect2) {
+		int x1 = rect1.left;
+		int y1 = rect1.top;
+		int w1 = rect1.width();
+		int h1 = rect1.height();
+		int x2 = rect2.left;
+		int y2 = rect2.top;
+		int w2 = rect2.width();
+		int h2 = rect2.height();
+
+		if (x1 > x2 && x1 > x2 + w2) {
+			return false;
+		} else if (x1 < x2 && x1 + w1 < x2) {
+			return false;
+		} else if (y1 > y2 && y1 > y2 + h2) {
+			return false;
+		} else if (y1 < y2 && y1 + h1 < y2) {
+			return false;
+		}
+		return true;
 	}
 
 	// 返回指定长度及方向的矢量线在 x 轴上的投影长度.

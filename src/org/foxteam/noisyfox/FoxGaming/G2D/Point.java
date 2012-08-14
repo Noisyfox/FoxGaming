@@ -30,7 +30,7 @@ public class Point {
 
 	int x = 0;
 	int y = 0;
-	protected Paint paint = new Paint();
+	protected static Paint paint = new Paint();
 
 	public Point() {
 		this(0, 0);

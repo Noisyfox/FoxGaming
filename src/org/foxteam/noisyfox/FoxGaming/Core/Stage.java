@@ -384,6 +384,7 @@ public final class Stage {
 	}
 
 	// 处理碰撞检测
+	@SuppressWarnings("rawtypes")
 	protected void operateCollision() {
 		ensureAvailable();
 		synchronized (performers) {

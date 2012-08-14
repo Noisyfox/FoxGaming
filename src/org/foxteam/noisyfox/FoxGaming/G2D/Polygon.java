@@ -33,7 +33,7 @@ public class Polygon {
 	int num_vertexs = 0;
 	boolean isLine = false;
 	boolean fill = false;
-	Paint paint = new Paint();
+	static Paint paint = new Paint();
 
 	public Polygon(Point[] vertex, boolean fill) {
 		if (vertex.length <= 1) {
@@ -87,6 +87,7 @@ public class Polygon {
 	public void draw(Canvas c) {
 
 		paint.reset();
+		paint.setAlpha(170);
 		if (!fill) {
 			paint.setStyle(Paint.Style.STROKE);
 		}

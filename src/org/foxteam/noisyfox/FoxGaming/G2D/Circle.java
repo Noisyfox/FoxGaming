@@ -53,6 +53,7 @@ public class Circle extends Point {
 	public void draw(Canvas c) {
 
 		paint.reset();
+		paint.setAlpha(170);
 
 		if (!fill) {
 			paint.setStyle(Paint.Style.STROKE);
