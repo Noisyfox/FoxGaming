@@ -75,8 +75,8 @@ public class Enemy_Duck extends Enemy {
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// 发射子弹
 			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
-					+ this.getSprite().getOffsetY()
-					- this.getSprite().getHeight(), Stage
+					- this.getSprite().getOffsetY()
+					+ this.getSprite().getHeight(), Stage
 					.getCurrentBackground().getVSpeed());
 			b.setDepth(this.getDepth() + 1);
 		} else if (whichAlarm == 1) {// 播放动画
