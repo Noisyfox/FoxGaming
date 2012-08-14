@@ -343,14 +343,14 @@ public class GamingThread extends Thread implements OnTouchListener,
 						currentStage.height, currentStage.width);
 			}
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
+			// 系统绘制
+			screenRefresh();
 
 			currentStage.dismissPerformer();
 
 			// 最后广播EVENT_ONSTEPEND事件
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
 		}
-		// 绘制
-		screenRefresh();
 
 		// 控制帧速
 		stepCount++;
