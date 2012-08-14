@@ -378,6 +378,7 @@ public final class Stage {
 		}
 	}
 
+	// 处理碰撞检测
 	protected void operateCollision() {
 		ensureAvailable();
 		synchronized (performers) {
@@ -422,4 +423,15 @@ public final class Stage {
 		}
 	}
 
+	// 检测 Performer 是否离开 Stage
+	protected void detectOutOfStage() {
+		synchronized (performers) {
+			for (Performer p : performers) {
+				if (p.isOutOfStage()) {
+					p.callEvent(EventsListener.EVENT_ONOUTOFSTAGE);
+				}
+			}
+		}
+	}
+	
 }

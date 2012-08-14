@@ -40,7 +40,6 @@ public class Bullet_Player extends Bullet {
 
 		GraphicCollision co = new GraphicCollision();
 		co.addCircle(0, 8, 5, true);
-		// MyDebug.print(bulletSprite.getWidth() + "");
 		this.bindCollisionMask(co);
 
 		this.requireCollisionDetection(Enemy.class);
@@ -49,11 +48,11 @@ public class Bullet_Player extends Bullet {
 	@Override
 	protected void onStep() {
 		this.setPosition(this.getX(), this.getY() - 300f / Stage.getSpeed());
-
-		if (this.getY() + this.getSprite().getHeight()
-				- this.getSprite().getOffsetY() < 0) {
-			this.dismiss();
-		}
+	}
+	
+	@Override
+	protected void onOutOfStage() {
+		this.dismiss();
 	}
 
 	@Override
@@ -66,5 +65,6 @@ public class Bullet_Player extends Bullet {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
+
 
 }

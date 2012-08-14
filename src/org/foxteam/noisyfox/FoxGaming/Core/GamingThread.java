@@ -273,6 +273,9 @@ public class GamingThread extends Thread implements OnTouchListener,
 			currentStage.operateAlarm();
 			// 计算碰撞
 			currentStage.operateCollision();
+			// 计算离开 Stage
+			currentStage.detectOutOfStage();
+
 			// 检测屏幕尺寸变化
 			if (width != lastScreenWidth || height != lastScreenHeight) {
 				lastScreenHeight = height;

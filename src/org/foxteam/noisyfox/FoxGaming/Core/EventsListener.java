@@ -47,6 +47,7 @@ public class EventsListener {
 	public final static int EVENT_ONCOLLISIONWITH = 21;
 	public final static int EVENT_ONUSERDEFINEDEVENT = 22;
 	public final static int EVENT_ONSCREENSIZECHANGED = 23;
+	public final static int EVENT_ONOUTOFSTAGE = 24;
 
 	protected void onCreate() {
 	}// 当一个performer被创建时接收到的第一个事件，优先于其它所有事件
@@ -115,6 +116,10 @@ public class EventsListener {
 	protected void onDraw() {
 	}// 绘制事件
 
+	protected void onOutOfStage() {
+	}// 当 Performer 在 Stage 之外时触发
+
 	protected void onUserDefinedEvent(int event) {
 	}// 只会在程序中手动调用
+
 }
