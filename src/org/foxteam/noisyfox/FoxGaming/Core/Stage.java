@@ -216,6 +216,8 @@ public final class Stage {
 			}
 		}
 		for (Performer p : emploiedPerformer) {
+			p.employed = true;
+			p.stage = stageIndex;
 			p.callEvent(EventsListener.EVENT_ONCREATE);
 		}
 		emploiedPerformer.clear();
@@ -238,6 +240,7 @@ public final class Stage {
 					if (!performers.contains(p))
 						continue;
 					performers.remove(p);
+
 					dismissedPerformer.add(p);
 				}
 				sortWithDepth();
@@ -246,6 +249,8 @@ public final class Stage {
 		}
 		for (Performer p : dismissedPerformer) {
 			p.callEvent(EventsListener.EVENT_ONDESTORY);
+			p.employed = false;
+			p.performing = false;
 		}
 		dismissedPerformer.clear();
 	}
@@ -433,5 +438,5 @@ public final class Stage {
 			}
 		}
 	}
-	
+
 }

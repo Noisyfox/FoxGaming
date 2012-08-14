@@ -174,9 +174,6 @@ public class Performer extends EventsListener {
 		}
 
 		Stage.index2Stage(stage).employPerformer(this);
-
-		employed = true;
-		this.stage = stage;
 	}
 
 	public final void dismiss() {
@@ -184,8 +181,7 @@ public class Performer extends EventsListener {
 			MyDebug.warning("Can't dismiss an unemployed performer!");
 			return;
 		}
-		employed = false;
-		performing = false;
+
 		Stage.index2Stage(stage).dismissPerformer(this);
 	}
 
