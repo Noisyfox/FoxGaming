@@ -59,6 +59,19 @@ public class SystemControl extends Performer {
 		p.perform(Stage.getCurrentStage().getStageIndex());
 
 		new HUD();
+
+		this.setAlarm(0, (int) (Stage.getSpeed() * 2f), true);// 创建 鸭子敌人
+		this.startAlarm(0);
+	}
+
+	@Override
+	protected void onAlarm(int whichAlarm) {
+		if (whichAlarm == 0) {// 创建 鸭子敌人
+			Enemy e = new Enemy_Duck(MathsHelper.random(0, Stage
+					.getCurrentStage().getHeight() / 2), MathsHelper.random(0,
+					11) > 5);
+			e.perform(Stage.getCurrentStage().getStageIndex());
+		}
 	}
 
 	@Override

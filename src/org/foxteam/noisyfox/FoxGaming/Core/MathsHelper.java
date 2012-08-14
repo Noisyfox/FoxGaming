@@ -149,4 +149,9 @@ public final class MathsHelper {
 		return len * (float) Math.sin(Math.toRadians((double) dir));
 	}
 
+	// 获取一个 >= min && <= max 的随机整数
+	public static int random(int min, int max) {
+		return (int) ((double) min + (double) (max - min) * Math.random());
+	}
+
 }

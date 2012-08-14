@@ -182,6 +182,14 @@ public class Sprite {
 		currentFrame = frameIndex;
 	}
 
+	public final void previousFrame() {
+		setCurrentFrame(currentFrame - 1);
+	}
+
+	public final void nextFrame() {
+		setCurrentFrame(currentFrame + 1);
+	}
+
 	public final void draw(Canvas c, int x, int y) {
 		draw(c, x, y, null);
 	}
