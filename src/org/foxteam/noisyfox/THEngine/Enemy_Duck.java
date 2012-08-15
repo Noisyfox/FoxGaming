@@ -52,17 +52,37 @@ public class Enemy_Duck extends Enemy {
 						: Stage.getCurrentStage().getWidth()
 								+ duckSprite.getOffsetX(), inY);
 
-		speed = 50f / Stage.getSpeed();
+		speed = 30f / Stage.getSpeed();
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 1f), true);// 发射子弹
+		this.setAlarm(0, (int) (Stage.getSpeed() * 2f), true);// 发射子弹
 		this.startAlarm(0);
 
 		this.setAlarm(1, (int) (Stage.getSpeed() * 0.1f), true);// 播放动画
 		this.startAlarm(1);
 
+		GraphicCollision co = new GraphicCollision();
 		if (frmL) {
 			sc.setScale(-1, 1);
+
+			co.addCircle(3, -5, 11, true);
+			co.addCircle(0, -11, 9, true);
+			co.addCircle(2, 5, 11, true);
+			co.addCircle(15, 1, 8, true);
+			co.addCircle(-11, 1, 8, true);
+			co.addCircle(20, -7, 4, true);
+			co.addCircle(-18, -6, 4, true);
+			co.addCircle(5, 16, 5, true);
+		} else {
+			co.addCircle(-3, -5, 11, true);
+			co.addCircle(0, -11, 9, true);
+			co.addCircle(-2, 5, 11, true);
+			co.addCircle(-15, 1, 8, true);
+			co.addCircle(11, 1, 8, true);
+			co.addCircle(-20, -7, 4, true);
+			co.addCircle(18, -6, 4, true);
+			co.addCircle(-5, 16, 5, true);
 		}
+		this.bindCollisionMask(co);
 	}
 
 	@Override
@@ -104,6 +124,8 @@ public class Enemy_Duck extends Enemy {
 		} else {
 			this.getSprite().draw(c, (int) this.getX(), (int) this.getY(), sc);
 		}
+
+		this.getCollisionMask().draw(this.getCanvas());
 	}
 
 	public Enemy_Duck(int y, boolean comeFromLeft) {
