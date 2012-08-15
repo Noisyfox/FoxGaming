@@ -74,6 +74,8 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
 	private long stepCount = 0;
 	private long SPS_startTime;
+	private long lessTime = 0;// 当无法维持帧速时向别的帧借用的处理时间
+	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
 	private Matrix viewMatrix = new Matrix();
 
@@ -360,8 +362,21 @@ public class GamingThread extends Thread implements OnTouchListener,
 		long sleepTime = (long) (1.0f / speed * 1000.0f)
 				- (frameFinishTime - frameStartTime);
 		try {
-			if (sleepTime > 0)
-				Thread.sleep(sleepTime);
+			if (sleepTime > 0) {
+				if (sleepTime - lessTime > 0) {
+					Thread.sleep(sleepTime - lessTime);
+					lessTime = 0;
+				} else {
+					lessTime -= sleepTime;
+				}
+			} else {
+				if (lessTime - sleepTime > MAXLESSTIME) {
+					lessTime = MAXLESSTIME;
+				} else {
+					lessTime -= sleepTime;
+				}
+			}
+			MyDebug.print(lessTime + "");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
