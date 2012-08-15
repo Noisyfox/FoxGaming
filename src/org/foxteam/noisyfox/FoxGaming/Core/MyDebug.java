@@ -22,7 +22,7 @@ import android.util.Log;
  * @ClassName: MyDebug
  * @Description: Functions and helpers to aid debugging and engine reports.
  *               DebugMode can be toggled to avoid using the print command. This
- *               is a copy from Rokon by Richard.
+ *               is a modification from Rokon by Richard.
  * @author: Noisyfox
  * @date: 2012-7-17 下午12:41:58
  * 
@@ -33,6 +33,10 @@ public class MyDebug {
 
 	public static String getDebugTag() {
 		return tag;
+	}
+
+	public static boolean isDebugMode() {
+		return debugMode;
 	}
 
 	/**

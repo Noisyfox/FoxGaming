@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.MyDebug;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -338,6 +339,10 @@ public class GraphicCollision {
 	}
 
 	public void draw(Canvas c) {
+		if (!MyDebug.isDebugMode()) {
+			return;
+		}
+		
 		for (Point p : points) {
 			p.draw(c);
 		}
