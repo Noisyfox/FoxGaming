@@ -208,7 +208,10 @@ public class Background {
 		anchorPointScreen = screen;
 	}
 
-	public void doAndDraw(Canvas c, int height, int width) {
+	public void doAndDraw(Canvas c, int left, int top, int height, int width) {
+
+		c.save();
+		c.clipRect(left, top, left + width, top + height);
 
 		// 先计算缩放
 		float xScale = 1;
@@ -416,17 +419,19 @@ public class Background {
 
 			for (int i = 0; i < x1; i++) {
 				for (int j = 0; j < y1; j++) {
-					Rect to = new Rect(xt + i * imageWidth, yt + j
-							* imageHeight, xt + (i + 1) * imageWidth, yt
-							+ (j + 1) * imageHeight);
+					Rect to = new Rect(left + xt + i * imageWidth, top + yt + j
+							* imageHeight, left + xt + (i + 1) * imageWidth,
+							top + yt + (j + 1) * imageHeight);
 					c.drawBitmap(sourceImage, from, to, null);
 				}
 			}
 
 		} else {
-			Rect to = new Rect(x, y, x + imageWidth, y + imageHeight);
+			Rect to = new Rect(left + x, top + y, left + x + imageWidth, top
+					+ y + imageHeight);
 			c.drawBitmap(sourceImage, from, to, null);
 		}
+		c.restore();
 
 		xOffset += speed_x;
 		yOffset += speed_y;

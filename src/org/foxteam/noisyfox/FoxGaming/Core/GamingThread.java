@@ -343,7 +343,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 			bufferCanvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
 			if (currentStage.getBackground() != null) {// 绘制背景
-				currentStage.getBackground().doAndDraw(bufferCanvas,
+				currentStage.getBackground().doAndDraw(bufferCanvas, 0, 0,
 						currentStage.height, currentStage.width);
 			}
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
