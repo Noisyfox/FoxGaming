@@ -63,8 +63,11 @@ public class Player extends Hitable {
 		this.bindSprite(playerSprite);
 
 		meOnScreen = new Point((int) mainView.getWidthFromScreen() / 2,
-				(int) mainView.getHeightFromScreen() - playerSprite.getHeight()
-						+ playerSprite.getOffsetY());
+				(int) mainView.coordinateStage2Screen_Y(
+						(int) mainView.getWidthFromScreen() / 2,
+						(int) (mainView.getHeightFromStage()
+								- playerSprite.getHeight() + playerSprite
+								.getOffsetY())));
 
 		this.setPosition(
 				mainView.coordinateScreen2Stage_X(meOnScreen.getX(),
