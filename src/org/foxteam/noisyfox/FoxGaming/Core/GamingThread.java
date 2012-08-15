@@ -376,7 +376,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 					lessTime -= sleepTime;
 				}
 			}
-			MyDebug.print(lessTime + "");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -25,7 +25,7 @@ public class THEngineMainActivity extends GameActivity {
 		bkg.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.background,
 				false);
 		bkg.setAdaptation(Background.ADAPTATION_SMART);
-		bkg.setSpeed(0, 1);
+		bkg.setSpeed(0, 30f / s.getStageSpeed());
 		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
 		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_REPEATING);
 		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_WIDTHFIRST);

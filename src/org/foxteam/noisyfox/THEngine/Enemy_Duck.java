@@ -52,9 +52,9 @@ public class Enemy_Duck extends Enemy {
 						: Stage.getCurrentStage().getWidth()
 								+ duckSprite.getOffsetX(), inY);
 
-		speed = 30f / Stage.getSpeed();
+		speed = 20f / Stage.getSpeed();
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 2f), true);// 发射子弹
+		this.setAlarm(0, (int) (Stage.getSpeed() * 3f), true);// 发射子弹
 		this.startAlarm(0);
 
 		this.setAlarm(1, (int) (Stage.getSpeed() * 0.1f), true);// 播放动画

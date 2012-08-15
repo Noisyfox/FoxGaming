@@ -60,7 +60,7 @@ public class SystemControl extends Performer {
 
 		new HUD();
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 2f), true);// 创建 鸭子敌人
+		this.setAlarm(0, (int) (Stage.getSpeed() * 4f), true);// 创建 鸭子敌人
 		this.startAlarm(0);
 	}
 
@@ -68,7 +68,7 @@ public class SystemControl extends Performer {
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// 创建 鸭子敌人
 			Enemy e = new Enemy_Duck(MathsHelper.random(0, Stage
-					.getCurrentStage().getHeight() / 2), MathsHelper.random(0,
+					.getCurrentStage().getHeight() / 3), MathsHelper.random(0,
 					11) > 5);
 			e.perform(Stage.getCurrentStage().getStageIndex());
 		}
