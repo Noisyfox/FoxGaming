@@ -16,8 +16,6 @@
  */
 package org.foxteam.noisyfox.THEngine;
 
-import org.foxteam.noisyfox.FoxGaming.Core.*;
-
 /**
  * @ClassName: Enemy
  * @Description: 基础敌机类
@@ -25,7 +23,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
  * @date: 2012-8-12 下午7:03:48
  * 
  */
-public class Enemy extends Performer {
+public class Enemy extends Hitable {
 	public Enemy() {
 
 	}

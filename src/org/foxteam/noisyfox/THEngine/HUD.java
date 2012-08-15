@@ -48,6 +48,11 @@ public class HUD extends Performer {
 		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS()
 				+ "," + Stage.getPerformersByClass(Bullet.class).length,
 				this.getX() + 10, this.getY() + 10, p);
+		c.drawText(
+				"HP:"
+						+ ((Hitable) (Stage.getPerformersByClass(Player.class)[0]))
+								.remainHP() + " Score:" + GamingThread.score,
+				this.getX() + 10, this.getY() + 20, p);
 	}
 
 	public HUD() {

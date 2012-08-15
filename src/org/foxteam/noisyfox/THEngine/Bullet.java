@@ -27,7 +27,8 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
  */
 public abstract class Bullet extends Performer {
 
-	// public float damage = 0f;
+	protected float damage = 0f;
+
 	// public float speed = 0f;
 	// public float angle = 0f;
 	//
@@ -49,5 +50,14 @@ public abstract class Bullet extends Performer {
 	// protected void onCollisionWith(Performer target) {
 	//
 	// }
+
+	// 设置子弹伤害，正值为伤血，负值为加血
+	public final void setDamage(float damage) {
+		this.damage = damage;
+	}
+
+	public final float getDamage() {
+		return damage;
+	}
 
 }

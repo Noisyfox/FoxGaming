@@ -83,6 +83,8 @@ public class Enemy_Duck extends Enemy {
 			co.addCircle(-5, 16, 5, true);
 		}
 		this.bindCollisionMask(co);
+
+		this.setHP(10);
 	}
 
 	@Override
@@ -126,6 +128,16 @@ public class Enemy_Duck extends Enemy {
 		}
 
 		this.getCollisionMask().draw(this.getCanvas());
+	}
+
+	@Override
+	protected void Explosion(Bullet bullet) {
+		new Explosion(
+				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
+				0.5f, (int) this.getX(), (int) this.getY());
+		this.dismiss();
+
+		GamingThread.score += 100;
 	}
 
 	public Enemy_Duck(int y, boolean comeFromLeft) {

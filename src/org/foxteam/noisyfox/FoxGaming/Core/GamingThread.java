@@ -41,6 +41,8 @@ import android.view.View.OnTouchListener;
 public class GamingThread extends Thread implements OnTouchListener,
 		OnKeyListener, SurfaceHolder.Callback {
 
+	public static long score = 0;// 内置变量-分数
+
 	protected static Canvas bufferCanvas = null;
 	protected static Bitmap bufferBitmap = null;
 	protected static int width = 0;

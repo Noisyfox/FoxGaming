@@ -43,6 +43,8 @@ public class Bullet_Player extends Bullet {
 		this.bindCollisionMask(co);
 
 		this.requireCollisionDetection(Enemy.class);
+
+		this.setDamage(11);
 	}
 
 	@Override
@@ -64,6 +66,7 @@ public class Bullet_Player extends Bullet {
 	@Override
 	protected void onCollisionWith(Performer target) {
 		if (Enemy.class.isInstance(target)) {
+			((Hitable) target).hitBy(this);
 			this.dismiss();
 		}
 	}

@@ -26,13 +26,15 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
  * @date: 2012-7-18 下午11:11:59
  * 
  */
-public class Player extends Performer {
+public class Player extends Hitable {
 
 	Views mainView = null;
 
 	Point meOnScreen = null;
 	Point fingerPressStart = null;
 	Point meStart = null;
+
+	static int remainLife = 3;
 
 	@Override
 	protected void onStep() {
@@ -86,6 +88,8 @@ public class Player extends Performer {
 		int[][] vertex3 = { { 0, -28 }, { -17, -7 }, { 17, -7 } };
 		co.addPolygon(vertex3, true);
 		this.bindCollisionMask(co);
+
+		this.setHP(100);
 
 	}
 
