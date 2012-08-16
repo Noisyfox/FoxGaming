@@ -32,7 +32,7 @@ import android.graphics.Color;
  * @date: 2012-6-19 下午8:29:50
  * 
  */
-public class Stage {
+public abstract class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
 	protected static Stage currentStage = null;// 当前活动的stage
@@ -51,6 +51,11 @@ public class Stage {
 	private List<Performer> emploiedPerformer = null;
 	private List<Performer> dismissingPerformer = null;
 	private List<Performer> dismissedPerformer = null;
+
+	/*
+	 * Stage 初始化函数，在切换 Stage 时目标 Stage 被载入时执行，用来执行添加 Performer 以及其它初始化 Stage 的工作
+	 */
+	protected abstract void onCreate();
 
 	public Stage() {
 		performers = new ArrayList<Performer>();

@@ -14,7 +14,9 @@
  * 2012-8-13      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.THEngine;
+package org.foxteam.noisyfox.THEngine.Performers.Bullets;
+
+import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 
 /**
  * @ClassName: Bullet_Enemy

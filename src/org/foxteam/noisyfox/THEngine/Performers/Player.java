@@ -14,10 +14,11 @@
  * 2012-7-18      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.THEngine;
+package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 
 /**
  * @ClassName: Player

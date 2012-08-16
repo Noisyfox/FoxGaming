@@ -253,6 +253,9 @@ public final class GamingThread extends Thread implements OnTouchListener,
 					lastStage.broadcastEvent(EventsListener.EVENT_ONSTAGEEND);
 					lastStage.broadcastEvent(EventsListener.EVENT_ONDESTORY);
 				}
+				// 执行 Stage 的初始化
+				MyDebug.print("Create new stage.");
+				currentStage.onCreate();
 				// 所有事件都必须在EVENT_ONCREATE之后
 				currentStage.employPerformer();
 				// 第一次进游戏，广播EVENT_ONGAMESTART事件
@@ -646,7 +649,7 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			GamingThread.width = width;
 			GamingThread.height = height;
 		}
-		MyDebug.print(width + "," + height);
+		MyDebug.print("Current view size:" + height + "x" + width);
 	}
 
 	@Override

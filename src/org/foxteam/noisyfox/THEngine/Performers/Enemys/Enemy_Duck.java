@@ -14,11 +14,13 @@
  * 2012-8-12      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.THEngine;
+package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
-
+import org.foxteam.noisyfox.THEngine.Performers.Bullet;
+import org.foxteam.noisyfox.THEngine.Performers.Explosion;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_1;
 import android.graphics.Canvas;
 
 /**

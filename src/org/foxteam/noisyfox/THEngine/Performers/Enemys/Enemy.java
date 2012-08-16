@@ -14,7 +14,9 @@
  * 2012-8-12      Noisyfox        1.0             1.0
  * Why & What is modified:
  */
-package org.foxteam.noisyfox.THEngine;
+package org.foxteam.noisyfox.THEngine.Performers.Enemys;
+
+import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 
 /**
  * @ClassName: Enemy
