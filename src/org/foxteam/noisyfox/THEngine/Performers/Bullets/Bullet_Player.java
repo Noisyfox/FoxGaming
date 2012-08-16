@@ -18,11 +18,9 @@ package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
-import org.foxteam.noisyfox.THEngine.R;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
-import org.foxteam.noisyfox.THEngine.R.drawable;
 
 /**
  * @ClassName: Bullet_Player
