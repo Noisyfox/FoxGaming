@@ -39,25 +39,42 @@ public class Player extends Hitable {
 
 	boolean controllable = true;
 
+	boolean onAnimation = false;
+
 	static int remainLife = 3;
 	Sprite playerSprite = new Sprite();
 	boolean invincibleFlash = true;
+
+	ScreenPlay birthAni = new ScreenPlay();
 
 	GraphicCollision myCollisionMask = new GraphicCollision();
 
 	@Override
 	protected void onStep() {
-		float per = meOnScreen.getX() / mainView.getWidthFromScreen();
+		MyDebug.print(this.getX() + "," + this.getY());
+		if (!onAnimation) {
+			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
 
-		mainView.setPositionFromStage(
-				(Stage.getCurrentStage().getWidth() - mainView
-						.getWidthFromStage()) * per, 0);
+			mainView.setPositionFromStage(
+					(Stage.getCurrentStage().getWidth() - mainView
+							.getWidthFromStage()) * per, 0);
 
-		this.setPosition(
-				mainView.coordinateScreen2Stage_X(meOnScreen.getX(),
-						meOnScreen.getY()),
-				mainView.coordinateScreen2Stage_Y(meOnScreen.getX(),
-						meOnScreen.getY()));
+			this.setPosition(mainView.coordinateScreen2Stage_X(
+					meOnScreen.getX(), meOnScreen.getY()), mainView
+					.coordinateScreen2Stage_Y(meOnScreen.getX(),
+							meOnScreen.getY()));
+		} else {
+			meOnScreen.setPosition(mainView.coordinateStage2Screen_X(
+					(int) this.getX(), (int) this.getY()), mainView
+					.coordinateStage2Screen_Y((int) this.getX(),
+							(int) this.getY()));
+
+			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
+
+			mainView.setPositionFromStage(
+					(Stage.getCurrentStage().getWidth() - mainView
+							.getWidthFromStage()) * per, 0);
+		}
 	}
 
 	@Override
@@ -72,6 +89,16 @@ public class Player extends Hitable {
 
 		fingerPressStart = new Point();
 		meStart = new Point();
+		meOnScreen = new Point();
+
+		birthAni.jumpTo(Stage.getCurrentStage().getWidth() / 2, Stage
+				.getCurrentStage().getHeight() + playerSprite.getOffsetY() + 40);
+		birthAni.moveTowardsWait(Stage.getCurrentStage().getWidth() / 2, Stage
+				.getCurrentStage().getHeight()
+				- playerSprite.getHeight()
+				+ playerSprite.getOffsetY() - 40, (int) (2.0f * Stage
+				.getSpeed()));
+		birthAni.stop();
 
 		// 添加碰撞检测遮罩
 		int[][] vertex1 = { { -21, -7 }, { -23, 4 }, { 23, 4 }, { 21, -7 } };
@@ -81,8 +108,6 @@ public class Player extends Hitable {
 		myCollisionMask.addPolygon(vertex2, true);
 		int[][] vertex3 = { { 0, -28 }, { -17, -7 }, { 17, -7 } };
 		myCollisionMask.addPolygon(vertex3, true);
-
-		this.setHP(10);
 
 		this.requireCollisionDetection(Enemy.class);
 
@@ -262,6 +287,7 @@ public class Player extends Hitable {
 			this.setAlarm(0, (int) (Stage.getSpeed() * 0.2f), true);
 			this.startAlarm(0);
 
+			onAnimation = false;
 		} else if (whichAlarm == 3) {// 无敌闪烁
 			invincibleFlash = !invincibleFlash;
 
@@ -310,13 +336,10 @@ public class Player extends Hitable {
 
 		this.setAlarm(2, (int) (Stage.getSpeed() * 2.0f), false);
 		this.startAlarm(2);
+		onAnimation = true;
 
-		meOnScreen = new Point((int) mainView.getWidthFromScreen() / 2,
-				(int) mainView.coordinateStage2Screen_Y(
-						(int) mainView.getWidthFromScreen() / 2,
-						(int) (mainView.getHeightFromStage()
-								- playerSprite.getHeight() + playerSprite
-								.getOffsetY())));
+		this.setHP(10);
+		this.playAScreenPlay(birthAni);
 
 	}
 
