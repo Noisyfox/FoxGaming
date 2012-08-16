@@ -278,6 +278,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			currentStage.operateCollision();
 			// 计算离开 Stage
 			currentStage.detectOutOfStage();
+			// 处理Performer的 ScreenPlay
+			currentStage.playScreenPlay();
 			// 处理Performer的运动
 			currentStage.updateMovement();
 

@@ -464,4 +464,18 @@ public abstract class Stage {
 		}
 	}
 
+	// 执行每个 Performer 的 ScreenPlay
+	protected final void playScreenPlay() {
+
+		synchronized (performers) {
+			for (Performer p : performers) {
+				if (!p.frozen && p.myScreenPlay != null) {
+					if (p.myScreenPlay.play()) {
+						p.myScreenPlay = null;
+					}
+				}
+			}
+		}
+	}
+
 }
