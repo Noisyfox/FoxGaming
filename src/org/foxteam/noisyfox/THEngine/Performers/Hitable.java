@@ -28,6 +28,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.Performer;
 public class Hitable extends Performer {
 
 	private float hp = 0f;
+	protected boolean invincible = false;
 
 	public final void setHP(float hp) {
 		if (hp <= 0) {
@@ -41,10 +42,14 @@ public class Hitable extends Performer {
 	}
 
 	public final void hitBy(Bullet bullet) {
-		hp -= bullet.damage;
+		if (!invincible) {
+			hp -= bullet.damage;
 
-		if (hp <= 0f) {
-			Explosion(bullet);
+			bullet.hitOn(this);
+			
+			if (hp <= 0f) {
+				Explosion(bullet);
+			}
 		}
 	}
 

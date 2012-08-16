@@ -25,6 +25,6 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullet;
  * @date: 2012-8-13 下午1:18:00
  * 
  */
-public class Bullet_Enemy extends Bullet {
+public abstract class Bullet_Enemy extends Bullet {
 
 }

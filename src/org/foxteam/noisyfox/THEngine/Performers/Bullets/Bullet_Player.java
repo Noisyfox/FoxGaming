@@ -45,8 +45,6 @@ public class Bullet_Player extends Bullet {
 		co.addCircle(0, 8, 5, true);
 		this.bindCollisionMask(co);
 
-		this.requireCollisionDetection(Enemy.class);
-
 		this.setDamage(11);
 	}
 
@@ -66,17 +64,16 @@ public class Bullet_Player extends Bullet {
 		this.getCollisionMask().draw(this.getCanvas());
 	}
 
-	@Override
-	protected void onCollisionWith(Performer target) {
-		if (Enemy.class.isInstance(target)) {
-			((Hitable) target).hitBy(this);
-			this.dismiss();
-		}
-	}
-
 	public Bullet_Player(int x, int y) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
+	}
+
+	@Override
+	public void hitOn(Hitable target) {
+		if (Enemy.class.isInstance(target)) {
+			this.dismiss();
+		}
 	}
 
 }

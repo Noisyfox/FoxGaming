@@ -18,6 +18,7 @@ package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
+import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 
 /**
@@ -45,7 +46,7 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		co.addCircle(0, 0, 10, true);
 		this.bindCollisionMask(co);
 
-		this.requireCollisionDetection(Player.class);
+		this.setDamage(11);
 	}
 
 	@Override
@@ -64,17 +65,17 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		this.getCollisionMask().draw(this.getCanvas());
 	}
 
-	@Override
-	protected void onCollisionWith(Performer target) {
-		if (Player.class.isInstance(target)) {
-			this.dismiss();
-		}
-	}
-
 	public Bullet_Enemy_1(int x, int y, float speed) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 		this.speed = speed;
+	}
+
+	@Override
+	public void hitOn(Hitable target) {
+		if (Player.class.isInstance(target)) {
+			this.dismiss();
+		}
 	}
 
 }

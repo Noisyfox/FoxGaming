@@ -21,6 +21,8 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_1;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
+
 import android.graphics.Canvas;
 
 /**
@@ -87,6 +89,8 @@ public class Enemy_Duck extends Enemy {
 		this.bindCollisionMask(co);
 
 		this.setHP(10);
+
+		this.requireCollisionDetection(Bullet_Player.class);
 	}
 
 	@Override
@@ -130,6 +134,13 @@ public class Enemy_Duck extends Enemy {
 		}
 
 		this.getCollisionMask().draw(this.getCanvas());
+	}
+
+	@Override
+	protected void onCollisionWith(Performer target) {
+		if (Bullet_Player.class.isInstance(target)) {
+			this.hitBy((Bullet) target);
+		}
 	}
 
 	@Override
