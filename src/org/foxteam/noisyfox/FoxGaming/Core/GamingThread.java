@@ -38,7 +38,7 @@ import android.view.View.OnTouchListener;
  * @date: 2012-6-19 下午8:12:06
  * 
  */
-public class GamingThread extends Thread implements OnTouchListener,
+public final class GamingThread extends Thread implements OnTouchListener,
 		OnKeyListener, SurfaceHolder.Callback {
 
 	public static long score = 0;// 内置变量-分数
@@ -48,6 +48,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 	protected static int width = 0;
 	protected static int height = 0;
 	protected static int screenRotation = 0;
+	protected static SurfaceHolder surfaceHolder;
 
 	private static final int STATEFLAG_WAITING = 0;// 线程刚被创建，尚未开始运作
 	private static final int STATEFLAG_STOPING = 1;
@@ -66,7 +67,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
-	private SurfaceHolder surfaceHolder;
 	private boolean processing = false;
 	private Stage lastStage = null;
 	private Stage currentStage = null;
@@ -80,6 +80,11 @@ public class GamingThread extends Thread implements OnTouchListener,
 	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
 	private Matrix viewMatrix = new Matrix();
+
+	protected GamingThread(SurfaceHolder surfaceHolder) {
+		GamingThread.surfaceHolder = surfaceHolder;
+		currentState = STATEFLAG_WAITING;
+	}
 
 	public static float getSPS() {
 		return SPS;
@@ -118,15 +123,6 @@ public class GamingThread extends Thread implements OnTouchListener,
 				}
 			}
 		}
-	}
-
-	protected GamingThread(SurfaceHolder surfaceHolder) {
-		this.surfaceHolder = surfaceHolder;
-		currentState = STATEFLAG_WAITING;
-	}
-
-	protected void setSurfaceHolder(SurfaceHolder surfaceHolder) {
-		this.surfaceHolder = surfaceHolder;
 	}
 
 	@Override
@@ -231,16 +227,16 @@ public class GamingThread extends Thread implements OnTouchListener,
 			gameStartTime = System.currentTimeMillis();
 
 		// 全局参数准备
-		currentStage = Stage.getCurrentStage();
+		currentStage = Stage.currentStage;
 		// 准备缓冲画布
 		if (bufferBitmap == null
-				|| bufferBitmap.getWidth() != currentStage.getWidth()
-				|| bufferBitmap.getHeight() != currentStage.getHeight()) {
+				|| bufferBitmap.getWidth() != currentStage.width
+				|| bufferBitmap.getHeight() != currentStage.height) {
 
 			MyDebug.print("Buffer bitmap recreated");
 
-			bufferBitmap = Bitmap.createBitmap(currentStage.getWidth(),
-					currentStage.getHeight(), Bitmap.Config.ARGB_8888);
+			bufferBitmap = Bitmap.createBitmap(currentStage.width,
+					currentStage.height, Bitmap.Config.ARGB_8888);
 			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
 			// bufferCanvas.setDrawFilter(new PaintFlagsDrawFilter(0,
 			// Paint.ANTI_ALIAS_FLAG));
@@ -249,7 +245,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 			// 先准备stage
 			if (currentStage != lastStage) {// stage发生变化
 				// 全局变量应用
-				Stage.speed = currentStage.getStageSpeed();
+				Stage.speed = currentStage.stageSpeed;
 
 				if (lastStage != null) {// 不是第一次进游戏，处理上一个stage
 					lastStage
@@ -341,9 +337,9 @@ public class GamingThread extends Thread implements OnTouchListener,
 			// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
 			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-			bufferCanvas.drawColor(currentStage.getBackgroundColor());// 绘制stage背景色
-			if (currentStage.getBackground() != null) {// 绘制背景
-				currentStage.getBackground().doAndDraw(bufferCanvas, 0, 0,
+			bufferCanvas.drawColor(currentStage.backgroundColor);// 绘制stage背景色
+			if (currentStage.background != null) {// 绘制背景
+				currentStage.background.doAndDraw(bufferCanvas, 0, 0,
 						currentStage.height, currentStage.width);
 			}
 			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
@@ -600,7 +596,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		}
 	}
 
-	protected final void gameStart() {
+	protected void gameStart() {
 		if (currentState != STATEFLAG_STOPED
 				&& currentState != STATEFLAG_WAITING) {
 			return;
@@ -609,7 +605,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		currentState = STATEFLAG_RUNNING;
 	}
 
-	protected final void gameEnd() {
+	protected void gameEnd() {
 		if (currentState != STATEFLAG_RUNNING) {
 			return;
 		}
@@ -618,7 +614,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		currentState = STATEFLAG_STOPING;
 	}
 
-	protected final void gamePause() {
+	protected void gamePause() {
 		if (currentState != STATEFLAG_RUNNING) {
 			return;
 		}
@@ -628,7 +624,7 @@ public class GamingThread extends Thread implements OnTouchListener,
 		currentState = STATEFLAG_PAUSE;
 	}
 
-	protected final void gameResume() {
+	protected void gameResume() {
 		if (currentState != STATEFLAG_PAUSED) {
 			return;
 		}

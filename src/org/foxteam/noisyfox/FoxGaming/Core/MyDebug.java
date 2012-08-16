@@ -27,7 +27,7 @@ import android.util.Log;
  * @date: 2012-7-17 下午12:41:58
  * 
  */
-public class MyDebug {
+public final class MyDebug {
 	private static String tag = "FoxGmaing";
 	protected static boolean debugMode = true;
 

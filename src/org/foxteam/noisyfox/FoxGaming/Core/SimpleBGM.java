@@ -68,7 +68,7 @@ public final class SimpleBGM {
 			mediaPlayer.release();
 		}
 
-		mediaPlayer = MediaPlayer.create(GameCore.getMainContext(),
+		mediaPlayer = MediaPlayer.create(GameCore.mainActivity,
 				sounds.get(soundId));
 		mediaPlayer.setLooping(loop);
 		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);

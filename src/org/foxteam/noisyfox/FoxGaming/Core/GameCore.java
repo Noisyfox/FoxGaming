@@ -30,10 +30,10 @@ import android.view.KeyEvent;
  */
 public final class GameCore {
 
-	private static GameView gameView;
+	protected static GameView gameView;
 	protected static Activity mainActivity;
 
-	private GamingThread thread_Gaming = null;
+	protected GamingThread thread_Gaming = null;
 
 	private static boolean inited = false;
 
@@ -73,7 +73,7 @@ public final class GameCore {
 		gameView.setOnKeyListener(null);
 
 		gameView = new GameView(mainActivity);
-		thread_Gaming.setSurfaceHolder(gameView.getHolder());
+		GamingThread.surfaceHolder = gameView.getHolder();
 
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);

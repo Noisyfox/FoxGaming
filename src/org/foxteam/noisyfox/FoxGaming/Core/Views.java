@@ -107,10 +107,7 @@ public final class Views {
 		dy *= sourceView.height() / targetView.height();
 		float x0 = dx * (float) Math.cos(Math.toRadians(sourceAngle)) - dy
 				* (float) Math.sin(Math.toRadians(sourceAngle));
-		// float y0 = dy * (float) Math.cos(Math.toRadians(sourceAngle)) + dx
-		// * (float) Math.sin(Math.toRadians(sourceAngle));
 		x0 += sourceView.centerX();
-		// y0 += sourceView.centerY();
 		return (int) x0;
 	}
 
@@ -119,11 +116,8 @@ public final class Views {
 		float dy = (float) y - targetView.centerY();
 		dx *= sourceView.width() / targetView.width();
 		dy *= sourceView.height() / targetView.height();
-		// float x0 = dx * (float) Math.cos(Math.toRadians(sourceAngle)) - dy
-		// * (float) Math.sin(Math.toRadians(sourceAngle));
 		float y0 = dy * (float) Math.cos(Math.toRadians(sourceAngle)) + dx
 				* (float) Math.sin(Math.toRadians(sourceAngle));
-		// x0 += sourceView.centerX();
 		y0 += sourceView.centerY();
 		return (int) y0;
 	}
@@ -135,10 +129,7 @@ public final class Views {
 		dy *= targetView.height() / sourceView.height();
 		float x0 = dx * (float) Math.cos(Math.toRadians(-sourceAngle)) - dy
 				* (float) Math.sin(Math.toRadians(-sourceAngle));
-		// float y0 = dy * (float) Math.cos(Math.toRadians(sourceAngle)) + dx
-		// * (float) Math.sin(Math.toRadians(sourceAngle));
 		x0 += targetView.centerX();
-		// y0 += targetView.centerY();
 		return (int) x0;
 	}
 
@@ -147,11 +138,8 @@ public final class Views {
 		float dy = (float) y - sourceView.centerY();
 		dx *= targetView.width() / sourceView.width();
 		dy *= targetView.height() / sourceView.height();
-		// float x0 = dx * (float) Math.cos(Math.toRadians(sourceAngle)) - dy
-		// * (float) Math.sin(Math.toRadians(sourceAngle));
 		float y0 = dy * (float) Math.cos(Math.toRadians(-sourceAngle)) + dx
 				* (float) Math.sin(Math.toRadians(-sourceAngle));
-		// x0 += targetView.centerX();
 		y0 += targetView.centerY();
 		return (int) y0;
 	}

@@ -32,20 +32,20 @@ import android.graphics.Color;
  * @date: 2012-6-19 下午8:29:50
  * 
  */
-public final class Stage {
+public class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
-	private static Stage currentStage = null;// 当前活动的stage
+	protected static Stage currentStage = null;// 当前活动的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
 
 	protected List<Performer> performers = null;
 	protected List<Views> activatedViews = null;
 	protected int width = 480;// stage 的宽
 	protected int height = 800;// stage 的高
-	private float stageSpeed = 30f;
-	private int backgroundColor = Color.WHITE;
-	private Background background = null;
-	private int stageIndex = -1;
+	protected float stageSpeed = 30f;
+	protected int backgroundColor = Color.WHITE;
+	protected Background background = null;
+	protected int stageIndex = -1;
 	private boolean available = false;
 	private List<Performer> employingPerformer = null;
 	private List<Performer> emploiedPerformer = null;
@@ -73,11 +73,11 @@ public final class Stage {
 		setStageIndex(index);
 	}
 
-	public static Stage getCurrentStage() {
+	public static final Stage getCurrentStage() {
 		return currentStage;
 	}
 
-	public static Stage index2Stage(int stageIndex) {
+	public static final Stage index2Stage(int stageIndex) {
 		if (stageIndex < 0 || stageIndex > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
 		}
@@ -87,7 +87,7 @@ public final class Stage {
 	/**
 	 * 静态函数 跳转到指定舞台<br>
 	 */
-	public static void switchToStage(int stage) {
+	public static final void switchToStage(int stage) {
 		if (index2Stage(stage) == currentStage)
 			return;
 		currentStage = index2Stage(stage);
@@ -96,35 +96,35 @@ public final class Stage {
 	/**
 	 * 静态函数 跳转到下一个舞台<br>
 	 */
-	public static void nextStage() {
+	public static final void nextStage() {
 		switchToStage(currentStage.stageIndex + 1);
 	}
 
 	/**
 	 * 静态函数 跳转到上一个舞台<br>
 	 */
-	public static void previousStage() {
+	public static final void previousStage() {
 		switchToStage(currentStage.stageIndex - 1);
 	}
 
 	/**
 	 * 静态函数 获取当前活动的stage的speed<br>
 	 */
-	public static float getSpeed() {
+	public static final float getSpeed() {
 		return speed;
 	}
 
 	/**
 	 * 静态函数 获取当前活动的stage的background<br>
 	 */
-	public static Background getCurrentBackground() {
-		return currentStage.getBackground();
+	public static final Background getCurrentBackground() {
+		return currentStage.background;
 	}
 
 	/**
 	 * 静态函数 获取当前活动的stage的中的Performer数量<br>
 	 */
-	public static int getPerformerCount() {
+	public static final int getPerformerCount() {
 		return currentStage.performers.size();
 	}
 
@@ -132,7 +132,7 @@ public final class Stage {
 	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Performer[] getPerformersByClass(Class c) {
+	public static final Performer[] getPerformersByClass(Class c) {
 		List<Performer> per = new ArrayList<Performer>();
 
 		for (Performer p : currentStage.performers) {
@@ -146,16 +146,14 @@ public final class Stage {
 		return per.toArray(p);
 	}
 
-	protected void sortWithDepth() {
+	protected final void sortWithDepth() {
 		synchronized (performers) {
 			Comparator<Performer> cmp = new Comparator<Performer>() {
 				@Override
 				public int compare(Performer lhs, Performer rhs) {
-					int p1 = lhs.getDepth();
-					int p2 = rhs.getDepth();
-					if (p1 > p2)
+					if (lhs.depth > rhs.depth)
 						return -1;
-					if (p1 < p2)
+					if (lhs.depth < rhs.depth)
 						return 1;
 					return 0;
 				}
@@ -171,7 +169,7 @@ public final class Stage {
 	 * @return: void
 	 * @throws
 	 */
-	private static void updateStageIndex() {
+	private static final void updateStageIndex() {
 		synchronized (stages) {
 			for (int i = 0; i < stages.size(); i++) {
 				stages.get(i).stageIndex = i;
@@ -187,12 +185,12 @@ public final class Stage {
 	}
 
 	// 保证该stage不被异常调用
-	private void ensureAvailable() {
+	private final void ensureAvailable() {
 		if (!available)
 			throw new RuntimeException("无法操作一个已经不存在的stage");
 	}
 
-	protected void employPerformer(Performer performer) {
+	protected final void employPerformer(Performer performer) {
 		ensureAvailable();
 		synchronized (employingPerformer) {
 			if (employingPerformer.contains(performer)) {
@@ -202,7 +200,7 @@ public final class Stage {
 		}
 	}
 
-	protected void employPerformer() {
+	protected final void employPerformer() {
 		synchronized (performers) {
 			synchronized (employingPerformer) {
 				for (Performer p : employingPerformer) {
@@ -223,7 +221,7 @@ public final class Stage {
 		emploiedPerformer.clear();
 	}
 
-	protected void dismissPerformer(Performer performer) {
+	protected final void dismissPerformer(Performer performer) {
 		ensureAvailable();
 		synchronized (dismissingPerformer) {
 			if (dismissingPerformer.contains(performer)) {
@@ -233,7 +231,7 @@ public final class Stage {
 		}
 	}
 
-	protected void dismissPerformer() {
+	protected final void dismissPerformer() {
 		synchronized (performers) {
 			synchronized (dismissingPerformer) {
 				for (Performer p : dismissingPerformer) {
@@ -255,7 +253,7 @@ public final class Stage {
 		dismissedPerformer.clear();
 	}
 
-	public void broadcastEvent(int event, Object... args) {
+	public final void broadcastEvent(int event, Object... args) {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
@@ -264,7 +262,7 @@ public final class Stage {
 		}
 	}
 
-	public void addView(Views view) {
+	public final void addView(Views view) {
 		if (activatedViews.contains(view)) {
 			MyDebug.warning("View already activated!");
 			return;
@@ -272,15 +270,15 @@ public final class Stage {
 		activatedViews.add(view);
 	}
 
-	public int getViewNumber() {
+	public final int getViewNumber() {
 		return activatedViews.size();
 	}
 
-	public Views getView(int index) {
+	public final Views getView(int index) {
 		return activatedViews.get(index);
 	}
 
-	public void removeView(Views view) {
+	public final void removeView(Views view) {
 		if (!activatedViews.contains(view)) {
 			MyDebug.warning("View not activated!");
 			return;
@@ -288,54 +286,54 @@ public final class Stage {
 		activatedViews.remove(view);
 	}
 
-	public void removeView(int index) {
+	public final void removeView(int index) {
 		activatedViews.remove(index);
 	}
 
-	public void setSize(int height, int width) {
+	public final void setSize(int height, int width) {
 		this.height = height;
 		this.width = width;
 	}
 
-	public int getHeight() {
+	public final int getHeight() {
 		return height;
 	}
 
-	public int getWidth() {
+	public final int getWidth() {
 		return width;
 	}
 
-	public void setStageSpeed(float stageSpeed) {
+	public final void setStageSpeed(float stageSpeed) {
 		ensureAvailable();
 		this.stageSpeed = stageSpeed;
 	}
 
-	public float getStageSpeed() {
+	public final float getStageSpeed() {
 		return stageSpeed;
 	}
 
-	public void setBackgroundColor(int color) {
+	public final void setBackgroundColor(int color) {
 		backgroundColor = color;
 	}
 
-	public int getBackgroundColor() {
+	public final int getBackgroundColor() {
 		return backgroundColor;
 	}
 
-	public void setBackground(Background background) {
+	public final void setBackground(Background background) {
 		this.background = background;
 	}
 
-	public Background getBackground() {
+	public final Background getBackground() {
 		return background;
 	}
 
-	public int getStageIndex() {
+	public final int getStageIndex() {
 		ensureAvailable();
 		return stageIndex;
 	}
 
-	public void setStageIndex(int index) {
+	public final void setStageIndex(int index) {
 		ensureAvailable();
 		if (index < 0 || index > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
@@ -348,7 +346,7 @@ public final class Stage {
 		updateStageIndex();
 	}
 
-	public void closeStage() {
+	public final void closeStage() {
 		ensureAvailable();
 		if (currentStage.equals(this)) {
 			throw new IllegalArgumentException("无法移除当前活动的stage");
@@ -369,12 +367,12 @@ public final class Stage {
 	/**
 	 * 静态函数 移除指定index的stage<br>
 	 */
-	public static void closeStage(int stageIndex) {
+	public static final void closeStage(int stageIndex) {
 		index2Stage(stageIndex).closeStage();
 	}
 
 	// 处理定时器
-	protected void operateAlarm() {
+	protected final void operateAlarm() {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
@@ -385,7 +383,7 @@ public final class Stage {
 
 	// 处理碰撞检测
 	@SuppressWarnings("rawtypes")
-	protected void operateCollision() {
+	protected final void operateCollision() {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
@@ -431,7 +429,7 @@ public final class Stage {
 	}
 
 	// 检测 Performer 是否离开 Stage
-	protected void detectOutOfStage() {
+	protected final void detectOutOfStage() {
 		synchronized (performers) {
 			for (Performer p : performers) {
 				if (p.isOutOfStage()) {

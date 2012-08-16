@@ -46,7 +46,7 @@ public final class SimpleSoundEffect {
 
 	public static int loadSoundEffect(int resId) {
 		lastAudioId++;
-		int soundId = soundPool.load(GameCore.getMainContext(), resId, 1);
+		int soundId = soundPool.load(GameCore.mainActivity, resId, 1);
 		sounds.put(lastAudioId, soundId);
 		return lastAudioId;
 	}

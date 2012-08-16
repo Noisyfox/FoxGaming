@@ -123,7 +123,7 @@ public class GameActivity extends Activity {
 	private void prepareEngine() {
 		MyDebug.print("prepareEngine()");
 		gameEngine = new GameCore(this);
-		setContentView(GameCore.getGameView());
+		setContentView(GameCore.gameView);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class GameActivity extends Activity {
 			MyDebug.print("GameActivity already been created");
 			gameEngine.onActivityRecreated();
 			// MyDebug.print("setContentView");
-			setContentView(GameCore.getGameView());
+			setContentView(GameCore.gameView);
 		} else {
 			// Debug.startMethodTracing("fox.trace");
 			onCreate();

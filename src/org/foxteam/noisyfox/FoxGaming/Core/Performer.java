@@ -35,7 +35,7 @@ public class Performer extends EventsListener {
 	private List<Alarm> alarms;
 	private boolean visible = true;
 	private float x = 0, y = 0;
-	private int depth = 0;
+	protected int depth = 0;
 	protected boolean frozen = false;
 	private Sprite sprite = null;
 	protected boolean employed = false;
@@ -60,7 +60,7 @@ public class Performer extends EventsListener {
 	@Override
 	protected void onDraw() {
 		if (sprite != null) {
-			Canvas c = this.getCanvas();
+			Canvas c = GamingThread.bufferCanvas;
 			sprite.draw(c, (int) x, (int) y);
 		}
 	}
@@ -120,7 +120,7 @@ public class Performer extends EventsListener {
 			this.onStageEnd();
 			break;
 		case EventsListener.EVENT_ONDRAW:
-			if (isVisible())
+			if (visible)
 				onDraw();
 			break;
 		case EventsListener.EVENT_ONSTEP:
@@ -153,7 +153,7 @@ public class Performer extends EventsListener {
 			MyDebug.error("Performer is not on any stage!");
 		}
 		Stage s = Stage.index2Stage(stage);
-		if (s != Stage.getCurrentStage()) {
+		if (s != Stage.currentStage) {
 			MyDebug.warning("Performer is not performing now!");
 		}
 
