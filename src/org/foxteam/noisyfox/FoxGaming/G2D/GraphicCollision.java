@@ -246,6 +246,37 @@ public class GraphicCollision {
 				}
 			}
 		}
+		
+		for (Polygon pol : polygons) {
+			for (Circle c : target.circles) {
+				if (pol.isLine()) {
+					// 圆与线段
+					if (MathsHelper.circleVSline(c, pol.getVertex(0),
+							pol.getVertex(1), true)) {
+						return true;
+					}
+					continue;
+				}
+				// 圆与多边形
+				// 有任何一边与圆相交
+				for (int i = 0; i < pol.getEdgeNumber(); i++) {
+					if (MathsHelper.circleVSline(c, pol.getVertex(i),
+							pol.getVertex(i + 1), true)) {
+						return true;
+					}
+				}
+				// 没有边相交，则判断是否有包含关系
+				if (MathsHelper.pointInCircle(pol.getVertex(0), c)) {
+					if (c.filled()) {
+						return true;
+					}
+				} else if (pol.filled()) {
+					if (MathsHelper.pointInPolygon(c, pol)) {
+						return true;
+					}
+				}
+			}
+		}
 
 		// 最后是多边形
 		// 两条直线
