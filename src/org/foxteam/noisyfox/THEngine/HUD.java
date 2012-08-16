@@ -45,9 +45,8 @@ public class HUD extends Performer {
 		Canvas c = this.getCanvas();
 		Paint p = new Paint();
 		p.setColor(Color.BLACK);
-		c.drawText(Stage.getPerformerCount() + "," + GamingThread.getSPS()
-				+ "," + Stage.getPerformersByClass(Bullet.class).length,
-				this.getX() + 10, this.getY() + 10, p);
+		c.drawText("FPS:" + (int) GamingThread.getSPS(), this.getX() + 10,
+				this.getY() + 10, p);
 		c.drawText(
 				"HP:"
 						+ ((Hitable) (Stage.getPerformersByClass(Player.class)[0]))

@@ -78,7 +78,7 @@ public class Player extends Hitable {
 		fingerPressStart = new Point();
 		meStart = new Point();
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 0.5f), true);
+		this.setAlarm(0, (int) (Stage.getSpeed() * 0.2f), true);
 		this.startAlarm(0);
 
 		// 添加碰撞检测遮罩
