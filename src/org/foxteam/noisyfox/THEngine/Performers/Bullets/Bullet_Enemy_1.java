@@ -47,11 +47,7 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		this.bindCollisionMask(co);
 
 		this.setDamage(11);
-	}
-
-	@Override
-	protected void onStep() {
-		this.setPosition(this.getX(), this.getY() + speed);
+		this.motion_set(270, speed);
 	}
 
 	@Override

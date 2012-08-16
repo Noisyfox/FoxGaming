@@ -46,11 +46,8 @@ public class Bullet_Player extends Bullet {
 		this.bindCollisionMask(co);
 
 		this.setDamage(11);
-	}
 
-	@Override
-	protected void onStep() {
-		this.setPosition(this.getX(), this.getY() - 300f / Stage.getSpeed());
+		this.motion_set(90, 300f / Stage.getSpeed());
 	}
 
 	@Override

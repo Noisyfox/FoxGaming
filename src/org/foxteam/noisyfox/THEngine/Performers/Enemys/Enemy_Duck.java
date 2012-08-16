@@ -58,6 +58,9 @@ public class Enemy_Duck extends Enemy {
 
 		speed = 20f / Stage.getSpeed();
 
+		this.motion_set(frmL ? 0 : -180, speed);
+		this.motion_add(270, Stage.getCurrentBackground().getVSpeed());
+
 		this.setAlarm(0, (int) (Stage.getSpeed() * 3f), true);// 发射子弹
 		this.startAlarm(0);
 
@@ -91,12 +94,6 @@ public class Enemy_Duck extends Enemy {
 		this.setHP(10);
 
 		this.requireCollisionDetection(Bullet_Player.class);
-	}
-
-	@Override
-	protected void onStep() {
-		this.setPosition(this.getX() + (frmL ? speed : -speed), this.getY()
-				+ Stage.getCurrentBackground().getVSpeed());
 	}
 
 	@Override

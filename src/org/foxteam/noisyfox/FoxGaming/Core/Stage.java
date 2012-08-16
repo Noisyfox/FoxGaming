@@ -385,7 +385,9 @@ public abstract class Stage {
 		ensureAvailable();
 		synchronized (performers) {
 			for (Performer p : performers) {
-				p.goAlarm();
+				if (!p.frozen) {
+					p.goAlarm();
+				}
 			}
 		}
 	}
@@ -432,7 +434,7 @@ public abstract class Stage {
 				}
 			}
 		}
-		
+
 		while (!collisions.isEmpty()) {
 			collisions.poll().callEvent(EventsListener.EVENT_ONCOLLISIONWITH,
 					collisions.poll());
@@ -443,8 +445,20 @@ public abstract class Stage {
 	protected final void detectOutOfStage() {
 		synchronized (performers) {
 			for (Performer p : performers) {
-				if (p.isOutOfStage()) {
+				if (!p.frozen && p.isOutOfStage()) {
 					p.callEvent(EventsListener.EVENT_ONOUTOFSTAGE);
+				}
+			}
+		}
+	}
+
+	// 更新每个 Performer 的位置
+	protected final void updateMovement() {
+
+		synchronized (performers) {
+			for (Performer p : performers) {
+				if (!p.frozen) {
+					p.updateMovement();
 				}
 			}
 		}

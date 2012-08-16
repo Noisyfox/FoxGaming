@@ -35,6 +35,16 @@ public class Performer extends EventsListener {
 	private List<Alarm> alarms;
 	private boolean visible = true;
 	private float x = 0, y = 0;
+	public float xprevious = 0;// Performer 以前的 x 坐标
+	public float yprevious = 0;// Performer 以前的 y 坐标
+	protected float hspeed = 0;// 速度的水平部分，即水平速度 .
+	protected float vspeed = 0;// 速度的垂直部分，即垂直速度 .
+	protected float direction = 0; // Performer 当前运动方向（ 0-360 度，逆时针， 0 = 朝右） .
+	protected float speed = 0;// Performer 当前速度（像素每步） .
+	public float friction = 0;// 当前阻力（像素每步） .
+	public float gravity = 0;// 当前重力（像素每步） .
+	public float gravity_direction = 270; // 重力方向（ 270 朝下） .
+
 	protected int depth = 0;
 	protected boolean frozen = false;
 	private Sprite sprite = null;
@@ -268,6 +278,8 @@ public class Performer extends EventsListener {
 	}
 
 	public final void setPosition(float x, float y) {
+		xprevious = this.x;
+		yprevious = this.y;
 		this.x = x;
 		this.y = y;
 		updateCollisionMask();
@@ -279,6 +291,38 @@ public class Performer extends EventsListener {
 
 	public final float getY() {
 		return y;
+	}
+
+	// 以参数（方向，速度）设定运动
+	public final void motion_set(float dir, float speed) {
+		hspeed = MathsHelper.lengthdir_x(speed, dir);
+		vspeed = -MathsHelper.lengthdir_y(speed, dir);
+		this.speed = speed;
+		direction = dir;
+	}
+
+	// 以参数（方向，速度）对当前运动做改变
+	public final void motion_add(float dir, float speed) {
+		hspeed += MathsHelper.lengthdir_x(speed, dir);
+		vspeed -= MathsHelper.lengthdir_y(speed, dir);
+		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
+		direction = (float) Math.toDegrees(Math.atan2(-vspeed, hspeed));
+	}
+
+	protected void updateMovement() {
+		// 先计算重力影响
+		hspeed += MathsHelper.lengthdir_x(gravity, gravity_direction);
+		vspeed -= MathsHelper.lengthdir_y(gravity, gravity_direction);
+		// 再计算阻力影响
+		hspeed -= MathsHelper.lengthdir_x(friction, direction);
+		vspeed += MathsHelper.lengthdir_y(friction, direction);
+		// 计算总速度及角度
+		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
+		direction = (float) Math.toDegrees(Math.atan2(-vspeed, hspeed));
+
+		if (hspeed != 0 || vspeed != 0) {
+			this.setPosition(x + hspeed, y + vspeed);
+		}
 	}
 
 	public final Canvas getCanvas() {

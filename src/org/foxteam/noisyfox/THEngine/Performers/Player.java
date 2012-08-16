@@ -288,6 +288,9 @@ public class Player extends Hitable {
 
 	@Override
 	protected void Explosion(Bullet bullet) {
+		new Explosion(
+				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
+				0.5f, (int) this.getX(), (int) this.getY());
 		birth();
 	}
 
@@ -314,12 +317,6 @@ public class Player extends Hitable {
 						(int) (mainView.getHeightFromStage()
 								- playerSprite.getHeight() + playerSprite
 								.getOffsetY())));
-
-		this.setPosition(
-				mainView.coordinateScreen2Stage_X(meOnScreen.getX(),
-						meOnScreen.getY()),
-				mainView.coordinateScreen2Stage_Y(meOnScreen.getX(),
-						meOnScreen.getY()));
 
 	}
 
