@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.Background;
 
@@ -51,6 +53,7 @@ public abstract class Stage {
 	private List<Performer> emploiedPerformer = null;
 	private List<Performer> dismissingPerformer = null;
 	private List<Performer> dismissedPerformer = null;
+	private Queue<Performer> collisions = null;
 
 	/*
 	 * Stage 初始化函数，在切换 Stage 时目标 Stage 被载入时执行，用来执行添加 Performer 以及其它初始化 Stage 的工作
@@ -64,6 +67,7 @@ public abstract class Stage {
 		dismissingPerformer = new ArrayList<Performer>();
 		emploiedPerformer = new ArrayList<Performer>();
 		dismissedPerformer = new ArrayList<Performer>();
+		collisions = new ConcurrentLinkedQueue<Performer>();
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
@@ -402,10 +406,8 @@ public abstract class Stage {
 
 								if (p.collisionMask
 										.isCollisionWith(tp.collisionMask)) {
-
-									p.callEvent(
-											EventsListener.EVENT_ONCOLLISIONWITH,
-											tp);
+									collisions.offer(p);
+									collisions.offer(tp);
 								}
 							}
 						}
@@ -418,9 +420,8 @@ public abstract class Stage {
 										if (p.collisionMask
 												.isCollisionWith(p2.collisionMask)) {
 
-											p.callEvent(
-													EventsListener.EVENT_ONCOLLISIONWITH,
-													p2);
+											collisions.offer(p);
+											collisions.offer(p2);
 										}
 									}
 								}
@@ -430,6 +431,11 @@ public abstract class Stage {
 					}
 				}
 			}
+		}
+		
+		while (!collisions.isEmpty()) {
+			collisions.poll().callEvent(EventsListener.EVENT_ONCOLLISIONWITH,
+					collisions.poll());
 		}
 	}
 
