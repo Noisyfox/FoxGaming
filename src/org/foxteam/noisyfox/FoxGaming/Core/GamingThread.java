@@ -259,6 +259,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				// 执行 Stage 的初始化
 				MyDebug.print("Create new stage.");
 				Stage.currentStage.onCreate();
+
+				Stage.speed = Stage.currentStage.stageSpeed;
 				// 准备缓冲画布
 				prepareBufferBitmap();
 
@@ -274,8 +276,9 @@ public final class GamingThread extends Thread implements OnTouchListener,
 						.broadcastEvent(EventsListener.EVENT_ONSTAGESTART);
 
 			} else {
-				Stage.currentStage.employPerformer();
+				Stage.speed = Stage.currentStage.stageSpeed;
 				prepareBufferBitmap();
+				Stage.currentStage.employPerformer();
 			}
 
 			// 处理当前场景的performer
