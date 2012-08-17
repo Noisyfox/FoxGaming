@@ -56,6 +56,7 @@ public class Performer extends EventsListener {
 	@SuppressWarnings("rawtypes")
 	protected List<Class> requiredClassCollisionDetection = new ArrayList<Class>();
 	protected ScreenPlay myScreenPlay = null;
+	private GraphicCollision gc_tmp = new GraphicCollision();
 
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
@@ -391,6 +392,121 @@ public class Performer extends EventsListener {
 		public int setSteps = 0;
 		public int remainSteps = 0;
 		public boolean repeat = false;
+	}
+
+	/**
+	 * 这个函数测试在（x, y）位置是否和 Performer target 有碰撞。<br>
+	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 */
+	public final Performer collision_point(int x, int y, Performer target,
+			boolean notme) {
+		if (target.frozen || target.collisionMask == null
+				|| (target == this && notme)) {
+			return null;
+		}
+
+		gc_tmp.clear();
+		gc_tmp.addPoint(x, y);
+
+		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public final Performer collision_point(int x, int y, Class target,
+			boolean notme) {
+		for (Performer p : Stage.getPerformersByClass(target)) {
+			if (collision_point(x, y, p, notme) != null) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 这个函数测试指定对角的矩形（已填充）是否和 Performer target 有碰撞。<br>
+	 * 举例来说，你可以使用这个函数测试某个区域里是否没有障碍物。<br>
+	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 */
+	public final Performer collision_rectangle(int left, int top, int width,
+			int height, Performer target, boolean notme) {
+		if (target.frozen || target.collisionMask == null
+				|| (target == this && notme)) {
+			return null;
+		}
+
+		gc_tmp.clear();
+		gc_tmp.addRectangle(left, top, width, height);
+
+		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public final Performer collision_rectangle(int left, int top, int width,
+			int height, Class target, boolean notme) {
+		for (Performer p : Stage.getPerformersByClass(target)) {
+			if (collision_rectangle(left, top, width, height, p, notme) != null) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 这个函数测试指定圆心（xc,yc）的圆（已填充）是否和 Performer target 有碰撞。<br>
+	 * 举例来说，你可以使用这个函数测试某 Performer 是否靠近某特定位置。<br>
+	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 */
+	public final Performer collision_circle(int xc, int yc, int radius,
+			Performer target, boolean notme) {
+		if (target.frozen || target.collisionMask == null
+				|| (target == this && notme)) {
+			return null;
+		}
+
+		gc_tmp.clear();
+		gc_tmp.addCircle(xc, yc, radius);
+
+		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public final Performer collision_circle(int xc, int yc, int radius,
+			Class target, boolean notme) {
+		for (Performer p : Stage.getPerformersByClass(target)) {
+			if (collision_circle(xc, yc, radius, p, notme) != null) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 这个函数测试线段（x1,y1）到 (x2,y2) 是否和 Performer target 有碰撞。<br>
+	 * 这是个强大的函数。你可以这样使用这个函数，通过检测线段是否与他们之间的墙相交来测试某 Performer 是否可以看到另一 Performer 。<br>
+	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 */
+	public final Performer collision_line(int x1, int y1, int x2, int y2,
+			Performer target, boolean notme) {
+		if (target.frozen || target.collisionMask == null
+				|| (target == this && notme)) {
+			return null;
+		}
+
+		gc_tmp.clear();
+		gc_tmp.addLine(x1, y1, x2, y2);
+
+		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public final Performer collision_line(int x1, int y1, int x2, int y2,
+			Class target, boolean notme) {
+		for (Performer p : Stage.getPerformersByClass(target)) {
+			if (collision_line(x1, y1, x2, y2, p, notme) != null) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 }
