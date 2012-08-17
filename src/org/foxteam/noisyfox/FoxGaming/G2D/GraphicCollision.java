@@ -52,6 +52,13 @@ public class GraphicCollision {
 		p.setAlpha(100);
 	}
 
+	public void clear() {
+		polygons.clear();
+		circles.clear();
+		points.clear();
+		reducedArea.setEmpty();
+	}
+
 	public final void addCircle(int x, int y, int r) {
 		addCircle(x, y, r, true);
 	}
@@ -73,6 +80,17 @@ public class GraphicCollision {
 	public final void addTriangle(int x1, int y1, int x2, int y2, int x3,
 			int y3, boolean fill) {
 		int[][] vertex = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
+		addPolygon(vertex, fill);
+	}
+
+	public final void addRectangle(int left, int top, int width, int height) {
+		addRectangle(left, top, width, height, true);
+	}
+
+	public final void addRectangle(int left, int top, int width, int height,
+			boolean fill) {
+		int[][] vertex = { { left, top }, { left, top + height },
+				{ left + width, top + height }, { left + width, top } };
 		addPolygon(vertex, fill);
 	}
 
