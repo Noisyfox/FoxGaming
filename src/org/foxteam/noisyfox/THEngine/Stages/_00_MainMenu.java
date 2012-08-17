@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.Button;
+import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
 
@@ -34,6 +35,8 @@ public class _00_MainMenu extends Stage {
 		Button bGameStart = new Button_GameStart();
 		bGameStart.perform(this.getStageIndex());
 		bGameStart.setPosition(this.getWidth() / 2, this.getHeight() / 2);
+		GamingThread.score = 0;
+		this.setStageSpeed(10);
 	}
 
 }

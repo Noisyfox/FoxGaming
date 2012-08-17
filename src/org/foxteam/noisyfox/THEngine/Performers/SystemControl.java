@@ -77,30 +77,6 @@ public class SystemControl extends Performer {
 			e.perform(Stage.getCurrentStage().getStageIndex());
 		}
 	}
-
-	@Override
-	protected void onScreenSizeChanged(int width, int height) {
-		// MyDebug.print("Screen size changed");
-
-		// Stage.getCurrentStage().setSize(height, 320);
-		// Views v = Stage.getCurrentStage().getView(0);
-		// v.setSizeFromScreen(GamingThread.getScreenWidth(),
-		// GamingThread.getScreenHeight());
-		// v.setSizeFromStage(GamingThread.getScreenWidth(),
-		// GamingThread.getScreenHeight());
-
-	}
-
-	@Override
-	protected void onStep() {
-	}
-
-	@Override
-	protected void onTouchRelease(int whichfinger) {
-		if (whichfinger == 1) {
-			GameActivity.getGameCore().gameEnd();
-		}
-	}
 	
 	@Override
 	protected void onKeyRelease(int keyCode) {
@@ -108,10 +84,10 @@ public class SystemControl extends Performer {
 			Stage.previousStage();
 		}
 	}
-
+	
 	@Override
-	protected void onDraw() {
-
+	protected void onStageEnd() {
+		SimpleBGM.stop();
 	}
 
 	public SystemControl() {

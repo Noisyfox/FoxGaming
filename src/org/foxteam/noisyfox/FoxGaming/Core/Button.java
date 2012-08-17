@@ -55,7 +55,7 @@ public abstract class Button extends Performer {
 	}
 
 	@Override
-	protected void onTouch(int whichfinger, int x, int y) {
+	protected final void onTouch(int whichfinger, int x, int y) {
 		if (!enable) {
 			touchDown = -1;
 			return;
@@ -71,7 +71,7 @@ public abstract class Button extends Performer {
 	}
 
 	@Override
-	protected void onTouchPress(int whichfinger, int x, int y) {
+	protected final void onTouchPress(int whichfinger, int x, int y) {
 		if (!enable) {
 			touchDown = -1;
 			return;
@@ -79,12 +79,12 @@ public abstract class Button extends Performer {
 		if (touchDown == -1 && this.collision_point(x, y, this, false) == this) {
 			touchDown = whichfinger;
 			mySprite.setCurrentFrame(1);
-			//MyDebug.print("d");
+			// MyDebug.print("d");
 		}
 	}
 
 	@Override
-	protected void onTouchRelease(int whichfinger) {
+	protected final void onTouchRelease(int whichfinger) {
 		if (!enable) {
 			touchDown = -1;
 			return;
@@ -98,7 +98,7 @@ public abstract class Button extends Performer {
 	}
 
 	@Override
-	protected void onDraw() {
+	protected final void onDraw() {
 		mySprite.draw(getCanvas(), (int) this.getX(), (int) this.getY(), mySC);
 	}
 

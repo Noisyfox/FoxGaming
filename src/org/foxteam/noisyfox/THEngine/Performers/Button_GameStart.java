@@ -17,7 +17,10 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.Button;
+import org.foxteam.noisyfox.FoxGaming.Core.GameActivity;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
+
+import android.view.KeyEvent;
 
 /**
  * @ClassName: Button_GameStart
@@ -36,6 +39,13 @@ public class Button_GameStart extends Button {
 	@Override
 	public void onClick() {
 		Stage.nextStage();
+	}
+
+	@Override
+	protected void onKeyRelease(int keyCode) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			GameActivity.getGameCore().gameEnd();
+		}
 	}
 
 }

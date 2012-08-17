@@ -191,7 +191,7 @@ public final class GamingThread extends Thread implements OnTouchListener,
 	public void screenRefresh() {
 		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
 		if (targetCanvas != null) {
-			targetCanvas.drawARGB(255, 255, 255, 255);
+			targetCanvas.drawARGB(0, 0, 0, 255);
 
 			// 处理视角
 			if (Stage.currentStage.activatedViews.size() == 0) {
@@ -225,11 +225,13 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				|| bufferBitmap.getWidth() != Stage.currentStage.width
 				|| bufferBitmap.getHeight() != Stage.currentStage.height) {
 
-			MyDebug.print("Buffer bitmap recreated");
-
 			bufferBitmap = Bitmap.createBitmap(Stage.currentStage.width,
 					Stage.currentStage.height, Bitmap.Config.ARGB_8888);
 			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
+			bufferCanvas.drawARGB(0, 0, 0, 255);
+
+			MyDebug.print("Buffer bitmap recreated:" + bufferBitmap.getHeight()
+					+ "*" + bufferBitmap.getWidth());
 		}
 	}
 
@@ -273,6 +275,7 @@ public final class GamingThread extends Thread implements OnTouchListener,
 
 			} else {
 				Stage.currentStage.employPerformer();
+				prepareBufferBitmap();
 			}
 
 			// 处理当前场景的performer
