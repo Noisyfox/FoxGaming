@@ -42,6 +42,10 @@ public class GraphicCollision {
 	List<Circle> circles = new ArrayList<Circle>();
 	List<Point> points = new ArrayList<Point>();
 	Rect reducedArea = new Rect(0, 0, 0, 0);
+	List<Polygon> polygons_tmp = new ArrayList<Polygon>();
+	List<Circle> circles_tmp = new ArrayList<Circle>();
+	List<Point> points_tmp = new ArrayList<Point>();
+	Rect reducedArea_tmp = new Rect(0, 0, 0, 0);
 
 	int baseX = 0;
 	int baseY = 0;
@@ -50,6 +54,8 @@ public class GraphicCollision {
 		p.setColor(Color.RED);
 		p.setStyle(Paint.Style.STROKE);
 		p.setAlpha(100);
+		// Matrix a = new Matrix();
+		// a.m
 	}
 
 	public void clear() {
@@ -57,6 +63,11 @@ public class GraphicCollision {
 		circles.clear();
 		points.clear();
 		reducedArea.setEmpty();
+
+		polygons_tmp.clear();
+		circles_tmp.clear();
+		points_tmp.clear();
+		reducedArea_tmp.setEmpty();
 	}
 
 	public final void addCircle(int x, int y, int r) {
@@ -71,6 +82,14 @@ public class GraphicCollision {
 		reducedArea.top = Math.min(y - r, reducedArea.top);
 		reducedArea.right = Math.max(x + r, reducedArea.right);
 		reducedArea.bottom = Math.max(y + r, reducedArea.bottom);
+
+		Circle c_tmp = new Circle(x, y, r, fill);
+		circles_tmp.add(c_tmp);
+
+		reducedArea_tmp.left = reducedArea.left;
+		reducedArea_tmp.top = reducedArea.top;
+		reducedArea_tmp.right = reducedArea.right;
+		reducedArea_tmp.bottom = reducedArea.bottom;
 	}
 
 	public final void addTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
@@ -108,6 +127,14 @@ public class GraphicCollision {
 		reducedArea.top = Math.min(y, reducedArea.top);
 		reducedArea.right = Math.max(x, reducedArea.right);
 		reducedArea.bottom = Math.max(y, reducedArea.bottom);
+
+		Point p_tmp = new Point(x, y);
+		points_tmp.add(p_tmp);
+
+		reducedArea_tmp.left = reducedArea.left;
+		reducedArea_tmp.top = reducedArea.top;
+		reducedArea_tmp.right = reducedArea.right;
+		reducedArea_tmp.bottom = reducedArea.bottom;
 	}
 
 	public final void addPolygon(int[][] vertex, boolean fill) {
@@ -129,53 +156,134 @@ public class GraphicCollision {
 		Polygon p = new Polygon(vertex, fill);
 		polygons.add(p);
 
-		for (Point v : p.vertex) {
+		Point[] v_tmp = new Point[vertex.length];
+
+		for (int i = 0; i < vertex.length; i++) {
+			Point v = vertex[i];
 			reducedArea.left = Math.min(v.x, reducedArea.left);
 			reducedArea.top = Math.min(v.y, reducedArea.top);
 			reducedArea.right = Math.max(v.x, reducedArea.right);
 			reducedArea.bottom = Math.max(v.y, reducedArea.bottom);
+
+			v_tmp[i] = new Point(v.getX(), v.getY());
 		}
+
+		Polygon p_tmp = new Polygon(v_tmp, fill);
+		polygons_tmp.add(p_tmp);
+
+		reducedArea_tmp.left = reducedArea.left;
+		reducedArea_tmp.top = reducedArea.top;
+		reducedArea_tmp.right = reducedArea.right;
+		reducedArea_tmp.bottom = reducedArea.bottom;
 	}
 
 	public final void setPosition(int x, int y) {
 		int dx = x - baseX;
 		int dy = y - baseY;
-		for (Point p : points) {
+		for (Point p : points_tmp) {
 			p.move(dx, dy);
 		}
-		for (Circle c : circles) {
+		for (Circle c : circles_tmp) {
 			c.move(dx, dy);
 		}
-		for (Polygon pol : polygons) {
+		for (Polygon pol : polygons_tmp) {
 			for (Point p : pol.vertex) {
 				p.move(dx, dy);
 			}
 		}
 
-		reducedArea.offset(dx, dy);
+		reducedArea_tmp.offset(dx, dy);
 
 		baseX = x;
 		baseY = y;
 	}
 
+	private final void mapPoint(Point src, Point dst, Convertor convertor) {
+		float srcP[] = { src.getX(), src.getY() };
+		float dstP[] = { dst.getX(), dst.getY() };
+		convertor.getConvertMatrix().mapPoints(dstP, srcP);
+		dst.x = (int) dstP[0];
+		dst.y = (int) dstP[1];
+	}
+
+	public final void applyConvertor(Convertor convertor) {
+		reducedArea_tmp.setEmpty();
+		for (int i = 0; i < points.size(); i++) {
+			mapPoint(points.get(i), points_tmp.get(i), convertor);
+
+			reducedArea_tmp.left = Math.min(points_tmp.get(i).x,
+					reducedArea_tmp.left);
+			reducedArea_tmp.top = Math.min(points_tmp.get(i).y,
+					reducedArea_tmp.top);
+			reducedArea_tmp.right = Math.max(points_tmp.get(i).x,
+					reducedArea_tmp.right);
+			reducedArea_tmp.bottom = Math.max(points_tmp.get(i).y,
+					reducedArea_tmp.bottom);
+		}
+
+		for (int i = 0; i < circles.size(); i++) {
+			mapPoint(circles.get(i), circles_tmp.get(i), convertor);
+
+			reducedArea_tmp.left = Math.min(
+					points_tmp.get(i).x - circles_tmp.get(i).r,
+					reducedArea_tmp.left);
+			reducedArea_tmp.top = Math.min(
+					points_tmp.get(i).y - circles_tmp.get(i).r,
+					reducedArea_tmp.top);
+			reducedArea_tmp.right = Math.max(
+					points_tmp.get(i).x + circles_tmp.get(i).r,
+					reducedArea_tmp.right);
+			reducedArea_tmp.bottom = Math.max(
+					points_tmp.get(i).y + circles_tmp.get(i).r,
+					reducedArea_tmp.bottom);
+		}
+
+		for (int i = 0; i < polygons.size(); i++) {
+			for (int j = 0; j < polygons.get(i).num_vertexs; j++) {
+				mapPoint(polygons.get(i).vertex[j],
+						polygons_tmp.get(i).vertex[j], convertor);
+
+				reducedArea_tmp.left = Math.min(
+						polygons_tmp.get(i).vertex[j].x, reducedArea_tmp.left);
+				reducedArea_tmp.top = Math.min(polygons_tmp.get(i).vertex[j].y,
+						reducedArea_tmp.top);
+				reducedArea_tmp.right = Math.max(
+						polygons_tmp.get(i).vertex[j].x, reducedArea_tmp.right);
+				reducedArea_tmp.bottom = Math
+						.max(polygons_tmp.get(i).vertex[j].y,
+								reducedArea_tmp.bottom);
+			}
+		}
+
+		// convertor.getConvertMatrix().mapRect(reducedArea_tmp, reducedArea);
+
+		int x = baseX;
+		int y = baseY;
+
+		setPosition(x, y);
+
+		baseX = 0;
+		baseY = 0;
+	}
+
 	public final boolean isCollisionWith(GraphicCollision target) {
 		// 粗略判断范围
-		if (!MathsHelper.rectVSrect(reducedArea, target.reducedArea)) {
+		if (!MathsHelper.rectVSrect(reducedArea_tmp, target.reducedArea_tmp)) {
 			return false;
 		}
 
 		// 优先进行点的判断
 		// 点与点
-		for (Point p1 : points) {
-			for (Point p2 : target.points) {
+		for (Point p1 : points_tmp) {
+			for (Point p2 : target.points_tmp) {
 				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
 					return true;
 				}
 			}
 		}
 		// 点与圆面
-		for (Circle c : target.circles) {
-			for (Point p1 : points) {
+		for (Circle c : target.circles_tmp) {
+			for (Point p1 : points_tmp) {
 				if (c.filled()) {
 					if (MathsHelper.pointInCircle(p1, c)) {
 						return true;
@@ -183,8 +291,8 @@ public class GraphicCollision {
 				}
 			}
 		}
-		for (Circle c : circles) {
-			for (Point p1 : target.points) {
+		for (Circle c : circles_tmp) {
+			for (Point p1 : target.points_tmp) {
 				if (c.filled()) {
 					if (MathsHelper.pointInCircle(p1, c)) {
 						return true;
@@ -193,8 +301,8 @@ public class GraphicCollision {
 			}
 		}
 		// 点与多边形
-		for (Polygon pol : target.polygons) {
-			for (Point p : points) {
+		for (Polygon pol : target.polygons_tmp) {
+			for (Point p : points_tmp) {
 				if (pol.filled()) {
 					if (MathsHelper.pointInPolygon(p, pol)) {
 						return true;
@@ -202,8 +310,8 @@ public class GraphicCollision {
 				}
 			}
 		}
-		for (Polygon pol : polygons) {
-			for (Point p : target.points) {
+		for (Polygon pol : polygons_tmp) {
+			for (Point p : target.points_tmp) {
 				if (pol.filled()) {
 					if (MathsHelper.pointInPolygon(p, pol)) {
 						return true;
@@ -214,8 +322,8 @@ public class GraphicCollision {
 
 		// 接下来判断圆
 		// 圆与圆
-		for (Circle c1 : circles) {
-			for (Circle c2 : target.circles) {
+		for (Circle c1 : circles_tmp) {
+			for (Circle c2 : target.circles_tmp) {
 				int d2 = c1.squareDistance(c2);
 				int r2 = (c1.getR() + c2.getR()) * (c1.getR() + c2.getR());
 				int r22 = (c1.getR() - c2.getR()) * (c1.getR() - c2.getR());
@@ -234,8 +342,8 @@ public class GraphicCollision {
 			}
 		}
 		// 圆与多边形
-		for (Polygon pol : target.polygons) {
-			for (Circle c : circles) {
+		for (Polygon pol : target.polygons_tmp) {
+			for (Circle c : circles_tmp) {
 				if (pol.isLine()) {
 					// 圆与线段
 					if (MathsHelper.circleVSline(c, pol.getVertex(0),
@@ -265,8 +373,8 @@ public class GraphicCollision {
 			}
 		}
 
-		for (Polygon pol : polygons) {
-			for (Circle c : target.circles) {
+		for (Polygon pol : polygons_tmp) {
+			for (Circle c : target.circles_tmp) {
 				if (pol.isLine()) {
 					// 圆与线段
 					if (MathsHelper.circleVSline(c, pol.getVertex(0),
@@ -298,8 +406,8 @@ public class GraphicCollision {
 
 		// 最后是多边形
 		// 两条直线
-		for (Polygon pol1 : target.polygons) {
-			for (Polygon pol2 : polygons) {
+		for (Polygon pol1 : target.polygons_tmp) {
+			for (Polygon pol2 : polygons_tmp) {
 				if (pol1.isLine() && pol2.isLine()) {
 					if (MathsHelper.lineVSline(pol1.getVertex(0),
 							pol1.getVertex(1), pol2.getVertex(0),
@@ -311,8 +419,8 @@ public class GraphicCollision {
 			}
 		}
 		// 直线和多边形
-		for (Polygon pol1 : target.polygons) {
-			for (Polygon pol2 : polygons) {
+		for (Polygon pol1 : target.polygons_tmp) {
+			for (Polygon pol2 : polygons_tmp) {
 				if (pol1.isLine() && !pol2.isLine()) {
 					boolean b1 = MathsHelper.pointInPolygon(pol1.getVertex(0),
 							pol2);
@@ -342,8 +450,8 @@ public class GraphicCollision {
 			}
 		}
 		// 多边形和多边形
-		for (Polygon pol1 : target.polygons) {
-			for (Polygon pol2 : polygons) {
+		for (Polygon pol1 : target.polygons_tmp) {
+			for (Polygon pol2 : polygons_tmp) {
 				if (!pol1.isLine() && !pol2.isLine()) {
 					{
 						boolean hasIn = false;
@@ -392,16 +500,16 @@ public class GraphicCollision {
 			return;
 		}
 
-		for (Point p : points) {
+		for (Point p : points_tmp) {
 			p.draw(c);
 		}
-		for (Circle ci : circles) {
+		for (Circle ci : circles_tmp) {
 			ci.draw(c);
 		}
-		for (Polygon pol : polygons) {
+		for (Polygon pol : polygons_tmp) {
 			pol.draw(c);
 		}
-		c.drawRect(reducedArea, p);
+		c.drawRect(reducedArea_tmp, p);
 	}
 
 	// 静态函数，判断多个target之间是否发生碰撞
