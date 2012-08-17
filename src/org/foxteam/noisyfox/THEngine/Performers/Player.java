@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 
 /**
@@ -276,7 +277,7 @@ public class Player extends Hitable {
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {
-			Bullet_Player b = new Bullet_Player((int) this.getX(),
+			Bullet_Player b = new Bullet_Player_Normal((int) this.getX(),
 					(int) this.getY() - this.getSprite().getOffsetY());
 			b.setDepth(this.getDepth() + 1);
 

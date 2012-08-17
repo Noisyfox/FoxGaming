@@ -16,11 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
-import org.foxteam.noisyfox.FoxGaming.Core.*;
-import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
-import org.foxteam.noisyfox.THEngine.Performers.Hitable;
-import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 
 /**
  * @ClassName: Bullet_Player
@@ -29,48 +25,6 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
  * @date: 2012-7-19 下午3:11:09
  * 
  */
-public class Bullet_Player extends Bullet {
-
-	@Override
-	protected void onCreate() {
-
-		Sprite bulletSprite = new Sprite();
-		bulletSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
-		bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
-
-		this.bindSprite(bulletSprite);
-
-		GraphicCollision co = new GraphicCollision();
-		co.addCircle(0, 8, 5, true);
-		this.bindCollisionMask(co);
-
-		this.setDamage(11);
-
-		this.motion_set(90, 300f / Stage.getSpeed());
-	}
-
-	@Override
-	protected void onOutOfStage() {
-		this.dismiss();
-	}
-
-	@Override
-	protected void onDraw() {
-		super.onDraw();
-		this.getCollisionMask().draw(this.getCanvas());
-	}
-
-	public Bullet_Player(int x, int y) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
-		this.setPosition(x, y);
-	}
-
-	@Override
-	public void hitOn(Hitable target) {
-		if (Enemy.class.isInstance(target)) {
-			this.dismiss();
-		}
-	}
+public abstract class Bullet_Player extends Bullet {
 
 }
