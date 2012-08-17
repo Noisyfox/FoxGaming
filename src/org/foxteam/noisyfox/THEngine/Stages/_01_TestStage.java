@@ -27,7 +27,7 @@ import org.foxteam.noisyfox.THEngine.Performers.SystemControl;
  * @date: 2012-8-16 上午11:04:33
  * 
  */
-public final class _00_TestStage extends Stage {
+public final class _01_TestStage extends Stage {
 
 	@Override
 	protected void onCreate() {

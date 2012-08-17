@@ -7,7 +7,8 @@ public class THEngineMainActivity extends GameActivity {
 
 	@Override
 	public void onEngineReady() {
-		new _00_TestStage();
+		new _00_MainMenu();
+		new _01_TestStage();
 	}
 
 	@Override

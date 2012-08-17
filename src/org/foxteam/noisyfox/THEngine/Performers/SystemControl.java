@@ -20,6 +20,8 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Duck;
 
+import android.view.KeyEvent;
+
 /**
  * @ClassName: SystemControl
  * @Description: TODO
@@ -97,6 +99,13 @@ public class SystemControl extends Performer {
 	protected void onTouchRelease(int whichfinger) {
 		if (whichfinger == 1) {
 			GameActivity.getGameCore().gameEnd();
+		}
+	}
+	
+	@Override
+	protected void onKeyRelease(int keyCode) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			Stage.previousStage();
 		}
 	}
 

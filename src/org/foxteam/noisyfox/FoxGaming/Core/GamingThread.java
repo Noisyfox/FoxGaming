@@ -68,8 +68,6 @@ public final class GamingThread extends Thread implements OnTouchListener,
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
 	private boolean processing = false;
-	// private Stage lastStage = null;
-	// private Stage currentStage = null;
 	private int lastScreenWidth = 0;
 	private int lastScreenHeight = 0;
 	private List<TouchEvent> listTouchEvent = new ArrayList<TouchEvent>();
