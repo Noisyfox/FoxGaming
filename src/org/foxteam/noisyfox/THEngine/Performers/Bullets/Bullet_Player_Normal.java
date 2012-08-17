@@ -58,7 +58,9 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	@Override
 	protected void onDraw() {
 		super.onDraw();
-		this.getCollisionMask().draw(this.getCanvas());
+		if (this.getCollisionMask() != null) {
+			this.getCollisionMask().draw(this.getCanvas());
+		}
 	}
 
 	public Bullet_Player_Normal(int x, int y) {
@@ -72,5 +74,5 @@ public class Bullet_Player_Normal extends Bullet_Player {
 			this.dismiss();
 		}
 	}
-	
+
 }

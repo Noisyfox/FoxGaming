@@ -58,7 +58,9 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 	@Override
 	protected void onDraw() {
 		super.onDraw();
-		this.getCollisionMask().draw(this.getCanvas());
+		if (this.getCollisionMask() != null) {
+			this.getCollisionMask().draw(this.getCanvas());
+		}
 	}
 
 	public Bullet_Enemy_1(int x, int y, float speed) {
