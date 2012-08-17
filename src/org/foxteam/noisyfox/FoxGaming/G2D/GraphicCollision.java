@@ -496,9 +496,6 @@ public class GraphicCollision {
 	}
 
 	public void draw(Canvas c) {
-		if (!MyDebug.isDebugMode()) {
-			return;
-		}
 
 		for (Point p : points_tmp) {
 			p.draw(c);

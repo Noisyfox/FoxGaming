@@ -55,14 +55,6 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		this.dismiss();
 	}
 
-	@Override
-	protected void onDraw() {
-		super.onDraw();
-		if (this.getCollisionMask() != null) {
-			this.getCollisionMask().draw(this.getCanvas());
-		}
-	}
-
 	public Bullet_Enemy_1(int x, int y, float speed) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);

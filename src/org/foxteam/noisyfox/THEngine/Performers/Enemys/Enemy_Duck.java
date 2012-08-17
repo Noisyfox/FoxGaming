@@ -129,10 +129,6 @@ public class Enemy_Duck extends Enemy {
 		} else {
 			this.getSprite().draw(c, (int) this.getX(), (int) this.getY(), sc);
 		}
-
-		if (this.getCollisionMask() != null) {
-			this.getCollisionMask().draw(this.getCanvas());
-		}
 	}
 
 	@Override

@@ -55,14 +55,6 @@ public class Bullet_Player_Normal extends Bullet_Player {
 		this.dismiss();
 	}
 
-	@Override
-	protected void onDraw() {
-		super.onDraw();
-		if (this.getCollisionMask() != null) {
-			this.getCollisionMask().draw(this.getCanvas());
-		}
-	}
-
 	public Bullet_Player_Normal(int x, int y) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);

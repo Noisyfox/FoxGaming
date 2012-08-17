@@ -304,10 +304,6 @@ public class Player extends Hitable {
 		if (!this.invincible || invincibleFlash) {
 			super.onDraw();
 		}
-
-		if (this.getCollisionMask() != null) {
-			this.getCollisionMask().draw(this.getCanvas());
-		}
 	}
 
 	@Override

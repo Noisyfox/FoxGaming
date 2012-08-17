@@ -132,8 +132,12 @@ public class Performer extends EventsListener {
 			this.onStageEnd();
 			break;
 		case EventsListener.EVENT_ONDRAW:
-			if (visible)
+			if (visible) {
 				onDraw();
+			}
+			if (MyDebug.debugMode && collisionMask != null) {// 便于调试
+				collisionMask.draw(getCanvas());
+			}
 			break;
 		case EventsListener.EVENT_ONSTEP:
 			this.onStep();
