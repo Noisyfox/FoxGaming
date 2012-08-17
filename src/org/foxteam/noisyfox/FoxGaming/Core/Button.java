@@ -100,6 +100,11 @@ public abstract class Button extends Performer {
 	@Override
 	protected final void onDraw() {
 		mySprite.draw(getCanvas(), (int) this.getX(), (int) this.getY(), mySC);
+		
+
+		if (this.getCollisionMask() != null) {
+			this.getCollisionMask().draw(this.getCanvas());
+		}
 	}
 
 	public abstract void onClick();
