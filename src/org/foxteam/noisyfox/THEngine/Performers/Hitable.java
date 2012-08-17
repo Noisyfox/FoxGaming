@@ -46,7 +46,7 @@ public class Hitable extends Performer {
 			hp -= bullet.damage;
 
 			bullet.hitOn(this);
-			
+
 			if (hp <= 0f) {
 				Explosion(bullet);
 			}

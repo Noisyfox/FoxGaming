@@ -246,7 +246,7 @@ public class GraphicCollision {
 				}
 			}
 		}
-		
+
 		for (Polygon pol : polygons) {
 			for (Circle c : target.circles) {
 				if (pol.isLine()) {
@@ -373,7 +373,7 @@ public class GraphicCollision {
 		if (!MyDebug.isDebugMode()) {
 			return;
 		}
-		
+
 		for (Point p : points) {
 			p.draw(c);
 		}

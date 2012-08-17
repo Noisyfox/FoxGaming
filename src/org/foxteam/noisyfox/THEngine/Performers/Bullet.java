@@ -59,7 +59,7 @@ public abstract class Bullet extends Performer {
 	public final float getDamage() {
 		return damage;
 	}
-	
+
 	public abstract void hitOn(Hitable target);
 
 }

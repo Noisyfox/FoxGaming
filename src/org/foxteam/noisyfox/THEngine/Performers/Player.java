@@ -51,7 +51,6 @@ public class Player extends Hitable {
 
 	@Override
 	protected void onStep() {
-		MyDebug.print(this.getX() + "," + this.getY());
 		if (!onAnimation) {
 			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
 
@@ -91,12 +90,14 @@ public class Player extends Hitable {
 		meStart = new Point();
 		meOnScreen = new Point();
 
-		birthAni.jumpTo(Stage.getCurrentStage().getWidth() / 2, Stage
-				.getCurrentStage().getHeight() + playerSprite.getOffsetY() + 40);
+		birthAni.moveTowardsWait(Stage.getCurrentStage().getWidth() / 2,
+				Stage.getCurrentStage().getHeight() + playerSprite.getOffsetY()
+						+ 40, (int) (1.5f * Stage.getSpeed()));
+
 		birthAni.moveTowardsWait(Stage.getCurrentStage().getWidth() / 2, Stage
 				.getCurrentStage().getHeight()
 				- playerSprite.getHeight()
-				+ playerSprite.getOffsetY() - 40, (int) (2.0f * Stage
+				+ playerSprite.getOffsetY() - 40, (int) (0.5f * Stage
 				.getSpeed()));
 		birthAni.stop();
 
@@ -112,6 +113,9 @@ public class Player extends Hitable {
 		this.requireCollisionDetection(Enemy.class);
 
 		this.requireCollisionDetection(Bullet_Enemy.class);
+
+		this.setPosition(Stage.getCurrentStage().getWidth() / 2, Stage
+				.getCurrentStage().getHeight() + playerSprite.getOffsetY() + 40);
 
 		birth();
 
@@ -317,6 +321,10 @@ public class Player extends Hitable {
 		new Explosion(
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
 				0.5f, (int) this.getX(), (int) this.getY());
+
+		this.setPosition(this.getX(), Stage.getCurrentStage().getHeight()
+				+ playerSprite.getOffsetY() + 40);
+
 		birth();
 	}
 

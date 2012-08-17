@@ -184,7 +184,6 @@ public final class ScreenPlay {
 						+ (y - bindPerformer.getY())
 						* (y - bindPerformer.getY()))
 						/ (float) wait_step_remain;
-				MyDebug.print(dir + "," + speed);
 				bindPerformer.motion_set(dir, speed);
 			}
 				break;
