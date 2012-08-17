@@ -147,6 +147,8 @@ public class Enemy_Duck extends Enemy {
 				0.5f, (int) this.getX(), (int) this.getY());
 		this.dismiss();
 
+		this.bindCollisionMask(null);
+
 		GamingThread.score += 100;
 	}
 
