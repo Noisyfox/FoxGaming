@@ -38,6 +38,7 @@ public abstract class Stage {
 	// 全局参数
 	private static List<Stage> stages = new ArrayList<Stage>();
 	protected static Stage currentStage = null;// 当前活动的stage
+	protected static Stage targetStage = null;// 要跳转到的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
 
 	protected List<Performer> performers = null;
@@ -71,9 +72,9 @@ public abstract class Stage {
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
-		// 如果当前创建的stage是游戏中惟一的一个stage则自动将其设置为活动的stage
+		// 如果当前创建的stage是游戏中惟一的一个stage则自动将其设置为目标stage
 		if (stageIndex == 0) {
-			currentStage = this;
+			targetStage = this;
 		}
 	}
 
@@ -99,7 +100,7 @@ public abstract class Stage {
 	public static final void switchToStage(int stage) {
 		if (index2Stage(stage) == currentStage)
 			return;
-		currentStage = index2Stage(stage);
+		targetStage = index2Stage(stage);
 	}
 
 	/**
@@ -197,6 +198,24 @@ public abstract class Stage {
 	private final void ensureAvailable() {
 		if (!available)
 			throw new RuntimeException("无法操作一个已经不存在的stage");
+	}
+
+	// 初始化该 Stage
+	protected void initStage() {
+		ensureAvailable();
+
+		performers.clear();
+		activatedViews.clear();
+		width = 480;
+		height = 800;
+		stageSpeed = 30f;
+		backgroundColor = Color.WHITE;
+		background = null;
+		employingPerformer.clear();
+		emploiedPerformer.clear();
+		dismissingPerformer.clear();
+		dismissedPerformer.clear();
+		collisions.clear();
 	}
 
 	protected final void employPerformer(Performer performer) {

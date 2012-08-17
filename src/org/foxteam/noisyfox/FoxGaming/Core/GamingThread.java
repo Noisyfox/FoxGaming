@@ -68,8 +68,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
 	private boolean processing = false;
-	private Stage lastStage = null;
-	private Stage currentStage = null;
+	// private Stage lastStage = null;
+	// private Stage currentStage = null;
 	private int lastScreenWidth = 0;
 	private int lastScreenHeight = 0;
 	private List<TouchEvent> listTouchEvent = new ArrayList<TouchEvent>();
@@ -142,8 +142,9 @@ public final class GamingThread extends Thread implements OnTouchListener,
 		while (currentState != STATEFLAG_STOPED) {
 			switch (currentState) {
 			case STATEFLAG_STOPING:
-				if (currentStage != null) {
-					currentStage.broadcastEvent(EventsListener.EVENT_ONGAMEEND);
+				if (Stage.currentStage != null) {
+					Stage.currentStage
+							.broadcastEvent(EventsListener.EVENT_ONGAMEEND);
 				}
 				currentState = STATEFLAG_STOPED;
 				break;
@@ -155,8 +156,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				break;
 
 			case STATEFLAG_PAUSE:
-				if (currentStage != null) {
-					currentStage
+				if (Stage.currentStage != null) {
+					Stage.currentStage
 							.broadcastEvent(EventsListener.EVENT_ONGAMEPAUSE);
 				}
 				currentState = STATEFLAG_PAUSED;
@@ -172,8 +173,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				break;
 
 			case STATEFLAG_RESUME:
-				if (currentStage != null) {
-					currentStage
+				if (Stage.currentStage != null) {
+					Stage.currentStage
 							.broadcastEvent(EventsListener.EVENT_ONGAMERESUME);
 				}
 				currentState = STATEFLAG_RUNNING;
@@ -195,10 +196,10 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			targetCanvas.drawARGB(255, 255, 255, 255);
 
 			// 处理视角
-			if (currentStage.activatedViews.size() == 0) {
+			if (Stage.currentStage.activatedViews.size() == 0) {
 				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
 			} else {
-				for (Views v : currentStage.activatedViews) {
+				for (Views v : Stage.currentStage.activatedViews) {
 					targetCanvas.save();
 					targetCanvas.clipRect(v.targetView);
 					viewMatrix.reset();
@@ -220,74 +221,81 @@ public final class GamingThread extends Thread implements OnTouchListener,
 		}
 	}
 
+	private void prepareBufferBitmap() {
+		// 准备缓冲画布
+		if (bufferBitmap == null
+				|| bufferBitmap.getWidth() != Stage.currentStage.width
+				|| bufferBitmap.getHeight() != Stage.currentStage.height) {
+
+			MyDebug.print("Buffer bitmap recreated");
+
+			bufferBitmap = Bitmap.createBitmap(Stage.currentStage.width,
+					Stage.currentStage.height, Bitmap.Config.ARGB_8888);
+			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
+		}
+	}
+
 	// 主游戏逻辑,负责一个 step 的逻辑处理
 	private void gameLogic() {
 		long frameStartTime = System.currentTimeMillis();
 		if (gameStartTime == 0)
 			gameStartTime = System.currentTimeMillis();
 
-		// 全局参数准备
-		currentStage = Stage.currentStage;
-		// 准备缓冲画布
-		if (bufferBitmap == null
-				|| bufferBitmap.getWidth() != currentStage.width
-				|| bufferBitmap.getHeight() != currentStage.height) {
-
-			MyDebug.print("Buffer bitmap recreated");
-
-			bufferBitmap = Bitmap.createBitmap(currentStage.width,
-					currentStage.height, Bitmap.Config.ARGB_8888);
-			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
-			// bufferCanvas.setDrawFilter(new PaintFlagsDrawFilter(0,
-			// Paint.ANTI_ALIAS_FLAG));
-		}
-		if (currentStage != null) {
-			// 先准备stage
-			if (currentStage != lastStage) {// stage发生变化
-				// 全局变量应用
-				Stage.speed = currentStage.stageSpeed;
-
-				if (lastStage != null) {// 不是第一次进游戏，处理上一个stage
-					lastStage
+		if (Stage.targetStage != null) {
+			// 先处理 Stage
+			if (Stage.targetStage != Stage.currentStage) {// Stage 发生变化
+				if (Stage.currentStage != null) {// 不是第一次进游戏
+					Stage.currentStage
 							.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
-					lastStage.broadcastEvent(EventsListener.EVENT_ONSTAGEEND);
-					lastStage.broadcastEvent(EventsListener.EVENT_ONDESTORY);
+					Stage.currentStage
+							.broadcastEvent(EventsListener.EVENT_ONSTAGEEND);
+					Stage.currentStage
+							.broadcastEvent(EventsListener.EVENT_ONDESTORY);
+
+					Stage.currentStage.initStage();
 				}
+
+				Stage.currentStage = Stage.targetStage;
 				// 执行 Stage 的初始化
 				MyDebug.print("Create new stage.");
-				currentStage.onCreate();
+				Stage.currentStage.onCreate();
+				// 准备缓冲画布
+				prepareBufferBitmap();
+
 				// 所有事件都必须在EVENT_ONCREATE之后
-				currentStage.employPerformer();
+				Stage.currentStage.employPerformer();
 				// 第一次进游戏，广播EVENT_ONGAMESTART事件
-				if (lastStage == null) {
-					currentStage
-							.broadcastEvent(EventsListener.EVENT_ONGAMESTART);
-				}
-				currentStage.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
-				currentStage.broadcastEvent(EventsListener.EVENT_ONSTAGESTART);
-				lastStage = currentStage;
+				Stage.currentStage
+						.broadcastEvent(EventsListener.EVENT_ONGAMESTART);
+
+				Stage.currentStage
+						.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
+				Stage.currentStage
+						.broadcastEvent(EventsListener.EVENT_ONSTAGESTART);
+
 			} else {
-				currentStage.employPerformer();
+				Stage.currentStage.employPerformer();
 			}
+
 			// 处理当前场景的performer
 			// 最先广播EVENT_ONSTEPSTART事件
-			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPSTART);
+			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPSTART);
 			// 处理定时器事件
-			currentStage.operateAlarm();
+			Stage.currentStage.operateAlarm();
 			// 计算碰撞
-			currentStage.operateCollision();
+			Stage.currentStage.operateCollision();
 			// 计算离开 Stage
-			currentStage.detectOutOfStage();
+			Stage.currentStage.detectOutOfStage();
 			// 处理Performer的 ScreenPlay
-			currentStage.playScreenPlay();
+			Stage.currentStage.playScreenPlay();
 			// 处理Performer的运动
-			currentStage.updateMovement();
+			Stage.currentStage.updateMovement();
 
 			// 检测屏幕尺寸变化
 			if (width != lastScreenWidth || height != lastScreenHeight) {
 				lastScreenHeight = height;
 				lastScreenWidth = width;
-				currentStage
+				Stage.currentStage
 						.broadcastEvent(
 								EventsListener.EVENT_ONSCREENSIZECHANGED,
 								width, height);
@@ -300,12 +308,12 @@ public final class GamingThread extends Thread implements OnTouchListener,
 					listTouchEvent.remove(0);
 					switch (e.event) {
 					case MotionEvent.ACTION_DOWN:
-						currentStage.broadcastEvent(
+						Stage.currentStage.broadcastEvent(
 								EventsListener.EVENT_ONTOUCHPRESS,
 								e.whichFinger, e.x, e.y);
 						break;
 					case MotionEvent.ACTION_UP:
-						currentStage.broadcastEvent(
+						Stage.currentStage.broadcastEvent(
 								EventsListener.EVENT_ONTOUCHRELEASE,
 								e.whichFinger, e.x, e.y);
 						break;
@@ -314,8 +322,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				}
 			}
 			for (Finger f : registedFingers) {
-				currentStage.broadcastEvent(EventsListener.EVENT_ONTOUCH, f.id,
-						f.x, f.y);
+				Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONTOUCH,
+						f.id, f.x, f.y);
 			}
 			// 处理按键事件队列并广播EVENT_ONKEY*事件
 			synchronized (queueKeyEvent) {
@@ -323,17 +331,17 @@ public final class GamingThread extends Thread implements OnTouchListener,
 					KeyboardEvent e = queueKeyEvent.poll();
 					switch (e.getEvent()) {
 					case KeyboardEvent.KEY_PRESS:
-						currentStage.broadcastEvent(
+						Stage.currentStage.broadcastEvent(
 								EventsListener.EVENT_ONKEYPRESS, e.getKey());
-						currentStage.broadcastEvent(EventsListener.EVENT_ONKEY,
-								e.getKey());
+						Stage.currentStage.broadcastEvent(
+								EventsListener.EVENT_ONKEY, e.getKey());
 						break;
 					case KeyboardEvent.KEY_HOLD:
-						currentStage.broadcastEvent(EventsListener.EVENT_ONKEY,
-								e.getKey());
+						Stage.currentStage.broadcastEvent(
+								EventsListener.EVENT_ONKEY, e.getKey());
 						break;
 					case KeyboardEvent.KEY_RELEASE:
-						currentStage.broadcastEvent(
+						Stage.currentStage.broadcastEvent(
 								EventsListener.EVENT_ONKEYRELEASE, e.getKey());
 						break;
 					default:
@@ -342,21 +350,21 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			}
 
 			// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
-			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
+			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-			bufferCanvas.drawColor(currentStage.backgroundColor);// 绘制stage背景色
-			if (currentStage.background != null) {// 绘制背景
-				currentStage.background.doAndDraw(bufferCanvas, 0, 0,
-						currentStage.height, currentStage.width);
+			bufferCanvas.drawColor(Stage.currentStage.backgroundColor);// 绘制stage背景色
+			if (Stage.currentStage.background != null) {// 绘制背景
+				Stage.currentStage.background.doAndDraw(bufferCanvas, 0, 0,
+						Stage.currentStage.height, Stage.currentStage.width);
 			}
-			currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
+			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
 			// 系统绘制
 			screenRefresh();
 
-			currentStage.dismissPerformer();
+			Stage.currentStage.dismissPerformer();
 
 			// 最后广播EVENT_ONSTEPEND事件
-			currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
+			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
 		}
 
 		// 控制帧速
