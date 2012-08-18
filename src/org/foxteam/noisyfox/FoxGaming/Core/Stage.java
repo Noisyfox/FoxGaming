@@ -388,7 +388,8 @@ public abstract class Stage {
 
 		// 移除stage中所有performer
 		for (Performer p : performers) {
-			p.dismiss();
+			p.employed = false;
+			p.performing = false;
 		}
 		performers.clear();
 

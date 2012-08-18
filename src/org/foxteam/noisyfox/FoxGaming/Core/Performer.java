@@ -78,7 +78,7 @@ public class Performer extends EventsListener {
 	}
 
 	public final void callEvent(int event, Object... args) {
-		if (frozen)
+		if (frozen || !employed || !performing)
 			return;
 		switch (event) {
 		case EventsListener.EVENT_ONCREATE:
@@ -161,6 +161,10 @@ public class Performer extends EventsListener {
 			this.onOutOfStage();
 			break;
 		}
+	}
+
+	public final boolean isPerforming() {
+		return performing;
 	}
 
 	// 判断是否离开 Stage 的函数，默认为坐标/Sprite 的最外围矩形超出 Stage 范围，建议重载该函数以精确考虑 Sprite 的情况
