@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Guided;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 
@@ -291,10 +292,23 @@ public class Player extends Hitable {
 			// 发射子弹
 			this.setAlarm(0, (int) (Stage.getSpeed() * 0.2f), true);
 			this.startAlarm(0);
+			this.setAlarm(4, (int) (Stage.getSpeed() * 1.0f), true);
+			this.startAlarm(4);
 
 			onAnimation = false;
 		} else if (whichAlarm == 3) {// 无敌闪烁
 			invincibleFlash = !invincibleFlash;
+
+		} else if (whichAlarm == 4) {// 发射导弹
+			Bullet_Player b = new Bullet_Player_Missile_Guided(
+					(int) this.getX() + 10, (int) this.getY());
+			b.setDepth(this.getDepth() + 1);
+			b.motion_set(60, 200f / Stage.getSpeed());
+
+			b = new Bullet_Player_Missile_Guided((int) this.getX() - 10,
+					(int) this.getY());
+			b.setDepth(this.getDepth() + 1);
+			b.motion_set(120, 200f / Stage.getSpeed());
 
 		}
 	}
@@ -335,6 +349,7 @@ public class Player extends Hitable {
 
 	private void birth() {
 		this.stopAlarm(0);
+		this.stopAlarm(4);
 		this.bindCollisionMask(null);
 		controllable = false;
 		setInvincible(5.0f);

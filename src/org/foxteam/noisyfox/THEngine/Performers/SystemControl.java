@@ -64,7 +64,7 @@ public class SystemControl extends Performer {
 
 		new HUD();
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 2f), true);// 创建 鸭子敌人
+		this.setAlarm(0, (int) (Stage.getSpeed() * 1f), true);// 创建 鸭子敌人
 		this.startAlarm(0);
 	}
 
