@@ -56,7 +56,7 @@ public class Performer extends EventsListener {
 	@SuppressWarnings("rawtypes")
 	protected List<Class> requiredClassCollisionDetection = new ArrayList<Class>();
 	protected ScreenPlay myScreenPlay = null;
-	private GraphicCollision gc_tmp = new GraphicCollision();
+	private static GraphicCollision gc_tmp = new GraphicCollision();
 
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
