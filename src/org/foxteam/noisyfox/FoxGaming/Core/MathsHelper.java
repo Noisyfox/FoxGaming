@@ -179,4 +179,30 @@ public final class MathsHelper {
 		return (int) ((double) min + (double) (max - min) * Math.random());
 	}
 
+	// 返回位置1(x1,y1)到位置2(x2,y2)的距离.
+	public static float point_distance(float x1, float y1, float x2, float y2) {
+		return (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	}
+
+	// 返回从位置1(x1,y1)到位置2(x2,y2)的方向角度
+	public static float point_direction(float x1, float y1, float x2, float y2) {
+		return (float) Math.toDegrees(Math.atan2(y1 - y2, x2 - x1));
+	}
+
+	// 返回从 from 角度转向 to 角度所经过的最少角度，正值逆时针旋转，负值顺时针旋转
+	public static float directionTo(float from, float to) {
+		// 旋转坐标系使 from 对应的终边落在X轴正方向上
+		to -= from;
+		// 转化到360度以内
+		if (to >= 0) {
+			to %= 360;
+		} else {
+			to *= -1;
+			to %= 360;
+			to = 360 - to;
+		}
+
+		return to <= 180 ? to : 180 - to;
+	}
+
 }
