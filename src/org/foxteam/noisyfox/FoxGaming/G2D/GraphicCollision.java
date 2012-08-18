@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
-import org.foxteam.noisyfox.FoxGaming.Core.MyDebug;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -54,8 +53,6 @@ public class GraphicCollision {
 		p.setColor(Color.RED);
 		p.setStyle(Paint.Style.STROKE);
 		p.setAlpha(100);
-		// Matrix a = new Matrix();
-		// a.m
 	}
 
 	public void clear() {
@@ -260,10 +257,10 @@ public class GraphicCollision {
 		int x = baseX;
 		int y = baseY;
 
-		setPosition(x, y);
-
 		baseX = 0;
 		baseY = 0;
+		
+		setPosition(x, y);
 	}
 
 	public final boolean isCollisionWith(GraphicCollision target) {
