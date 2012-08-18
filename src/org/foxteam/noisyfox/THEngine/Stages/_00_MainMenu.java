@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Stages;
 import org.foxteam.noisyfox.FoxGaming.Core.Button;
 import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
+import org.foxteam.noisyfox.FoxGaming.G2D.Background;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
 
 /**
@@ -32,9 +33,20 @@ public class _00_MainMenu extends Stage {
 
 	@Override
 	protected void onCreate() {
+		Background bkg = new Background();
+
+		bkg.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.background_menu, false);
+		bkg.setAdaptation(Background.ADAPTATION_SMART);
+		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_SINGLE);
+		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
+		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_MAXUSAGE);
+		setBackground(bkg);
+
 		Button bGameStart = new Button_GameStart();
 		bGameStart.perform(this.getStageIndex());
-		bGameStart.setPosition(this.getWidth() / 2, this.getHeight() / 2);
+		bGameStart.setPosition(this.getWidth() / 2, this.getHeight()
+				- bGameStart.getHeight() / 2 - 5);
 		GamingThread.score = 0;
 		this.setStageSpeed(10);
 	}

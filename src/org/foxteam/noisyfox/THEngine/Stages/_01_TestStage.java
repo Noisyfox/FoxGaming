@@ -37,7 +37,7 @@ public final class _01_TestStage extends Stage {
 
 		Background bkg = new Background();
 
-		bkg.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.background,
+		bkg.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.background_teststage,
 				false);
 		bkg.setAdaptation(Background.ADAPTATION_SMART);
 		bkg.setSpeed(0, 30f / getStageSpeed());

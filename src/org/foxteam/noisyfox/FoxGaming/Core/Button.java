@@ -34,14 +34,32 @@ public abstract class Button extends Performer {
 	private Sprite mySprite = new Sprite();
 	private boolean enable = true;
 	private int touchDown = -1;
+	private int height = 0;
+	private int width = 0;
 
 	public Button(int width, int height, int resId) {
 		mySprite.loadFromBitmap(resId, 3, 1, false);
 		mySprite.setOffset(mySprite.getWidth() / 2, mySprite.getHeight() / 2);
+		this.bindCollisionMask(myMask);
+		setSize(width, height);
+	}
+
+	public final void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+
 		mySC.setScale((double) width / (double) mySprite.getWidth(),
 				(double) height / (double) mySprite.getHeight());
+		myMask.clear();
 		myMask.addRectangle(-width / 2, -height / 2, width, height);
-		this.bindCollisionMask(myMask);
+	}
+
+	public final int getWidth() {
+		return width;
+	}
+
+	public final int getHeight() {
+		return height;
 	}
 
 	public final void setEnabled(boolean enable) {
