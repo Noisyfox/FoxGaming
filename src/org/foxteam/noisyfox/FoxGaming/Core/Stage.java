@@ -204,6 +204,12 @@ public abstract class Stage {
 	protected void initStage() {
 		ensureAvailable();
 
+		// 注销所有存在的 Performer
+		for (Performer p : performers) {
+			p.employed = false;
+			p.performing = false;
+		}
+
 		performers.clear();
 		activatedViews.clear();
 		width = 480;
