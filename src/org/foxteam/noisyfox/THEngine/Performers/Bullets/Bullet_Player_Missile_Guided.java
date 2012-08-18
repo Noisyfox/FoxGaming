@@ -23,6 +23,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.Convertor;
 import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.SpriteConvertor;
+import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 
@@ -131,6 +132,13 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Enemy.class.isInstance(target)) {
+			int x = (int) MathsHelper.lengthdir_x(
+					this.getSprite().getOffsetY(), this.direction);
+			int y = -(int) MathsHelper.lengthdir_y(this.getSprite()
+					.getOffsetY(), this.direction);
+			new Explosion(
+					org.foxteam.noisyfox.THEngine.R.drawable.explosion_missile_small,
+					5, 0.3f, (int) this.getX() + x, (int) this.getY() + y);
 			this.dismiss();
 		}
 	}
