@@ -249,6 +249,7 @@ public abstract class Stage {
 		}
 		for (Performer p : emploiedPerformer) {
 			p.employed = true;
+			p.performing = true;
 			p.stage = stageIndex;
 			p.callEvent(EventsListener.EVENT_ONCREATE);
 		}
