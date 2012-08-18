@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
+import org.foxteam.noisyfox.FoxGaming.G2D.GraphicFont;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -32,10 +33,14 @@ import android.graphics.Paint;
 public class HUD extends Performer {
 
 	Views mainView = null;
+	GraphicFont scoreFont = new GraphicFont();
 
 	@Override
 	protected void onCreate() {
 		mainView = Stage.getCurrentStage().getView(0);
+		scoreFont.mapFont(org.foxteam.noisyfox.THEngine.R.drawable.ascii_score,
+				"0123456789/.", false);
+		scoreFont.setCharacterSpacing(-4);
 	}
 
 	@Override
@@ -47,11 +52,11 @@ public class HUD extends Performer {
 		p.setColor(Color.BLACK);
 		c.drawText("FPS:" + (int) GamingThread.getSPS(), this.getX() + 10,
 				this.getY() + 10, p);
-		c.drawText(
-				"HP:"
-						+ ((Hitable) (Stage.getPerformersByClass(Player.class)[0]))
-								.remainHP() + " Score:" + GamingThread.score,
-				this.getX() + 10, this.getY() + 20, p);
+		c.drawText("Life:" + (Player.remainLife <= 0 ? 0 : Player.remainLife)
+				+ " Score:" + GamingThread.score, this.getX() + 10,
+				this.getY() + 20, p);
+		scoreFont.drawText(c, this.getX() + 10, this.getY() + 20,
+				GamingThread.score + "");
 	}
 
 	public HUD() {

@@ -45,6 +45,7 @@ public final class _01_TestStage extends Stage {
 		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_REPEATING);
 		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
 		setBackground(bkg);
+		
 	}
 
 }
