@@ -19,18 +19,18 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import android.graphics.Matrix;
 
 /**
- * @ClassName:     Convertor
- * @Description:   TODO
- * @author:        Noisyfox
- * @date:          2012-8-17 下午7:58:53
- *
+ * @ClassName: Convertor
+ * @Description: TODO
+ * @author: Noisyfox
+ * @date: 2012-8-17 下午7:58:53
+ * 
  */
 public class Convertor {
 	protected double XScale = 1;
 	protected double YScale = 1;
 	protected double rotation = 0;// 角度制
 	protected Matrix matrix = new Matrix();
-	
+
 	public final void setRotation(double rotation) {
 		this.rotation = rotation;
 	}
@@ -59,7 +59,7 @@ public class Convertor {
 	public final Matrix getConvertMatrix(int offsetX, int offsetY) {
 		matrix.reset();
 		matrix.postScale((float) XScale, (float) YScale, offsetX, offsetY);
-		matrix.postRotate((float) rotation, offsetX, offsetY);
+		matrix.postRotate((float) -rotation, offsetX, offsetY);
 		return matrix;
 	}
 }
