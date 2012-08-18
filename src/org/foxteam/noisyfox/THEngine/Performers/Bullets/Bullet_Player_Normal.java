@@ -36,7 +36,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 
 		Sprite bulletSprite = new Sprite();
 		bulletSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.bullet, false);
+				org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_normal, false);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
 
 		this.bindSprite(bulletSprite);
@@ -45,7 +45,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 		co.addCircle(0, 8, 5, true);
 		this.bindCollisionMask(co);
 
-		this.setDamage(11);
+		this.setDamage(20);
 
 		this.motion_set(90, 300f / Stage.getSpeed());
 	}
