@@ -80,6 +80,8 @@ public class Player extends Hitable {
 
 	@Override
 	protected void onCreate() {
+		remainLife = 3;
+
 		mainView = Stage.getCurrentStage().getView(0);
 
 		playerSprite.loadFromBitmap(
@@ -333,10 +335,15 @@ public class Player extends Hitable {
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
 				0.5f, (int) this.getX(), (int) this.getY());
 
-		this.setPosition(this.getX(), Stage.getCurrentStage().getHeight()
-				+ playerSprite.getOffsetY() + 40);
+		if (--remainLife < 0) {
+			this.dismiss();
+		} else {
 
-		birth();
+			this.setPosition(this.getX(), Stage.getCurrentStage().getHeight()
+					+ playerSprite.getOffsetY() + 40);
+
+			birth();
+		}
 	}
 
 	private void setInvincible(float seconds) {

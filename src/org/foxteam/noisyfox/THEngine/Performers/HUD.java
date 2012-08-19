@@ -18,10 +18,9 @@ package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.GraphicFont;
+import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
 /**
  * @ClassName: HUD
@@ -34,6 +33,7 @@ public class HUD extends Performer {
 
 	Views mainView = null;
 	GraphicFont scoreFont = new GraphicFont();
+	Sprite mySmallIcon = new Sprite();
 
 	@Override
 	protected void onCreate() {
@@ -41,6 +41,10 @@ public class HUD extends Performer {
 		scoreFont.mapFont(org.foxteam.noisyfox.THEngine.R.drawable.ascii_score,
 				"0123456789/.", false);
 		scoreFont.setCharacterSpacing(-4);
+		scoreFont.setAlignment(GraphicFont.ALIGN_RIGHT);
+
+		mySmallIcon.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.player_icon, false);
 	}
 
 	@Override
@@ -48,15 +52,16 @@ public class HUD extends Performer {
 		this.setPosition(mainView.getXFromStage(), mainView.getYFromStage());
 
 		Canvas c = this.getCanvas();
-		Paint p = new Paint();
-		p.setColor(Color.BLACK);
-		c.drawText("FPS:" + (int) GamingThread.getSPS(), this.getX() + 10,
-				this.getY() + 10, p);
-		c.drawText("Life:" + (Player.remainLife <= 0 ? 0 : Player.remainLife)
-				+ " Score:" + GamingThread.score, this.getX() + 10,
-				this.getY() + 20, p);
-		scoreFont.drawText(c, this.getX() + 10, this.getY() + 20,
+		// 绘制分数
+		scoreFont.drawText(c, this.getX() + 100, this.getY() + 2,
 				GamingThread.score + "");
+		// 绘制剩余自机
+		for (int i = 0; i < Player.remainLife; i++) {
+			mySmallIcon.draw(c,
+					(int) getX() + i * (mySmallIcon.getWidth() + 1),
+					(int) getY() + 4 + scoreFont.getCharHeight());
+		}
+
 	}
 
 	public HUD() {

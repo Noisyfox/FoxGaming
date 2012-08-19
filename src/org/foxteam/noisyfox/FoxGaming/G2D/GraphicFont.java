@@ -33,11 +33,17 @@ import android.graphics.Canvas;
  * 
  */
 public final class GraphicFont {
+	public static final int ALIGN_LEFT = 1;
+	public static final int ALIGN_RIGHT = 2;
+	public static final int ALIGN_CENTER = 3;
+
 	HashMap<String, Bitmap> fontMap = new HashMap<String, Bitmap>();
 	float offsetX = 0;
 	float offsetY = 0;
 	float characterSpacing = 0;
 	int frameWidth = 0;
+	int frameHeight = 0;
+	int alignment = ALIGN_LEFT;
 
 	public void mapFont(int resId, String chars, boolean cDensityDpi) {
 		Bitmap b = null;
@@ -64,6 +70,7 @@ public final class GraphicFont {
 
 		frameWidth = imageW % c.length == 0 ? imageW / c.length
 				: (imageW - imageW % c.length) / c.length;
+		frameHeight = imageH;
 
 		fontMap.clear();
 
@@ -84,11 +91,41 @@ public final class GraphicFont {
 		characterSpacing = spc;
 	}
 
+	public void setAlignment(int alignment) {
+		if (alignment < 1 || alignment > 3) {
+			throw new IllegalArgumentException();
+		}
+
+		this.alignment = alignment;
+	}
+
+	public int getCharHeight() {
+		return frameHeight;
+	}
+
+	public int getCharWidth() {
+		return (int) (frameWidth + characterSpacing);
+	}
+
 	public void drawText(Canvas c, float x, float y, String text) {
 		for (int i = 0; i < text.length(); i++) {
 			String key = text.substring(i, i + 1);
-			float rX = (x - offsetX + i
-					* (characterSpacing + (float) frameWidth));
+			float rX = x - offsetX;
+
+			switch (alignment) {
+			case ALIGN_LEFT:
+				rX += i * (characterSpacing + (float) frameWidth);
+				break;
+			case ALIGN_RIGHT:
+				rX += (i - text.length() + 1)
+						* (characterSpacing + (float) frameWidth);
+				break;
+			case ALIGN_CENTER:
+				rX += (i - text.length() / 2)
+						* (characterSpacing + (float) frameWidth);
+				break;
+			}
+
 			float rY = (y - offsetY);
 			Bitmap charBitmap = fontMap.get(key);
 			if (charBitmap != null) {
