@@ -53,8 +53,8 @@ public class Performer extends EventsListener {
 	protected int stage = -1;
 	protected GraphicCollision collisionMask = null;
 	protected List<Performer> requiredCollisionDetection = new ArrayList<Performer>();
-	@SuppressWarnings("rawtypes")
-	protected List<Class> requiredClassCollisionDetection = new ArrayList<Class>();
+
+	protected List<Class<?>> requiredClassCollisionDetection = new ArrayList<Class<?>>();
 	protected ScreenPlay myScreenPlay = null;
 	private static GraphicCollision gc_tmp = new GraphicCollision();
 
@@ -245,8 +245,7 @@ public class Performer extends EventsListener {
 	}
 
 	// 检测所有属于 targer 类的 Performer
-	@SuppressWarnings("rawtypes")
-	public final void requireCollisionDetection(Class target) {
+	public final void requireCollisionDetection(Class<?> target) {
 		if (requiredClassCollisionDetection.contains(target)) {
 			return;
 		}
@@ -258,8 +257,7 @@ public class Performer extends EventsListener {
 		requiredCollisionDetection.remove(target);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public final void cancelClassCollisionDetection(Class target) {
+	public final void cancelClassCollisionDetection(Class<?> target) {
 		requiredClassCollisionDetection.remove(target);
 	}
 
@@ -316,7 +314,8 @@ public class Performer extends EventsListener {
 		hspeed += MathsHelper.lengthdir_x(speed, dir);
 		vspeed -= MathsHelper.lengthdir_y(speed, dir);
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = (float) Math.toDegrees(Math.atan2(-vspeed, hspeed));
+		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+				-vspeed, hspeed)));
 	}
 
 	protected void updateMovement() {
@@ -328,7 +327,8 @@ public class Performer extends EventsListener {
 		vspeed += MathsHelper.lengthdir_y(friction, direction);
 		// 计算总速度及角度
 		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = (float) Math.toDegrees(Math.atan2(-vspeed, hspeed));
+		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+				-vspeed, hspeed)));
 
 		if (hspeed != 0 || vspeed != 0) {
 			this.setPosition(x + hspeed, y + vspeed);
@@ -419,8 +419,7 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public final Performer collision_point(int x, int y, Class target,
+	public final Performer collision_point(int x, int y, Class<?> target,
 			boolean notme) {
 		for (Performer p : Stage.getPerformersByClass(target)) {
 			if (collision_point(x, y, p, notme) != null) {
@@ -448,9 +447,8 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public final Performer collision_rectangle(int left, int top, int width,
-			int height, Class target, boolean notme) {
+			int height, Class<?> target, boolean notme) {
 		for (Performer p : Stage.getPerformersByClass(target)) {
 			if (collision_rectangle(left, top, width, height, p, notme) != null) {
 				return p;
@@ -477,9 +475,8 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public final Performer collision_circle(int xc, int yc, int radius,
-			Class target, boolean notme) {
+			Class<?> target, boolean notme) {
 		for (Performer p : Stage.getPerformersByClass(target)) {
 			if (collision_circle(xc, yc, radius, p, notme) != null) {
 				return p;
@@ -506,9 +503,8 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public final Performer collision_line(int x1, int y1, int x2, int y2,
-			Class target, boolean notme) {
+			Class<?> target, boolean notme) {
 		for (Performer p : Stage.getPerformersByClass(target)) {
 			if (collision_line(x1, y1, x2, y2, p, notme) != null) {
 				return p;

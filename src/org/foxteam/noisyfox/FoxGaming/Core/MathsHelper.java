@@ -194,15 +194,20 @@ public final class MathsHelper {
 		// 旋转坐标系使 from 对应的终边落在X轴正方向上
 		to -= from;
 		// 转化到360度以内
-		if (to >= 0) {
-			to %= 360;
-		} else {
-			to *= -1;
-			to %= 360;
-			to = 360 - to;
-		}
+		to = degreeIn360(to);
 
 		return to <= 180 ? to : 180 - to;
+	}
+
+	public static float degreeIn360(float deg) {
+		if (deg >= 0) {
+			deg %= 360;
+		} else {
+			deg *= -1;
+			deg %= 360;
+			deg = 360 - deg;
+		}
+		return deg;
 	}
 
 }

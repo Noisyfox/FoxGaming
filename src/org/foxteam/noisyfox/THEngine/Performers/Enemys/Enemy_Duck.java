@@ -147,7 +147,7 @@ public class Enemy_Duck extends Enemy {
 
 		this.bindCollisionMask(null);
 
-		GamingThread.score += 100;
+		GamingThread.score += 14;
 	}
 
 	public Enemy_Duck(int y, boolean comeFromLeft) {

@@ -141,8 +141,7 @@ public abstract class Stage {
 	/**
 	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
 	 */
-	@SuppressWarnings("rawtypes")
-	public static final Performer[] getPerformersByClass(Class c) {
+	public static final Performer[] getPerformersByClass(Class<?> c) {
 		List<Performer> per = new ArrayList<Performer>();
 
 		for (Performer p : currentStage.performers) {
@@ -420,7 +419,6 @@ public abstract class Stage {
 	}
 
 	// 处理碰撞检测
-	@SuppressWarnings("rawtypes")
 	protected final void operateCollision() {
 		ensureAvailable();
 		synchronized (performers) {
@@ -444,7 +442,7 @@ public abstract class Stage {
 						for (Performer p2 : performers) {
 							if (p2 != p && p2.collisionMask != null
 									&& !p2.frozen) {
-								for (Class c : p.requiredClassCollisionDetection) {
+								for (Class<?> c : p.requiredClassCollisionDetection) {
 									if (c.isInstance(p2)) {
 										if (p.collisionMask
 												.isCollisionWith(p2.collisionMask)) {

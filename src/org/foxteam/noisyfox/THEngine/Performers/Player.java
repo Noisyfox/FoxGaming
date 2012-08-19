@@ -16,6 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy;
@@ -23,6 +26,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Guided;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
+import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile_Guided;
 
 /**
  * @ClassName: Player
@@ -50,6 +54,9 @@ public class Player extends Hitable {
 	ScreenPlay birthAni = new ScreenPlay();
 
 	GraphicCollision myCollisionMask = new GraphicCollision();
+
+	Class<?> myMissile = null;
+	int missile_level = 1;
 
 	@Override
 	protected void onStep() {
@@ -117,6 +124,8 @@ public class Player extends Hitable {
 		this.requireCollisionDetection(Enemy.class);
 
 		this.requireCollisionDetection(Bullet_Enemy.class);
+
+		this.requireCollisionDetection(PowerUp.class);
 
 		this.setPosition(Stage.getCurrentStage().getWidth() / 2, Stage
 				.getCurrentStage().getHeight() + playerSprite.getOffsetY() + 40);
@@ -294,23 +303,53 @@ public class Player extends Hitable {
 			// 发射子弹
 			this.setAlarm(0, (int) (Stage.getSpeed() * 0.2f), true);
 			this.startAlarm(0);
-			this.setAlarm(4, (int) (Stage.getSpeed() * 1.0f), true);
-			this.startAlarm(4);
+
+			if (myMissile != null) {
+				this.setAlarm(4, (int) (Stage.getSpeed() * 1.0f), true);
+				this.startAlarm(4);
+			}
 
 			onAnimation = false;
 		} else if (whichAlarm == 3) {// 无敌闪烁
 			invincibleFlash = !invincibleFlash;
 
 		} else if (whichAlarm == 4) {// 发射导弹
-			Bullet_Player b = new Bullet_Player_Missile_Guided(
-					(int) this.getX() + 10, (int) this.getY());
-			b.setDepth(this.getDepth() + 1);
-			b.motion_set(60, 200f / Stage.getSpeed());
+			if (myMissile != null) {
+				try {
+					Class<?>[] pTypes = new Class[] { int.class, int.class };
+					Constructor<?> ctor = myMissile.getConstructor(pTypes);
+					Bullet_Player b = null;
+					Object[] arg = new Object[] { (int) this.getX() + 10,
+							(int) this.getY() };
+					b = (Bullet_Player) ctor.newInstance(arg);
+					b.setDepth(this.getDepth() + 1);
+					b.motion_set(60, 200f / Stage.getSpeed());
 
-			b = new Bullet_Player_Missile_Guided((int) this.getX() - 10,
-					(int) this.getY());
-			b.setDepth(this.getDepth() + 1);
-			b.motion_set(120, 200f / Stage.getSpeed());
+					Object[] arg2 = new Object[] { (int) this.getX() - 10,
+							(int) this.getY() };
+					b = (Bullet_Player) ctor.newInstance(arg2);
+					b.setDepth(this.getDepth() + 1);
+					b.motion_set(120, 200f / Stage.getSpeed());
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 		}
 	}
@@ -326,6 +365,8 @@ public class Player extends Hitable {
 	protected void onCollisionWith(Performer target) {
 		if (Bullet_Enemy.class.isInstance(target)) {
 			this.hitBy((Bullet) target);
+		} else if (PowerUp.class.isInstance(target)) {
+			((Bullet) target).hitOn(this);
 		}
 	}
 
@@ -335,6 +376,9 @@ public class Player extends Hitable {
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
 				0.5f, (int) this.getX(), (int) this.getY());
 
+		new PowerUp_Missile_Guided((int) getX(), (int) getY())
+				.setDepth(getDepth() + 1);
+
 		if (--remainLife < 0) {
 			this.dismiss();
 		} else {
@@ -342,6 +386,8 @@ public class Player extends Hitable {
 			this.setPosition(this.getX(), Stage.getCurrentStage().getHeight()
 					+ playerSprite.getOffsetY() + 40);
 
+			myMissile = null;// 重置火力等级
+			missile_level = 1;
 			birth();
 		}
 	}
@@ -367,7 +413,34 @@ public class Player extends Hitable {
 
 		this.setHP(10);
 		this.playAScreenPlay(birthAni);
+	}
 
+	public void getPowerUp(Class<?> bulletType) {
+		GamingThread.score += 100;
+
+		if (bulletType == Bullet_Player_Missile_Guided.class) {
+			updateMissile(bulletType);
+		}
+
+	}
+
+	private void updateMissile(Class<?> missileType) {
+		if (myMissile == null) {
+			myMissile = missileType;
+
+			this.setAlarm(4, (int) (Stage.getSpeed() * 1.0f), true);
+			this.startAlarm(4);
+		} else {
+			if (myMissile == missileType) {
+				if (missile_level == 1) {// 满级
+
+				} else {
+					missile_level++;
+				}
+			} else {
+				myMissile = missileType;
+			}
+		}
 	}
 
 }
