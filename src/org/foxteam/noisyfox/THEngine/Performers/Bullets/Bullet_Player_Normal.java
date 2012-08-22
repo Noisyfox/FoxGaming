@@ -36,7 +36,8 @@ public class Bullet_Player_Normal extends Bullet_Player {
 
 		Sprite bulletSprite = new Sprite();
 		bulletSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_normal, false);
+				org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_normal,
+				false);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
 
 		this.bindSprite(bulletSprite);

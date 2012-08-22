@@ -29,7 +29,8 @@ import org.foxteam.noisyfox.THEngine.Performers.Player;
  * 
  */
 public class Bullet_Enemy_1 extends Bullet_Enemy {
-	float speed = 0f;
+	float mySpeed = 0f;
+	float myDirection = 0f;
 
 	@Override
 	protected void onCreate() {
@@ -47,7 +48,7 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		this.bindCollisionMask(co);
 
 		this.setDamage(11);
-		this.motion_set(270, speed);
+		this.motion_set(myDirection, mySpeed);
 	}
 
 	@Override
@@ -55,10 +56,11 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		this.dismiss();
 	}
 
-	public Bullet_Enemy_1(int x, int y, float speed) {
+	public Bullet_Enemy_1(int x, int y, float direction, float speed) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
-		this.speed = speed;
+		mySpeed = speed;
+		myDirection = direction;
 	}
 
 	@Override

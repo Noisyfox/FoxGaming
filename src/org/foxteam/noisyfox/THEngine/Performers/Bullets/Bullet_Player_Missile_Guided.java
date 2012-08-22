@@ -72,8 +72,6 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 
 		this.setDamage(5);
 
-		// this.motion_set(90, 200f / Stage.getSpeed());
-
 		// 开始寻找敌机
 		this.setAlarm(0, (int) (Stage.getSpeed() * TARGET_SEARCH_TIME), false);
 		this.startAlarm(0);
@@ -93,7 +91,7 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 				float dDir = MathsHelper.directionTo(this.direction,
 						targetDirection);
 
-				if (Math.abs(dDir) <= 1) {
+				if (Math.abs(dDir) <= 5) {
 					this.motion_set(this.direction + dDir, this.speed);
 				} else {
 					this.motion_set(this.direction + (dDir < 0 ? -5 : 5),

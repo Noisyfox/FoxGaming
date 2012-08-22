@@ -17,8 +17,6 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
-import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
-import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Duck;
 
 import android.view.KeyEvent;
 
@@ -29,7 +27,7 @@ import android.view.KeyEvent;
  * @date: 2012-7-18 下午11:19:55
  * 
  */
-public class SystemControl extends Performer {
+public class SystemController extends Performer {
 
 	private int bgmId;
 
@@ -59,38 +57,35 @@ public class SystemControl extends Performer {
 		v.setAngleFromStage(0);
 		Stage.getCurrentStage().addView(v);
 
-		Player p = new Player();
-		p.perform(Stage.getCurrentStage().getStageIndex());
-
 		new HUD();
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 1f), true);// 创建 鸭子敌人
-		this.startAlarm(0);
+		// this.setAlarm(0, (int) (Stage.getSpeed() * 1f), true);// 创建 鸭子敌人
+		// this.startAlarm(0);
 	}
 
 	@Override
 	protected void onAlarm(int whichAlarm) {
-		if (whichAlarm == 0) {// 创建 鸭子敌人
-			Enemy e = new Enemy_Duck(MathsHelper.random(0, Stage
-					.getCurrentStage().getHeight() / 3), MathsHelper.random(0,
-					11) > 5);
-			e.perform(Stage.getCurrentStage().getStageIndex());
-		}
+		// if (whichAlarm == 0) {// 创建 鸭子敌人
+		// (new Enemy_Duck()).createEnemy(0, MathsHelper.random(0, Stage
+		// .getCurrentStage().getHeight() / 3), MathsHelper.random(0,
+		// 11) > 5 ? 0 : 1);
+		// }
 	}
-	
+
 	@Override
 	protected void onKeyRelease(int keyCode) {
-		if(keyCode == KeyEvent.KEYCODE_BACK){
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Stage.previousStage();
 		}
 	}
-	
+
 	@Override
 	protected void onStageEnd() {
 		SimpleBGM.stop();
 	}
 
-	public SystemControl() {
+	public SystemController() {
+		this.perform(Stage.getCurrentStage().getStageIndex());
 	}
 
 }

@@ -26,6 +26,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Guided;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
+import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile_Guided;
 
 /**
@@ -121,7 +122,7 @@ public class Player extends Hitable {
 		int[][] vertex3 = { { 0, -28 }, { -17, -7 }, { 17, -7 } };
 		myCollisionMask.addPolygon(vertex3, true);
 
-		this.requireCollisionDetection(Enemy.class);
+		this.requireCollisionDetection(EnemyInAir.class);
 
 		this.requireCollisionDetection(Bullet_Enemy.class);
 
@@ -365,8 +366,18 @@ public class Player extends Hitable {
 	protected void onCollisionWith(Performer target) {
 		if (Bullet_Enemy.class.isInstance(target)) {
 			this.hitBy((Bullet) target);
+
 		} else if (PowerUp.class.isInstance(target)) {
 			((Bullet) target).hitOn(this);
+
+		} else if (Enemy.class.isInstance(target)) {// 处理敌机碰撞
+			if (!invincible) {
+				Explosion(null);
+				if (((Hitable) target).remainHP() < 50) {
+					((Hitable) target).Explosion(null);
+				}
+			}
+
 		}
 	}
 

@@ -18,7 +18,11 @@ package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
-import org.foxteam.noisyfox.THEngine.Performers.SystemControl;
+import org.foxteam.noisyfox.THEngine.Performers.EnemyController;
+import org.foxteam.noisyfox.THEngine.Performers.Player;
+import org.foxteam.noisyfox.THEngine.Performers.SystemController;
+import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Duck;
+import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
 
 /**
  * @ClassName: _00_TestStage
@@ -32,12 +36,11 @@ public final class _01_TestStage extends Stage {
 	@Override
 	protected void onCreate() {
 		setStageSpeed(30);
-		Performer p = new SystemControl();
-		p.perform(getStageIndex());
+		new SystemController();
 
 		Background bkg = new Background();
-
-		bkg.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.background_teststage,
+		bkg.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.background_teststage,
 				false);
 		bkg.setAdaptation(Background.ADAPTATION_SMART);
 		bkg.setSpeed(0, 30f / getStageSpeed());
@@ -45,7 +48,17 @@ public final class _01_TestStage extends Stage {
 		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_REPEATING);
 		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
 		setBackground(bkg);
-		
+
+		Player pl = new Player();
+		pl.perform(getStageIndex());
+
+		EnemyController ec = new EnemyController();
+		ec.addEnemy(120, Enemy_Duck.class, 0, 90, 0);
+		ec.addEnemy(150, Enemy_Duck.class, 0, 100, 1);
+		ec.addEnemy(200, Enemy_Fly.class, 50, 0, 0, 100);
+		ec.addEnemy(250, Enemy_Fly.class, 200, 0, 0, 200);
+		ec.perform(getStageIndex());
+
 	}
 
 }

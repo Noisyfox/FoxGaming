@@ -32,7 +32,7 @@ import android.graphics.Canvas;
  * @date: 2012-8-12 下午7:20:17
  * 
  */
-public class Enemy_Duck extends Enemy {
+public class Enemy_Duck extends EnemyInAir {
 
 	private int inY = 0;
 	private boolean frmL = false;
@@ -101,7 +101,7 @@ public class Enemy_Duck extends Enemy {
 		if (whichAlarm == 0) {// 发射子弹
 			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
 					- this.getSprite().getOffsetY()
-					+ this.getSprite().getHeight(), Stage
+					+ this.getSprite().getHeight(), 270, Stage
 					.getCurrentBackground().getVSpeed());
 			b.setDepth(this.getDepth() + 1);
 		} else if (whichAlarm == 1) {// 播放动画
@@ -150,9 +150,11 @@ public class Enemy_Duck extends Enemy {
 		GamingThread.score += 14;
 	}
 
-	public Enemy_Duck(int y, boolean comeFromLeft) {
+	@Override
+	public void createEnemy(int x, int y, int... extraConfig) {
+		this.perform(Stage.getCurrentStage().getStageIndex());
 		inY = y;
-		frmL = comeFromLeft;
+		frmL = extraConfig[0] == 0;
 	}
 
 }

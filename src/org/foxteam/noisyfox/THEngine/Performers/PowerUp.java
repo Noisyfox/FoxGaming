@@ -26,10 +26,10 @@ import org.foxteam.noisyfox.FoxGaming.Core.Stage;
  * 
  */
 public abstract class PowerUp extends Bullet {
-	
+
 	public PowerUp(int x, int y) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
-	
+
 }
