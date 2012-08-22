@@ -33,19 +33,19 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 public final class EnemyController extends Performer {
 
 	private int totalStep = 0;
-	HashMap<Integer, List<enemyDef>> enemys = new HashMap<Integer, List<enemyDef>>();
+	HashMap<Integer, List<EnemyDef>> enemys = new HashMap<Integer, List<EnemyDef>>();
 
 	public void addEnemy(int step, Class<?> enemyType, int x, int y,
 			int... extraConfig) {
 		Integer key = new Integer(step);
-		List<enemyDef> enemyList = null;
+		List<EnemyDef> enemyList = null;
 		if (enemys.containsKey(key)) {
 			enemyList = enemys.get(key);
 		} else {
-			enemyList = new ArrayList<enemyDef>();
+			enemyList = new ArrayList<EnemyDef>();
 			enemys.put(key, enemyList);
 		}
-		enemyDef ed = new enemyDef();
+		EnemyDef ed = new EnemyDef();
 		ed.enemyClass = enemyType;
 		ed.x = x;
 		ed.y = y;
@@ -57,8 +57,8 @@ public final class EnemyController extends Performer {
 	protected void onStepEnd() {
 		Integer key = new Integer(++totalStep);
 		if (enemys.containsKey(key)) {
-			List<enemyDef> enemyList = enemys.get(key);
-			for (enemyDef ed : enemyList) {
+			List<EnemyDef> enemyList = enemys.get(key);
+			for (EnemyDef ed : enemyList) {
 				try {
 					Enemy enemy = (Enemy) ed.enemyClass.newInstance();
 					enemy.createEnemy(ed.x, ed.y, ed.extraConfig);
@@ -71,7 +71,7 @@ public final class EnemyController extends Performer {
 		}
 	}
 
-	private class enemyDef {
+	private class EnemyDef {
 		private Class<?> enemyClass = null;
 		private int x = 0;
 		private int y = 0;
