@@ -244,6 +244,7 @@ public final class GamingThread extends Thread implements OnTouchListener,
 		if (Stage.targetStage != null) {
 			// 先处理 Stage
 			if (Stage.targetStage != Stage.currentStage) {// Stage 发生变化
+				boolean gameStart = Stage.currentStage == null;
 				if (Stage.currentStage != null) {// 不是第一次进游戏
 					Stage.currentStage
 							.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
@@ -266,9 +267,12 @@ public final class GamingThread extends Thread implements OnTouchListener,
 
 				// 所有事件都必须在EVENT_ONCREATE之后
 				Stage.currentStage.employPerformer();
-				// 第一次进游戏，广播EVENT_ONGAMESTART事件
-				Stage.currentStage
-						.broadcastEvent(EventsListener.EVENT_ONGAMESTART);
+
+				if (gameStart) {
+					// 第一次进游戏，广播EVENT_ONGAMESTART事件
+					Stage.currentStage
+							.broadcastEvent(EventsListener.EVENT_ONGAMESTART);
+				}
 
 				Stage.currentStage
 						.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
