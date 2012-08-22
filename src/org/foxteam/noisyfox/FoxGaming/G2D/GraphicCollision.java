@@ -222,17 +222,16 @@ public class GraphicCollision {
 			mapPoint(circles.get(i), circles_tmp.get(i), convertor);
 
 			reducedArea_tmp.left = Math.min(
-					points_tmp.get(i).x - circles_tmp.get(i).r,
+					circles_tmp.get(i).x - circles_tmp.get(i).r,
 					reducedArea_tmp.left);
 			reducedArea_tmp.top = Math.min(
-					points_tmp.get(i).y - circles_tmp.get(i).r,
+					circles_tmp.get(i).y - circles_tmp.get(i).r,
 					reducedArea_tmp.top);
 			reducedArea_tmp.right = Math.max(
-					points_tmp.get(i).x + circles_tmp.get(i).r,
+					circles_tmp.get(i).x + circles_tmp.get(i).r,
 					reducedArea_tmp.right);
-			reducedArea_tmp.bottom = Math.max(
-					points_tmp.get(i).y + circles_tmp.get(i).r,
-					reducedArea_tmp.bottom);
+			reducedArea_tmp.bottom = Math.max(circles_tmp.get(i).y
+					+ circles_tmp.get(i).r, reducedArea_tmp.bottom);
 		}
 
 		for (int i = 0; i < polygons.size(); i++) {
@@ -259,7 +258,7 @@ public class GraphicCollision {
 
 		baseX = 0;
 		baseY = 0;
-		
+
 		setPosition(x, y);
 	}
 
