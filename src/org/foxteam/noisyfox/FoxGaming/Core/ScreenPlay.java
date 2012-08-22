@@ -125,7 +125,6 @@ public final class ScreenPlay {
 		m.add(new Float((float) y));
 		m.add(new Float((float) totalSteps));
 		movements.add(m);
-		jumpTo(x, y);
 	}
 
 	protected void prepareToPlay(Performer bindPerformer) {
@@ -191,8 +190,13 @@ public final class ScreenPlay {
 
 		}
 		wait_step_remain -= wait_step_remain > 0 ? 1 : 0;
-		isPlaying = !movements_tmp.isEmpty();
+		isPlaying = !movements_tmp.isEmpty() || wait_step_remain > 0;
 		return !isPlaying;
+	}
+
+	// 得到剩余动作的数量
+	public int getRemainNumber() {
+		return movements_tmp.size();
 	}
 
 }
