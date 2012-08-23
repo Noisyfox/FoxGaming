@@ -4,7 +4,7 @@ gen/
 
 # Local configuration file (sdk path, etc)
 proguard.cfg
-project.properties
+proguard-project.txt
 .settings/
 .classpath
 .project
