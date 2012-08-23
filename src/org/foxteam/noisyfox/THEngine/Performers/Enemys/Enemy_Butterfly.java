@@ -54,13 +54,13 @@ public class Enemy_Butterfly extends EnemyInAir {
 		this.startAlarm(0);
 
 		GraphicCollision co = new GraphicCollision();
-		co.addCircle(-2, -4, 15, true);
-		co.addCircle(-15, -14, 6, true);
-		co.addCircle(13, -14, 6, true);
-		co.addCircle(-11, -22, 4, true);
-		co.addCircle(14, -22, 4, true);
-		co.addCircle(-15, 6, 10, true);
-		co.addCircle(15, 8, 10, true);
+		co.addCircle(-2, 4, 15, true);
+		co.addCircle(-15, 14, 6, true);
+		co.addCircle(13, 14, 6, true);
+		co.addCircle(-11, 22, 4, true);
+		co.addCircle(14, 22, 4, true);
+		co.addCircle(-15, -6, 10, true);
+		co.addCircle(15, -8, 10, true);
 		this.bindCollisionMask(co);
 
 		this.setHP(100);
