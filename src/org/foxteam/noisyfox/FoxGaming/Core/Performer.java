@@ -41,9 +41,9 @@ public class Performer extends EventsListener {
 	protected float vspeed = 0;// 速度的垂直部分，即垂直速度
 	protected float direction = 0; // Performer 当前运动方向（ 0-360 度，逆时针， 0 = 朝右）
 	protected float speed = 0;// Performer 当前速度（像素每步）
-	public float friction = 0;// 当前阻力（像素每步）
-	public float gravity = 0;// 当前重力（像素每步）
-	public float gravity_direction = 270; // 重力方向（ 270 朝下）
+	protected static float friction = 0;// 当前阻力（像素每步）
+	protected static float gravity = 0;// 当前重力（像素每步）
+	protected static float gravity_direction = 270; // 重力方向（ 270 朝下）
 
 	protected int depth = 0;
 	protected boolean frozen = false;
@@ -301,6 +301,43 @@ public class Performer extends EventsListener {
 		return y;
 	}
 
+	// 设定阻力（像素每步）
+	public static final void motion_setFriction(float friction) {
+		if (friction < 0) {
+			throw new IllegalArgumentException(
+					"Friction can't be smaller than zero!");
+		}
+		Performer.friction = friction;
+	}
+
+	// 以参数（方向，重力大小（像素每步））设定重力
+	public static final void motion_setGravity(float direction, float gravity) {
+		if (gravity < 0) {
+			throw new IllegalArgumentException(
+					"Gravity can't be smaller than zero!");
+		}
+		Performer.gravity = gravity;
+		Performer.gravity_direction = direction;
+	}
+
+	// 以参数（横向速度，纵向速度）设定运动
+	public final void motion_setSpeed(float hspeed, float vspeed) {
+		this.hspeed = hspeed;
+		this.vspeed = vspeed;
+		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
+		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+				-vspeed, hspeed)));
+	}
+
+	// 以参数（横向速度，纵向速度）对当前运动做改变
+	public final void motion_addSpeed(float hspeed, float vspeed) {
+		this.hspeed += hspeed;
+		this.vspeed += vspeed;
+		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
+		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+				-vspeed, hspeed)));
+	}
+
 	// 以参数（方向，速度）设定运动
 	public final void motion_set(float dir, float speed) {
 		hspeed = MathsHelper.lengthdir_x(speed, dir);
@@ -322,7 +359,7 @@ public class Performer extends EventsListener {
 		// 先计算重力影响
 		hspeed += MathsHelper.lengthdir_x(gravity, gravity_direction);
 		vspeed -= MathsHelper.lengthdir_y(gravity, gravity_direction);
-		
+
 		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
 				-vspeed, hspeed)));
 		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
