@@ -31,9 +31,6 @@ public class Hitable extends Performer {
 	protected boolean invincible = false;
 
 	public final void setHP(float hp) {
-		if (hp <= 0) {
-			throw new IllegalArgumentException();
-		}
 		this.hp = hp;
 	}
 
