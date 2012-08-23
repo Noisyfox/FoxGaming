@@ -24,6 +24,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Guided;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Manual;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
@@ -316,6 +317,13 @@ public class Player extends Hitable {
 		} else if (whichAlarm == 4) {// 发射导弹
 			if (myMissile != null) {
 				try {
+					float dDeg = 0;
+					if (myMissile == Bullet_Player_Missile_Guided.class) {
+						dDeg = 30;
+					} else if (myMissile == Bullet_Player_Missile_Manual.class) {
+						dDeg = 0;
+					}
+
 					Class<?>[] pTypes = new Class[] { int.class, int.class };
 					Constructor<?> ctor = myMissile.getConstructor(pTypes);
 					Bullet_Player b = null;
@@ -323,13 +331,13 @@ public class Player extends Hitable {
 							(int) this.getY() };
 					b = (Bullet_Player) ctor.newInstance(arg);
 					b.setDepth(this.getDepth() + 1);
-					b.motion_set(60, 200f / Stage.getSpeed());
+					b.motion_set(90 - dDeg, 200f / Stage.getSpeed());
 
 					Object[] arg2 = new Object[] { (int) this.getX() - 10,
 							(int) this.getY() };
 					b = (Bullet_Player) ctor.newInstance(arg2);
 					b.setDepth(this.getDepth() + 1);
-					b.motion_set(120, 200f / Stage.getSpeed());
+					b.motion_set(90 + dDeg, 200f / Stage.getSpeed());
 				} catch (SecurityException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -429,7 +437,8 @@ public class Player extends Hitable {
 	public void getPowerUp(Class<?> bulletType) {
 		GamingThread.score += 100;
 
-		if (bulletType == Bullet_Player_Missile_Guided.class) {
+		if (bulletType == Bullet_Player_Missile_Guided.class
+				|| bulletType == Bullet_Player_Missile_Manual.class) {
 			updateMissile(bulletType);
 		}
 

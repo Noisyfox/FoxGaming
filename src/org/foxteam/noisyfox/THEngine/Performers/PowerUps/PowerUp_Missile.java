@@ -22,6 +22,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Guided;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Manual;
 
 /**
  * @ClassName: PowerUp_Missile_Guided
@@ -59,7 +60,7 @@ public class PowerUp_Missile extends PowerUp {
 		if (Player.class.isInstance(target)) {
 			((Player) target)
 					.getPowerUp(missileType == 0 ? Bullet_Player_Missile_Guided.class
-							: Bullet_Player_Missile_Guided.class);
+							: Bullet_Player_Missile_Manual.class);
 		}
 		this.dismiss();
 		this.bindCollisionMask(null);
