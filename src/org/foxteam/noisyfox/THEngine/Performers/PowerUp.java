@@ -28,10 +28,26 @@ import org.foxteam.noisyfox.FoxGaming.Core.Stage;
  */
 public abstract class PowerUp extends Bullet {
 
+	int myType = 0;
+	private int typeNumber = 1;
+	private float typeInterval = 0.0f;
+
 	@Override
 	protected void onCreate() {
 		this.setAlarm(0, (int) (Stage.getSpeed() * 3.0f), true);
 		this.startAlarm(0);
+
+		if (this.typeInterval != 0) {
+			this.setAlarm(1, (int) (Stage.getSpeed() * this.typeInterval), true);
+			this.startAlarm(1);
+		} else {
+			this.stopAlarm(1);
+		}
+
+		if (typeNumber != 1) {
+			myType = MathsHelper.random(0, typeNumber - 1);
+			onTypeChange(myType);
+		}
 
 		this.motion_set(MathsHelper.random(0, 359), 50f / Stage.getSpeed());
 	}
@@ -40,6 +56,15 @@ public abstract class PowerUp extends Bullet {
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {
 			this.motion_set(MathsHelper.random(0, 359), 50f / Stage.getSpeed());
+
+		} else if (whichAlarm == 1) {
+			if (typeNumber != 1) {
+				if (++myType > typeNumber - 1) {
+					myType = 0;
+				}
+				onTypeChange(myType);
+			}
+
 		}
 	}
 
@@ -92,5 +117,27 @@ public abstract class PowerUp extends Bullet {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
+
+	public final void defineTypes(int typeNumber, float intervalTime) {
+		if (typeNumber <= 0) {
+			throw new IllegalArgumentException(
+					"typenumber must be larger than zero!");
+		}
+		if (intervalTime < 0) {
+			throw new IllegalArgumentException(
+					"intervalTime can't be smaller than zero!");
+		}
+		this.typeNumber = typeNumber;
+		this.typeInterval = intervalTime;
+
+		if (this.typeInterval != 0) {
+			this.setAlarm(1, (int) (Stage.getSpeed() * this.typeInterval), true);
+			this.startAlarm(1);
+		} else {
+			this.stopAlarm(1);
+		}
+	}
+
+	public abstract void onTypeChange(int type);
 
 }

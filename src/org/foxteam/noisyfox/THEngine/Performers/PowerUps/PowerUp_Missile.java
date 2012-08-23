@@ -30,33 +30,44 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Gu
  * @date: 2012-8-19 下午4:46:38
  * 
  */
-public class PowerUp_Missile_Guided extends PowerUp {
+public class PowerUp_Missile extends PowerUp {
 
-	public PowerUp_Missile_Guided(int x, int y) {
+	private int missileType = 0;// 导弹种类，0跟踪导弹，1非跟踪导弹
+	Sprite missileSprite = new Sprite();
+
+	public PowerUp_Missile(int x, int y) {
 		super(x, y);
-		Sprite bulletSprite = new Sprite();
-		bulletSprite
-				.loadFromBitmap(
-						org.foxteam.noisyfox.THEngine.R.drawable.powerup_missile_guided,
-						false);
-		bulletSprite.setOffset(bulletSprite.getWidth() / 2,
-				bulletSprite.getHeight() / 2);
-		this.bindSprite(bulletSprite);
+
+		missileSprite.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.powerup_missile, 2, 1,
+				false);
+		missileSprite.setOffset(missileSprite.getWidth() / 2,
+				missileSprite.getHeight() / 2);
+		this.bindSprite(missileSprite);
 
 		GraphicCollision co = new GraphicCollision();
-		co.addRectangle(-bulletSprite.getWidth() / 2,
-				-bulletSprite.getHeight() / 2, bulletSprite.getWidth(),
-				bulletSprite.getHeight());
+		co.addRectangle(-missileSprite.getWidth() / 2,
+				-missileSprite.getHeight() / 2, missileSprite.getWidth(),
+				missileSprite.getHeight());
 		this.bindCollisionMask(co);
+
+		this.defineTypes(2, 2.5f);
 	}
 
 	@Override
 	public void hitOn(Hitable target) {
 		if (Player.class.isInstance(target)) {
-			((Player) target).getPowerUp(Bullet_Player_Missile_Guided.class);
+			((Player) target)
+					.getPowerUp(missileType == 0 ? Bullet_Player_Missile_Guided.class
+							: Bullet_Player_Missile_Guided.class);
 		}
 		this.dismiss();
 		this.bindCollisionMask(null);
+	}
+
+	public void onTypeChange(int type) {
+		missileType = type;
+		missileSprite.setCurrentFrame(missileType);
 	}
 
 }

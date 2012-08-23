@@ -27,7 +27,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
-import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile_Guided;
+import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile;
 
 /**
  * @ClassName: Enemy_Butterfly
@@ -149,7 +149,7 @@ public class Enemy_Butterfly extends EnemyInAir {
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
 				0.5f, (int) this.getX(), (int) this.getY());
 
-		new PowerUp_Missile_Guided((int) getX(), (int) getY())
+		new PowerUp_Missile((int) getX(), (int) getY())
 				.setDepth(getDepth() + 1);
 
 		this.dismiss();
