@@ -322,13 +322,18 @@ public class Performer extends EventsListener {
 		// 先计算重力影响
 		hspeed += MathsHelper.lengthdir_x(gravity, gravity_direction);
 		vspeed -= MathsHelper.lengthdir_y(gravity, gravity_direction);
-		// 再计算阻力影响
-		hspeed -= MathsHelper.lengthdir_x(friction, direction);
-		vspeed += MathsHelper.lengthdir_y(friction, direction);
-		// 计算总速度及角度
-		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
+		
 		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
 				-vspeed, hspeed)));
+		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
+		// 再计算阻力影响
+		if (speed > friction) {
+			speed -= friction;
+		} else {
+			speed = 0;
+		}
+		hspeed = MathsHelper.lengthdir_x(speed, direction);
+		vspeed = -MathsHelper.lengthdir_y(speed, direction);
 
 		if (hspeed != 0 || vspeed != 0) {
 			this.setPosition(x + hspeed, y + vspeed);
