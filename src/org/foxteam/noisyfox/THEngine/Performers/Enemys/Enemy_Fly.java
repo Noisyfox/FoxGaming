@@ -141,7 +141,7 @@ public class Enemy_Fly extends EnemyInAir {
 					(int) (this.getX() + MathsHelper.lengthdir_x(this
 							.getSprite().getHeight()
 							- this.getSprite().getOffsetY(), myDirection)),
-					(int) (this.getY() + MathsHelper.lengthdir_y(this
+					(int) (this.getY() - MathsHelper.lengthdir_y(this
 							.getSprite().getHeight()
 							- this.getSprite().getOffsetY(), myDirection)),
 					myDirection, 110f / Stage.getSpeed());
