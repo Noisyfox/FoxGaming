@@ -27,7 +27,6 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Gu
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
-import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile_Guided;
 
 /**
  * @ClassName: Player
@@ -390,9 +389,6 @@ public class Player extends Hitable {
 		new Explosion(
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
 				0.5f, (int) this.getX(), (int) this.getY());
-
-		new PowerUp_Missile_Guided((int) getX(), (int) getY())
-				.setDepth(getDepth() + 1);
 
 		if (--remainLife < 0) {
 			this.dismiss();

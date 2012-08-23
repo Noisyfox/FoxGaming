@@ -55,4 +55,11 @@ public class Hitable extends Performer {
 		this.dismiss();
 	}
 
+	@Override
+	protected void onCollisionWith(Performer target) {
+		if (Bullet.class.isInstance(target)) {
+			this.hitBy((Bullet) target);
+		}
+	}
+
 }

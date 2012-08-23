@@ -132,13 +132,6 @@ public class Enemy_Duck extends EnemyInAir {
 	}
 
 	@Override
-	protected void onCollisionWith(Performer target) {
-		if (Bullet_Player.class.isInstance(target)) {
-			this.hitBy((Bullet) target);
-		}
-	}
-
-	@Override
 	protected void Explosion(Bullet bullet) {
 		new Explosion(
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,

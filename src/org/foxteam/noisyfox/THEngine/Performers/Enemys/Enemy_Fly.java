@@ -96,7 +96,6 @@ public class Enemy_Fly extends EnemyInAir {
 
 	@Override
 	protected void onStep() {
-		Stage.getCurrentStage();
 		if (myMovement.getRemainNumber() > 0) {
 			if (Stage.getPerformersByClass(Player.class).length > 0) {
 				Performer p = Stage.getPerformersByClass(Player.class)[0];
@@ -130,13 +129,6 @@ public class Enemy_Fly extends EnemyInAir {
 		Canvas c = this.getCanvas();
 		this.getSprite().draw(c, (int) this.getX(), (int) this.getY(),
 				SpConvertor);
-	}
-
-	@Override
-	protected void onCollisionWith(Performer target) {
-		if (Bullet_Player.class.isInstance(target)) {
-			this.hitBy((Bullet) target);
-		}
 	}
 
 	@Override
