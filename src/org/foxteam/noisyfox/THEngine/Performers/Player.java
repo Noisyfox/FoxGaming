@@ -373,8 +373,12 @@ public class Player extends Hitable {
 		} else if (Enemy.class.isInstance(target)) {// 处理敌机碰撞
 			if (!invincible) {
 				Explosion(null);
-				if (((Hitable) target).remainHP() < 50) {
-					((Hitable) target).Explosion(null);
+				if (!((Hitable) target).invincible) {
+					((Hitable) target)
+							.setHP(((Hitable) target).remainHP() - 50);
+					if (((Hitable) target).remainHP() < 0) {
+						((Hitable) target).Explosion(null);
+					}
 				}
 			}
 
