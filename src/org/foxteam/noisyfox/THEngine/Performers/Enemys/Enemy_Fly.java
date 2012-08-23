@@ -18,7 +18,6 @@ package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
 import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
-import org.foxteam.noisyfox.FoxGaming.Core.MyDebug;
 import org.foxteam.noisyfox.FoxGaming.Core.Performer;
 import org.foxteam.noisyfox.FoxGaming.Core.ScreenPlay;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
@@ -29,6 +28,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.SpriteConvertor;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 
 import android.graphics.Canvas;
@@ -64,6 +64,10 @@ public class Enemy_Fly extends EnemyInAir {
 
 		this.setAlarm(0, (int) (Stage.getSpeed() * 0.1f), true);// 播放动画
 		this.startAlarm(0);
+		if (canFire) {
+			this.setAlarm(1, (int) (Stage.getSpeed() * 2.5f), true);// 发射子弹
+			this.startAlarm(1);
+		}
 
 		GraphicCollision co = new GraphicCollision();
 		co.addCircle(0, 0, 12, true);
@@ -99,13 +103,17 @@ public class Enemy_Fly extends EnemyInAir {
 				myDirection = MathsHelper.degreeIn360(MathsHelper
 						.point_direction(getX(), getY(), p.getX(), p.getY()));
 			}
-		} else if (myDirection != 90) {
-			float rDir = MathsHelper.directionTo(myDirection, 90);
-			if (Math.abs(rDir) <= 5) {
-				myDirection = MathsHelper.degreeIn360(myDirection + rDir);
-			} else {
-				myDirection = MathsHelper.degreeIn360(myDirection
-						+ (rDir > 0 ? 5 : -5));
+		} else {
+			this.stopAlarm(1);
+
+			if (myDirection != 90) {
+				float rDir = MathsHelper.directionTo(myDirection, 90);
+				if (Math.abs(rDir) <= 5) {
+					myDirection = MathsHelper.degreeIn360(myDirection + rDir);
+				} else {
+					myDirection = MathsHelper.degreeIn360(myDirection
+							+ (rDir > 0 ? 5 : -5));
+				}
 			}
 		}
 
@@ -135,6 +143,14 @@ public class Enemy_Fly extends EnemyInAir {
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// 播放动画
 			this.getSprite().nextFrame();
+
+		} else if (whichAlarm == 1) {// 发射子弹
+			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
+					- this.getSprite().getOffsetY()
+					+ this.getSprite().getHeight(), myDirection,
+					80f / Stage.getSpeed());
+			b.setDepth(this.getDepth() + 1);
+
 		}
 	}
 
