@@ -83,7 +83,7 @@ public class Enemy_Fly extends EnemyInAir {
 
 		this.setPosition(inX, -flySprite.getHeight() + flySprite.getOffsetY());
 
-		float mySpeed = 80f / Stage.getSpeed();
+		float mySpeed = 90f / Stage.getSpeed();
 
 		myMovement.moveTowards(270, mySpeed);
 		myMovement
@@ -148,7 +148,7 @@ public class Enemy_Fly extends EnemyInAir {
 			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
 					- this.getSprite().getOffsetY()
 					+ this.getSprite().getHeight(), myDirection,
-					80f / Stage.getSpeed());
+					110f / Stage.getSpeed());
 			b.setDepth(this.getDepth() + 1);
 
 		}
