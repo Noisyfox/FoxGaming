@@ -46,7 +46,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 		co.addCircle(0, 8, 5, true);
 		this.bindCollisionMask(co);
 
-		this.setDamage(20);
+		this.setDamage(10);
 
 		this.motion_set(90, 300f / Stage.getSpeed());
 	}
