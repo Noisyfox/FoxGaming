@@ -137,10 +137,14 @@ public class Enemy_Fly extends EnemyInAir {
 			this.getSprite().nextFrame();
 
 		} else if (whichAlarm == 1) {// 发射子弹
-			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
-					- this.getSprite().getOffsetY()
-					+ this.getSprite().getHeight(), myDirection,
-					110f / Stage.getSpeed());
+			Bullet b = new Bullet_Enemy_1(
+					(int) (this.getX() + MathsHelper.lengthdir_x(this
+							.getSprite().getHeight()
+							- this.getSprite().getOffsetY(), myDirection)),
+					(int) (this.getY() + MathsHelper.lengthdir_y(this
+							.getSprite().getHeight()
+							- this.getSprite().getOffsetY(), myDirection)),
+					myDirection, 110f / Stage.getSpeed());
 			b.setDepth(this.getDepth() + 1);
 
 		}
