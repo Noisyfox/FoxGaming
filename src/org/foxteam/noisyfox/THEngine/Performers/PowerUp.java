@@ -18,8 +18,6 @@ package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 
 /**
  * @ClassName: PowerUp
