@@ -17,11 +17,15 @@
 package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
 import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.Performer;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
 import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
+import org.foxteam.noisyfox.THEngine.Performers.Player;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile_Guided;
 
@@ -46,7 +50,7 @@ public class Enemy_Butterfly extends EnemyInAir {
 				butterflySprite.getHeight() / 2);
 		this.bindSprite(butterflySprite);
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 0.1f), true);// 播放动画
+		this.setAlarm(0, (int) (Stage.getSpeed() * 0.3f), true);// 播放动画
 		this.startAlarm(0);
 
 		GraphicCollision co = new GraphicCollision();
@@ -65,14 +69,77 @@ public class Enemy_Butterfly extends EnemyInAir {
 
 		this.setPosition(inX,
 				-butterflySprite.getHeight() + butterflySprite.getOffsetY());
-		
-		float mySpeed = 90f / Stage.getSpeed();
+
 	}
-	
+
+	@Override
+	protected void onStep() {
+		if (getY() < Stage.getCurrentStage().getHeight() / 5) {
+			motion_set(270, 90f / Stage.getSpeed());
+			this.setAlarm(1, (int) (Stage.getSpeed() * 2f), true);// 发射子弹
+			this.startAlarm(1);
+
+		} else if (getY() > Stage.getCurrentStage().getHeight() / 2) {
+			motion_set(270, 90f / Stage.getSpeed());
+			this.stopAlarm(1);
+
+		} else {
+			if (Math.abs(getX() - inX) > 50) {
+				if (inX < Stage.getCurrentStage().getWidth() / 2) {
+					this.motion_setSpeed(-15f / Stage.getSpeed(),
+							4f / Stage.getSpeed());
+				} else {
+					this.motion_setSpeed(15f / Stage.getSpeed(),
+							4f / Stage.getSpeed());
+				}
+			} else {
+				if (inX < Stage.getCurrentStage().getWidth() / 2) {
+					if (getX() <= inX) {
+						this.motion_setSpeed(15f / Stage.getSpeed(),
+								4f / Stage.getSpeed());
+					}
+				} else {
+					if (getX() >= inX) {
+						this.motion_setSpeed(-15f / Stage.getSpeed(),
+								4f / Stage.getSpeed());
+					}
+				}
+			}
+		}
+	}
+
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// 播放动画
 			this.getSprite().nextFrame();
 
+		} else if (whichAlarm == 1) {// 发射子弹
+			if (Stage.getPerformersByClass(Player.class).length > 0) {
+				Performer p = Stage.getPerformersByClass(Player.class)[0];
+				float playerDir = MathsHelper.degreeIn360(MathsHelper
+						.point_direction(getX(), getY(), p.getX(), p.getY()));
+
+				Bullet b = new Bullet_Enemy_1((int) this.getX(),
+						(int) this.getY(), playerDir, 110f / Stage.getSpeed());
+				b.setDepth(this.getDepth() - 1);
+
+				b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY(),
+						MathsHelper.degreeIn360(playerDir + 30),
+						110f / Stage.getSpeed());
+				b.setDepth(this.getDepth() - 1);
+
+				b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY(),
+						MathsHelper.degreeIn360(playerDir - 30),
+						110f / Stage.getSpeed());
+				b.setDepth(this.getDepth() - 1);
+			}
+
+		}
+	}
+
+	@Override
+	protected void onOutOfStage() {
+		if (getY() > Stage.getCurrentStage().getHeight()) {
+			this.dismiss();
 		}
 	}
 
