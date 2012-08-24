@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
 import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 
@@ -64,6 +65,10 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Enemy.class.isInstance(target)) {
+			new Explosion(
+					org.foxteam.noisyfox.THEngine.R.drawable.explosion_bullet_player_normal,
+					10, 0.3f, (int) this.getX(), (int) this.getY()
+							- this.getSprite().getOffsetY());
 			this.dismiss();
 		}
 	}
