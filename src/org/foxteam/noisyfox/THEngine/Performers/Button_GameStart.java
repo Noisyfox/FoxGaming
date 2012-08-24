@@ -39,6 +39,7 @@ public class Button_GameStart extends Button {
 	@Override
 	public void onClick() {
 		Stage.nextStage();
+		Player.remainLife = 3;
 	}
 
 	@Override

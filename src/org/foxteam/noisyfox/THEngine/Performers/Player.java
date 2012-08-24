@@ -88,7 +88,6 @@ public class Player extends Hitable {
 
 	@Override
 	protected void onCreate() {
-		remainLife = 3;
 
 		mainView = Stage.getCurrentStage().getView(0);
 
