@@ -122,9 +122,7 @@ public class Player extends Hitable {
 		myCollisionMask.addPolygon(vertex3, true);
 
 		this.requireCollisionDetection(EnemyInAir.class);
-
 		this.requireCollisionDetection(Bullet_Enemy.class);
-
 		this.requireCollisionDetection(PowerUp.class);
 
 		this.setPosition(Stage.getCurrentStage().getWidth() / 2, Stage

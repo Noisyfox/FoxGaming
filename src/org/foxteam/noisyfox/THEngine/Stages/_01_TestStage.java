@@ -21,6 +21,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.EnemyController;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.SystemController;
+import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Boss_Pig;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Butterfly;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Duck;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
@@ -59,6 +60,7 @@ public final class _01_TestStage extends Stage {
 		ec.addEnemy(200, Enemy_Fly.class, 50, 0, 0, 100);
 		ec.addEnemy(250, Enemy_Fly.class, 200, 0, 0, 200);
 		ec.addEnemy(300, Enemy_Butterfly.class, 100, 0);
+		ec.addEnemy(500, Enemy_Boss_Pig.class, 0, 0);
 		ec.perform(getStageIndex());
 
 	}
