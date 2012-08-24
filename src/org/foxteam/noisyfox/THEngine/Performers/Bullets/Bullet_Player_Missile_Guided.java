@@ -16,6 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.Performer;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
@@ -101,8 +104,17 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 		} else if (searchingTarget) {
 			Performer[] p = Stage.getPerformersByClass(Enemy.class);
 			if (p.length > 0) {
-				lockedEnemy = (Enemy) p[MathsHelper.random(0, p.length - 1)];
-				searchingTarget = false;
+				List<Enemy> avaliableEnemy = new ArrayList<Enemy>();
+				for (Performer ap : p) {
+					if (!((Hitable) ap).isInvincible()) {
+						avaliableEnemy.add((Enemy) ap);
+					}
+				}
+				if (!avaliableEnemy.isEmpty()) {
+					lockedEnemy = avaliableEnemy.get(MathsHelper.random(0,
+							avaliableEnemy.size() - 1));
+					searchingTarget = false;
+				}
 			}
 		}
 
