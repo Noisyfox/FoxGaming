@@ -144,9 +144,8 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 
 	@Override
 	protected void Explosion(Bullet bullet) {
-		new Explosion(
-				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
-				0.5f, (int) this.getX(), (int) this.getY());
+		new Explosion(org.foxteam.noisyfox.THEngine.R.drawable.explosion_boss,
+				5, 0.5f, (int) this.getX(), (int) this.getY());
 		this.dismiss();
 
 		this.bindCollisionMask(null);

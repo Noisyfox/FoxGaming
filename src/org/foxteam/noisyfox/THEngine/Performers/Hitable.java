@@ -61,8 +61,8 @@ public class Hitable extends Performer {
 			this.hitBy((Bullet) target);
 		}
 	}
-	
-	public final boolean isInvincible(){
+
+	public final boolean isInvincible() {
 		return invincible;
 	}
 
