@@ -393,7 +393,7 @@ public class Player extends Hitable {
 	protected void Explosion(Bullet bullet) {
 		new Explosion(
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
-				0.5f, (int) this.getX(), (int) this.getY());
+				1, 0.5f, (int) this.getX(), (int) this.getY());
 
 		if (--remainLife < 0) {
 			this.dismiss();

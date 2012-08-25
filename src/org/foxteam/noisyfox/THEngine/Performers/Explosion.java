@@ -30,6 +30,7 @@ public class Explosion extends Performer {
 
 	Sprite s = new Sprite();
 	float frameSpeed = 0f;
+	int turns = 1;
 
 	@Override
 	protected void onCreate() {
@@ -41,7 +42,11 @@ public class Explosion extends Performer {
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {
-			s.nextFrame();
+			if (s.getCurrentFrame() == s.getFrameCount() - 1 && --turns <= 0) {
+				this.dismiss();
+			} else {
+				s.nextFrame();
+			}
 		}
 	}
 
@@ -51,17 +56,16 @@ public class Explosion extends Performer {
 				+ Stage.getCurrentBackground().getVSpeed());
 	}
 
-	@Override
-	protected void onStepEnd() {
-		if (s.getCurrentFrame() == s.getFrameCount() - 1) {
-			this.dismiss();
+	public Explosion(int resId, int frameNumber, int turns, float lastTime,
+			int x, int y) {
+		if (turns < 1) {
+			throw new IllegalArgumentException(
+					"turns must be larger than zero!");
 		}
-	}
-
-	public Explosion(int resId, int frameNumber, float lastTime, int x, int y) {
 		s.loadFromBitmap(resId, frameNumber, 1, false);
 		s.setOffset(s.getWidth() / 2, s.getHeight() / 2);
-		frameSpeed = lastTime / (float) (frameNumber - 1)
+		this.turns = turns;
+		frameSpeed = lastTime / (float) turns / (float) (frameNumber - 1)
 				* Stage.getCurrentStage().getStageSpeed();
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);

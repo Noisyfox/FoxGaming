@@ -64,7 +64,7 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 		if (Enemy.class.isInstance(target)) {
 			new Explosion(
 					org.foxteam.noisyfox.THEngine.R.drawable.explosion_missile_small,
-					5, 0.3f, (int) this.getX(), (int) this.getY()
+					5, 1, 0.3f, (int) this.getX(), (int) this.getY()
 							- this.getSprite().getOffsetY());
 			this.dismiss();
 		}
