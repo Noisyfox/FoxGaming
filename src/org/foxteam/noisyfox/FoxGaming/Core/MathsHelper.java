@@ -176,7 +176,8 @@ public final class MathsHelper {
 
 	// 获取一个 >= min && <= max 的随机整数
 	public static int random(int min, int max) {
-		return (int) ((double) min + (double) (max - min) * Math.random());
+		return (int) Math.round((double) (min - 0.49)
+				+ (double) (max - min + 0.98) * Math.random());
 	}
 
 	// 返回位置1(x1,y1)到位置2(x2,y2)的距离.
