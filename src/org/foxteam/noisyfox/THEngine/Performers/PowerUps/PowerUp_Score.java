@@ -60,7 +60,7 @@ public class PowerUp_Score extends PowerUp {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Player.class.isInstance(target)) {
-			GamingThread.score += 1000;
+			GamingThread.score += 500;
 		}
 		this.dismiss();
 		this.bindCollisionMask(null);
