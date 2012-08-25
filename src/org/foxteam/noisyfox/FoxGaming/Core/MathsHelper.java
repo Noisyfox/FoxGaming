@@ -176,6 +176,9 @@ public final class MathsHelper {
 
 	// 获取一个 >= min && <= max 的随机整数
 	public static int random(int min, int max) {
+		if (max < min) {
+			throw new IllegalArgumentException("MAX can't be smaller than MIN!");
+		}
 		return (int) Math.round((double) (min - 0.49)
 				+ (double) (max - min + 0.98) * Math.random());
 	}
