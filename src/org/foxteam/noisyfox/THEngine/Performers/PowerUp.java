@@ -31,12 +31,12 @@ public abstract class PowerUp extends Bullet {
 	int myType = 0;
 	private int typeNumber = 1;
 	private float typeInterval = 0.0f;
+	private boolean isOnGround = false;
+	private float myVSpeed = 0f;
+	private float myHspeed = 0f;
 
 	@Override
 	protected void onCreate() {
-		this.setAlarm(0, (int) (Stage.getSpeed() * 3.0f), true);
-		this.startAlarm(0);
-
 		if (this.typeInterval != 0) {
 			this.setAlarm(1, (int) (Stage.getSpeed() * this.typeInterval), true);
 			this.startAlarm(1);
@@ -49,7 +49,15 @@ public abstract class PowerUp extends Bullet {
 			onTypeChange(myType);
 		}
 
-		this.motion_set(MathsHelper.random(0, 359), 50f / Stage.getSpeed());
+		if (isOnGround) {
+			this.motion_setSpeed(myHspeed, myVSpeed);
+
+		} else {
+			this.setAlarm(0, (int) (Stage.getSpeed() * 3.0f), true);
+			this.startAlarm(0);
+
+			this.motion_set(MathsHelper.random(0, 359), 50f / Stage.getSpeed());
+		}
 	}
 
 	@Override
@@ -70,52 +78,67 @@ public abstract class PowerUp extends Bullet {
 
 	@Override
 	protected void onStep() {
-		// 判断当前位置
-		int left = getSprite().getOffsetX() + 20;
-		int top = getSprite().getOffsetY() + 20;
-		int right = Stage.getCurrentStage().getWidth()
-				+ (getSprite() == null ? 0
-						: (getSprite().getOffsetX() - getSprite().getWidth()))
-				- 20;
-		int bottom = Stage.getCurrentStage().getHeight()
-				+ (getSprite() == null ? 0
-						: (getSprite().getOffsetY() - getSprite().getHeight()))
-				- 20;
+		if (!isOnGround) {
+			// 判断当前位置
+			int left = getSprite().getOffsetX() + 20;
+			int top = getSprite().getOffsetY() + 20;
+			int right = Stage.getCurrentStage().getWidth()
+					+ (getSprite() == null ? 0
+							: (getSprite().getOffsetX() - getSprite()
+									.getWidth())) - 20;
+			int bottom = Stage.getCurrentStage().getHeight()
+					+ (getSprite() == null ? 0
+							: (getSprite().getOffsetY() - getSprite()
+									.getHeight())) - 20;
 
-		if (getX() < left) {
-			if (getY() < top && direction <= 270) {
-				this.motion_set(MathsHelper.random(271, 359),
+			if (getX() < left) {
+				if (getY() < top && direction <= 270) {
+					this.motion_set(MathsHelper.random(271, 359),
+							50f / Stage.getSpeed());
+				} else if (getY() > bottom && direction >= 90) {
+					this.motion_set(MathsHelper.random(1, 89),
+							50f / Stage.getSpeed());
+				} else if (direction >= 90 && direction <= 270) {
+					this.motion_set(MathsHelper.degreeIn360(MathsHelper.random(
+							-89, 89)), 50f / Stage.getSpeed());
+				}
+			} else if (getX() > right) {
+				if (getY() < top && (direction <= 180 || direction >= 270)) {
+					this.motion_set(MathsHelper.random(181, 269),
+							50f / Stage.getSpeed());
+				} else if (getY() > bottom
+						&& (direction <= 90 || direction >= 180)) {
+					this.motion_set(MathsHelper.random(91, 179),
+							50f / Stage.getSpeed());
+				} else if (direction <= 90 || direction >= 270) {
+					this.motion_set(MathsHelper.random(91, 269),
+							50f / Stage.getSpeed());
+				}
+			} else if (getY() < top && direction <= 180) {
+				this.motion_set(MathsHelper.random(181, 359),
 						50f / Stage.getSpeed());
-			} else if (getY() > bottom && direction >= 90) {
-				this.motion_set(MathsHelper.random(1, 89),
-						50f / Stage.getSpeed());
-			} else if (direction >= 90 && direction <= 270) {
-				this.motion_set(
-						MathsHelper.degreeIn360(MathsHelper.random(-89, 89)),
+			} else if (getY() > bottom && direction >= 180) {
+				this.motion_set(MathsHelper.random(1, 179),
 						50f / Stage.getSpeed());
 			}
-		} else if (getX() > right) {
-			if (getY() < top && (direction <= 180 || direction >= 270)) {
-				this.motion_set(MathsHelper.random(181, 269),
-						50f / Stage.getSpeed());
-			} else if (getY() > bottom && (direction <= 90 || direction >= 180)) {
-				this.motion_set(MathsHelper.random(91, 179),
-						50f / Stage.getSpeed());
-			} else if (direction <= 90 || direction >= 270) {
-				this.motion_set(MathsHelper.random(91, 269),
-						50f / Stage.getSpeed());
-			}
-		} else if (getY() < top && direction <= 180) {
-			this.motion_set(MathsHelper.random(181, 359),
-					50f / Stage.getSpeed());
-		} else if (getY() > bottom && direction >= 180) {
-			this.motion_set(MathsHelper.random(1, 179), 50f / Stage.getSpeed());
 		}
 	}
 
 	public PowerUp(int x, int y) {
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
+	}
+
+	@Override
+	public boolean isOutOfStage() {
+		return super.isOutOfStage()
+				&& this.getY() > Stage.getCurrentStage().getHeight();
+	}
+
+	@Override
+	protected void onOutOfStage() {
+		this.dismiss();
+		this.bindCollisionMask(null);
 	}
 
 	public final void defineTypes(int typeNumber, float intervalTime) {
@@ -139,5 +162,11 @@ public abstract class PowerUp extends Bullet {
 	}
 
 	public abstract void onTypeChange(int type);
+
+	public final void setOnGround(boolean onGround, float vspeed, float hspeed) {
+		this.isOnGround = onGround;
+		this.myHspeed = hspeed;
+		this.myVSpeed = vspeed;
+	}
 
 }
