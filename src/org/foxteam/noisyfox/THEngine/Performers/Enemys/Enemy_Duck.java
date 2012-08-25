@@ -119,6 +119,7 @@ public class Enemy_Duck extends EnemyInAir {
 	@Override
 	protected void onOutOfStage() {
 		this.dismiss();
+		this.bindCollisionMask(null);
 	}
 
 	@Override

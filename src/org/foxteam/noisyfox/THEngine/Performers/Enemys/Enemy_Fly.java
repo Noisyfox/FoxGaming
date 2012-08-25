@@ -151,11 +151,14 @@ public class Enemy_Fly extends EnemyInAir {
 	}
 
 	@Override
+	public boolean isOutOfStage() {
+		return super.isOutOfStage() && myMovement.getRemainNumber() == 0;
+	}
+
+	@Override
 	protected void onOutOfStage() {
-		if (myMovement.getRemainNumber() == 0) {
-			this.dismiss();
-			this.bindCollisionMask(null);
-		}
+		this.dismiss();
+		this.bindCollisionMask(null);
 	}
 
 	@Override

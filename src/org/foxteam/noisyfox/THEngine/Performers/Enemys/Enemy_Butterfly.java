@@ -137,10 +137,15 @@ public class Enemy_Butterfly extends EnemyInAir {
 	}
 
 	@Override
+	public boolean isOutOfStage() {
+		return super.isOutOfStage()
+				&& this.getY() > Stage.getCurrentStage().getHeight();
+	}
+
+	@Override
 	protected void onOutOfStage() {
-		if (getY() > Stage.getCurrentStage().getHeight()) {
-			this.dismiss();
-		}
+		this.dismiss();
+		this.bindCollisionMask(null);
 	}
 
 	@Override
