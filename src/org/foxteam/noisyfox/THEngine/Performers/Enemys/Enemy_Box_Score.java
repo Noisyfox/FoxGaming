@@ -79,8 +79,6 @@ public class Enemy_Box_Score extends EnemyOnGround {
 				0.5f, (int) this.getX(), (int) this.getY());
 		PowerUp p = new PowerUp_Score((int) getX(), (int) getY());
 		p.setDepth(getDepth());
-		p.setOnGround(true, Stage.getCurrentBackground().getVSpeed(), Stage
-				.getCurrentBackground().getHSpeed());
 
 		this.dismiss();
 

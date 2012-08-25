@@ -31,7 +31,7 @@ public abstract class PowerUp extends Bullet {
 	int myType = 0;
 	private int typeNumber = 1;
 	private float typeInterval = 0.0f;
-	private boolean isOnGround = false;
+	private boolean isManualSpeed = false;
 	private float myVSpeed = 0f;
 	private float myHspeed = 0f;
 
@@ -49,7 +49,7 @@ public abstract class PowerUp extends Bullet {
 			onTypeChange(myType);
 		}
 
-		if (isOnGround) {
+		if (isManualSpeed) {
 			this.motion_setSpeed(myHspeed, myVSpeed);
 
 		} else {
@@ -78,7 +78,7 @@ public abstract class PowerUp extends Bullet {
 
 	@Override
 	protected void onStep() {
-		if (!isOnGround) {
+		if (!isManualSpeed) {
 			// 判断当前位置
 			int left = getSprite().getOffsetX() + 20;
 			int top = getSprite().getOffsetY() + 20;
@@ -163,8 +163,9 @@ public abstract class PowerUp extends Bullet {
 
 	public abstract void onTypeChange(int type);
 
-	public final void setOnGround(boolean onGround, float vspeed, float hspeed) {
-		this.isOnGround = onGround;
+	public final void setMovement(boolean randomSpeed, float vspeed,
+			float hspeed) {
+		this.isManualSpeed = !randomSpeed;
 		this.myHspeed = hspeed;
 		this.myVSpeed = vspeed;
 	}

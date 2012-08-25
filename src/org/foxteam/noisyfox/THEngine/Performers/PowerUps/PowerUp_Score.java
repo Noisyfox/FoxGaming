@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.THEngine.Performers.PowerUps;
 
 import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.Stage;
 import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
@@ -47,6 +48,9 @@ public class PowerUp_Score extends PowerUp {
 				-scoreSprite.getHeight() / 2, scoreSprite.getWidth(),
 				scoreSprite.getHeight());
 		this.bindCollisionMask(co);
+
+		setMovement(false, Stage.getCurrentBackground().getVSpeed(), Stage
+				.getCurrentBackground().getHSpeed());
 	}
 
 	@Override
