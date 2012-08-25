@@ -61,9 +61,10 @@ public class PowerUp_Missile extends PowerUp {
 			((Player) target)
 					.getPowerUp(missileType == 0 ? Bullet_Player_Missile_Guided.class
 							: Bullet_Player_Missile_Manual.class);
+
+			this.dismiss();
+			this.bindCollisionMask(null);
 		}
-		this.dismiss();
-		this.bindCollisionMask(null);
 	}
 
 	public void onTypeChange(int type) {

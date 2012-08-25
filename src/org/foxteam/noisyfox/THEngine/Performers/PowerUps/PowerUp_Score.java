@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.Stage;
 import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
@@ -60,10 +61,14 @@ public class PowerUp_Score extends PowerUp {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Player.class.isInstance(target)) {
+			new Explosion(
+					org.foxteam.noisyfox.THEngine.R.drawable.explosion_flashtext_score_500,
+					2, 5, 0.5f, (int) this.getX(), (int) this.getY());
+
 			GamingThread.score += 500;
+			this.dismiss();
+			this.bindCollisionMask(null);
 		}
-		this.dismiss();
-		this.bindCollisionMask(null);
 	}
 
 }
