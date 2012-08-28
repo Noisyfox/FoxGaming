@@ -68,7 +68,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 			new Explosion(
 					org.foxteam.noisyfox.THEngine.R.drawable.explosion_bullet_player_normal,
 					10, 1, 0.3f, (int) this.getX(), (int) this.getY()
-							- this.getSprite().getOffsetY());
+							- this.getSprite().getOffsetY(), -1);
 			this.dismiss();
 		}
 	}

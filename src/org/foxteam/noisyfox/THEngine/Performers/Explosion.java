@@ -36,7 +36,6 @@ public class Explosion extends Performer {
 	protected void onCreate() {
 		this.setAlarm(0, (int) frameSpeed, true);
 		this.startAlarm(0);
-		this.setDepth(-1);
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class Explosion extends Performer {
 	}
 
 	public Explosion(int resId, int frameNumber, int turns, float lastTime,
-			int x, int y) {
+			int x, int y, int depth) {
 		if (turns < 1) {
 			throw new IllegalArgumentException(
 					"turns must be larger than zero!");
@@ -67,6 +66,7 @@ public class Explosion extends Performer {
 		this.turns = turns;
 		frameSpeed = lastTime / (float) turns / (float) (frameNumber - 1)
 				* Stage.getCurrentStage().getStageSpeed();
+		this.setDepth(depth);
 		this.perform(Stage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 		this.bindSprite(s);

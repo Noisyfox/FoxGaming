@@ -148,7 +148,8 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 					.getOffsetY(), this.direction);
 			new Explosion(
 					org.foxteam.noisyfox.THEngine.R.drawable.explosion_missile_small,
-					5, 1, 0.3f, (int) this.getX() + x, (int) this.getY() + y);
+					5, 1, 0.3f, (int) this.getX() + x, (int) this.getY() + y,
+					-1);
 			this.dismiss();
 		}
 	}

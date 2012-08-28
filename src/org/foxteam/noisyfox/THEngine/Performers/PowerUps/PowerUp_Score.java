@@ -63,7 +63,8 @@ public class PowerUp_Score extends PowerUp {
 		if (Player.class.isInstance(target)) {
 			new Explosion(
 					org.foxteam.noisyfox.THEngine.R.drawable.explosion_flashtext_score_500,
-					2, 5, 0.5f, (int) this.getX(), (int) this.getY());
+					2, 5, 0.5f, (int) this.getX(), (int) this.getY(),
+					getDepth());
 
 			GamingThread.score += 500;
 			this.dismiss();
