@@ -68,28 +68,21 @@ public class Enemy_Duck extends EnemyInAir {
 		this.startAlarm(1);
 
 		GraphicCollision co = new GraphicCollision();
+		co.addCircle(-3, -5, 11, true);
+		co.addCircle(0, -11, 9, true);
+		co.addCircle(-2, 5, 11, true);
+		co.addCircle(-15, 1, 8, true);
+		co.addCircle(11, 1, 8, true);
+		co.addCircle(-20, -7, 4, true);
+		co.addCircle(18, -6, 4, true);
+		co.addCircle(-5, 16, 5, true);
+		this.bindCollisionMask(co);
 		if (frmL) {
 			sc.setScale(-1, 1);
-
-			co.addCircle(3, -5, 11, true);
-			co.addCircle(0, -11, 9, true);
-			co.addCircle(2, 5, 11, true);
-			co.addCircle(15, 1, 8, true);
-			co.addCircle(-11, 1, 8, true);
-			co.addCircle(20, -7, 4, true);
-			co.addCircle(-18, -6, 4, true);
-			co.addCircle(5, 16, 5, true);
-		} else {
-			co.addCircle(-3, -5, 11, true);
-			co.addCircle(0, -11, 9, true);
-			co.addCircle(-2, 5, 11, true);
-			co.addCircle(-15, 1, 8, true);
-			co.addCircle(11, 1, 8, true);
-			co.addCircle(-20, -7, 4, true);
-			co.addCircle(18, -6, 4, true);
-			co.addCircle(-5, 16, 5, true);
+			Convertor GCConvertor = new Convertor();
+			GCConvertor.setScale(-1, 1);
+			co.applyConvertor(GCConvertor);
 		}
-		this.bindCollisionMask(co);
 
 		this.setHP(10);
 
