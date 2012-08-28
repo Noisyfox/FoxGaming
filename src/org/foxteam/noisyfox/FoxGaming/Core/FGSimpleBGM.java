@@ -29,16 +29,16 @@ import android.media.MediaPlayer;
  * @date: 2012-7-9 下午4:57:02
  * 
  */
-public final class SimpleBGM {
+public final class FGSimpleBGM {
 
-	private static SimpleBGM simpleBGM = new SimpleBGM();
+	private static FGSimpleBGM simpleBGM = new FGSimpleBGM();
 	private static MediaPlayer mediaPlayer = null;
 	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
 
 	private static int lastAudioId = -1;
 	private static boolean mustResume = false;
 
-	private SimpleBGM() {
+	private FGSimpleBGM() {
 	}
 
 	public static int loadBGM(int resId) {
@@ -68,7 +68,7 @@ public final class SimpleBGM {
 			mediaPlayer.release();
 		}
 
-		mediaPlayer = MediaPlayer.create(GameCore.mainActivity,
+		mediaPlayer = MediaPlayer.create(FGGameCore.mainActivity,
 				sounds.get(soundId));
 		mediaPlayer.setLooping(loop);
 		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -145,7 +145,7 @@ public final class SimpleBGM {
 		mediaPlayer = null;
 	}
 
-	public static SimpleBGM getInstance() {
+	public static FGSimpleBGM getInstance() {
 		return simpleBGM;
 	}
 }

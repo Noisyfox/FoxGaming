@@ -25,7 +25,7 @@ import android.graphics.Matrix;
  * @date: 2012-8-17 下午7:58:53
  * 
  */
-public class Convertor {
+public class FGConvertor {
 	protected double XScale = 1;
 	protected double YScale = 1;
 	protected double rotation = 0;// 角度制

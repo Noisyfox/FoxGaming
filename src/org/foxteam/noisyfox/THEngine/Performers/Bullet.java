@@ -25,7 +25,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
  * @date: 2012-7-19 下午3:09:41
  * 
  */
-public abstract class Bullet extends Performer {
+public abstract class Bullet extends FGPerformer {
 
 	protected float damage = 0f;
 

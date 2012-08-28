@@ -26,12 +26,12 @@ import android.graphics.Paint;
  * @date: 2012-7-18 下午2:37:19
  * 
  */
-public class Circle extends Point {
+public class FGCircle extends FGPoint {
 	int r;
 
 	boolean fill = false;
 
-	public Circle(int x, int y, int r, boolean fill) {
+	public FGCircle(int x, int y, int r, boolean fill) {
 		super(x, y);
 		if (r <= 0) {
 			throw new IllegalArgumentException();

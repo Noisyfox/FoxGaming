@@ -28,13 +28,13 @@ import android.view.WindowManager;
  * @date: 2012-7-17 下午12:40:34
  * 
  */
-public class GameActivity extends Activity {
+public class FGGameActivity extends Activity {
 	private static boolean activityCreated = false;// 只允许有一个GameActivity
 	private static boolean forcePortrait = false;
 	private static boolean forceLandscape = false;
 	private static boolean forceFullscreen = false;
 
-	protected static GameCore gameEngine = null;
+	protected static FGGameCore gameEngine = null;
 
 	/* ******************************************************** */
 	// Static function
@@ -43,7 +43,7 @@ public class GameActivity extends Activity {
 	 * Flags debugMode as true, Debug.print will output to LogCat
 	 */
 	public static final void debugMode() {
-		MyDebug.debugMode = true;
+		FGDebug.debugMode = true;
 	}
 
 	/**
@@ -51,10 +51,10 @@ public class GameActivity extends Activity {
 	 * LogCat
 	 */
 	public static final void normalMode() {
-		MyDebug.debugMode = false;
+		FGDebug.debugMode = false;
 	}
 
-	public static final GameCore getGameCore() {
+	public static final FGGameCore getGameCore() {
 		return gameEngine;
 	}
 
@@ -121,9 +121,9 @@ public class GameActivity extends Activity {
 	// System function
 
 	private void prepareEngine() {
-		MyDebug.print("prepareEngine()");
-		gameEngine = new GameCore(this);
-		setContentView(GameCore.gameView);
+		FGDebug.print("prepareEngine()");
+		gameEngine = new FGGameCore(this);
+		setContentView(FGGameCore.gameView);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class GameActivity extends Activity {
 	 * shouldn't need to call this yourself
 	 */
 	public void dispose() {
-		MyDebug.print("dispose()");
+		FGDebug.print("dispose()");
 		activityCreated = false;
 		System.gc();
 	}
@@ -140,12 +140,12 @@ public class GameActivity extends Activity {
 	@Override
 	protected final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		MyDebug.print("onCreate()");
+		FGDebug.print("onCreate()");
 		if (activityCreated) {
-			MyDebug.print("GameActivity already been created");
+			FGDebug.print("GameActivity already been created");
 			gameEngine.onActivityRecreated();
 			// MyDebug.print("setContentView");
-			setContentView(GameCore.gameView);
+			setContentView(FGGameCore.gameView);
 		} else {
 			// Debug.startMethodTracing("fox.trace");
 			onCreate();
@@ -153,7 +153,7 @@ public class GameActivity extends Activity {
 			prepareEngine();
 			onEngineReady();
 
-			MyDebug.print("Game start!");
+			FGDebug.print("Game start!");
 			gameEngine.gameStart();
 
 			activityCreated = true;
@@ -177,12 +177,12 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		MyDebug.print("onDestroy()");
+		FGDebug.print("onDestroy()");
 		super.onDestroy();
 		if (isFinishing()) {
 			dispose();
 			// Debug.stopMethodTracing();
-			MyDebug.forceExit();
+			FGDebug.forceExit();
 		}
 	}
 

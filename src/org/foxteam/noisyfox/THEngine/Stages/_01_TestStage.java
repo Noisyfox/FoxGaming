@@ -34,22 +34,22 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
  * @date: 2012-8-16 上午11:04:33
  * 
  */
-public final class _01_TestStage extends Stage {
+public final class _01_TestStage extends FGStage {
 
 	@Override
 	protected void onCreate() {
 		setStageSpeed(30);
 		new SystemController();
 
-		Background bkg = new Background();
+		FGBackground bkg = new FGBackground();
 		bkg.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.background_teststage,
 				false);
-		bkg.setAdaptation(Background.ADAPTATION_SMART);
+		bkg.setAdaptation(FGBackground.ADAPTATION_SMART);
 		bkg.setSpeed(0, 30f / getStageSpeed());
-		bkg.setAlignment(Background.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
-		bkg.setDrawMode(Background.ADAPTATION_OPTION_DRAW_REPEATING);
-		bkg.setScaleMode(Background.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
+		bkg.setAlignment(FGBackground.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
+		bkg.setDrawMode(FGBackground.ADAPTATION_OPTION_DRAW_REPEATING);
+		bkg.setScaleMode(FGBackground.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
 		setBackground(bkg);
 
 		Player pl = new Player();

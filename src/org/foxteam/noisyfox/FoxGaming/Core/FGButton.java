@@ -16,34 +16,50 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
-import org.foxteam.noisyfox.FoxGaming.G2D.SpriteConvertor;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 
 /**
  * @ClassName: Button
- * @Description: TODO
+ * @Description: 利用Performer做的按钮实用类
  * @author: Noisyfox
  * @date: 2012-7-18 下午10:39:16
  * 
  */
-public abstract class Button extends Performer {
+public abstract class FGButton extends FGPerformer {
 
-	private GraphicCollision myMask = new GraphicCollision();
-	private SpriteConvertor mySC = new SpriteConvertor();
-	private Sprite mySprite = new Sprite();
+	private FGGraphicCollision myMask = new FGGraphicCollision();// 碰撞遮罩
+	private FGSpriteConvertor mySC = new FGSpriteConvertor();// 精灵变换器
+	private FGSprite mySprite = new FGSprite();
 	private boolean enable = true;
 	private int touchDown = -1;
 	private int height = 0;
 	private int width = 0;
 
-	public Button(int width, int height, int resId) {
+	/**
+	 * @Title: Button
+	 * @Description: 构造函数
+	 * @param: @param width
+	 * @param: @param height
+	 * @param: @param resId 资源id
+	 * @throws
+	 */
+	public FGButton(int width, int height, int resId) {
 		mySprite.loadFromBitmap(resId, 3, 1, false);
 		mySprite.setOffset(mySprite.getWidth() / 2, mySprite.getHeight() / 2);
 		this.bindCollisionMask(myMask);
 		setSize(width, height);
 	}
 
+	/**
+	 * @Title: setSize
+	 * @Description: 设置尺寸
+	 * @param: @param width
+	 * @param: @param height
+	 * @return: void
+	 * @throws
+	 */
 	public final void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -120,6 +136,13 @@ public abstract class Button extends Performer {
 		mySprite.draw(getCanvas(), (int) this.getX(), (int) this.getY(), mySC);
 	}
 
+	/**
+	 * @Title: onClick
+	 * @Description: 触发的动作
+	 * @param:
+	 * @return: void
+	 * @throws
+	 */
 	public abstract void onClick();
 
 }

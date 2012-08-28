@@ -16,8 +16,8 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.PowerUps;
 
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
@@ -34,7 +34,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Ma
 public class PowerUp_Missile extends PowerUp {
 
 	private int missileType = 0;// 导弹种类，0跟踪导弹，1非跟踪导弹
-	Sprite missileSprite = new Sprite();
+	FGSprite missileSprite = new FGSprite();
 
 	public PowerUp_Missile(int x, int y) {
 		super(x, y);
@@ -46,7 +46,7 @@ public class PowerUp_Missile extends PowerUp {
 				missileSprite.getHeight() / 2);
 		this.bindSprite(missileSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addRectangle(-missileSprite.getWidth() / 2,
 				-missileSprite.getHeight() / 2, missileSprite.getWidth(),
 				missileSprite.getHeight());

@@ -16,10 +16,10 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
@@ -39,7 +39,7 @@ public class Enemy_Box_Score extends EnemyOnGround {
 
 	@Override
 	protected void onCreate() {
-		Sprite boxSprite = new Sprite();
+		FGSprite boxSprite = new FGSprite();
 		boxSprite
 				.loadFromBitmap(
 						org.foxteam.noisyfox.THEngine.R.drawable.enemy_box_score,
@@ -47,7 +47,7 @@ public class Enemy_Box_Score extends EnemyOnGround {
 		boxSprite.setOffset(22, 13);
 		this.bindSprite(boxSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addRectangle(-22, -13, 43, 26, true);
 		this.bindCollisionMask(co);
 
@@ -57,13 +57,13 @@ public class Enemy_Box_Score extends EnemyOnGround {
 
 		this.setPosition(inX, -boxSprite.getHeight() + boxSprite.getOffsetY());
 
-		this.motion_set(270, Stage.getCurrentBackground().getVSpeed());
+		this.motion_set(270, FGStage.getCurrentBackground().getVSpeed());
 	}
 
 	@Override
 	public boolean isOutOfStage() {
 		return super.isOutOfStage()
-				&& this.getY() > Stage.getCurrentStage().getHeight();
+				&& this.getY() > FGStage.getCurrentStage().getHeight();
 	}
 
 	@Override
@@ -84,13 +84,13 @@ public class Enemy_Box_Score extends EnemyOnGround {
 
 		this.bindCollisionMask(null);
 
-		GamingThread.score += 100;
+		FGGamingThread.score += 100;
 	}
 
 	@Override
 	public void createEnemy(int x, int y, int... extraConfig) {
 		this.setDepth(1000);
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		inX = x;
 	}
 

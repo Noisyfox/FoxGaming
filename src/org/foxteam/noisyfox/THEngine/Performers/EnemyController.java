@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.foxteam.noisyfox.FoxGaming.Core.Performer;
+import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 
 /**
@@ -30,7 +30,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
  * @date: 2012-8-22 下午1:46:12
  * 
  */
-public final class EnemyController extends Performer {
+public final class EnemyController extends FGPerformer {
 
 	private int totalStep = 0;
 	HashMap<Integer, List<EnemyDef>> enemys = new HashMap<Integer, List<EnemyDef>>();

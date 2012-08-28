@@ -15,7 +15,7 @@ import android.content.Context;
  * @author Richard
  */
 
-public class Vibrator {
+public class FGVibrator {
 
 	protected static android.os.Vibrator vibrator;
 	protected static boolean enabled = true;
@@ -37,7 +37,7 @@ public class Vibrator {
 	private static void prepareVibrator() {
 		if (vibrator != null)
 			return;
-		vibrator = (android.os.Vibrator) GameCore.getMainContext()
+		vibrator = (android.os.Vibrator) FGGameCore.getMainContext()
 				.getSystemService(Context.VIBRATOR_SERVICE);
 
 	}

@@ -38,7 +38,7 @@ import android.view.View.OnTouchListener;
  * @date: 2012-6-19 下午8:12:06
  * 
  */
-public final class GamingThread extends Thread implements OnTouchListener,
+public final class FGGamingThread extends Thread implements OnTouchListener,
 		OnKeyListener, SurfaceHolder.Callback {
 
 	public static long score = 0;// 内置变量-分数
@@ -79,8 +79,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 	private int currentState = STATEFLAG_STOPED;
 	private Matrix viewMatrix = new Matrix();
 
-	protected GamingThread(SurfaceHolder surfaceHolder) {
-		GamingThread.surfaceHolder = surfaceHolder;
+	protected FGGamingThread(SurfaceHolder surfaceHolder) {
+		FGGamingThread.surfaceHolder = surfaceHolder;
 		currentState = STATEFLAG_WAITING;
 	}
 
@@ -140,9 +140,9 @@ public final class GamingThread extends Thread implements OnTouchListener,
 		while (currentState != STATEFLAG_STOPED) {
 			switch (currentState) {
 			case STATEFLAG_STOPING:
-				if (Stage.currentStage != null) {
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONGAMEEND);
+				if (FGStage.currentStage != null) {
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONGAMEEND);
 				}
 				currentState = STATEFLAG_STOPED;
 				break;
@@ -154,9 +154,9 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				break;
 
 			case STATEFLAG_PAUSE:
-				if (Stage.currentStage != null) {
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONGAMEPAUSE);
+				if (FGStage.currentStage != null) {
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONGAMEPAUSE);
 				}
 				currentState = STATEFLAG_PAUSED;
 				break;
@@ -171,9 +171,9 @@ public final class GamingThread extends Thread implements OnTouchListener,
 				break;
 
 			case STATEFLAG_RESUME:
-				if (Stage.currentStage != null) {
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONGAMERESUME);
+				if (FGStage.currentStage != null) {
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONGAMERESUME);
 				}
 				currentState = STATEFLAG_RUNNING;
 				break;
@@ -181,10 +181,10 @@ public final class GamingThread extends Thread implements OnTouchListener,
 		}
 		// 退出游戏主循环，即游戏结束
 		// 清理
-		SimpleSoundEffect.freeAll();
-		SimpleBGM.freeAll();
+		FGSimpleSoundEffect.freeAll();
+		FGSimpleBGM.freeAll();
 
-		MyDebug.print("Gaming thread exit.");
+		FGDebug.print("Gaming thread exit.");
 	}
 
 	// 使用当前房间图像刷新显示（而不是使用绘图事件）。
@@ -194,10 +194,10 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			targetCanvas.drawARGB(0, 0, 0, 255);
 
 			// 处理视角
-			if (Stage.currentStage.activatedViews.size() == 0) {
+			if (FGStage.currentStage.activatedViews.size() == 0) {
 				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
 			} else {
-				for (Views v : Stage.currentStage.activatedViews) {
+				for (FGViews v : FGStage.currentStage.activatedViews) {
 					targetCanvas.save();
 					targetCanvas.clipRect(v.targetView);
 					viewMatrix.reset();
@@ -222,15 +222,15 @@ public final class GamingThread extends Thread implements OnTouchListener,
 	private void prepareBufferBitmap() {
 		// 准备缓冲画布
 		if (bufferBitmap == null
-				|| bufferBitmap.getWidth() != Stage.currentStage.width
-				|| bufferBitmap.getHeight() != Stage.currentStage.height) {
+				|| bufferBitmap.getWidth() != FGStage.currentStage.width
+				|| bufferBitmap.getHeight() != FGStage.currentStage.height) {
 
-			bufferBitmap = Bitmap.createBitmap(Stage.currentStage.width,
-					Stage.currentStage.height, Bitmap.Config.ARGB_8888);
+			bufferBitmap = Bitmap.createBitmap(FGStage.currentStage.width,
+					FGStage.currentStage.height, Bitmap.Config.ARGB_8888);
 			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
 			bufferCanvas.drawARGB(0, 0, 0, 255);
 
-			MyDebug.print("Buffer bitmap recreated:" + bufferBitmap.getHeight()
+			FGDebug.print("Buffer bitmap recreated:" + bufferBitmap.getHeight()
 					+ "*" + bufferBitmap.getWidth());
 		}
 	}
@@ -241,71 +241,71 @@ public final class GamingThread extends Thread implements OnTouchListener,
 		if (gameStartTime == 0)
 			gameStartTime = System.currentTimeMillis();
 
-		if (Stage.targetStage != null) {
+		if (FGStage.targetStage != null) {
 			// 先处理 Stage
-			if (Stage.targetStage != Stage.currentStage) {// Stage 发生变化
-				boolean gameStart = Stage.currentStage == null;
-				if (Stage.currentStage != null) {// 不是第一次进游戏
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONSTAGEEND);
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONDESTORY);
+			if (FGStage.targetStage != FGStage.currentStage) {// Stage 发生变化
+				boolean gameStart = FGStage.currentStage == null;
+				if (FGStage.currentStage != null) {// 不是第一次进游戏
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONSTAGEEND);
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONDESTORY);
 
-					Stage.currentStage.initStage();
+					FGStage.currentStage.initStage();
 				}
 
-				Stage.currentStage = Stage.targetStage;
+				FGStage.currentStage = FGStage.targetStage;
 				// 执行 Stage 的初始化
-				MyDebug.print("Create new stage.");
-				Stage.currentStage.onCreate();
+				FGDebug.print("Create new stage.");
+				FGStage.currentStage.onCreate();
 
-				Stage.speed = Stage.currentStage.stageSpeed;
+				FGStage.speed = FGStage.currentStage.stageSpeed;
 				// 准备缓冲画布
 				prepareBufferBitmap();
 
 				// 所有事件都必须在EVENT_ONCREATE之后
-				Stage.currentStage.employPerformer();
+				FGStage.currentStage.employPerformer();
 
 				if (gameStart) {
 					// 第一次进游戏，广播EVENT_ONGAMESTART事件
-					Stage.currentStage
-							.broadcastEvent(EventsListener.EVENT_ONGAMESTART);
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONGAMESTART);
 				}
 
-				Stage.currentStage
-						.broadcastEvent(EventsListener.EVENT_ONSTAGECHANGE);
-				Stage.currentStage
-						.broadcastEvent(EventsListener.EVENT_ONSTAGESTART);
+				FGStage.currentStage
+						.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
+				FGStage.currentStage
+						.broadcastEvent(FGEventsListener.EVENT_ONSTAGESTART);
 
 			} else {
-				Stage.speed = Stage.currentStage.stageSpeed;
+				FGStage.speed = FGStage.currentStage.stageSpeed;
 				prepareBufferBitmap();
-				Stage.currentStage.employPerformer();
+				FGStage.currentStage.employPerformer();
 			}
 
 			// 处理当前场景的performer
 			// 最先广播EVENT_ONSTEPSTART事件
-			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPSTART);
+			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
 			// 处理定时器事件
-			Stage.currentStage.operateAlarm();
+			FGStage.currentStage.operateAlarm();
 			// 计算碰撞
-			Stage.currentStage.operateCollision();
+			FGStage.currentStage.operateCollision();
 			// 计算离开 Stage
-			Stage.currentStage.detectOutOfStage();
+			FGStage.currentStage.detectOutOfStage();
 			// 处理Performer的 ScreenPlay
-			Stage.currentStage.playScreenPlay();
+			FGStage.currentStage.playScreenPlay();
 			// 处理Performer的运动
-			Stage.currentStage.updateMovement();
+			FGStage.currentStage.updateMovement();
 
 			// 检测屏幕尺寸变化
 			if (width != lastScreenWidth || height != lastScreenHeight) {
 				lastScreenHeight = height;
 				lastScreenWidth = width;
-				Stage.currentStage
+				FGStage.currentStage
 						.broadcastEvent(
-								EventsListener.EVENT_ONSCREENSIZECHANGED,
+								FGEventsListener.EVENT_ONSCREENSIZECHANGED,
 								width, height);
 			}
 
@@ -316,13 +316,13 @@ public final class GamingThread extends Thread implements OnTouchListener,
 					listTouchEvent.remove(0);
 					switch (e.event) {
 					case MotionEvent.ACTION_DOWN:
-						Stage.currentStage.broadcastEvent(
-								EventsListener.EVENT_ONTOUCHPRESS,
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONTOUCHPRESS,
 								e.whichFinger, e.x, e.y);
 						break;
 					case MotionEvent.ACTION_UP:
-						Stage.currentStage.broadcastEvent(
-								EventsListener.EVENT_ONTOUCHRELEASE,
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONTOUCHRELEASE,
 								e.whichFinger, e.x, e.y);
 						break;
 					default:
@@ -331,8 +331,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			}
 			synchronized (registedFingers) {
 				for (Finger f : registedFingers) {
-					Stage.currentStage.broadcastEvent(
-							EventsListener.EVENT_ONTOUCH, f.id, f.x, f.y);
+					FGStage.currentStage.broadcastEvent(
+							FGEventsListener.EVENT_ONTOUCH, f.id, f.x, f.y);
 				}
 			}
 			// 处理按键事件队列并广播EVENT_ONKEY*事件
@@ -341,18 +341,18 @@ public final class GamingThread extends Thread implements OnTouchListener,
 					KeyboardEvent e = queueKeyEvent.poll();
 					switch (e.getEvent()) {
 					case KeyboardEvent.KEY_PRESS:
-						Stage.currentStage.broadcastEvent(
-								EventsListener.EVENT_ONKEYPRESS, e.getKey());
-						Stage.currentStage.broadcastEvent(
-								EventsListener.EVENT_ONKEY, e.getKey());
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONKEYPRESS, e.getKey());
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONKEY, e.getKey());
 						break;
 					case KeyboardEvent.KEY_HOLD:
-						Stage.currentStage.broadcastEvent(
-								EventsListener.EVENT_ONKEY, e.getKey());
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONKEY, e.getKey());
 						break;
 					case KeyboardEvent.KEY_RELEASE:
-						Stage.currentStage.broadcastEvent(
-								EventsListener.EVENT_ONKEYRELEASE, e.getKey());
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONKEYRELEASE, e.getKey());
 						break;
 					default:
 					}
@@ -360,28 +360,28 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			}
 
 			// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
-			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONSTEP);
+			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEP);
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-			bufferCanvas.drawColor(Stage.currentStage.backgroundColor);// 绘制stage背景色
-			if (Stage.currentStage.background != null) {// 绘制背景
-				Stage.currentStage.background.doAndDraw(bufferCanvas, 0, 0,
-						Stage.currentStage.height, Stage.currentStage.width);
+			bufferCanvas.drawColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
+			if (FGStage.currentStage.background != null) {// 绘制背景
+				FGStage.currentStage.background.doAndDraw(bufferCanvas, 0, 0,
+						FGStage.currentStage.height, FGStage.currentStage.width);
 			}
-			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONDRAW);
+			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
 			// 系统绘制
 			screenRefresh();
 
-			Stage.currentStage.dismissPerformer();
+			FGStage.currentStage.dismissPerformer();
 
 			// 最后广播EVENT_ONSTEPEND事件
-			Stage.currentStage.broadcastEvent(EventsListener.EVENT_ONSTEPEND);
+			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
 		}
 
 		// 控制帧速
 		stepCount++;
 		allStepCount++;
 		long frameFinishTime = System.currentTimeMillis();
-		float speed = Stage.getSpeed();
+		float speed = FGStage.getSpeed();
 		long sleepTime = (long) (1.0f / speed * 1000.0f)
 				- (frameFinishTime - frameStartTime);
 		try {
@@ -645,8 +645,8 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			return;
 		}
 
-		SimpleBGM.onPause();
-		SimpleSoundEffect.onPause();
+		FGSimpleBGM.onPause();
+		FGSimpleSoundEffect.onPause();
 		currentState = STATEFLAG_PAUSE;
 	}
 
@@ -655,24 +655,24 @@ public final class GamingThread extends Thread implements OnTouchListener,
 			return;
 		}
 
-		SimpleBGM.onResume();
-		SimpleSoundEffect.onResume();
+		FGSimpleBGM.onResume();
+		FGSimpleSoundEffect.onResume();
 		currentState = STATEFLAG_RESUME;
 	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		MyDebug.print("serface changed");
+		FGDebug.print("serface changed");
 		if (width != 0 && height != 0) {
-			if (GamingThread.width == 0 && GamingThread.height == 0) {
+			if (FGGamingThread.width == 0 && FGGamingThread.height == 0) {
 				lastScreenHeight = height;
 				lastScreenWidth = width;
 			}
-			GamingThread.width = width;
-			GamingThread.height = height;
+			FGGamingThread.width = width;
+			FGGamingThread.height = height;
 		}
-		MyDebug.print("Current view size:" + height + "x" + width);
+		FGDebug.print("Current view size:" + height + "x" + width);
 	}
 
 	@Override

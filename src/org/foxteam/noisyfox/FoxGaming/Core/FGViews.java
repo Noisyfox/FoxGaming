@@ -25,13 +25,13 @@ import android.graphics.RectF;
  * @date: 2012-7-31 下午2:42:35
  * 
  */
-public final class Views {
+public final class FGViews {
 
 	protected RectF targetView = new RectF();
 	protected RectF sourceView = new RectF();
 	protected float sourceAngle = 0.0f;
 
-	public Views() {
+	public FGViews() {
 	}
 
 	public void setPositionFromStage(float x, float y) {

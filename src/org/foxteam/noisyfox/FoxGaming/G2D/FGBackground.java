@@ -18,7 +18,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import java.io.InputStream;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GameCore;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +32,7 @@ import android.graphics.Rect;
  * @date: 2012-7-9 下午5:50:08
  * 
  */
-public class Background {
+public class FGBackground {
 
 	/**
 	 * 预设1<br>
@@ -89,8 +89,8 @@ public class Background {
 	 */
 	private Bitmap sourceImage = null;
 
-	private Point anchorPointBitmap = new Point(0, 0);
-	private Point anchorPointScreen = new Point(0, 0);
+	private FGPoint anchorPointBitmap = new FGPoint(0, 0);
+	private FGPoint anchorPointScreen = new FGPoint(0, 0);
 
 	private float speed_x = 0;
 	private float speed_y = 0;
@@ -103,7 +103,7 @@ public class Background {
 	private float xOffset = 0;
 	private float yOffset = 0;
 
-	public Background() {
+	public FGBackground() {
 
 	}
 
@@ -114,10 +114,10 @@ public class Background {
 	public void loadFromBitmap(int resId, boolean cDensityDpi) {
 		Bitmap b = null;
 		if (cDensityDpi) {
-			b = BitmapFactory.decodeResource(GameCore.getMainContext()
+			b = BitmapFactory.decodeResource(FGGameCore.getMainContext()
 					.getResources(), resId);
 		} else {
-			InputStream is = GameCore.getMainContext().getResources()
+			InputStream is = FGGameCore.getMainContext().getResources()
 					.openRawResource(resId);
 			b = BitmapFactory.decodeStream(is);
 		}
@@ -203,7 +203,7 @@ public class Background {
 		return speed_y;
 	}
 
-	public void setAnchorPoint(Point bitmap, Point screen) {
+	public void setAnchorPoint(FGPoint bitmap, FGPoint screen) {
 		anchorPointBitmap = bitmap;
 		anchorPointScreen = screen;
 	}
@@ -289,7 +289,7 @@ public class Background {
 
 		int imageWidth = (int) ((float) sourceImage.getWidth() * xScale);
 		int imageHeight = (int) ((float) sourceImage.getHeight() * yScale);
-		Point anchorPointBitmapScaled = new Point(
+		FGPoint anchorPointBitmapScaled = new FGPoint(
 				(int) ((float) anchorPointBitmap.getX() * xScale),
 				(int) ((float) anchorPointBitmap.getY() * yScale));
 

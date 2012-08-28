@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 
@@ -37,7 +37,7 @@ public class Bullet_Enemy_2 extends Bullet_Enemy {
 	@Override
 	protected void onCreate() {
 
-		Sprite bulletSprite = new Sprite();
+		FGSprite bulletSprite = new FGSprite();
 		bulletSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.bullet_enemy_2, false);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2,
@@ -45,7 +45,7 @@ public class Bullet_Enemy_2 extends Bullet_Enemy {
 
 		this.bindSprite(bulletSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(0, 0, 11, true);
 		this.bindCollisionMask(co);
 
@@ -59,7 +59,7 @@ public class Bullet_Enemy_2 extends Bullet_Enemy {
 	}
 
 	public Bullet_Enemy_2(int x, int y, float direction, float speed) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 		mySpeed = speed;
 		myDirection = direction;

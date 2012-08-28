@@ -16,12 +16,12 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
-import org.foxteam.noisyfox.FoxGaming.Core.Performer;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
@@ -42,7 +42,7 @@ public class Enemy_Butterfly extends EnemyInAir {
 
 	@Override
 	protected void onCreate() {
-		Sprite butterflySprite = new Sprite();
+		FGSprite butterflySprite = new FGSprite();
 		butterflySprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.enemy_butterfly, 4, 1,
 				false);
@@ -50,10 +50,10 @@ public class Enemy_Butterfly extends EnemyInAir {
 				butterflySprite.getHeight() / 2);
 		this.bindSprite(butterflySprite);
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 0.3f), true);// 播放动画
+		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.3f), true);// 播放动画
 		this.startAlarm(0);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(-2, 4, 15, true);
 		co.addCircle(-15, 14, 6, true);
 		co.addCircle(13, 14, 6, true);
@@ -74,34 +74,34 @@ public class Enemy_Butterfly extends EnemyInAir {
 
 	@Override
 	protected void onStep() {
-		if (getY() < Stage.getCurrentStage().getHeight() / 5) {
-			motion_set(270, 90f / Stage.getSpeed());
-			this.setAlarm(1, (int) (Stage.getSpeed() * 2f), true);// 发射子弹
+		if (getY() < FGStage.getCurrentStage().getHeight() / 5) {
+			motion_set(270, 90f / FGStage.getSpeed());
+			this.setAlarm(1, (int) (FGStage.getSpeed() * 2f), true);// 发射子弹
 			this.startAlarm(1);
 
-		} else if (getY() > Stage.getCurrentStage().getHeight() / 2) {
-			motion_set(270, 90f / Stage.getSpeed());
+		} else if (getY() > FGStage.getCurrentStage().getHeight() / 2) {
+			motion_set(270, 90f / FGStage.getSpeed());
 			this.stopAlarm(1);
 
 		} else {
 			if (Math.abs(getX() - inX) > 50) {
-				if (inX < Stage.getCurrentStage().getWidth() / 2) {
-					this.motion_setSpeed(-15f / Stage.getSpeed(),
-							4f / Stage.getSpeed());
+				if (inX < FGStage.getCurrentStage().getWidth() / 2) {
+					this.motion_setSpeed(-15f / FGStage.getSpeed(),
+							4f / FGStage.getSpeed());
 				} else {
-					this.motion_setSpeed(15f / Stage.getSpeed(),
-							4f / Stage.getSpeed());
+					this.motion_setSpeed(15f / FGStage.getSpeed(),
+							4f / FGStage.getSpeed());
 				}
 			} else {
-				if (inX < Stage.getCurrentStage().getWidth() / 2) {
+				if (inX < FGStage.getCurrentStage().getWidth() / 2) {
 					if (getX() <= inX) {
-						this.motion_setSpeed(15f / Stage.getSpeed(),
-								4f / Stage.getSpeed());
+						this.motion_setSpeed(15f / FGStage.getSpeed(),
+								4f / FGStage.getSpeed());
 					}
 				} else {
 					if (getX() >= inX) {
-						this.motion_setSpeed(-15f / Stage.getSpeed(),
-								4f / Stage.getSpeed());
+						this.motion_setSpeed(-15f / FGStage.getSpeed(),
+								4f / FGStage.getSpeed());
 					}
 				}
 			}
@@ -113,23 +113,23 @@ public class Enemy_Butterfly extends EnemyInAir {
 			this.getSprite().nextFrame();
 
 		} else if (whichAlarm == 1) {// 发射子弹
-			if (Stage.getPerformersByClass(Player.class).length > 0) {
-				Performer p = Stage.getPerformersByClass(Player.class)[0];
-				float playerDir = MathsHelper.degreeIn360(MathsHelper
+			if (FGStage.getPerformersByClass(Player.class).length > 0) {
+				FGPerformer p = FGStage.getPerformersByClass(Player.class)[0];
+				float playerDir = FGMathsHelper.degreeIn360(FGMathsHelper
 						.point_direction(getX(), getY(), p.getX(), p.getY()));
 
 				Bullet b = new Bullet_Enemy_1((int) this.getX(),
-						(int) this.getY(), playerDir, 110f / Stage.getSpeed());
+						(int) this.getY(), playerDir, 110f / FGStage.getSpeed());
 				b.setDepth(this.getDepth() - 1);
 
 				b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY(),
-						MathsHelper.degreeIn360(playerDir + 30),
-						110f / Stage.getSpeed());
+						FGMathsHelper.degreeIn360(playerDir + 30),
+						110f / FGStage.getSpeed());
 				b.setDepth(this.getDepth() - 1);
 
 				b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY(),
-						MathsHelper.degreeIn360(playerDir - 30),
-						110f / Stage.getSpeed());
+						FGMathsHelper.degreeIn360(playerDir - 30),
+						110f / FGStage.getSpeed());
 				b.setDepth(this.getDepth() - 1);
 			}
 
@@ -139,7 +139,7 @@ public class Enemy_Butterfly extends EnemyInAir {
 	@Override
 	public boolean isOutOfStage() {
 		return super.isOutOfStage()
-				&& this.getY() > Stage.getCurrentStage().getHeight();
+				&& this.getY() > FGStage.getCurrentStage().getHeight();
 	}
 
 	@Override
@@ -161,12 +161,12 @@ public class Enemy_Butterfly extends EnemyInAir {
 
 		this.bindCollisionMask(null);
 
-		GamingThread.score += 100;
+		FGGamingThread.score += 100;
 	}
 
 	@Override
 	public void createEnemy(int x, int y, int... extraConfig) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		inX = x;
 	}
 

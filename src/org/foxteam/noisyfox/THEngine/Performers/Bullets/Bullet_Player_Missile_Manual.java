@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
@@ -35,7 +35,7 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 	@Override
 	protected void onCreate() {
 
-		Sprite bulletSprite = new Sprite();
+		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
 				.loadFromBitmap(
 						org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_missile_manual,
@@ -43,7 +43,7 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 		bulletSprite.setOffset(4, 10);
 		this.bindSprite(bulletSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		int[][] vertex1 = { { 0, -10 }, { -2, -8 }, { -3, 0 }, { 3, 0 },
 				{ 2, -8 } };
 		co.addPolygon(vertex1, true);
@@ -71,7 +71,7 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 	}
 
 	public Bullet_Player_Missile_Manual(int x, int y) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
 

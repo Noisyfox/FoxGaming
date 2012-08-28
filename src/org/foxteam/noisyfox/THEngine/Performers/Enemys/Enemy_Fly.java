@@ -16,15 +16,15 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
-import org.foxteam.noisyfox.FoxGaming.Core.Performer;
-import org.foxteam.noisyfox.FoxGaming.Core.ScreenPlay;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.Convertor;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
-import org.foxteam.noisyfox.FoxGaming.G2D.SpriteConvertor;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
+import org.foxteam.noisyfox.FoxGaming.Core.FGScreenPlay;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGConvertor;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
@@ -42,19 +42,19 @@ import android.graphics.Canvas;
  */
 public class Enemy_Fly extends EnemyInAir {
 
-	Convertor GCConvertor = new Convertor();
-	SpriteConvertor SpConvertor = new SpriteConvertor();
+	FGConvertor GCConvertor = new FGConvertor();
+	FGSpriteConvertor SpConvertor = new FGSpriteConvertor();
 	boolean canFire = false;// 是否发射子弹
 	int inX = 0;// 从哪个位置进入屏幕
 	int maxY = 0;// 进入屏幕的深度
 	float myDirection = 270;// 底部的朝向，同时也是发射子弹的方向
-	ScreenPlay myMovement = new ScreenPlay();
+	FGScreenPlay myMovement = new FGScreenPlay();
 
 	static final float STAYTIME = 2.0f;// 进入屏幕后停留的时间，单位秒
 
 	@Override
 	protected void onCreate() {
-		Sprite flySprite = new Sprite();
+		FGSprite flySprite = new FGSprite();
 		flySprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.enemy_fly, 10, 1,
 				false);
@@ -62,14 +62,14 @@ public class Enemy_Fly extends EnemyInAir {
 				.setOffset(flySprite.getWidth() / 2, flySprite.getHeight() / 2);
 		this.bindSprite(flySprite);
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 0.1f), true);// 播放动画
+		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.1f), true);// 播放动画
 		this.startAlarm(0);
 		if (canFire) {
-			this.setAlarm(1, (int) (Stage.getSpeed() * 2.5f), true);// 发射子弹
+			this.setAlarm(1, (int) (FGStage.getSpeed() * 2.5f), true);// 发射子弹
 			this.startAlarm(1);
 		}
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(0, 0, 12, true);
 		co.addCircle(15, -5, 7, true);
 		co.addCircle(-15, -5, 7, true);
@@ -83,13 +83,13 @@ public class Enemy_Fly extends EnemyInAir {
 
 		this.setPosition(inX, -flySprite.getHeight() + flySprite.getOffsetY());
 
-		float mySpeed = 90f / Stage.getSpeed();
+		float mySpeed = 90f / FGStage.getSpeed();
 
 		myMovement.moveTowards(270, mySpeed);
 		myMovement
 				.wait((int) ((flySprite.getHeight() - flySprite.getOffsetY() + maxY) / mySpeed));
 		myMovement.stop();
-		myMovement.wait((int) (STAYTIME * Stage.getSpeed()));
+		myMovement.wait((int) (STAYTIME * FGStage.getSpeed()));
 		myMovement.moveTowards(90, mySpeed);
 		this.playAScreenPlay(myMovement);
 	}
@@ -97,20 +97,20 @@ public class Enemy_Fly extends EnemyInAir {
 	@Override
 	protected void onStep() {
 		if (myMovement.getRemainNumber() > 0) {
-			if (Stage.getPerformersByClass(Player.class).length > 0) {
-				Performer p = Stage.getPerformersByClass(Player.class)[0];
-				myDirection = MathsHelper.degreeIn360(MathsHelper
+			if (FGStage.getPerformersByClass(Player.class).length > 0) {
+				FGPerformer p = FGStage.getPerformersByClass(Player.class)[0];
+				myDirection = FGMathsHelper.degreeIn360(FGMathsHelper
 						.point_direction(getX(), getY(), p.getX(), p.getY()));
 			}
 		} else {
 			this.stopAlarm(1);
 
 			if (myDirection != 90) {
-				float rDir = MathsHelper.directionTo(myDirection, 90);
+				float rDir = FGMathsHelper.directionTo(myDirection, 90);
 				if (Math.abs(rDir) <= 5) {
-					myDirection = MathsHelper.degreeIn360(myDirection + rDir);
+					myDirection = FGMathsHelper.degreeIn360(myDirection + rDir);
 				} else {
-					myDirection = MathsHelper.degreeIn360(myDirection
+					myDirection = FGMathsHelper.degreeIn360(myDirection
 							+ (rDir > 0 ? 5 : -5));
 				}
 			}
@@ -138,13 +138,13 @@ public class Enemy_Fly extends EnemyInAir {
 
 		} else if (whichAlarm == 1) {// 发射子弹
 			Bullet b = new Bullet_Enemy_1(
-					(int) (this.getX() + MathsHelper.lengthdir_x(this
+					(int) (this.getX() + FGMathsHelper.lengthdir_x(this
 							.getSprite().getHeight()
 							- this.getSprite().getOffsetY(), myDirection)),
-					(int) (this.getY() - MathsHelper.lengthdir_y(this
+					(int) (this.getY() - FGMathsHelper.lengthdir_y(this
 							.getSprite().getHeight()
 							- this.getSprite().getOffsetY(), myDirection)),
-					myDirection, 110f / Stage.getSpeed());
+					myDirection, 110f / FGStage.getSpeed());
 			b.setDepth(this.getDepth() + 1);
 
 		}
@@ -170,12 +170,12 @@ public class Enemy_Fly extends EnemyInAir {
 
 		this.bindCollisionMask(null);
 
-		GamingThread.score += 14;
+		FGGamingThread.score += 14;
 	}
 
 	@Override
 	public void createEnemy(int x, int y, int... extraConfig) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		canFire = extraConfig[0] == 0;
 		maxY = extraConfig[1];
 		inX = x;

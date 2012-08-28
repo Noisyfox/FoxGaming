@@ -28,19 +28,19 @@ import android.view.KeyEvent;
  * @date: 2012-6-19 下午8:16:28
  * 
  */
-public final class GameCore {
+public final class FGGameCore {
 
-	protected static GameView gameView;
+	protected static FGGameView gameView;
 	protected static Activity mainActivity;
 
-	protected GamingThread thread_Gaming = null;
+	protected FGGamingThread thread_Gaming = null;
 
 	private static boolean inited = false;
 
 	// protected Display display;
 
-	public GameCore(Activity mainActivity) {
-		GameCore.mainActivity = mainActivity;
+	public FGGameCore(Activity mainActivity) {
+		FGGameCore.mainActivity = mainActivity;
 		// display = ((WindowManager) mainActivity
 		// .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 
@@ -54,7 +54,7 @@ public final class GameCore {
 	}
 
 	private void initializeCore() {
-		gameView = new GameView(mainActivity);
+		gameView = new FGGameView(mainActivity);
 		setupGameThread();
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
@@ -63,17 +63,17 @@ public final class GameCore {
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		// 屏蔽系统对 返回键 的响应
-		GamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
+		FGGamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
 	}
 
 	protected void onActivityRecreated() {
-		MyDebug.print("OnActivityRecreated");
+		FGDebug.print("OnActivityRecreated");
 		gameView.getHolder().removeCallback(thread_Gaming);
 		gameView.setOnTouchListener(null);
 		gameView.setOnKeyListener(null);
 
-		gameView = new GameView(mainActivity);
-		GamingThread.surfaceHolder = gameView.getHolder();
+		gameView = new FGGameView(mainActivity);
+		FGGamingThread.surfaceHolder = gameView.getHolder();
 
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
@@ -83,7 +83,7 @@ public final class GameCore {
 	}
 
 	private void setupGameThread() {
-		thread_Gaming = new GamingThread(gameView.getHolder());
+		thread_Gaming = new FGGamingThread(gameView.getHolder());
 		thread_Gaming.start();
 	}
 
@@ -104,7 +104,7 @@ public final class GameCore {
 		thread_Gaming.gameResume();
 	}
 
-	public static GameView getGameView() {
+	public static FGGameView getGameView() {
 		return gameView;
 	}
 

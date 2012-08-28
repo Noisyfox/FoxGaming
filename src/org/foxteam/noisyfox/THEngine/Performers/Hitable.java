@@ -16,7 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers;
 
-import org.foxteam.noisyfox.FoxGaming.Core.Performer;
+import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 
 /**
  * @ClassName: Hitable
@@ -25,7 +25,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.Performer;
  * @date: 2012-8-15 上午11:18:17
  * 
  */
-public class Hitable extends Performer {
+public class Hitable extends FGPerformer {
 
 	private float hp = 0f;
 	protected boolean invincible = false;
@@ -56,7 +56,7 @@ public class Hitable extends Performer {
 	}
 
 	@Override
-	protected void onCollisionWith(Performer target) {
+	protected void onCollisionWith(FGPerformer target) {
 		if (Bullet.class.isInstance(target)) {
 			this.hitBy((Bullet) target);
 		}

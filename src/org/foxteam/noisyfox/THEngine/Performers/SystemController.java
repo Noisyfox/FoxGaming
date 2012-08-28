@@ -27,35 +27,35 @@ import android.view.KeyEvent;
  * @date: 2012-7-18 下午11:19:55
  * 
  */
-public class SystemController extends Performer {
+public class SystemController extends FGPerformer {
 
 	private int bgmId;
 
 	@Override
 	protected void onCreate() {
-		bgmId = SimpleBGM.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
-		SimpleBGM.play(bgmId, true);
+		bgmId = FGSimpleBGM.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
+		FGSimpleBGM.play(bgmId, true);
 
 		// 计算缩放比率
-		float k = (float) GamingThread.getScreenWidth() * 1.15f / 320f;
+		float k = (float) FGGamingThread.getScreenWidth() * 1.15f / 320f;
 
-		Stage.getCurrentStage().setSize(
-				(int) ((float) GamingThread.getScreenHeight() / k), 320);
+		FGStage.getCurrentStage().setSize(
+				(int) ((float) FGGamingThread.getScreenHeight() / k), 320);
 
-		Views v = new Views();
+		FGViews v = new FGViews();
 
-		v.setSizeFromScreen(GamingThread.getScreenWidth(),
-				GamingThread.getScreenHeight());
-		v.setSizeFromStage((int) ((float) GamingThread.getScreenWidth() / k),
-				(int) ((float) GamingThread.getScreenHeight() / k));
+		v.setSizeFromScreen(FGGamingThread.getScreenWidth(),
+				FGGamingThread.getScreenHeight());
+		v.setSizeFromStage((int) ((float) FGGamingThread.getScreenWidth() / k),
+				(int) ((float) FGGamingThread.getScreenHeight() / k));
 
 		v.setPositionFromScreen(0, 0);
 		v.setPositionFromStage(
-				(Stage.getCurrentStage().getWidth() - v.getWidthFromStage()) / 2,
+				(FGStage.getCurrentStage().getWidth() - v.getWidthFromStage()) / 2,
 				0);
 
 		v.setAngleFromStage(0);
-		Stage.getCurrentStage().addView(v);
+		FGStage.getCurrentStage().addView(v);
 
 		new HUD();
 
@@ -75,17 +75,17 @@ public class SystemController extends Performer {
 	@Override
 	protected void onKeyRelease(int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Stage.previousStage();
+			FGStage.previousStage();
 		}
 	}
 
 	@Override
 	protected void onStageEnd() {
-		SimpleBGM.stop();
+		FGSimpleBGM.stop();
 	}
 
 	public SystemController() {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 	}
 
 }

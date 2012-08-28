@@ -23,7 +23,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
  * @date: 2012-6-27 上午10:43:57
  * 
  */
-public class SpriteConvertor extends Convertor {
+public class FGSpriteConvertor extends FGConvertor {
 	protected double alpha = 1;
 
 	public final void setAlpha(double alpha) {

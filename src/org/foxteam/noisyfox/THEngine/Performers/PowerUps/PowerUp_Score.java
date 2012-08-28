@@ -16,10 +16,10 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.PowerUps;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
@@ -37,20 +37,20 @@ public class PowerUp_Score extends PowerUp {
 	public PowerUp_Score(int x, int y) {
 		super(x, y);
 
-		Sprite scoreSprite = new Sprite();
+		FGSprite scoreSprite = new FGSprite();
 		scoreSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.powerup_score, false);
 		scoreSprite.setOffset(scoreSprite.getWidth() / 2,
 				scoreSprite.getHeight() / 2);
 		this.bindSprite(scoreSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addRectangle(-scoreSprite.getWidth() / 2,
 				-scoreSprite.getHeight() / 2, scoreSprite.getWidth(),
 				scoreSprite.getHeight());
 		this.bindCollisionMask(co);
 
-		setMovement(false, Stage.getCurrentBackground().getVSpeed(), Stage
+		setMovement(false, FGStage.getCurrentBackground().getVSpeed(), FGStage
 				.getCurrentBackground().getHSpeed());
 	}
 
@@ -66,7 +66,7 @@ public class PowerUp_Score extends PowerUp {
 					2, 5, 0.5f, (int) this.getX(), (int) this.getY(),
 					getDepth());
 
-			GamingThread.score += 500;
+			FGGamingThread.score += 500;
 			this.dismiss();
 			this.bindCollisionMask(null);
 		}

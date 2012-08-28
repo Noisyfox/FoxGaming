@@ -38,23 +38,23 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
  */
 public class Player extends Hitable {
 
-	Views mainView = null;
+	FGViews mainView = null;
 
-	Point meOnScreen = null;
-	Point fingerPressStart = null;
-	Point meStart = null;
+	FGPoint meOnScreen = null;
+	FGPoint fingerPressStart = null;
+	FGPoint meStart = null;
 
 	boolean controllable = true;
 
 	boolean onAnimation = false;
 
 	static int remainLife = 3;
-	Sprite playerSprite = new Sprite();
+	FGSprite playerSprite = new FGSprite();
 	boolean invincibleFlash = true;
 
-	ScreenPlay birthAni = new ScreenPlay();
+	FGScreenPlay birthAni = new FGScreenPlay();
 
-	GraphicCollision myCollisionMask = new GraphicCollision();
+	FGGraphicCollision myCollisionMask = new FGGraphicCollision();
 
 	Class<?> myMissile = null;
 	int missile_level = 1;
@@ -65,7 +65,7 @@ public class Player extends Hitable {
 			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
 
 			mainView.setPositionFromStage(
-					(Stage.getCurrentStage().getWidth() - mainView
+					(FGStage.getCurrentStage().getWidth() - mainView
 							.getWidthFromStage()) * per, 0);
 
 			this.setPosition(mainView.coordinateScreen2Stage_X(
@@ -81,7 +81,7 @@ public class Player extends Hitable {
 			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
 
 			mainView.setPositionFromStage(
-					(Stage.getCurrentStage().getWidth() - mainView
+					(FGStage.getCurrentStage().getWidth() - mainView
 							.getWidthFromStage()) * per, 0);
 		}
 	}
@@ -89,7 +89,7 @@ public class Player extends Hitable {
 	@Override
 	protected void onCreate() {
 
-		mainView = Stage.getCurrentStage().getView(0);
+		mainView = FGStage.getCurrentStage().getView(0);
 
 		playerSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.player, false);
@@ -97,18 +97,18 @@ public class Player extends Hitable {
 				playerSprite.getHeight() / 2);
 		this.bindSprite(playerSprite);
 
-		fingerPressStart = new Point();
-		meStart = new Point();
-		meOnScreen = new Point();
+		fingerPressStart = new FGPoint();
+		meStart = new FGPoint();
+		meOnScreen = new FGPoint();
 
-		birthAni.moveTowardsWait(Stage.getCurrentStage().getWidth() / 2,
-				Stage.getCurrentStage().getHeight() + playerSprite.getOffsetY()
-						+ 40, (int) (1.5f * Stage.getSpeed()));
+		birthAni.moveTowardsWait(FGStage.getCurrentStage().getWidth() / 2,
+				FGStage.getCurrentStage().getHeight() + playerSprite.getOffsetY()
+						+ 40, (int) (1.5f * FGStage.getSpeed()));
 
-		birthAni.moveTowardsWait(Stage.getCurrentStage().getWidth() / 2, Stage
+		birthAni.moveTowardsWait(FGStage.getCurrentStage().getWidth() / 2, FGStage
 				.getCurrentStage().getHeight()
 				- playerSprite.getHeight()
-				+ playerSprite.getOffsetY() - 40, (int) (0.5f * Stage
+				+ playerSprite.getOffsetY() - 40, (int) (0.5f * FGStage
 				.getSpeed()));
 		birthAni.stop();
 
@@ -125,7 +125,7 @@ public class Player extends Hitable {
 		this.requireCollisionDetection(Bullet_Enemy.class);
 		this.requireCollisionDetection(PowerUp.class);
 
-		this.setPosition(Stage.getCurrentStage().getWidth() / 2, Stage
+		this.setPosition(FGStage.getCurrentStage().getWidth() / 2, FGStage
 				.getCurrentStage().getHeight() + playerSprite.getOffsetY() + 40);
 
 		birth();
@@ -172,11 +172,11 @@ public class Player extends Hitable {
 
 					realX = this.getSprite().getOffsetX();
 
-				} else if (realX > Stage.getCurrentStage().getWidth()
+				} else if (realX > FGStage.getCurrentStage().getWidth()
 						- this.getSprite().getWidth()
 						+ this.getSprite().getOffsetX()) {
 
-					if (realX > Stage.getCurrentStage().getWidth()
+					if (realX > FGStage.getCurrentStage().getWidth()
 							- this.getSprite().getWidth()
 							+ this.getSprite().getOffsetX() + 5) {
 						int fingerXReal = mainView.coordinateScreen2Stage_X(
@@ -191,7 +191,7 @@ public class Player extends Hitable {
 										mainView.coordinateStage2Screen_X(
 												fingerXReal
 														+ realX
-														- (Stage.getCurrentStage()
+														- (FGStage.getCurrentStage()
 																.getWidth()
 																- this.getSprite()
 																		.getWidth() + this
@@ -201,7 +201,7 @@ public class Player extends Hitable {
 												.getY());
 					}
 
-					realX = Stage.getCurrentStage().getWidth()
+					realX = FGStage.getCurrentStage().getWidth()
 							- this.getSprite().getWidth()
 							+ this.getSprite().getOffsetX();
 
@@ -226,11 +226,11 @@ public class Player extends Hitable {
 
 					realY = this.getSprite().getOffsetY();
 
-				} else if (realY > Stage.getCurrentStage().getHeight()
+				} else if (realY > FGStage.getCurrentStage().getHeight()
 						- this.getSprite().getHeight()
 						+ this.getSprite().getOffsetY()) {
 
-					if (realY > Stage.getCurrentStage().getHeight()
+					if (realY > FGStage.getCurrentStage().getHeight()
 							- this.getSprite().getHeight()
 							+ this.getSprite().getOffsetY() + 5) {
 						int fingerXReal = mainView.coordinateScreen2Stage_X(
@@ -247,7 +247,7 @@ public class Player extends Hitable {
 												fingerXReal,
 												fingerYReal
 														+ realY
-														- (Stage.getCurrentStage()
+														- (FGStage.getCurrentStage()
 																.getHeight()
 																- this.getSprite()
 																		.getHeight() + this
@@ -255,7 +255,7 @@ public class Player extends Hitable {
 																.getOffsetY())));
 					}
 
-					realY = Stage.getCurrentStage().getHeight()
+					realY = FGStage.getCurrentStage().getHeight()
 							- this.getSprite().getHeight()
 							+ this.getSprite().getOffsetY();
 
@@ -299,11 +299,11 @@ public class Player extends Hitable {
 			this.bindCollisionMask(myCollisionMask);
 			controllable = true;
 			// 发射子弹
-			this.setAlarm(0, (int) (Stage.getSpeed() * 0.2f), true);
+			this.setAlarm(0, (int) (FGStage.getSpeed() * 0.2f), true);
 			this.startAlarm(0);
 
 			if (myMissile != null) {
-				this.setAlarm(4, (int) (Stage.getSpeed() * 1.0f), true);
+				this.setAlarm(4, (int) (FGStage.getSpeed() * 1.0f), true);
 				this.startAlarm(4);
 			}
 
@@ -328,13 +328,13 @@ public class Player extends Hitable {
 							(int) this.getY() };
 					b = (Bullet_Player) ctor.newInstance(arg);
 					b.setDepth(this.getDepth() + 1);
-					b.motion_set(90 - dDeg, 200f / Stage.getSpeed());
+					b.motion_set(90 - dDeg, 200f / FGStage.getSpeed());
 
 					Object[] arg2 = new Object[] { (int) this.getX() - 10,
 							(int) this.getY() };
 					b = (Bullet_Player) ctor.newInstance(arg2);
 					b.setDepth(this.getDepth() + 1);
-					b.motion_set(90 + dDeg, 200f / Stage.getSpeed());
+					b.motion_set(90 + dDeg, 200f / FGStage.getSpeed());
 				} catch (SecurityException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -367,7 +367,7 @@ public class Player extends Hitable {
 	}
 
 	@Override
-	protected void onCollisionWith(Performer target) {
+	protected void onCollisionWith(FGPerformer target) {
 		if (Bullet_Enemy.class.isInstance(target)) {
 			this.hitBy((Bullet) target);
 
@@ -399,7 +399,7 @@ public class Player extends Hitable {
 			this.dismiss();
 		} else {
 
-			this.setPosition(this.getX(), Stage.getCurrentStage().getHeight()
+			this.setPosition(this.getX(), FGStage.getCurrentStage().getHeight()
 					+ playerSprite.getOffsetY() + 40);
 
 			myMissile = null;// 重置火力等级
@@ -410,9 +410,9 @@ public class Player extends Hitable {
 
 	private void setInvincible(float seconds) {
 		this.invincible = true;
-		this.setAlarm(1, (int) (Stage.getSpeed() * seconds), false);
+		this.setAlarm(1, (int) (FGStage.getSpeed() * seconds), false);
 		this.startAlarm(1);
-		this.setAlarm(3, (int) (Stage.getSpeed() * 0.1f), true);
+		this.setAlarm(3, (int) (FGStage.getSpeed() * 0.1f), true);
 		this.startAlarm(3);
 	}
 
@@ -423,7 +423,7 @@ public class Player extends Hitable {
 		controllable = false;
 		setInvincible(5.0f);
 
-		this.setAlarm(2, (int) (Stage.getSpeed() * 2.0f), false);
+		this.setAlarm(2, (int) (FGStage.getSpeed() * 2.0f), false);
 		this.startAlarm(2);
 		onAnimation = true;
 
@@ -432,7 +432,7 @@ public class Player extends Hitable {
 	}
 
 	public void getPowerUp(Class<?> bulletType) {
-		GamingThread.score += 100;
+		FGGamingThread.score += 100;
 
 		if (bulletType == Bullet_Player_Missile_Guided.class
 				|| bulletType == Bullet_Player_Missile_Manual.class) {
@@ -445,7 +445,7 @@ public class Player extends Hitable {
 		if (myMissile == null) {
 			myMissile = missileType;
 
-			this.setAlarm(4, (int) (Stage.getSpeed() * 1.0f), true);
+			this.setAlarm(4, (int) (FGStage.getSpeed() * 1.0f), true);
 			this.startAlarm(4);
 		} else {
 			if (myMissile == missileType) {

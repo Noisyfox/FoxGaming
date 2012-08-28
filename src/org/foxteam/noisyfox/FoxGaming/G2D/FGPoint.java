@@ -26,17 +26,17 @@ import android.graphics.Paint;
  * @date: 2012-7-18 下午2:35:48
  * 
  */
-public class Point {
+public class FGPoint {
 
 	int x = 0;
 	int y = 0;
 	protected static Paint paint = new Paint();
 
-	public Point() {
+	public FGPoint() {
 		this(0, 0);
 	}
 
-	public Point(int x, int y) {
+	public FGPoint(int x, int y) {
 		setPosition(x, y);
 	}
 
@@ -59,12 +59,12 @@ public class Point {
 	}
 
 	// 得到两点距离的平方
-	public int squareDistance(Point p2) {
+	public int squareDistance(FGPoint p2) {
 		return (x - p2.getX()) * (x - p2.getX()) + (y - p2.getY())
 				* (y - p2.getY());
 	}
 
-	public boolean equals(Point p) {
+	public boolean equals(FGPoint p) {
 		return p.x == x && p.y == y;
 	}
 

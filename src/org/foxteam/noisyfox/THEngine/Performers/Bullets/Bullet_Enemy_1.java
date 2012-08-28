@@ -35,7 +35,7 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 	@Override
 	protected void onCreate() {
 
-		Sprite bulletSprite = new Sprite();
+		FGSprite bulletSprite = new FGSprite();
 		bulletSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.bullet_enemy_1, false);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2,
@@ -43,7 +43,7 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 
 		this.bindSprite(bulletSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(0, 0, 10, true);
 		this.bindCollisionMask(co);
 
@@ -57,7 +57,7 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 	}
 
 	public Bullet_Enemy_1(int x, int y, float direction, float speed) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 		mySpeed = speed;
 		myDirection = direction;

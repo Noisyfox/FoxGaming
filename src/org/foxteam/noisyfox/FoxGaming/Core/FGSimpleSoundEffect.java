@@ -27,26 +27,26 @@ import android.media.SoundPool;
  * @date: 2012-7-9 下午4:56:49
  * 
  */
-public final class SimpleSoundEffect {
+public final class FGSimpleSoundEffect {
 
 	public static final int AUDIO_SOUNDPOOL_MAXSTREAMS = 10;
 	public static final int AUDIO_SOUNDPOOL_QUALITY = 90;
 
-	private static SimpleSoundEffect simpleSoundEffect = new SimpleSoundEffect();
+	private static FGSimpleSoundEffect simpleSoundEffect = new FGSimpleSoundEffect();
 	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
 	private static SoundPool soundPool;
 	private static int volume = 100;
 
 	private static int lastAudioId = -1;
 
-	private SimpleSoundEffect() {
+	private FGSimpleSoundEffect() {
 		soundPool = new SoundPool(AUDIO_SOUNDPOOL_MAXSTREAMS,
 				AudioManager.STREAM_MUSIC, AUDIO_SOUNDPOOL_QUALITY);
 	}
 
 	public static int loadSoundEffect(int resId) {
 		lastAudioId++;
-		int soundId = soundPool.load(GameCore.mainActivity, resId, 1);
+		int soundId = soundPool.load(FGGameCore.mainActivity, resId, 1);
 		sounds.put(lastAudioId, soundId);
 		return lastAudioId;
 	}
@@ -60,7 +60,7 @@ public final class SimpleSoundEffect {
 		if (volume < 0 || volume > 100) {
 			throw new IllegalArgumentException();
 		}
-		SimpleSoundEffect.volume = volume;
+		FGSimpleSoundEffect.volume = volume;
 	}
 
 	public static int getSoundVolume() {
@@ -94,7 +94,7 @@ public final class SimpleSoundEffect {
 		soundPool.autoResume();
 	}
 
-	public static SimpleSoundEffect getInstance() {
+	public static FGSimpleSoundEffect getInstance() {
 		return simpleSoundEffect;
 	}
 

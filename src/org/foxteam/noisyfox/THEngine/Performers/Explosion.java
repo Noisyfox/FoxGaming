@@ -26,9 +26,9 @@ import org.foxteam.noisyfox.FoxGaming.G2D.*;
  * @date: 2012-8-14 下午4:08:21
  * 
  */
-public class Explosion extends Performer {
+public class Explosion extends FGPerformer {
 
-	Sprite s = new Sprite();
+	FGSprite s = new FGSprite();
 	float frameSpeed = 0f;
 	int turns = 1;
 
@@ -52,7 +52,7 @@ public class Explosion extends Performer {
 	@Override
 	protected void onStep() {
 		this.setPosition(this.getX(), this.getY()
-				+ Stage.getCurrentBackground().getVSpeed());
+				+ FGStage.getCurrentBackground().getVSpeed());
 	}
 
 	public Explosion(int resId, int frameNumber, int turns, float lastTime,
@@ -65,9 +65,9 @@ public class Explosion extends Performer {
 		s.setOffset(s.getWidth() / 2, s.getHeight() / 2);
 		this.turns = turns;
 		frameSpeed = lastTime / (float) turns / (float) (frameNumber - 1)
-				* Stage.getCurrentStage().getStageSpeed();
+				* FGStage.getCurrentStage().getStageSpeed();
 		this.setDepth(depth);
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 		this.bindSprite(s);
 	}

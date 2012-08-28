@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
@@ -35,7 +35,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	@Override
 	protected void onCreate() {
 
-		Sprite bulletSprite = new Sprite();
+		FGSprite bulletSprite = new FGSprite();
 		bulletSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_normal,
 				false);
@@ -43,13 +43,13 @@ public class Bullet_Player_Normal extends Bullet_Player {
 
 		this.bindSprite(bulletSprite);
 
-		GraphicCollision co = new GraphicCollision();
+		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(0, 8, 5, true);
 		this.bindCollisionMask(co);
 
 		this.setDamage(10);
 
-		this.motion_set(90, 300f / Stage.getSpeed());
+		this.motion_set(90, 300f / FGStage.getSpeed());
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	}
 
 	public Bullet_Player_Normal(int x, int y) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
 

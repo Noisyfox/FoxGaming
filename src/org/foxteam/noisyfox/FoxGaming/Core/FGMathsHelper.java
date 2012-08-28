@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
-import org.foxteam.noisyfox.FoxGaming.G2D.Circle;
-import org.foxteam.noisyfox.FoxGaming.G2D.Point;
-import org.foxteam.noisyfox.FoxGaming.G2D.Polygon;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGCircle;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGPoint;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGPolygon;
 
 import android.graphics.Rect;
 
@@ -29,10 +29,10 @@ import android.graphics.Rect;
  * @date: 2012-8-13 下午2:49:29
  * 
  */
-public final class MathsHelper {
+public final class FGMathsHelper {
 
 	// 判断一个点是否在一个圆内
-	public static boolean pointInCircle(Point p, Circle c) {
+	public static boolean pointInCircle(FGPoint p, FGCircle c) {
 		int d2 = p.squareDistance(c);
 		if (d2 <= (c.getR() * c.getR())) {
 			return true;
@@ -41,8 +41,8 @@ public final class MathsHelper {
 	}
 
 	// 判断一个点是否在一个夹角内
-	public static boolean pointInAngle(Point point, Point vertex, Point p1,
-			Point p2) {
+	public static boolean pointInAngle(FGPoint point, FGPoint vertex, FGPoint p1,
+			FGPoint p2) {
 		int x = point.getX() - vertex.getX();
 		int y = point.getY() - vertex.getY();
 		int p1X = p1.getX() - vertex.getX();
@@ -59,14 +59,14 @@ public final class MathsHelper {
 	}
 
 	// 判断两条线段是否相交
-	public static boolean lineVSline(Point l1P1, Point l1P2, Point l2P1,
-			Point l2P2) {
+	public static boolean lineVSline(FGPoint l1P1, FGPoint l1P2, FGPoint l2P1,
+			FGPoint l2P2) {
 		return pointInAngle(l1P2, l1P1, l2P1, l2P2)
 				&& pointInAngle(l2P2, l2P1, l1P1, l1P2);
 	}
 
 	// 判断点是否在多边形内
-	public static boolean pointInPolygon(Point p, Polygon pol) {
+	public static boolean pointInPolygon(FGPoint p, FGPolygon pol) {
 		if (!pol.isLine()) {
 			int nVertex = pol.getVertexNumber();
 			boolean collision = true;
@@ -85,7 +85,7 @@ public final class MathsHelper {
 	}
 
 	// 向量数量积
-	public static int dotProduct(Point vertex, Point p1, Point p2) {
+	public static int dotProduct(FGPoint vertex, FGPoint p1, FGPoint p2) {
 		int x1, y1;
 		int x2, y2;
 
@@ -97,8 +97,8 @@ public final class MathsHelper {
 	}
 
 	// 点到直线距离平方
-	public static int squareDistanceFromPointToLine(Point point, Point p1,
-			Point p2) {
+	public static int squareDistanceFromPointToLine(FGPoint point, FGPoint p1,
+			FGPoint p2) {
 		int dp = dotProduct(p1, point, p2);
 		int dp2 = dp * dp;
 		int p1p22 = p1.squareDistance(p2);
@@ -107,7 +107,7 @@ public final class MathsHelper {
 	}
 
 	// 判断圆与直线（线段）有无交点
-	public static boolean circleVSline(Circle c, Point p1, Point p2,
+	public static boolean circleVSline(FGCircle c, FGPoint p1, FGPoint p2,
 			boolean segment) {
 		if (segment) {// 线段
 			boolean hasIn = false;

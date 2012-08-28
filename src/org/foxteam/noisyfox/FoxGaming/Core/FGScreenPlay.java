@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @date: 2012-8-16 下午9:17:40
  * 
  */
-public final class ScreenPlay {
+public final class FGScreenPlay {
 
 	private static final int MOVEMETN_WAIT = 1;
 	private static final int MOVEMETN_STOP = 2;
@@ -37,7 +37,7 @@ public final class ScreenPlay {
 	private static final int MOVEMETN_MOVETOWARDS_XY = 5;
 	private static final int MOVEMETN_MOVETOWARDSWAIT = 6;
 
-	private Performer bindPerformer = null;
+	private FGPerformer bindPerformer = null;
 
 	private List<List<Float>> movements = new ArrayList<List<Float>>();
 	private Queue<Queue<Float>> movements_tmp = new ConcurrentLinkedQueue<Queue<Float>>();
@@ -127,7 +127,7 @@ public final class ScreenPlay {
 		movements.add(m);
 	}
 
-	protected void prepareToPlay(Performer bindPerformer) {
+	protected void prepareToPlay(FGPerformer bindPerformer) {
 		ensureAvaliable();
 
 		this.bindPerformer = bindPerformer;

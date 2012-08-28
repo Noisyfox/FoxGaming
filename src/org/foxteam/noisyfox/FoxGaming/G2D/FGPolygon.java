@@ -27,15 +27,15 @@ import android.graphics.Path;
  * @date: 2012-7-18 下午2:39:19
  * 
  */
-public class Polygon {
-	Point[] vertex;
+public class FGPolygon {
+	FGPoint[] vertex;
 	int num_edges = 0;
 	int num_vertexs = 0;
 	boolean isLine = false;
 	boolean fill = false;
 	static Paint paint = new Paint();
 
-	public Polygon(Point[] vertex, boolean fill) {
+	public FGPolygon(FGPoint[] vertex, boolean fill) {
 		if (vertex.length <= 1) {
 			throw new IllegalArgumentException();
 		}
@@ -60,7 +60,7 @@ public class Polygon {
 		this.fill = fill;
 	}
 
-	public final Point getVertex(int vertexIndex) {
+	public final FGPoint getVertex(int vertexIndex) {
 		while (vertexIndex < 0)
 			vertexIndex += num_vertexs;
 		while (vertexIndex >= num_vertexs)

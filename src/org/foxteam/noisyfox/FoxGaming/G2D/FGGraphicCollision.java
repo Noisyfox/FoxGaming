@@ -19,7 +19,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,23 +33,23 @@ import android.graphics.Rect;
  * @date: 2012-6-27 上午11:12:21
  * 
  */
-public class GraphicCollision {
+public class FGGraphicCollision {
 
 	private static Paint p = new Paint();
 
-	List<Polygon> polygons = new ArrayList<Polygon>();
-	List<Circle> circles = new ArrayList<Circle>();
-	List<Point> points = new ArrayList<Point>();
+	List<FGPolygon> polygons = new ArrayList<FGPolygon>();
+	List<FGCircle> circles = new ArrayList<FGCircle>();
+	List<FGPoint> points = new ArrayList<FGPoint>();
 	Rect reducedArea = new Rect(0, 0, 0, 0);
-	List<Polygon> polygons_tmp = new ArrayList<Polygon>();
-	List<Circle> circles_tmp = new ArrayList<Circle>();
-	List<Point> points_tmp = new ArrayList<Point>();
+	List<FGPolygon> polygons_tmp = new ArrayList<FGPolygon>();
+	List<FGCircle> circles_tmp = new ArrayList<FGCircle>();
+	List<FGPoint> points_tmp = new ArrayList<FGPoint>();
 	Rect reducedArea_tmp = new Rect(0, 0, 0, 0);
 
 	int baseX = 0;
 	int baseY = 0;
 
-	public GraphicCollision() {
+	public FGGraphicCollision() {
 		p.setColor(Color.RED);
 		p.setStyle(Paint.Style.STROKE);
 		p.setAlpha(100);
@@ -72,7 +72,7 @@ public class GraphicCollision {
 	}
 
 	public final void addCircle(int x, int y, int r, boolean fill) {
-		Circle c = new Circle(x, y, r, fill);
+		FGCircle c = new FGCircle(x, y, r, fill);
 		circles.add(c);
 
 		reducedArea.left = Math.min(x - r, reducedArea.left);
@@ -80,7 +80,7 @@ public class GraphicCollision {
 		reducedArea.right = Math.max(x + r, reducedArea.right);
 		reducedArea.bottom = Math.max(y + r, reducedArea.bottom);
 
-		Circle c_tmp = new Circle(x, y, r, fill);
+		FGCircle c_tmp = new FGCircle(x, y, r, fill);
 		circles_tmp.add(c_tmp);
 
 		reducedArea_tmp.left = reducedArea.left;
@@ -117,7 +117,7 @@ public class GraphicCollision {
 
 	// 点只能用于与点以及实心圆、多边形进行碰撞检测，自动忽略线段与轮廓
 	public final void addPoint(int x, int y) {
-		Point p = new Point(x, y);
+		FGPoint p = new FGPoint(x, y);
 		points.add(p);
 
 		reducedArea.left = Math.min(x, reducedArea.left);
@@ -125,7 +125,7 @@ public class GraphicCollision {
 		reducedArea.right = Math.max(x, reducedArea.right);
 		reducedArea.bottom = Math.max(y, reducedArea.bottom);
 
-		Point p_tmp = new Point(x, y);
+		FGPoint p_tmp = new FGPoint(x, y);
 		points_tmp.add(p_tmp);
 
 		reducedArea_tmp.left = reducedArea.left;
@@ -141,31 +141,31 @@ public class GraphicCollision {
 			}
 		}
 
-		Point[] v = new Point[vertex.length];
+		FGPoint[] v = new FGPoint[vertex.length];
 		for (int i = 0; i < vertex.length; i++) {
-			v[i] = new Point(vertex[i][0], vertex[i][1]);
+			v[i] = new FGPoint(vertex[i][0], vertex[i][1]);
 		}
 
 		addPolygon(v, fill);
 	}
 
-	public final void addPolygon(Point[] vertex, boolean fill) {
-		Polygon p = new Polygon(vertex, fill);
+	public final void addPolygon(FGPoint[] vertex, boolean fill) {
+		FGPolygon p = new FGPolygon(vertex, fill);
 		polygons.add(p);
 
-		Point[] v_tmp = new Point[vertex.length];
+		FGPoint[] v_tmp = new FGPoint[vertex.length];
 
 		for (int i = 0; i < vertex.length; i++) {
-			Point v = vertex[i];
+			FGPoint v = vertex[i];
 			reducedArea.left = Math.min(v.x, reducedArea.left);
 			reducedArea.top = Math.min(v.y, reducedArea.top);
 			reducedArea.right = Math.max(v.x, reducedArea.right);
 			reducedArea.bottom = Math.max(v.y, reducedArea.bottom);
 
-			v_tmp[i] = new Point(v.getX(), v.getY());
+			v_tmp[i] = new FGPoint(v.getX(), v.getY());
 		}
 
-		Polygon p_tmp = new Polygon(v_tmp, fill);
+		FGPolygon p_tmp = new FGPolygon(v_tmp, fill);
 		polygons_tmp.add(p_tmp);
 
 		reducedArea_tmp.left = reducedArea.left;
@@ -177,14 +177,14 @@ public class GraphicCollision {
 	public final void setPosition(int x, int y) {
 		int dx = x - baseX;
 		int dy = y - baseY;
-		for (Point p : points_tmp) {
+		for (FGPoint p : points_tmp) {
 			p.move(dx, dy);
 		}
-		for (Circle c : circles_tmp) {
+		for (FGCircle c : circles_tmp) {
 			c.move(dx, dy);
 		}
-		for (Polygon pol : polygons_tmp) {
-			for (Point p : pol.vertex) {
+		for (FGPolygon pol : polygons_tmp) {
+			for (FGPoint p : pol.vertex) {
 				p.move(dx, dy);
 			}
 		}
@@ -195,7 +195,7 @@ public class GraphicCollision {
 		baseY = y;
 	}
 
-	private final void mapPoint(Point src, Point dst, Convertor convertor) {
+	private final void mapPoint(FGPoint src, FGPoint dst, FGConvertor convertor) {
 		float srcP[] = { src.getX(), src.getY() };
 		float dstP[] = { dst.getX(), dst.getY() };
 		convertor.getConvertMatrix().mapPoints(dstP, srcP);
@@ -203,7 +203,7 @@ public class GraphicCollision {
 		dst.y = (int) dstP[1];
 	}
 
-	public final void applyConvertor(Convertor convertor) {
+	public final void applyConvertor(FGConvertor convertor) {
 		reducedArea_tmp.setEmpty();
 		for (int i = 0; i < points.size(); i++) {
 			mapPoint(points.get(i), points_tmp.get(i), convertor);
@@ -262,54 +262,54 @@ public class GraphicCollision {
 		setPosition(x, y);
 	}
 
-	public final boolean isCollisionWith(GraphicCollision target) {
+	public final boolean isCollisionWith(FGGraphicCollision target) {
 		// 粗略判断范围
-		if (!MathsHelper.rectVSrect(reducedArea_tmp, target.reducedArea_tmp)) {
+		if (!FGMathsHelper.rectVSrect(reducedArea_tmp, target.reducedArea_tmp)) {
 			return false;
 		}
 
 		// 优先进行点的判断
 		// 点与点
-		for (Point p1 : points_tmp) {
-			for (Point p2 : target.points_tmp) {
+		for (FGPoint p1 : points_tmp) {
+			for (FGPoint p2 : target.points_tmp) {
 				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
 					return true;
 				}
 			}
 		}
 		// 点与圆面
-		for (Circle c : target.circles_tmp) {
-			for (Point p1 : points_tmp) {
+		for (FGCircle c : target.circles_tmp) {
+			for (FGPoint p1 : points_tmp) {
 				if (c.filled()) {
-					if (MathsHelper.pointInCircle(p1, c)) {
+					if (FGMathsHelper.pointInCircle(p1, c)) {
 						return true;
 					}
 				}
 			}
 		}
-		for (Circle c : circles_tmp) {
-			for (Point p1 : target.points_tmp) {
+		for (FGCircle c : circles_tmp) {
+			for (FGPoint p1 : target.points_tmp) {
 				if (c.filled()) {
-					if (MathsHelper.pointInCircle(p1, c)) {
+					if (FGMathsHelper.pointInCircle(p1, c)) {
 						return true;
 					}
 				}
 			}
 		}
 		// 点与多边形
-		for (Polygon pol : target.polygons_tmp) {
-			for (Point p : points_tmp) {
+		for (FGPolygon pol : target.polygons_tmp) {
+			for (FGPoint p : points_tmp) {
 				if (pol.filled()) {
-					if (MathsHelper.pointInPolygon(p, pol)) {
+					if (FGMathsHelper.pointInPolygon(p, pol)) {
 						return true;
 					}
 				}
 			}
 		}
-		for (Polygon pol : polygons_tmp) {
-			for (Point p : target.points_tmp) {
+		for (FGPolygon pol : polygons_tmp) {
+			for (FGPoint p : target.points_tmp) {
 				if (pol.filled()) {
-					if (MathsHelper.pointInPolygon(p, pol)) {
+					if (FGMathsHelper.pointInPolygon(p, pol)) {
 						return true;
 					}
 				}
@@ -318,8 +318,8 @@ public class GraphicCollision {
 
 		// 接下来判断圆
 		// 圆与圆
-		for (Circle c1 : circles_tmp) {
-			for (Circle c2 : target.circles_tmp) {
+		for (FGCircle c1 : circles_tmp) {
+			for (FGCircle c2 : target.circles_tmp) {
 				int d2 = c1.squareDistance(c2);
 				int r2 = (c1.getR() + c2.getR()) * (c1.getR() + c2.getR());
 				int r22 = (c1.getR() - c2.getR()) * (c1.getR() - c2.getR());
@@ -338,11 +338,11 @@ public class GraphicCollision {
 			}
 		}
 		// 圆与多边形
-		for (Polygon pol : target.polygons_tmp) {
-			for (Circle c : circles_tmp) {
+		for (FGPolygon pol : target.polygons_tmp) {
+			for (FGCircle c : circles_tmp) {
 				if (pol.isLine()) {
 					// 圆与线段
-					if (MathsHelper.circleVSline(c, pol.getVertex(0),
+					if (FGMathsHelper.circleVSline(c, pol.getVertex(0),
 							pol.getVertex(1), true)) {
 						return true;
 					}
@@ -351,29 +351,29 @@ public class GraphicCollision {
 				// 圆与多边形
 				// 有任何一边与圆相交
 				for (int i = 0; i < pol.getEdgeNumber(); i++) {
-					if (MathsHelper.circleVSline(c, pol.getVertex(i),
+					if (FGMathsHelper.circleVSline(c, pol.getVertex(i),
 							pol.getVertex(i + 1), true)) {
 						return true;
 					}
 				}
 				// 没有边相交，则判断是否有包含关系
-				if (MathsHelper.pointInCircle(pol.getVertex(0), c)) {
+				if (FGMathsHelper.pointInCircle(pol.getVertex(0), c)) {
 					if (c.filled()) {
 						return true;
 					}
 				} else if (pol.filled()) {
-					if (MathsHelper.pointInPolygon(c, pol)) {
+					if (FGMathsHelper.pointInPolygon(c, pol)) {
 						return true;
 					}
 				}
 			}
 		}
 
-		for (Polygon pol : polygons_tmp) {
-			for (Circle c : target.circles_tmp) {
+		for (FGPolygon pol : polygons_tmp) {
+			for (FGCircle c : target.circles_tmp) {
 				if (pol.isLine()) {
 					// 圆与线段
-					if (MathsHelper.circleVSline(c, pol.getVertex(0),
+					if (FGMathsHelper.circleVSline(c, pol.getVertex(0),
 							pol.getVertex(1), true)) {
 						return true;
 					}
@@ -382,18 +382,18 @@ public class GraphicCollision {
 				// 圆与多边形
 				// 有任何一边与圆相交
 				for (int i = 0; i < pol.getEdgeNumber(); i++) {
-					if (MathsHelper.circleVSline(c, pol.getVertex(i),
+					if (FGMathsHelper.circleVSline(c, pol.getVertex(i),
 							pol.getVertex(i + 1), true)) {
 						return true;
 					}
 				}
 				// 没有边相交，则判断是否有包含关系
-				if (MathsHelper.pointInCircle(pol.getVertex(0), c)) {
+				if (FGMathsHelper.pointInCircle(pol.getVertex(0), c)) {
 					if (c.filled()) {
 						return true;
 					}
 				} else if (pol.filled()) {
-					if (MathsHelper.pointInPolygon(c, pol)) {
+					if (FGMathsHelper.pointInPolygon(c, pol)) {
 						return true;
 					}
 				}
@@ -402,10 +402,10 @@ public class GraphicCollision {
 
 		// 最后是多边形
 		// 两条直线
-		for (Polygon pol1 : target.polygons_tmp) {
-			for (Polygon pol2 : polygons_tmp) {
+		for (FGPolygon pol1 : target.polygons_tmp) {
+			for (FGPolygon pol2 : polygons_tmp) {
 				if (pol1.isLine() && pol2.isLine()) {
-					if (MathsHelper.lineVSline(pol1.getVertex(0),
+					if (FGMathsHelper.lineVSline(pol1.getVertex(0),
 							pol1.getVertex(1), pol2.getVertex(0),
 							pol2.getVertex(1))) {
 						return true;
@@ -415,12 +415,12 @@ public class GraphicCollision {
 			}
 		}
 		// 直线和多边形
-		for (Polygon pol1 : target.polygons_tmp) {
-			for (Polygon pol2 : polygons_tmp) {
+		for (FGPolygon pol1 : target.polygons_tmp) {
+			for (FGPolygon pol2 : polygons_tmp) {
 				if (pol1.isLine() && !pol2.isLine()) {
-					boolean b1 = MathsHelper.pointInPolygon(pol1.getVertex(0),
+					boolean b1 = FGMathsHelper.pointInPolygon(pol1.getVertex(0),
 							pol2);
-					boolean b2 = MathsHelper.pointInPolygon(pol1.getVertex(1),
+					boolean b2 = FGMathsHelper.pointInPolygon(pol1.getVertex(1),
 							pol2);
 					if ((b1 && (!b2)) || ((!b1) && b2)) {
 						return true;
@@ -431,9 +431,9 @@ public class GraphicCollision {
 					continue;
 				}
 				if (!pol1.isLine() && pol2.isLine()) {
-					boolean b1 = MathsHelper.pointInPolygon(pol2.getVertex(0),
+					boolean b1 = FGMathsHelper.pointInPolygon(pol2.getVertex(0),
 							pol1);
-					boolean b2 = MathsHelper.pointInPolygon(pol2.getVertex(1),
+					boolean b2 = FGMathsHelper.pointInPolygon(pol2.getVertex(1),
 							pol1);
 					if ((b1 && (!b2)) || ((!b1) && b2)) {
 						return true;
@@ -446,15 +446,15 @@ public class GraphicCollision {
 			}
 		}
 		// 多边形和多边形
-		for (Polygon pol1 : target.polygons_tmp) {
-			for (Polygon pol2 : polygons_tmp) {
+		for (FGPolygon pol1 : target.polygons_tmp) {
+			for (FGPolygon pol2 : polygons_tmp) {
 				if (!pol1.isLine() && !pol2.isLine()) {
 					{
 						boolean hasIn = false;
 						boolean hasOut = false;
 						int nVertex = pol1.getVertexNumber();
 						for (int i = 0; i < nVertex; i++) {
-							if (MathsHelper.pointInPolygon(pol1.getVertex(i),
+							if (FGMathsHelper.pointInPolygon(pol1.getVertex(i),
 									pol2)) {
 								hasIn = true;
 							} else {
@@ -472,7 +472,7 @@ public class GraphicCollision {
 						boolean hasOut = false;
 						int nVertex = pol2.getVertexNumber();
 						for (int i = 0; i < nVertex; i++) {
-							if (MathsHelper.pointInPolygon(pol2.getVertex(i),
+							if (FGMathsHelper.pointInPolygon(pol2.getVertex(i),
 									pol1)) {
 								hasIn = true;
 							} else {
@@ -493,20 +493,20 @@ public class GraphicCollision {
 
 	public void draw(Canvas c) {
 
-		for (Point p : points_tmp) {
+		for (FGPoint p : points_tmp) {
 			p.draw(c);
 		}
-		for (Circle ci : circles_tmp) {
+		for (FGCircle ci : circles_tmp) {
 			ci.draw(c);
 		}
-		for (Polygon pol : polygons_tmp) {
+		for (FGPolygon pol : polygons_tmp) {
 			pol.draw(c);
 		}
 		c.drawRect(reducedArea_tmp, p);
 	}
 
 	// 静态函数，判断多个target之间是否发生碰撞
-	public final static boolean testCollision(GraphicCollision... targets) {
+	public final static boolean testCollision(FGGraphicCollision... targets) {
 		for (int i = 0; i < targets.length - 1; i++) {
 			for (int j = i; j < targets.length; j++) {
 				if (targets[i].isCollisionWith(targets[j])) {

@@ -23,7 +23,7 @@ package org.foxteam.noisyfox.FoxGaming.Core;
  * @date: 2012-6-19 下午8:14:09
  * 
  */
-public class EventsListener {
+public class FGEventsListener {
 	public final static int EVENT_ONCREATE = 1;
 	public final static int EVENT_ONDESTORY = 2;
 	public final static int EVENT_ONTOUCH = 3;
@@ -107,7 +107,7 @@ public class EventsListener {
 	protected void onStepEnd() {
 	}// 每一个游戏循环最后的一个事件（EVENT_ONUSERDEFINEDEVENT 除外)
 
-	protected void onCollisionWith(Performer target) {
+	protected void onCollisionWith(FGPerformer target) {
 	}// 当与指定类型的 Performer 发生碰撞的时候触发，只有主动请求碰撞检测的 Performer 会接收到该事件
 
 	protected void onScreenSizeChanged(int width, int height) {

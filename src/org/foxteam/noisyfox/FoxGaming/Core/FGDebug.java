@@ -27,7 +27,7 @@ import android.util.Log;
  * @date: 2012-7-17 下午12:41:58
  * 
  */
-public final class MyDebug {
+public final class FGDebug {
 	private static String tag = "FoxGmaing";
 	protected static boolean debugMode = true;
 
@@ -47,7 +47,7 @@ public final class MyDebug {
 	 *            any valid String for LogCat tags
 	 */
 	public static void setDebugTag(String tag) {
-		MyDebug.tag = tag;
+		FGDebug.tag = tag;
 	}
 
 	/**

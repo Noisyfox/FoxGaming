@@ -30,7 +30,7 @@ import android.graphics.Canvas;
  * @date: 2012-6-19 下午9:21:05
  * 
  */
-public class Performer extends EventsListener {
+public class FGPerformer extends FGEventsListener {
 
 	private List<Alarm> alarms;
 	private boolean visible = true;
@@ -47,20 +47,20 @@ public class Performer extends EventsListener {
 
 	protected int depth = 0;
 	protected boolean frozen = false;
-	private Sprite sprite = null;
+	private FGSprite sprite = null;
 	protected boolean employed = false;
 	protected boolean performing = false;
 	protected int stage = -1;
-	protected GraphicCollision collisionMask = null;
-	protected List<Performer> requiredCollisionDetection = new ArrayList<Performer>();
+	protected FGGraphicCollision collisionMask = null;
+	protected List<FGPerformer> requiredCollisionDetection = new ArrayList<FGPerformer>();
 
 	protected List<Class<?>> requiredClassCollisionDetection = new ArrayList<Class<?>>();
-	protected ScreenPlay myScreenPlay = null;
-	private static GraphicCollision gc_tmp = new GraphicCollision();
+	protected FGScreenPlay myScreenPlay = null;
+	private static FGGraphicCollision gc_tmp = new FGGraphicCollision();
 
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
-	public Performer() {
+	public FGPerformer() {
 		alarms = new ArrayList<Alarm>();
 		for (int i = 0; i < 10; i++) {
 			Alarm a = new Alarm();
@@ -72,7 +72,7 @@ public class Performer extends EventsListener {
 	@Override
 	protected void onDraw() {
 		if (sprite != null) {
-			Canvas c = GamingThread.bufferCanvas;
+			Canvas c = FGGamingThread.bufferCanvas;
 			sprite.draw(c, (int) x, (int) y);
 		}
 	}
@@ -81,83 +81,83 @@ public class Performer extends EventsListener {
 		if (frozen || !employed || !performing)
 			return;
 		switch (event) {
-		case EventsListener.EVENT_ONCREATE:
+		case FGEventsListener.EVENT_ONCREATE:
 			this.onCreate();
 			break;
-		case EventsListener.EVENT_ONDESTORY:
+		case FGEventsListener.EVENT_ONDESTORY:
 			this.onDestory();
 			break;
-		case EventsListener.EVENT_ONTOUCH:
+		case FGEventsListener.EVENT_ONTOUCH:
 			this.onTouch((Integer) args[0], (Integer) args[1],
 					(Integer) args[2]);
 			break;
-		case EventsListener.EVENT_ONTOUCHPRESS:
+		case FGEventsListener.EVENT_ONTOUCHPRESS:
 			this.onTouchPress((Integer) args[0], (Integer) args[1],
 					(Integer) args[2]);
 			break;
-		case EventsListener.EVENT_ONTOUCHRELEASE:
+		case FGEventsListener.EVENT_ONTOUCHRELEASE:
 			this.onTouchRelease((Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONKEY:
+		case FGEventsListener.EVENT_ONKEY:
 			this.onKey((Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONKEYPRESS:
+		case FGEventsListener.EVENT_ONKEYPRESS:
 			this.onKeyPress((Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONKEYRELEASE:
+		case FGEventsListener.EVENT_ONKEYRELEASE:
 			this.onKeyRelease((Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONALARM:
+		case FGEventsListener.EVENT_ONALARM:
 			this.onAlarm((Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONGAMESTART:
+		case FGEventsListener.EVENT_ONGAMESTART:
 			this.onGameStart();
 			break;
-		case EventsListener.EVENT_ONGAMEPAUSE:
+		case FGEventsListener.EVENT_ONGAMEPAUSE:
 			this.onGamePause();
 			break;
-		case EventsListener.EVENT_ONGAMERESUME:
+		case FGEventsListener.EVENT_ONGAMERESUME:
 			this.onGameResume();
 			break;
-		case EventsListener.EVENT_ONGAMEEND:
+		case FGEventsListener.EVENT_ONGAMEEND:
 			this.onGameEnd();
 			break;
-		case EventsListener.EVENT_ONSTAGECHANGE:
+		case FGEventsListener.EVENT_ONSTAGECHANGE:
 			this.onStageChange();
 			break;
-		case EventsListener.EVENT_ONSTAGESTART:
+		case FGEventsListener.EVENT_ONSTAGESTART:
 			this.onStageStart();
 			break;
-		case EventsListener.EVENT_ONSTAGEEND:
+		case FGEventsListener.EVENT_ONSTAGEEND:
 			this.onStageEnd();
 			break;
-		case EventsListener.EVENT_ONDRAW:
+		case FGEventsListener.EVENT_ONDRAW:
 			if (visible) {
 				onDraw();
 			}
-			if (MyDebug.debugMode && collisionMask != null) {// 便于调试
+			if (FGDebug.debugMode && collisionMask != null) {// 便于调试
 				collisionMask.draw(getCanvas());
 			}
 			break;
-		case EventsListener.EVENT_ONSTEP:
+		case FGEventsListener.EVENT_ONSTEP:
 			this.onStep();
 			break;
-		case EventsListener.EVENT_ONSTEPSTART:
+		case FGEventsListener.EVENT_ONSTEPSTART:
 			this.onStepStart();
 			break;
-		case EventsListener.EVENT_ONSTEPEND:
+		case FGEventsListener.EVENT_ONSTEPEND:
 			this.onStepEnd();
 			break;
-		case EventsListener.EVENT_ONCOLLISIONWITH:
-			this.onCollisionWith((Performer) args[0]);
+		case FGEventsListener.EVENT_ONCOLLISIONWITH:
+			this.onCollisionWith((FGPerformer) args[0]);
 			break;
-		case EventsListener.EVENT_ONUSERDEFINEDEVENT:
+		case FGEventsListener.EVENT_ONUSERDEFINEDEVENT:
 			this.onUserDefinedEvent((Integer) args[0]);
 			break;
-		case EventsListener.EVENT_ONSCREENSIZECHANGED:
+		case FGEventsListener.EVENT_ONSCREENSIZECHANGED:
 			this.onScreenSizeChanged((Integer) args[0], (Integer) args[1]);
 			break;
-		case EventsListener.EVENT_ONOUTOFSTAGE:
+		case FGEventsListener.EVENT_ONOUTOFSTAGE:
 			this.onOutOfStage();
 			break;
 		}
@@ -170,11 +170,11 @@ public class Performer extends EventsListener {
 	// 判断是否离开 Stage 的函数，默认为坐标/Sprite 的最外围矩形超出 Stage 范围，建议重载该函数以精确考虑 Sprite 的情况
 	public boolean isOutOfStage() {
 		if (!employed) {
-			MyDebug.error("Performer is not on any stage!");
+			FGDebug.error("Performer is not on any stage!");
 		}
-		Stage s = Stage.index2Stage(stage);
-		if (s != Stage.currentStage) {
-			MyDebug.warning("Performer is not performing now!");
+		FGStage s = FGStage.index2Stage(stage);
+		if (s != FGStage.currentStage) {
+			FGDebug.warning("Performer is not performing now!");
 		}
 
 		if (sprite == null) {
@@ -189,20 +189,20 @@ public class Performer extends EventsListener {
 
 	public final void perform(int stage) {
 		if (employed) {
-			MyDebug.warning("Performer already been employed!");
+			FGDebug.warning("Performer already been employed!");
 			return;
 		}
 
-		Stage.index2Stage(stage).employPerformer(this);
+		FGStage.index2Stage(stage).employPerformer(this);
 	}
 
 	public final void dismiss() {
 		if (!employed) {
-			MyDebug.warning("Can't dismiss an unemployed performer!");
+			FGDebug.warning("Can't dismiss an unemployed performer!");
 			return;
 		}
 
-		Stage.index2Stage(stage).dismissPerformer(this);
+		FGStage.index2Stage(stage).dismissPerformer(this);
 	}
 
 	public final void freezeMe() {
@@ -213,11 +213,11 @@ public class Performer extends EventsListener {
 		frozen = false;
 	}
 
-	public final void bindSprite(Sprite sprite) {
+	public final void bindSprite(FGSprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public final Sprite getSprite() {
+	public final FGSprite getSprite() {
 		return sprite;
 	}
 
@@ -227,16 +227,16 @@ public class Performer extends EventsListener {
 		}
 	}
 
-	public final void bindCollisionMask(GraphicCollision collisionMask) {
+	public final void bindCollisionMask(FGGraphicCollision collisionMask) {
 		this.collisionMask = collisionMask;
 		updateCollisionMask();
 	}
 
-	public final GraphicCollision getCollisionMask() {
+	public final FGGraphicCollision getCollisionMask() {
 		return collisionMask;
 	}
 
-	public final void requireCollisionDetection(Performer target) {
+	public final void requireCollisionDetection(FGPerformer target) {
 		if (requiredCollisionDetection.contains(target)) {
 			return;
 		}
@@ -253,7 +253,7 @@ public class Performer extends EventsListener {
 		requiredClassCollisionDetection.add(target);
 	}
 
-	public final void cancelCollisionDetection(Performer target) {
+	public final void cancelCollisionDetection(FGPerformer target) {
 		requiredCollisionDetection.remove(target);
 	}
 
@@ -269,7 +269,7 @@ public class Performer extends EventsListener {
 	public final void setDepth(int depth) {
 		this.depth = depth;
 		if (employed) {
-			Stage.index2Stage(this.stage).sortWithDepth();
+			FGStage.index2Stage(this.stage).sortWithDepth();
 		}
 	}
 
@@ -307,7 +307,7 @@ public class Performer extends EventsListener {
 			throw new IllegalArgumentException(
 					"Friction can't be smaller than zero!");
 		}
-		Performer.friction = friction;
+		FGPerformer.friction = friction;
 	}
 
 	// 以参数（方向，重力大小（像素每步））设定重力
@@ -316,8 +316,8 @@ public class Performer extends EventsListener {
 			throw new IllegalArgumentException(
 					"Gravity can't be smaller than zero!");
 		}
-		Performer.gravity = gravity;
-		Performer.gravity_direction = direction;
+		FGPerformer.gravity = gravity;
+		FGPerformer.gravity_direction = direction;
 	}
 
 	// 以参数（横向速度，纵向速度）设定运动
@@ -325,7 +325,7 @@ public class Performer extends EventsListener {
 		this.hspeed = hspeed;
 		this.vspeed = vspeed;
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
 				-vspeed, hspeed)));
 	}
 
@@ -334,33 +334,33 @@ public class Performer extends EventsListener {
 		this.hspeed += hspeed;
 		this.vspeed += vspeed;
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
 				-vspeed, hspeed)));
 	}
 
 	// 以参数（方向，速度）设定运动
 	public final void motion_set(float dir, float speed) {
-		hspeed = MathsHelper.lengthdir_x(speed, dir);
-		vspeed = -MathsHelper.lengthdir_y(speed, dir);
+		hspeed = FGMathsHelper.lengthdir_x(speed, dir);
+		vspeed = -FGMathsHelper.lengthdir_y(speed, dir);
 		this.speed = speed;
 		direction = dir;
 	}
 
 	// 以参数（方向，速度）对当前运动做改变
 	public final void motion_add(float dir, float speed) {
-		hspeed += MathsHelper.lengthdir_x(speed, dir);
-		vspeed -= MathsHelper.lengthdir_y(speed, dir);
+		hspeed += FGMathsHelper.lengthdir_x(speed, dir);
+		vspeed -= FGMathsHelper.lengthdir_y(speed, dir);
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
 				-vspeed, hspeed)));
 	}
 
 	protected void updateMovement() {
 		// 先计算重力影响
-		hspeed += MathsHelper.lengthdir_x(gravity, gravity_direction);
-		vspeed -= MathsHelper.lengthdir_y(gravity, gravity_direction);
+		hspeed += FGMathsHelper.lengthdir_x(gravity, gravity_direction);
+		vspeed -= FGMathsHelper.lengthdir_y(gravity, gravity_direction);
 
-		direction = MathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
 				-vspeed, hspeed)));
 		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
 		// 再计算阻力影响
@@ -369,15 +369,15 @@ public class Performer extends EventsListener {
 		} else {
 			speed = 0;
 		}
-		hspeed = MathsHelper.lengthdir_x(speed, direction);
-		vspeed = -MathsHelper.lengthdir_y(speed, direction);
+		hspeed = FGMathsHelper.lengthdir_x(speed, direction);
+		vspeed = -FGMathsHelper.lengthdir_y(speed, direction);
 
 		if (hspeed != 0 || vspeed != 0) {
 			this.setPosition(x + hspeed, y + vspeed);
 		}
 	}
 
-	public void playAScreenPlay(ScreenPlay screenPlay) {
+	public void playAScreenPlay(FGScreenPlay screenPlay) {
 		myScreenPlay = screenPlay;
 		if (myScreenPlay != null) {
 			myScreenPlay.prepareToPlay(this);
@@ -385,7 +385,7 @@ public class Performer extends EventsListener {
 	}
 
 	public final Canvas getCanvas() {
-		return GamingThread.bufferCanvas;
+		return FGGamingThread.bufferCanvas;
 	}
 
 	public final void setAlarm(int alarm, int step, boolean repeat) {
@@ -422,7 +422,7 @@ public class Performer extends EventsListener {
 				if (a.remainSteps > 0) {
 					a.remainSteps -= 1;
 					if (a.remainSteps == 0) {
-						callEvent(EventsListener.EVENT_ONALARM, i);
+						callEvent(FGEventsListener.EVENT_ONALARM, i);
 						if (a.repeat) {
 							a.remainSteps = a.setSteps;
 						} else {
@@ -448,7 +448,7 @@ public class Performer extends EventsListener {
 	 * 这个函数测试在（x, y）位置是否和 Performer target 有碰撞。<br>
 	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
 	 */
-	public final Performer collision_point(int x, int y, Performer target,
+	public final FGPerformer collision_point(int x, int y, FGPerformer target,
 			boolean notme) {
 		if (target.frozen || target.collisionMask == null
 				|| (target == this && notme)) {
@@ -461,9 +461,9 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	public final Performer collision_point(int x, int y, Class<?> target,
+	public final FGPerformer collision_point(int x, int y, Class<?> target,
 			boolean notme) {
-		for (Performer p : Stage.getPerformersByClass(target)) {
+		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
 			if (collision_point(x, y, p, notme) != null) {
 				return p;
 			}
@@ -476,8 +476,8 @@ public class Performer extends EventsListener {
 	 * 举例来说，你可以使用这个函数测试某个区域里是否没有障碍物。<br>
 	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
 	 */
-	public final Performer collision_rectangle(int left, int top, int width,
-			int height, Performer target, boolean notme) {
+	public final FGPerformer collision_rectangle(int left, int top, int width,
+			int height, FGPerformer target, boolean notme) {
 		if (target.frozen || target.collisionMask == null
 				|| (target == this && notme)) {
 			return null;
@@ -489,9 +489,9 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	public final Performer collision_rectangle(int left, int top, int width,
+	public final FGPerformer collision_rectangle(int left, int top, int width,
 			int height, Class<?> target, boolean notme) {
-		for (Performer p : Stage.getPerformersByClass(target)) {
+		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
 			if (collision_rectangle(left, top, width, height, p, notme) != null) {
 				return p;
 			}
@@ -504,8 +504,8 @@ public class Performer extends EventsListener {
 	 * 举例来说，你可以使用这个函数测试某 Performer 是否靠近某特定位置。<br>
 	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
 	 */
-	public final Performer collision_circle(int xc, int yc, int radius,
-			Performer target, boolean notme) {
+	public final FGPerformer collision_circle(int xc, int yc, int radius,
+			FGPerformer target, boolean notme) {
 		if (target.frozen || target.collisionMask == null
 				|| (target == this && notme)) {
 			return null;
@@ -517,9 +517,9 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	public final Performer collision_circle(int xc, int yc, int radius,
+	public final FGPerformer collision_circle(int xc, int yc, int radius,
 			Class<?> target, boolean notme) {
-		for (Performer p : Stage.getPerformersByClass(target)) {
+		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
 			if (collision_circle(xc, yc, radius, p, notme) != null) {
 				return p;
 			}
@@ -532,8 +532,8 @@ public class Performer extends EventsListener {
 	 * 这是个强大的函数。你可以这样使用这个函数，通过检测线段是否与他们之间的墙相交来测试某 Performer 是否可以看到另一 Performer 。<br>
 	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
 	 */
-	public final Performer collision_line(int x1, int y1, int x2, int y2,
-			Performer target, boolean notme) {
+	public final FGPerformer collision_line(int x1, int y1, int x2, int y2,
+			FGPerformer target, boolean notme) {
 		if (target.frozen || target.collisionMask == null
 				|| (target == this && notme)) {
 			return null;
@@ -545,9 +545,9 @@ public class Performer extends EventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
-	public final Performer collision_line(int x1, int y1, int x2, int y2,
+	public final FGPerformer collision_line(int x1, int y1, int x2, int y2,
 			Class<?> target, boolean notme) {
-		for (Performer p : Stage.getPerformersByClass(target)) {
+		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
 			if (collision_line(x1, y1, x2, y2, p, notme) != null) {
 				return p;
 			}

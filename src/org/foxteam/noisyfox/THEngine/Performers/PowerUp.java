@@ -16,8 +16,8 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers;
 
-import org.foxteam.noisyfox.FoxGaming.Core.MathsHelper;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
+import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 
 /**
  * @ClassName: PowerUp
@@ -38,14 +38,14 @@ public abstract class PowerUp extends Bullet {
 	@Override
 	protected void onCreate() {
 		if (this.typeInterval != 0) {
-			this.setAlarm(1, (int) (Stage.getSpeed() * this.typeInterval), true);
+			this.setAlarm(1, (int) (FGStage.getSpeed() * this.typeInterval), true);
 			this.startAlarm(1);
 		} else {
 			this.stopAlarm(1);
 		}
 
 		if (typeNumber != 1) {
-			myType = MathsHelper.random(0, typeNumber - 1);
+			myType = FGMathsHelper.random(0, typeNumber - 1);
 			onTypeChange(myType);
 		}
 
@@ -53,17 +53,17 @@ public abstract class PowerUp extends Bullet {
 			this.motion_setSpeed(myHspeed, myVSpeed);
 
 		} else {
-			this.setAlarm(0, (int) (Stage.getSpeed() * 3.0f), true);
+			this.setAlarm(0, (int) (FGStage.getSpeed() * 3.0f), true);
 			this.startAlarm(0);
 
-			this.motion_set(MathsHelper.random(0, 359), 50f / Stage.getSpeed());
+			this.motion_set(FGMathsHelper.random(0, 359), 50f / FGStage.getSpeed());
 		}
 	}
 
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {
-			this.motion_set(MathsHelper.random(0, 359), 50f / Stage.getSpeed());
+			this.motion_set(FGMathsHelper.random(0, 359), 50f / FGStage.getSpeed());
 
 		} else if (whichAlarm == 1) {
 			if (typeNumber != 1) {
@@ -82,57 +82,57 @@ public abstract class PowerUp extends Bullet {
 			// 判断当前位置
 			int left = getSprite().getOffsetX() + 20;
 			int top = getSprite().getOffsetY() + 20;
-			int right = Stage.getCurrentStage().getWidth()
+			int right = FGStage.getCurrentStage().getWidth()
 					+ (getSprite() == null ? 0
 							: (getSprite().getOffsetX() - getSprite()
 									.getWidth())) - 20;
-			int bottom = Stage.getCurrentStage().getHeight()
+			int bottom = FGStage.getCurrentStage().getHeight()
 					+ (getSprite() == null ? 0
 							: (getSprite().getOffsetY() - getSprite()
 									.getHeight())) - 20;
 
 			if (getX() < left) {
 				if (getY() < top && direction <= 270) {
-					this.motion_set(MathsHelper.random(271, 359),
-							50f / Stage.getSpeed());
+					this.motion_set(FGMathsHelper.random(271, 359),
+							50f / FGStage.getSpeed());
 				} else if (getY() > bottom && direction >= 90) {
-					this.motion_set(MathsHelper.random(1, 89),
-							50f / Stage.getSpeed());
+					this.motion_set(FGMathsHelper.random(1, 89),
+							50f / FGStage.getSpeed());
 				} else if (direction >= 90 && direction <= 270) {
-					this.motion_set(MathsHelper.degreeIn360(MathsHelper.random(
-							-89, 89)), 50f / Stage.getSpeed());
+					this.motion_set(FGMathsHelper.degreeIn360(FGMathsHelper.random(
+							-89, 89)), 50f / FGStage.getSpeed());
 				}
 			} else if (getX() > right) {
 				if (getY() < top && (direction <= 180 || direction >= 270)) {
-					this.motion_set(MathsHelper.random(181, 269),
-							50f / Stage.getSpeed());
+					this.motion_set(FGMathsHelper.random(181, 269),
+							50f / FGStage.getSpeed());
 				} else if (getY() > bottom
 						&& (direction <= 90 || direction >= 180)) {
-					this.motion_set(MathsHelper.random(91, 179),
-							50f / Stage.getSpeed());
+					this.motion_set(FGMathsHelper.random(91, 179),
+							50f / FGStage.getSpeed());
 				} else if (direction <= 90 || direction >= 270) {
-					this.motion_set(MathsHelper.random(91, 269),
-							50f / Stage.getSpeed());
+					this.motion_set(FGMathsHelper.random(91, 269),
+							50f / FGStage.getSpeed());
 				}
 			} else if (getY() < top && direction <= 180) {
-				this.motion_set(MathsHelper.random(181, 359),
-						50f / Stage.getSpeed());
+				this.motion_set(FGMathsHelper.random(181, 359),
+						50f / FGStage.getSpeed());
 			} else if (getY() > bottom && direction >= 180) {
-				this.motion_set(MathsHelper.random(1, 179),
-						50f / Stage.getSpeed());
+				this.motion_set(FGMathsHelper.random(1, 179),
+						50f / FGStage.getSpeed());
 			}
 		}
 	}
 
 	public PowerUp(int x, int y) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 	}
 
 	@Override
 	public boolean isOutOfStage() {
 		return super.isOutOfStage()
-				&& this.getY() > Stage.getCurrentStage().getHeight();
+				&& this.getY() > FGStage.getCurrentStage().getHeight();
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public abstract class PowerUp extends Bullet {
 		this.typeInterval = intervalTime;
 
 		if (this.typeInterval != 0) {
-			this.setAlarm(1, (int) (Stage.getSpeed() * this.typeInterval), true);
+			this.setAlarm(1, (int) (FGStage.getSpeed() * this.typeInterval), true);
 			this.startAlarm(1);
 		} else {
 			this.stopAlarm(1);

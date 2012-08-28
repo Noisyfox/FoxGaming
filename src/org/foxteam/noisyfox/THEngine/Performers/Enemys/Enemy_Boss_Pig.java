@@ -16,11 +16,11 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.ScreenPlay;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
-import org.foxteam.noisyfox.FoxGaming.G2D.GraphicCollision;
-import org.foxteam.noisyfox.FoxGaming.G2D.Sprite;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGScreenPlay;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_2;
@@ -35,14 +35,14 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
  */
 public class Enemy_Boss_Pig extends EnemyInAir {
 
-	GraphicCollision myCollisionMask = new GraphicCollision();
-	ScreenPlay myAni = new ScreenPlay();
+	FGGraphicCollision myCollisionMask = new FGGraphicCollision();
+	FGScreenPlay myAni = new FGScreenPlay();
 	boolean getReady = false;
 	boolean fire2 = true;
 
 	@Override
 	protected void onCreate() {
-		Sprite pigSprite = new Sprite();
+		FGSprite pigSprite = new FGSprite();
 		pigSprite.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.enemy_pig, 10, 1,
 				false);
@@ -50,7 +50,7 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 				.setOffset(pigSprite.getWidth() / 2, pigSprite.getHeight() / 2);
 		this.bindSprite(pigSprite);
 
-		this.setAlarm(0, (int) (Stage.getSpeed() * 0.1f), true);// 播放动画
+		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.1f), true);// 播放动画
 		this.startAlarm(0);
 
 		int[][] vertex1 = { { 0, -29 }, { -20, 0 }, { -15, 30 }, { 15, 30 },
@@ -68,12 +68,12 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 
 		this.invincible = true;
 
-		float myVSpeed = 90f / Stage.getSpeed();
-		float myHSpeed = 50f / Stage.getSpeed();
-		int dXmax = Stage.getCurrentStage().getWidth() / 2
+		float myVSpeed = 90f / FGStage.getSpeed();
+		float myHSpeed = 50f / FGStage.getSpeed();
+		int dXmax = FGStage.getCurrentStage().getWidth() / 2
 				- pigSprite.getOffsetX() - 10;
 
-		myAni.jumpTo(Stage.getCurrentStage().getWidth() / 2, Stage
+		myAni.jumpTo(FGStage.getCurrentStage().getWidth() / 2, FGStage
 				.getCurrentStage().getHeight() / 4);
 		myAni.moveTowards(180, myHSpeed);
 		myAni.wait((int) (dXmax / myHSpeed));
@@ -83,17 +83,17 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 		myAni.wait((int) (dXmax / myHSpeed * 2));
 		myAni.moveTowards(0, myHSpeed);
 		myAni.wait((int) (dXmax / myHSpeed));
-		myAni.jumpTo(Stage.getCurrentStage().getWidth() / 2, Stage
+		myAni.jumpTo(FGStage.getCurrentStage().getWidth() / 2, FGStage
 				.getCurrentStage().getHeight() / 4);
 		myAni.moveTowards(270, myVSpeed);
-		myAni.wait((int) (Stage.getCurrentStage().getHeight() / 4 / myVSpeed));
+		myAni.wait((int) (FGStage.getCurrentStage().getHeight() / 4 / myVSpeed));
 		myAni.stop();
-		myAni.wait((int) (Stage.getSpeed() * 0.7f));
+		myAni.wait((int) (FGStage.getSpeed() * 0.7f));
 		myAni.moveTowards(90, myVSpeed);
-		myAni.wait((int) (Stage.getCurrentStage().getHeight() / 4 / myVSpeed));
+		myAni.wait((int) (FGStage.getCurrentStage().getHeight() / 4 / myVSpeed));
 		myAni.stop();
 
-		this.setPosition(Stage.getCurrentStage().getWidth() / 2,
+		this.setPosition(FGStage.getCurrentStage().getWidth() / 2,
 				pigSprite.getOffsetY() - pigSprite.getHeight());
 		this.motion_set(270, myVSpeed);
 
@@ -102,7 +102,7 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 	@Override
 	protected void onStep() {
 		if (!getReady) {
-			if (getY() >= Stage.getCurrentStage().getHeight() / 4) {
+			if (getY() >= FGStage.getCurrentStage().getHeight() / 4) {
 				getReady = true;
 				this.invincible = false;
 			}
@@ -110,7 +110,7 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 			int step = myAni.getRemainNumber();
 			if (step == 0) {
 				this.playAScreenPlay(myAni);
-				this.setAlarm(1, (int) (Stage.getSpeed() * 1f), true);// 发射第一种子弹
+				this.setAlarm(1, (int) (FGStage.getSpeed() * 1f), true);// 发射第一种子弹
 				this.startAlarm(1);
 				fire2 = true;
 
@@ -120,7 +120,7 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 				// 发射第二种子弹
 				for (int i = 0; i < 8; i++) {
 					Bullet b = new Bullet_Enemy_2((int) this.getX(),
-							(int) this.getY(), 45 * i, 110f / Stage.getSpeed());
+							(int) this.getY(), 45 * i, 110f / FGStage.getSpeed());
 					b.setDepth(this.getDepth() - 1);
 				}
 				fire2 = false;
@@ -137,7 +137,7 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 			Bullet b = new Bullet_Enemy_2((int) this.getX(), (int) this.getY()
 					- this.getSprite().getOffsetY()
 					+ this.getSprite().getHeight(), 270,
-					110f / Stage.getSpeed());
+					110f / FGStage.getSpeed());
 			b.setDepth(this.getDepth() + 1);
 		}
 	}
@@ -150,12 +150,12 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 
 		this.bindCollisionMask(null);
 
-		GamingThread.score += 1000;
+		FGGamingThread.score += 1000;
 	}
 
 	@Override
 	public void createEnemy(int x, int y, int... extraConfig) {
-		this.perform(Stage.getCurrentStage().getStageIndex());
+		this.perform(FGStage.getCurrentStage().getStageIndex());
 	}
 
 }

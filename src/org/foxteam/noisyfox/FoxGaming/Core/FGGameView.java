@@ -21,20 +21,14 @@ import android.view.SurfaceView;
 
 /**
  * @ClassName: MainView
- * @Description: TODO
+ * @Description: 内建view
  * @author: Noisyfox
  * @date: 2012-6-19 下午8:02:22
  * 
  */
-public class GameView extends SurfaceView {
+public class FGGameView extends SurfaceView {
 
-	/**
-	 * @Title: MainView
-	 * @Description: TODO
-	 * @param: @param context
-	 * @throws
-	 */
-	protected GameView(Context context) {
+	protected FGGameView(Context context) {
 		super(context);
 		setFocusable(true);
 		setFocusableInTouchMode(true);

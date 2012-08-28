@@ -19,7 +19,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GameCore;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +32,7 @@ import android.graphics.Canvas;
  * @date: 2012-8-18 下午8:08:12
  * 
  */
-public final class GraphicFont {
+public final class FGGraphicFont {
 	public static final int ALIGN_LEFT = 1;
 	public static final int ALIGN_RIGHT = 2;
 	public static final int ALIGN_CENTER = 3;
@@ -48,10 +48,10 @@ public final class GraphicFont {
 	public void mapFont(int resId, String chars, boolean cDensityDpi) {
 		Bitmap b = null;
 		if (cDensityDpi) {
-			b = BitmapFactory.decodeResource(GameCore.getMainContext()
+			b = BitmapFactory.decodeResource(FGGameCore.getMainContext()
 					.getResources(), resId);
 		} else {
-			InputStream is = GameCore.getMainContext().getResources()
+			InputStream is = FGGameCore.getMainContext().getResources()
 					.openRawResource(resId);
 			b = BitmapFactory.decodeStream(is);
 		}

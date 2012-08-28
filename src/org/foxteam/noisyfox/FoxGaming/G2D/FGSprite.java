@@ -18,7 +18,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import java.io.InputStream;
 
-import org.foxteam.noisyfox.FoxGaming.Core.GameCore;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,7 +33,7 @@ import android.graphics.Paint;
  * @date: 2012-6-25 下午11:23:07
  * 
  */
-public class Sprite {
+public class FGSprite {
 	/**
 	 * Source image
 	 */
@@ -65,7 +65,7 @@ public class Sprite {
 	private int offsetY = 0;
 	private boolean visible = true;
 
-	public Sprite() {
+	public FGSprite() {
 
 	}
 
@@ -86,10 +86,10 @@ public class Sprite {
 			int verticalNumber, boolean cDensityDpi) {
 		Bitmap b = null;
 		if (cDensityDpi) {
-			b = BitmapFactory.decodeResource(GameCore.getMainContext()
+			b = BitmapFactory.decodeResource(FGGameCore.getMainContext()
 					.getResources(), resId);
 		} else {
-			InputStream is = GameCore.getMainContext().getResources()
+			InputStream is = FGGameCore.getMainContext().getResources()
 					.openRawResource(resId);
 			b = BitmapFactory.decodeStream(is);
 		}
@@ -195,7 +195,7 @@ public class Sprite {
 	}
 
 	public final void draw(Canvas c, int x, int y,
-			SpriteConvertor spriteConvertor) {
+			FGSpriteConvertor spriteConvertor) {
 
 		if (spriteConvertor != null) {
 			Paint paint = new Paint();

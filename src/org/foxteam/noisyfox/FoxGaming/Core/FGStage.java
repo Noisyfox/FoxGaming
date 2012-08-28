@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.foxteam.noisyfox.FoxGaming.G2D.Background;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 
 import android.graphics.Color;
 
@@ -34,41 +34,41 @@ import android.graphics.Color;
  * @date: 2012-6-19 下午8:29:50
  * 
  */
-public abstract class Stage {
+public abstract class FGStage {
 	// 全局参数
-	private static List<Stage> stages = new ArrayList<Stage>();
-	protected static Stage currentStage = null;// 当前活动的stage
-	protected static Stage targetStage = null;// 要跳转到的stage
+	private static List<FGStage> stages = new ArrayList<FGStage>();
+	protected static FGStage currentStage = null;// 当前活动的stage
+	protected static FGStage targetStage = null;// 要跳转到的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
 
-	protected List<Performer> performers = null;
-	protected List<Views> activatedViews = null;
+	protected List<FGPerformer> performers = null;
+	protected List<FGViews> activatedViews = null;
 	protected int width = 480;// stage 的宽
 	protected int height = 800;// stage 的高
 	protected float stageSpeed = 30f;
 	protected int backgroundColor = Color.WHITE;
-	protected Background background = null;
+	protected FGBackground background = null;
 	protected int stageIndex = -1;
 	private boolean available = false;
-	private List<Performer> employingPerformer = null;
-	private List<Performer> emploiedPerformer = null;
-	private List<Performer> dismissingPerformer = null;
-	private List<Performer> dismissedPerformer = null;
-	private Queue<Performer> collisions = null;
+	private List<FGPerformer> employingPerformer = null;
+	private List<FGPerformer> emploiedPerformer = null;
+	private List<FGPerformer> dismissingPerformer = null;
+	private List<FGPerformer> dismissedPerformer = null;
+	private Queue<FGPerformer> collisions = null;
 
 	/*
 	 * Stage 初始化函数，在切换 Stage 时目标 Stage 被载入时执行，用来执行添加 Performer 以及其它初始化 Stage 的工作
 	 */
 	protected abstract void onCreate();
 
-	public Stage() {
-		performers = new ArrayList<Performer>();
-		activatedViews = new ArrayList<Views>();
-		employingPerformer = new ArrayList<Performer>();
-		dismissingPerformer = new ArrayList<Performer>();
-		emploiedPerformer = new ArrayList<Performer>();
-		dismissedPerformer = new ArrayList<Performer>();
-		collisions = new ConcurrentLinkedQueue<Performer>();
+	public FGStage() {
+		performers = new ArrayList<FGPerformer>();
+		activatedViews = new ArrayList<FGViews>();
+		employingPerformer = new ArrayList<FGPerformer>();
+		dismissingPerformer = new ArrayList<FGPerformer>();
+		emploiedPerformer = new ArrayList<FGPerformer>();
+		dismissedPerformer = new ArrayList<FGPerformer>();
+		collisions = new ConcurrentLinkedQueue<FGPerformer>();
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
@@ -78,16 +78,16 @@ public abstract class Stage {
 		}
 	}
 
-	public Stage(int index) {
+	public FGStage(int index) {
 		this();
 		setStageIndex(index);
 	}
 
-	public static final Stage getCurrentStage() {
+	public static final FGStage getCurrentStage() {
 		return currentStage;
 	}
 
-	public static final Stage index2Stage(int stageIndex) {
+	public static final FGStage index2Stage(int stageIndex) {
 		if (stageIndex < 0 || stageIndex > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
 		}
@@ -127,7 +127,7 @@ public abstract class Stage {
 	/**
 	 * 静态函数 获取当前活动的stage的background<br>
 	 */
-	public static final Background getCurrentBackground() {
+	public static final FGBackground getCurrentBackground() {
 		return currentStage.background;
 	}
 
@@ -141,25 +141,25 @@ public abstract class Stage {
 	/**
 	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
 	 */
-	public static final Performer[] getPerformersByClass(Class<?> c) {
-		List<Performer> per = new ArrayList<Performer>();
+	public static final FGPerformer[] getPerformersByClass(Class<?> c) {
+		List<FGPerformer> per = new ArrayList<FGPerformer>();
 
-		for (Performer p : currentStage.performers) {
+		for (FGPerformer p : currentStage.performers) {
 			if (c.isInstance(p)) {
 				per.add(p);
 			}
 		}
 
-		Performer[] p = new Performer[per.size()];
+		FGPerformer[] p = new FGPerformer[per.size()];
 
 		return per.toArray(p);
 	}
 
 	protected final void sortWithDepth() {
 		synchronized (performers) {
-			Comparator<Performer> cmp = new Comparator<Performer>() {
+			Comparator<FGPerformer> cmp = new Comparator<FGPerformer>() {
 				@Override
-				public int compare(Performer lhs, Performer rhs) {
+				public int compare(FGPerformer lhs, FGPerformer rhs) {
 					if (lhs.depth > rhs.depth)
 						return -1;
 					if (lhs.depth < rhs.depth)
@@ -184,7 +184,7 @@ public abstract class Stage {
 				stages.get(i).stageIndex = i;
 
 				synchronized (stages.get(i).performers) {
-					for (Performer p : stages.get(i).performers) {
+					for (FGPerformer p : stages.get(i).performers) {
 						p.stage = i;
 					}
 				}
@@ -204,7 +204,7 @@ public abstract class Stage {
 		ensureAvailable();
 
 		// 注销所有存在的 Performer
-		for (Performer p : performers) {
+		for (FGPerformer p : performers) {
 			p.employed = false;
 			p.performing = false;
 		}
@@ -223,7 +223,7 @@ public abstract class Stage {
 		collisions.clear();
 	}
 
-	protected final void employPerformer(Performer performer) {
+	protected final void employPerformer(FGPerformer performer) {
 		ensureAvailable();
 		synchronized (employingPerformer) {
 			if (employingPerformer.contains(performer)) {
@@ -236,7 +236,7 @@ public abstract class Stage {
 	protected final void employPerformer() {
 		synchronized (performers) {
 			synchronized (employingPerformer) {
-				for (Performer p : employingPerformer) {
+				for (FGPerformer p : employingPerformer) {
 					if (performers.contains(p))
 						continue;
 					performers.add(p);
@@ -246,16 +246,16 @@ public abstract class Stage {
 				employingPerformer.clear();
 			}
 		}
-		for (Performer p : emploiedPerformer) {
+		for (FGPerformer p : emploiedPerformer) {
 			p.employed = true;
 			p.performing = true;
 			p.stage = stageIndex;
-			p.callEvent(EventsListener.EVENT_ONCREATE);
+			p.callEvent(FGEventsListener.EVENT_ONCREATE);
 		}
 		emploiedPerformer.clear();
 	}
 
-	protected final void dismissPerformer(Performer performer) {
+	protected final void dismissPerformer(FGPerformer performer) {
 		ensureAvailable();
 		synchronized (dismissingPerformer) {
 			if (dismissingPerformer.contains(performer)) {
@@ -268,7 +268,7 @@ public abstract class Stage {
 	protected final void dismissPerformer() {
 		synchronized (performers) {
 			synchronized (dismissingPerformer) {
-				for (Performer p : dismissingPerformer) {
+				for (FGPerformer p : dismissingPerformer) {
 					if (!performers.contains(p))
 						continue;
 					performers.remove(p);
@@ -279,8 +279,8 @@ public abstract class Stage {
 				dismissingPerformer.clear();
 			}
 		}
-		for (Performer p : dismissedPerformer) {
-			p.callEvent(EventsListener.EVENT_ONDESTORY);
+		for (FGPerformer p : dismissedPerformer) {
+			p.callEvent(FGEventsListener.EVENT_ONDESTORY);
 			p.employed = false;
 			p.performing = false;
 		}
@@ -290,15 +290,15 @@ public abstract class Stage {
 	public final void broadcastEvent(int event, Object... args) {
 		ensureAvailable();
 		synchronized (performers) {
-			for (Performer p : performers) {
+			for (FGPerformer p : performers) {
 				p.callEvent(event, args);
 			}
 		}
 	}
 
-	public final void addView(Views view) {
+	public final void addView(FGViews view) {
 		if (activatedViews.contains(view)) {
-			MyDebug.warning("View already activated!");
+			FGDebug.warning("View already activated!");
 			return;
 		}
 		activatedViews.add(view);
@@ -308,13 +308,13 @@ public abstract class Stage {
 		return activatedViews.size();
 	}
 
-	public final Views getView(int index) {
+	public final FGViews getView(int index) {
 		return activatedViews.get(index);
 	}
 
-	public final void removeView(Views view) {
+	public final void removeView(FGViews view) {
 		if (!activatedViews.contains(view)) {
-			MyDebug.warning("View not activated!");
+			FGDebug.warning("View not activated!");
 			return;
 		}
 		activatedViews.remove(view);
@@ -354,11 +354,11 @@ public abstract class Stage {
 		return backgroundColor;
 	}
 
-	public final void setBackground(Background background) {
+	public final void setBackground(FGBackground background) {
 		this.background = background;
 	}
 
-	public final Background getBackground() {
+	public final FGBackground getBackground() {
 		return background;
 	}
 
@@ -387,7 +387,7 @@ public abstract class Stage {
 		}
 
 		// 移除stage中所有performer
-		for (Performer p : performers) {
+		for (FGPerformer p : performers) {
 			p.employed = false;
 			p.performing = false;
 		}
@@ -410,7 +410,7 @@ public abstract class Stage {
 	protected final void operateAlarm() {
 		ensureAvailable();
 		synchronized (performers) {
-			for (Performer p : performers) {
+			for (FGPerformer p : performers) {
 				if (!p.frozen) {
 					p.goAlarm();
 				}
@@ -422,11 +422,11 @@ public abstract class Stage {
 	protected final void operateCollision() {
 		ensureAvailable();
 		synchronized (performers) {
-			for (Performer p : performers) {
+			for (FGPerformer p : performers) {
 				synchronized (p) {
 
 					if (p.collisionMask != null && !p.frozen) {
-						for (Performer tp : p.requiredCollisionDetection) {
+						for (FGPerformer tp : p.requiredCollisionDetection) {
 
 							if (index2Stage(tp.stage) == currentStage
 									&& !tp.frozen && tp.collisionMask != null) {
@@ -439,7 +439,7 @@ public abstract class Stage {
 							}
 						}
 
-						for (Performer p2 : performers) {
+						for (FGPerformer p2 : performers) {
 							if (p2 != p && p2.collisionMask != null
 									&& !p2.frozen) {
 								for (Class<?> c : p.requiredClassCollisionDetection) {
@@ -461,7 +461,7 @@ public abstract class Stage {
 		}
 
 		while (!collisions.isEmpty()) {
-			collisions.poll().callEvent(EventsListener.EVENT_ONCOLLISIONWITH,
+			collisions.poll().callEvent(FGEventsListener.EVENT_ONCOLLISIONWITH,
 					collisions.poll());
 		}
 	}
@@ -469,9 +469,9 @@ public abstract class Stage {
 	// 检测 Performer 是否离开 Stage
 	protected final void detectOutOfStage() {
 		synchronized (performers) {
-			for (Performer p : performers) {
+			for (FGPerformer p : performers) {
 				if (!p.frozen && p.isOutOfStage()) {
-					p.callEvent(EventsListener.EVENT_ONOUTOFSTAGE);
+					p.callEvent(FGEventsListener.EVENT_ONOUTOFSTAGE);
 				}
 			}
 		}
@@ -481,7 +481,7 @@ public abstract class Stage {
 	protected final void updateMovement() {
 
 		synchronized (performers) {
-			for (Performer p : performers) {
+			for (FGPerformer p : performers) {
 				if (!p.frozen) {
 					p.updateMovement();
 				}
@@ -493,7 +493,7 @@ public abstract class Stage {
 	protected final void playScreenPlay() {
 
 		synchronized (performers) {
-			for (Performer p : performers) {
+			for (FGPerformer p : performers) {
 				if (!p.frozen && p.myScreenPlay != null) {
 					if (p.myScreenPlay.play()) {
 						p.myScreenPlay = null;

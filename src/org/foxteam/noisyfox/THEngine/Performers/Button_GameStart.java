@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers;
 
-import org.foxteam.noisyfox.FoxGaming.Core.Button;
-import org.foxteam.noisyfox.FoxGaming.Core.GameActivity;
-import org.foxteam.noisyfox.FoxGaming.Core.Stage;
+import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGameActivity;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 
 import android.view.KeyEvent;
 
@@ -29,7 +29,7 @@ import android.view.KeyEvent;
  * @date: 2012-8-17 下午2:54:30
  * 
  */
-public class Button_GameStart extends Button {
+public class Button_GameStart extends FGButton {
 
 	public Button_GameStart() {
 		super(170, 53,
@@ -38,14 +38,14 @@ public class Button_GameStart extends Button {
 
 	@Override
 	public void onClick() {
-		Stage.nextStage();
+		FGStage.nextStage();
 		Player.remainLife = 3;
 	}
 
 	@Override
 	protected void onKeyRelease(int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			GameActivity.getGameCore().gameEnd();
+			FGGameActivity.getGameCore().gameEnd();
 		}
 	}
 
