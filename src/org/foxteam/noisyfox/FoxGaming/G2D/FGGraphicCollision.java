@@ -418,10 +418,10 @@ public class FGGraphicCollision {
 		for (FGPolygon pol1 : target.polygons_tmp) {
 			for (FGPolygon pol2 : polygons_tmp) {
 				if (pol1.isLine() && !pol2.isLine()) {
-					boolean b1 = FGMathsHelper.pointInPolygon(pol1.getVertex(0),
-							pol2);
-					boolean b2 = FGMathsHelper.pointInPolygon(pol1.getVertex(1),
-							pol2);
+					boolean b1 = FGMathsHelper.pointInPolygon(
+							pol1.getVertex(0), pol2);
+					boolean b2 = FGMathsHelper.pointInPolygon(
+							pol1.getVertex(1), pol2);
 					if ((b1 && (!b2)) || ((!b1) && b2)) {
 						return true;
 					}
@@ -431,10 +431,10 @@ public class FGGraphicCollision {
 					continue;
 				}
 				if (!pol1.isLine() && pol2.isLine()) {
-					boolean b1 = FGMathsHelper.pointInPolygon(pol2.getVertex(0),
-							pol1);
-					boolean b2 = FGMathsHelper.pointInPolygon(pol2.getVertex(1),
-							pol1);
+					boolean b1 = FGMathsHelper.pointInPolygon(
+							pol2.getVertex(0), pol1);
+					boolean b2 = FGMathsHelper.pointInPolygon(
+							pol2.getVertex(1), pol1);
 					if ((b1 && (!b2)) || ((!b1) && b2)) {
 						return true;
 					}

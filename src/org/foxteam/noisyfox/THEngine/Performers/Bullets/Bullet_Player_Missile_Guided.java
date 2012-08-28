@@ -142,8 +142,8 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Enemy.class.isInstance(target)) {
-			int x = (int) FGMathsHelper.lengthdir_x(
-					this.getSprite().getOffsetY(), this.direction);
+			int x = (int) FGMathsHelper.lengthdir_x(this.getSprite()
+					.getOffsetY(), this.direction);
 			int y = -(int) FGMathsHelper.lengthdir_y(this.getSprite()
 					.getOffsetY(), this.direction);
 			new Explosion(
@@ -166,8 +166,10 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 			}
 		}
 
-		return this.collision_rectangle(0, 0, FGStage.getCurrentStage()
-				.getWidth(), FGStage.getCurrentStage().getHeight(), this, false) == null;
+		return this
+				.collision_rectangle(0, 0,
+						FGStage.getCurrentStage().getWidth(), FGStage
+								.getCurrentStage().getHeight(), this, false) == null;
 	}
 
 	public Bullet_Player_Missile_Guided(int x, int y) {

@@ -25,7 +25,7 @@ import android.graphics.Canvas;
 
 /**
  * @ClassName: performer
- * @Description: TODO
+ * @Description: 游戏运行时操作的主体对象
  * @author: Noisyfox
  * @date: 2012-6-19 下午9:21:05
  * 
@@ -77,6 +77,13 @@ public class FGPerformer extends FGEventsListener {
 		}
 	}
 
+	/**
+	 * @Title: callEvent
+	 * @Description: 用来触发该 performer 的事件
+	 * @param: @param event FGEventsListener中包含的事件类别
+	 * @param: @param args 具体的参数
+	 * @return: void
+	 */
 	public final void callEvent(int event, Object... args) {
 		if (frozen || !employed || !performing)
 			return;
@@ -163,11 +170,23 @@ public class FGPerformer extends FGEventsListener {
 		}
 	}
 
+	/**
+	 * @Title: isPerforming
+	 * @Description: 用来获取该 performer 有没有在活动
+	 * @param: @return
+	 * @return: boolean
+	 */
 	public final boolean isPerforming() {
 		return performing;
 	}
 
-	// 判断是否离开 Stage 的函数，默认为坐标/Sprite 的最外围矩形超出 Stage 范围，建议重载该函数以精确考虑 Sprite 的情况
+	/**
+	 * @Title: isOutOfStage
+	 * @Description: 判断是否离开 Stage 的函数，默认为坐标/Sprite 的最外围矩形超出 Stage
+	 *               范围，建议重载该函数以精确考虑 Sprite 的情况
+	 * @param: @return
+	 * @return: boolean
+	 */
 	public boolean isOutOfStage() {
 		if (!employed) {
 			FGDebug.error("Performer is not on any stage!");
@@ -187,6 +206,12 @@ public class FGPerformer extends FGEventsListener {
 		}
 	}
 
+	/**
+	 * @Title: perform
+	 * @Description: 将这个 performer 添加在指定的 stage 上
+	 * @param: @param stage
+	 * @return: void
+	 */
 	public final void perform(int stage) {
 		if (employed) {
 			FGDebug.warning("Performer already been employed!");
@@ -196,6 +221,12 @@ public class FGPerformer extends FGEventsListener {
 		FGStage.index2Stage(stage).employPerformer(this);
 	}
 
+	/**
+	 * @Title: dismiss
+	 * @Description: 从舞台上移除这个 performer
+	 * @param:
+	 * @return: void
+	 */
 	public final void dismiss() {
 		if (!employed) {
 			FGDebug.warning("Can't dismiss an unemployed performer!");
@@ -205,37 +236,80 @@ public class FGPerformer extends FGEventsListener {
 		FGStage.index2Stage(stage).dismissPerformer(this);
 	}
 
+	/**
+	 * @Title: freezeMe
+	 * @Description: 冻结这个 performer 使其不响应任何 event
+	 * @param:
+	 * @return: void
+	 */
 	public final void freezeMe() {
 		frozen = true;
 	}
 
+	/**
+	 * @Title: unfreezeMe
+	 * @Description: 解冻这个 performer
+	 * @param:
+	 * @return: void
+	 */
 	public final void unfreezeMe() {
 		frozen = false;
 	}
 
+	/**
+	 * @Title: bindSprite
+	 * @Description: 为这个 performer 绑定一个 sprite，系统会自动更新及绘制
+	 * @param: @param sprite
+	 * @return: void
+	 */
 	public final void bindSprite(FGSprite sprite) {
 		this.sprite = sprite;
 	}
 
+	/**
+	 * @Title: getSprite
+	 * @Description: 获取这个 performer 绑定的 sprite
+	 * @param: @return
+	 * @return: FGSprite
+	 */
 	public final FGSprite getSprite() {
 		return sprite;
 	}
 
+	// 系统函数--更新碰撞遮罩位置
 	private void updateCollisionMask() {
 		if (collisionMask != null) {
 			collisionMask.setPosition((int) x, (int) y);
 		}
 	}
 
+	/**
+	 * @Title: bindCollisionMask
+	 * @Description: 绑定一个碰撞遮罩，使其能够触发碰撞事件
+	 * @param: @param collisionMask
+	 * @return: void
+	 */
 	public final void bindCollisionMask(FGGraphicCollision collisionMask) {
 		this.collisionMask = collisionMask;
 		updateCollisionMask();
 	}
 
+	/**
+	 * @Title: getCollisionMask
+	 * @Description: 获取绑定的碰撞遮罩
+	 * @param: @return
+	 * @return: FGGraphicCollision
+	 */
 	public final FGGraphicCollision getCollisionMask() {
 		return collisionMask;
 	}
 
+	/**
+	 * @Title: requireCollisionDetection
+	 * @Description: 申请碰撞检测
+	 * @param: @param target 需要检测是否相撞的 performer
+	 * @return: void
+	 */
 	public final void requireCollisionDetection(FGPerformer target) {
 		if (requiredCollisionDetection.contains(target)) {
 			return;
@@ -244,7 +318,12 @@ public class FGPerformer extends FGEventsListener {
 		requiredCollisionDetection.add(target);
 	}
 
-	// 检测所有属于 targer 类的 Performer
+	/**
+	 * @Title: requireCollisionDetection
+	 * @Description: 申请碰撞检测并且检测所有属于 targer 类的 Performer
+	 * @param: @param target 需要检测是否相撞的 class
+	 * @return: void
+	 */
 	public final void requireCollisionDetection(Class<?> target) {
 		if (requiredClassCollisionDetection.contains(target)) {
 			return;
@@ -253,19 +332,43 @@ public class FGPerformer extends FGEventsListener {
 		requiredClassCollisionDetection.add(target);
 	}
 
+	/**
+	 * @Title: cancelCollisionDetection
+	 * @Description: 取消与指定 performer 的碰撞检测
+	 * @param: @param target
+	 * @return: void
+	 */
 	public final void cancelCollisionDetection(FGPerformer target) {
 		requiredCollisionDetection.remove(target);
 	}
 
+	/**
+	 * @Title: cancelClassCollisionDetection
+	 * @Description: 取消与属于指定 class 的 performer 的碰撞检测
+	 * @param: @param target
+	 * @return: void
+	 */
 	public final void cancelClassCollisionDetection(Class<?> target) {
 		requiredClassCollisionDetection.remove(target);
 	}
 
+	/**
+	 * @Title: clearCollisionDetection
+	 * @Description: 取消所有的碰撞检测请求
+	 * @param:
+	 * @return: void
+	 */
 	public final void clearCollisionDetection() {
 		requiredCollisionDetection.clear();
 		requiredClassCollisionDetection.clear();
 	}
 
+	/**
+	 * @Title: setDepth
+	 * @Description: 设置深度，这会影响绘制以及处理的顺序
+	 * @param: @param depth 深度，越大则越深（越在下方）
+	 * @return: void
+	 */
 	public final void setDepth(int depth) {
 		this.depth = depth;
 		if (employed) {
@@ -273,18 +376,44 @@ public class FGPerformer extends FGEventsListener {
 		}
 	}
 
+	/**
+	 * @Title: getDepth
+	 * @Description: 获取该 performer 的深度
+	 * @param: @return
+	 * @return: int
+	 */
 	public final int getDepth() {
 		return depth;
 	}
 
+	/**
+	 * @Title: setVisible
+	 * @Description: 设置该 performer 是否可见，不可见的 performer 的 onDraw
+	 *               事件不会被触发，系统也不会自动绘制绑定的 sprite
+	 * @param: @param visible
+	 * @return: void
+	 */
 	public final void setVisible(boolean visible) {
 		this.visible = visible;
 	}
 
+	/**
+	 * @Title: isVisible
+	 * @Description: 获取该 performer 是否可见
+	 * @param: @return
+	 * @return: boolean
+	 */
 	public final boolean isVisible() {
 		return visible;
 	}
 
+	/**
+	 * @Title: setPosition
+	 * @Description: 设置该 performer 当前的位置
+	 * @param: @param x
+	 * @param: @param y
+	 * @return: void
+	 */
 	public final void setPosition(float x, float y) {
 		xprevious = this.x;
 		yprevious = this.y;
@@ -325,8 +454,8 @@ public class FGPerformer extends FGEventsListener {
 		this.hspeed = hspeed;
 		this.vspeed = vspeed;
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
-				-vspeed, hspeed)));
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math
+				.atan2(-vspeed, hspeed)));
 	}
 
 	// 以参数（横向速度，纵向速度）对当前运动做改变
@@ -334,8 +463,8 @@ public class FGPerformer extends FGEventsListener {
 		this.hspeed += hspeed;
 		this.vspeed += vspeed;
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
-				-vspeed, hspeed)));
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math
+				.atan2(-vspeed, hspeed)));
 	}
 
 	// 以参数（方向，速度）设定运动
@@ -351,8 +480,8 @@ public class FGPerformer extends FGEventsListener {
 		hspeed += FGMathsHelper.lengthdir_x(speed, dir);
 		vspeed -= FGMathsHelper.lengthdir_y(speed, dir);
 		this.speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
-		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
-				-vspeed, hspeed)));
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math
+				.atan2(-vspeed, hspeed)));
 	}
 
 	protected void updateMovement() {
@@ -360,8 +489,8 @@ public class FGPerformer extends FGEventsListener {
 		hspeed += FGMathsHelper.lengthdir_x(gravity, gravity_direction);
 		vspeed -= FGMathsHelper.lengthdir_y(gravity, gravity_direction);
 
-		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math.atan2(
-				-vspeed, hspeed)));
+		direction = FGMathsHelper.degreeIn360((float) Math.toDegrees(Math
+				.atan2(-vspeed, hspeed)));
 		speed = (float) Math.sqrt(hspeed * hspeed + vspeed * vspeed);
 		// 再计算阻力影响
 		if (speed > friction) {

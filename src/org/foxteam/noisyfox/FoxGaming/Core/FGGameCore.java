@@ -37,15 +37,9 @@ public final class FGGameCore {
 
 	private static boolean inited = false;
 
-	// protected Display display;
-
 	public FGGameCore(Activity mainActivity) {
 		FGGameCore.mainActivity = mainActivity;
-		// display = ((WindowManager) mainActivity
-		// .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-
 		if (inited) {
-			// onActivityRecreated();
 		} else {
 			initializeCore();
 
@@ -53,19 +47,32 @@ public final class FGGameCore {
 		}
 	}
 
+	/**
+	 * @Title: initializeCore
+	 * @Description: 初始化核心
+	 * @param:
+	 * @return: void
+	 */
 	private void initializeCore() {
-		gameView = new FGGameView(mainActivity);
-		setupGameThread();
+		gameView = new FGGameView(mainActivity);// 创建 View
+		setupGameThread();// 启动主线程
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
 		gameView.setOnKeyListener(thread_Gaming);
 
+		// 应用系统音量控制
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		// 屏蔽系统对 返回键 的响应
 		FGGamingThread.blockKeyFromSystem(KeyEvent.KEYCODE_BACK, false);
 	}
 
+	/**
+	 * @Title: onActivityRecreated
+	 * @Description: Activity 被重新创建时再次选择性的初始化
+	 * @param:
+	 * @return: void
+	 */
 	protected void onActivityRecreated() {
 		FGDebug.print("OnActivityRecreated");
 		gameView.getHolder().removeCallback(thread_Gaming);
@@ -82,6 +89,12 @@ public final class FGGameCore {
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
+	/**
+	 * @Title: setupGameThread
+	 * @Description: 启动主线程并进入等待游戏开始的状态
+	 * @param:
+	 * @return: void
+	 */
 	private void setupGameThread() {
 		thread_Gaming = new FGGamingThread(gameView.getHolder());
 		thread_Gaming.start();
@@ -104,6 +117,12 @@ public final class FGGameCore {
 		thread_Gaming.gameResume();
 	}
 
+	/**
+	 * @Title: getGameView
+	 * @Description: 获取运行时常量 gameView
+	 * @param: @return
+	 * @return: FGGameView
+	 */
 	public static FGGameView getGameView() {
 		return gameView;
 	}

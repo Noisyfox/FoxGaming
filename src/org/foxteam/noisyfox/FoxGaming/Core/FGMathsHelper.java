@@ -41,8 +41,8 @@ public final class FGMathsHelper {
 	}
 
 	// 判断一个点是否在一个夹角内
-	public static boolean pointInAngle(FGPoint point, FGPoint vertex, FGPoint p1,
-			FGPoint p2) {
+	public static boolean pointInAngle(FGPoint point, FGPoint vertex,
+			FGPoint p1, FGPoint p2) {
 		int x = point.getX() - vertex.getX();
 		int y = point.getY() - vertex.getY();
 		int p1X = p1.getX() - vertex.getX();

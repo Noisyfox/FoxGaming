@@ -43,7 +43,6 @@ public abstract class FGButton extends FGPerformer {
 	 * @param: @param width
 	 * @param: @param height
 	 * @param: @param resId 资源id
-	 * @throws
 	 */
 	public FGButton(int width, int height, int resId) {
 		mySprite.loadFromBitmap(resId, 3, 1, false);
@@ -58,7 +57,6 @@ public abstract class FGButton extends FGPerformer {
 	 * @param: @param width
 	 * @param: @param height
 	 * @return: void
-	 * @throws
 	 */
 	public final void setSize(int width, int height) {
 		this.width = width;
@@ -141,7 +139,6 @@ public abstract class FGButton extends FGPerformer {
 	 * @Description: 触发的动作
 	 * @param:
 	 * @return: void
-	 * @throws
 	 */
 	public abstract void onClick();
 

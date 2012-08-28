@@ -38,7 +38,8 @@ public abstract class PowerUp extends Bullet {
 	@Override
 	protected void onCreate() {
 		if (this.typeInterval != 0) {
-			this.setAlarm(1, (int) (FGStage.getSpeed() * this.typeInterval), true);
+			this.setAlarm(1, (int) (FGStage.getSpeed() * this.typeInterval),
+					true);
 			this.startAlarm(1);
 		} else {
 			this.stopAlarm(1);
@@ -56,14 +57,16 @@ public abstract class PowerUp extends Bullet {
 			this.setAlarm(0, (int) (FGStage.getSpeed() * 3.0f), true);
 			this.startAlarm(0);
 
-			this.motion_set(FGMathsHelper.random(0, 359), 50f / FGStage.getSpeed());
+			this.motion_set(FGMathsHelper.random(0, 359),
+					50f / FGStage.getSpeed());
 		}
 	}
 
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {
-			this.motion_set(FGMathsHelper.random(0, 359), 50f / FGStage.getSpeed());
+			this.motion_set(FGMathsHelper.random(0, 359),
+					50f / FGStage.getSpeed());
 
 		} else if (whichAlarm == 1) {
 			if (typeNumber != 1) {
@@ -99,8 +102,8 @@ public abstract class PowerUp extends Bullet {
 					this.motion_set(FGMathsHelper.random(1, 89),
 							50f / FGStage.getSpeed());
 				} else if (direction >= 90 && direction <= 270) {
-					this.motion_set(FGMathsHelper.degreeIn360(FGMathsHelper.random(
-							-89, 89)), 50f / FGStage.getSpeed());
+					this.motion_set(FGMathsHelper.degreeIn360(FGMathsHelper
+							.random(-89, 89)), 50f / FGStage.getSpeed());
 				}
 			} else if (getX() > right) {
 				if (getY() < top && (direction <= 180 || direction >= 270)) {
@@ -154,7 +157,8 @@ public abstract class PowerUp extends Bullet {
 		this.typeInterval = intervalTime;
 
 		if (this.typeInterval != 0) {
-			this.setAlarm(1, (int) (FGStage.getSpeed() * this.typeInterval), true);
+			this.setAlarm(1, (int) (FGStage.getSpeed() * this.typeInterval),
+					true);
 			this.startAlarm(1);
 		} else {
 			this.stopAlarm(1);

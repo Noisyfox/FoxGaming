@@ -33,7 +33,7 @@ import android.view.View.OnTouchListener;
 
 /**
  * @ClassName: GamingThread
- * @Description: TODO
+ * @Description: 游戏主线程
  * @author: Noisyfox
  * @date: 2012-6-19 下午8:12:06
  * 
@@ -43,13 +43,14 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	public static long score = 0;// 内置变量-分数
 
-	protected static Canvas bufferCanvas = null;
-	protected static Bitmap bufferBitmap = null;
+	protected static Canvas bufferCanvas = null;// 缓冲画布
+	protected static Bitmap bufferBitmap = null;// 缓冲画布对应的bitmap
 	protected static int width = 0;
 	protected static int height = 0;
 	protected static int screenRotation = 0;
 	protected static SurfaceHolder surfaceHolder;
 
+	// 线程状态标识
 	private static final int STATEFLAG_WAITING = 0;// 线程刚被创建，尚未开始运作
 	private static final int STATEFLAG_STOPING = 1;
 	private static final int STATEFLAG_STOPED = 2;
@@ -88,14 +89,32 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		return SPS;
 	}
 
+	/**
+	 * @Title: getStepCount
+	 * @Description: 游戏开始后一共运行了多少step
+	 * @param: @return
+	 * @return: long
+	 */
 	public static long getStepCount() {
 		return allStepCount;
 	}
 
+	/**
+	 * @Title: getStepCount
+	 * @Description: 游戏开始后一共运行了多少时间
+	 * @param: @return
+	 * @return: long
+	 */
 	public static long getGameRunTime() {
 		return System.currentTimeMillis() - gameStartTime;
 	}
 
+	/**
+	 * @Title: getFingerCount
+	 * @Description: 当前按下的手指总数
+	 * @param: @return
+	 * @return: int
+	 */
 	public static int getFingerCount() {
 		return registedFingers.size();
 	}
@@ -108,7 +127,13 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		return height;
 	}
 
-	// 屏蔽系统对指定按键的响应，比如返回键
+	/**
+	 * @Title: blockKeyFromSystem
+	 * @Description: 屏蔽系统对指定按键的响应，比如返回键
+	 * @param: @param keyCode 需要屏蔽的按键代码
+	 * @param: @param unblock 是否为取消屏蔽keyCode所指定的按键
+	 * @return: void
+	 */
 	public static void blockKeyFromSystem(int keyCode, boolean unblock) {
 		if (!unblock) {
 			blockedKeys.add(keyCode);
@@ -125,7 +150,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	@Override
 	public void run() {
-		while (currentState == STATEFLAG_WAITING) {
+		while (currentState == STATEFLAG_WAITING) {// 等待游戏开始
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -139,12 +164,12 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		// 游戏主循环
 		while (currentState != STATEFLAG_STOPED) {
 			switch (currentState) {
-			case STATEFLAG_STOPING:
-				if (FGStage.currentStage != null) {
+			case STATEFLAG_STOPING:// 准备结束游戏
+				if (FGStage.currentStage != null) {// 广播 ONGAMEEND 事件
 					FGStage.currentStage
 							.broadcastEvent(FGEventsListener.EVENT_ONGAMEEND);
 				}
-				currentState = STATEFLAG_STOPED;
+				currentState = STATEFLAG_STOPED;// 标记为退出，结束线程
 				break;
 
 			case STATEFLAG_RUNNING:
@@ -187,7 +212,12 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		FGDebug.print("Gaming thread exit.");
 	}
 
-	// 使用当前房间图像刷新显示（而不是使用绘图事件）。
+	/**
+	 * @Title: screenRefresh
+	 * @Description: 使当前stage图像刷新显示（而不是使用绘图事件，即输出缓冲画布上的图像至屏幕）
+	 * @param:
+	 * @return: void
+	 */
 	public void screenRefresh() {
 		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
 		if (targetCanvas != null) {
@@ -219,8 +249,13 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		}
 	}
 
+	/**
+	 * @Title: prepareBufferBitmap
+	 * @Description: 准备缓冲画布
+	 * @param:
+	 * @return: void
+	 */
 	private void prepareBufferBitmap() {
-		// 准备缓冲画布
 		if (bufferBitmap == null
 				|| bufferBitmap.getWidth() != FGStage.currentStage.width
 				|| bufferBitmap.getHeight() != FGStage.currentStage.height) {
@@ -235,7 +270,12 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		}
 	}
 
-	// 主游戏逻辑,负责一个 step 的逻辑处理
+	/**
+	 * @Title: gameLogic
+	 * @Description: 主游戏逻辑,负责一个 step 的逻辑处理
+	 * @param:
+	 * @return: void
+	 */
 	private void gameLogic() {
 		long frameStartTime = System.currentTimeMillis();
 		if (gameStartTime == 0)
@@ -287,7 +327,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 			// 处理当前场景的performer
 			// 最先广播EVENT_ONSTEPSTART事件
-			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
+			FGStage.currentStage
+					.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
 			// 处理定时器事件
 			FGStage.currentStage.operateAlarm();
 			// 计算碰撞
@@ -303,10 +344,9 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			if (width != lastScreenWidth || height != lastScreenHeight) {
 				lastScreenHeight = height;
 				lastScreenWidth = width;
-				FGStage.currentStage
-						.broadcastEvent(
-								FGEventsListener.EVENT_ONSCREENSIZECHANGED,
-								width, height);
+				FGStage.currentStage.broadcastEvent(
+						FGEventsListener.EVENT_ONSCREENSIZECHANGED, width,
+						height);
 			}
 
 			// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
@@ -351,8 +391,10 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 								FGEventsListener.EVENT_ONKEY, e.getKey());
 						break;
 					case KeyboardEvent.KEY_RELEASE:
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONKEYRELEASE, e.getKey());
+						FGStage.currentStage
+								.broadcastEvent(
+										FGEventsListener.EVENT_ONKEYRELEASE,
+										e.getKey());
 						break;
 					default:
 					}
@@ -364,17 +406,21 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 			bufferCanvas.drawColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
 			if (FGStage.currentStage.background != null) {// 绘制背景
-				FGStage.currentStage.background.doAndDraw(bufferCanvas, 0, 0,
-						FGStage.currentStage.height, FGStage.currentStage.width);
+				FGStage.currentStage.background
+						.doAndDraw(bufferCanvas, 0, 0,
+								FGStage.currentStage.height,
+								FGStage.currentStage.width);
 			}
 			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
 			// 系统绘制
 			screenRefresh();
 
+			// 处理 performer 的 dismiss 操作
 			FGStage.currentStage.dismissPerformer();
 
 			// 最后广播EVENT_ONSTEPEND事件
-			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
+			FGStage.currentStage
+					.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
 		}
 
 		// 控制帧速

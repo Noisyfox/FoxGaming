@@ -120,7 +120,8 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 				// 发射第二种子弹
 				for (int i = 0; i < 8; i++) {
 					Bullet b = new Bullet_Enemy_2((int) this.getX(),
-							(int) this.getY(), 45 * i, 110f / FGStage.getSpeed());
+							(int) this.getY(), 45 * i,
+							110f / FGStage.getSpeed());
 					b.setDepth(this.getDepth() - 1);
 				}
 				fire2 = false;

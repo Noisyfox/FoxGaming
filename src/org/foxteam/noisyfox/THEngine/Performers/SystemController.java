@@ -33,7 +33,8 @@ public class SystemController extends FGPerformer {
 
 	@Override
 	protected void onCreate() {
-		bgmId = FGSimpleBGM.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
+		bgmId = FGSimpleBGM
+				.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
 		FGSimpleBGM.play(bgmId, true);
 
 		// 计算缩放比率

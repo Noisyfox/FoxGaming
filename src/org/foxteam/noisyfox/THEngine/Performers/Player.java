@@ -101,15 +101,17 @@ public class Player extends Hitable {
 		meStart = new FGPoint();
 		meOnScreen = new FGPoint();
 
-		birthAni.moveTowardsWait(FGStage.getCurrentStage().getWidth() / 2,
-				FGStage.getCurrentStage().getHeight() + playerSprite.getOffsetY()
-						+ 40, (int) (1.5f * FGStage.getSpeed()));
+		birthAni.moveTowardsWait(
+				FGStage.getCurrentStage().getWidth() / 2,
+				FGStage.getCurrentStage().getHeight()
+						+ playerSprite.getOffsetY() + 40,
+				(int) (1.5f * FGStage.getSpeed()));
 
-		birthAni.moveTowardsWait(FGStage.getCurrentStage().getWidth() / 2, FGStage
-				.getCurrentStage().getHeight()
-				- playerSprite.getHeight()
-				+ playerSprite.getOffsetY() - 40, (int) (0.5f * FGStage
-				.getSpeed()));
+		birthAni.moveTowardsWait(
+				FGStage.getCurrentStage().getWidth() / 2,
+				FGStage.getCurrentStage().getHeight()
+						- playerSprite.getHeight() + playerSprite.getOffsetY()
+						- 40, (int) (0.5f * FGStage.getSpeed()));
 		birthAni.stop();
 
 		// 添加碰撞检测遮罩
@@ -191,7 +193,8 @@ public class Player extends Hitable {
 										mainView.coordinateStage2Screen_X(
 												fingerXReal
 														+ realX
-														- (FGStage.getCurrentStage()
+														- (FGStage
+																.getCurrentStage()
 																.getWidth()
 																- this.getSprite()
 																		.getWidth() + this
@@ -247,7 +250,8 @@ public class Player extends Hitable {
 												fingerXReal,
 												fingerYReal
 														+ realY
-														- (FGStage.getCurrentStage()
+														- (FGStage
+																.getCurrentStage()
 																.getHeight()
 																- this.getSprite()
 																		.getHeight() + this
