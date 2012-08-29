@@ -56,8 +56,12 @@ public abstract class FGStage {
 	private List<FGPerformer> dismissedPerformer = null;
 	private Queue<FGPerformer> collisions = null;
 
-	/*
-	 * Stage 初始化函数，在切换 Stage 时目标 Stage 被载入时执行，用来执行添加 Performer 以及其它初始化 Stage 的工作
+	/**
+	 * @Title: onCreate
+	 * @Description: Stage 初始化函数，在切换 Stage 时目标 Stage 被载入时执行，用来执行添加 Performer
+	 *               以及其它初始化 Stage 的工作
+	 * @param:
+	 * @return: void
 	 */
 	protected abstract void onCreate();
 
@@ -176,7 +180,6 @@ public abstract class FGStage {
 	 * @Description: 重新构建index
 	 * @param:
 	 * @return: void
-	 * @throws
 	 */
 	private static final void updateStageIndex() {
 		synchronized (stages) {

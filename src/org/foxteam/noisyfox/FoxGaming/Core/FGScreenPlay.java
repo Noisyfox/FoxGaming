@@ -53,6 +53,12 @@ public final class FGScreenPlay {
 		}
 	}
 
+	/**
+	 * @Title: clear
+	 * @Description: 清空该 screenplay 包含的所有动作
+	 * @param:
+	 * @return: void
+	 */
 	public void clear() {
 		ensureAvaliable();
 
@@ -60,6 +66,12 @@ public final class FGScreenPlay {
 		movements_tmp.clear();
 	}
 
+	/**
+	 * @Title: wait
+	 * @Description: 添加动作 -- 等待指定的 step,阻塞
+	 * @param: @param steps
+	 * @return: void
+	 */
 	public void wait(int steps) {
 		ensureAvaliable();
 
@@ -73,6 +85,12 @@ public final class FGScreenPlay {
 		movements.add(m);
 	}
 
+	/**
+	 * @Title: stop
+	 * @Description: 添加动作 -- 停止运动,非阻塞
+	 * @param:
+	 * @return: void
+	 */
 	public void stop() {
 		ensureAvaliable();
 
@@ -81,6 +99,13 @@ public final class FGScreenPlay {
 		movements.add(m);
 	}
 
+	/**
+	 * @Title: jumpTo
+	 * @Description: 添加动作 -- 直接设置 performer 的坐标到指定位置,非阻塞
+	 * @param: @param x
+	 * @param: @param y
+	 * @return: void
+	 */
 	public void jumpTo(int x, int y) {
 		ensureAvaliable();
 
@@ -91,6 +116,13 @@ public final class FGScreenPlay {
 		movements.add(m);
 	}
 
+	/**
+	 * @Title: moveTowards
+	 * @Description: 添加动作 -- 以指定速度朝指定的方向运动,非阻塞
+	 * @param: @param dir 角度制
+	 * @param: @param speed
+	 * @return: void
+	 */
 	public void moveTowards(float dir, float speed) {
 		ensureAvaliable();
 
@@ -101,6 +133,14 @@ public final class FGScreenPlay {
 		movements.add(m);
 	}
 
+	/**
+	 * @Title: moveTowards
+	 * @Description: 添加动作 -- 以指定速度朝指定点方向运动,非阻塞
+	 * @param: @param x
+	 * @param: @param y
+	 * @param: @param speed
+	 * @return: void
+	 */
 	public void moveTowards(int x, int y, float speed) {
 		ensureAvaliable();
 
@@ -112,6 +152,15 @@ public final class FGScreenPlay {
 		movements.add(m);
 	}
 
+	/**
+	 * @Title: moveTowardsWait
+	 * @Description: 添加动作 -- 在指定的 step 里运动到指定点（注意在到达指定点后并不会停止运动，只是会继续应用当前
+	 *               screenplay 的下一个动作),阻塞
+	 * @param: @param x
+	 * @param: @param y
+	 * @param: @param totalSteps
+	 * @return: void
+	 */
 	public void moveTowardsWait(int x, int y, int totalSteps) {
 		ensureAvaliable();
 
@@ -127,6 +176,12 @@ public final class FGScreenPlay {
 		movements.add(m);
 	}
 
+	/**
+	 * @Title: prepareToPlay
+	 * @Description: 系统函数，应用 screenplay 到指定的 performer 上
+	 * @param: @param bindPerformer
+	 * @return: void
+	 */
 	protected void prepareToPlay(FGPerformer bindPerformer) {
 		ensureAvaliable();
 
@@ -194,7 +249,12 @@ public final class FGScreenPlay {
 		return !isPlaying;
 	}
 
-	// 得到剩余动作的数量
+	/**
+	 * @Title: getRemainNumber
+	 * @Description: 得到剩余动作的数量
+	 * @param: @return
+	 * @return: int
+	 */
 	public int getRemainNumber() {
 		return movements_tmp.size();
 	}

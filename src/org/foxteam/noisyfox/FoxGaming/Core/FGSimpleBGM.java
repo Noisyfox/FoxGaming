@@ -24,7 +24,7 @@ import android.media.MediaPlayer;
 
 /**
  * @ClassName: SimpleBGM
- * @Description: TODO
+ * @Description: 一个简单的 BGM 类，保证在同一时刻只会播放一首音乐
  * @author: Noisyfox
  * @date: 2012-7-9 下午4:57:02
  * 
@@ -41,6 +41,13 @@ public final class FGSimpleBGM {
 	private FGSimpleBGM() {
 	}
 
+	/**
+	 * @Title: loadBGM
+	 * @Description: 载入指定 资源id 的音频文件，返回一个内部的 声音id
+	 * @param: @param resId
+	 * @param: @return
+	 * @return: int
+	 */
 	public static int loadBGM(int resId) {
 		lastAudioId++;
 		sounds.put(lastAudioId, resId);
@@ -137,6 +144,12 @@ public final class FGSimpleBGM {
 		}
 	}
 
+	/**
+	 * @Title: freeAll
+	 * @Description: 释放所有 BGM 资源
+	 * @param:
+	 * @return: void
+	 */
 	public static void freeAll() {
 		sounds.clear();
 		if (mediaPlayer == null)
@@ -145,6 +158,12 @@ public final class FGSimpleBGM {
 		mediaPlayer = null;
 	}
 
+	/**
+	 * @Title: getInstance
+	 * @Description: 得到该类的实例
+	 * @param: @return
+	 * @return: FGSimpleBGM
+	 */
 	public static FGSimpleBGM getInstance() {
 		return simpleBGM;
 	}

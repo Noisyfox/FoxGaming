@@ -22,7 +22,7 @@ import android.media.SoundPool;
 
 /**
  * @ClassName: SimpleSoundEffect
- * @Description: TODO
+ * @Description: 一个简单的音效类
  * @author: Noisyfox
  * @date: 2012-7-9 下午4:56:49
  * 
@@ -34,16 +34,23 @@ public final class FGSimpleSoundEffect {
 
 	private static FGSimpleSoundEffect simpleSoundEffect = new FGSimpleSoundEffect();
 	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
-	private static SoundPool soundPool;
+	private static SoundPool soundPool = new SoundPool(
+			AUDIO_SOUNDPOOL_MAXSTREAMS, AudioManager.STREAM_MUSIC,
+			AUDIO_SOUNDPOOL_QUALITY);;
 	private static int volume = 100;
 
 	private static int lastAudioId = -1;
 
 	private FGSimpleSoundEffect() {
-		soundPool = new SoundPool(AUDIO_SOUNDPOOL_MAXSTREAMS,
-				AudioManager.STREAM_MUSIC, AUDIO_SOUNDPOOL_QUALITY);
 	}
 
+	/**
+	 * @Title: loadSoundEffect
+	 * @Description: 载入指定 资源id 的音频文件，返回一个内部的 声音id
+	 * @param: @param resId
+	 * @param: @return
+	 * @return: int
+	 */
 	public static int loadSoundEffect(int resId) {
 		lastAudioId++;
 		int soundId = soundPool.load(FGGameCore.mainActivity, resId, 1);
@@ -51,11 +58,23 @@ public final class FGSimpleSoundEffect {
 		return lastAudioId;
 	}
 
+	/**
+	 * @Title: play
+	 * @Description: 播放指定的音效（由于是音效故不提供循环播放功能)
+	 * @param: @param soundId
+	 * @return: void
+	 */
 	public static void play(int soundId) {
 		soundPool.play(sounds.get(soundId), (float) volume / 100f,
 				(float) volume / 100f, 1, 0, 1f);
 	}
 
+	/**
+	 * @Title: setSoundVolume
+	 * @Description: 单独设置音效的音量
+	 * @param: @param volume 范围0~100
+	 * @return: void
+	 */
 	public static void setSoundVolume(int volume) {
 		if (volume < 0 || volume > 100) {
 			throw new IllegalArgumentException();
@@ -63,15 +82,33 @@ public final class FGSimpleSoundEffect {
 		FGSimpleSoundEffect.volume = volume;
 	}
 
+	/**
+	 * @Title: getSoundVolume
+	 * @Description: 获取音效的音量
+	 * @param: @return
+	 * @return: int
+	 */
 	public static int getSoundVolume() {
 		return volume;
 	}
 
+	/**
+	 * @Title: free
+	 * @Description: 释放指定id的音效资源
+	 * @param: @param soundId
+	 * @return: void
+	 */
 	public static void free(int soundId) {
 		soundPool.unload(sounds.get(soundId));
 		sounds.remove(soundId);
 	}
 
+	/**
+	 * @Title: freeAll
+	 * @Description: 释放所有音效资源
+	 * @param:
+	 * @return: void
+	 */
 	public static void freeAll() {
 		for (int i = 0; i <= lastAudioId; i++) {
 			if (sounds.containsKey(i)) {
@@ -94,6 +131,12 @@ public final class FGSimpleSoundEffect {
 		soundPool.autoResume();
 	}
 
+	/**
+	 * @Title: getInstance
+	 * @Description: 得到该类的实例
+	 * @param: @return
+	 * @return: FGSimpleSoundEffect
+	 */
 	public static FGSimpleSoundEffect getInstance() {
 		return simpleSoundEffect;
 	}

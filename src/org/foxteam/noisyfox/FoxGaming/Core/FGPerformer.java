@@ -506,6 +506,13 @@ public class FGPerformer extends FGEventsListener {
 		}
 	}
 
+	/**
+	 * @Title: playAScreenPlay
+	 * @Description: 让该 performer 执行一个剧本。一个 performer 在同一时间只能执行一个剧本，执行期间对该
+	 *               performer 进行的任何移动操作都有可能会导致不正确的结果。
+	 * @param: @param screenPlay
+	 * @return: void
+	 */
 	public void playAScreenPlay(FGScreenPlay screenPlay) {
 		myScreenPlay = screenPlay;
 		if (myScreenPlay != null) {
@@ -513,37 +520,83 @@ public class FGPerformer extends FGEventsListener {
 		}
 	}
 
+	/**
+	 * @Title: getCanvas
+	 * @Description: 获取缓冲画布
+	 * @param: @return
+	 * @return: Canvas
+	 */
 	public final Canvas getCanvas() {
 		return FGGamingThread.bufferCanvas;
 	}
 
+	/**
+	 * @Title: setAlarm
+	 * @Description: 设置 alarm 的预设参数，该改动仅在启动或重复该 alarm 时生效
+	 * @param: @param alarm 预置的 alarm 编号,0~9共10个可用的 alarm
+	 * @param: @param step 该 alarm 的倒计时 step 数
+	 * @param: @param repeat 是否重复
+	 * @return: void
+	 */
 	public final void setAlarm(int alarm, int step, boolean repeat) {
 		Alarm a = alarms.get(alarm);
 		a.setSteps = step;
 		a.repeat = repeat;
 	}
 
+	/**
+	 * @Title: startAlarm
+	 * @Description: 启动指定的 alarm ，开始到计时
+	 * @param: @param alarm
+	 * @return: void
+	 */
 	public final void startAlarm(int alarm) {
 		Alarm a = alarms.get(alarm);
 		a.remainSteps = a.setSteps;
 		a.start = true;
 	}
 
+	/**
+	 * @Title: stopAlarm
+	 * @Description: 停止指定 alarm，注意这会重置指定 alarm 但是不会改变其预设参数
+	 * @param: @param alarm
+	 * @return: void
+	 */
 	public final void stopAlarm(int alarm) {
 		Alarm a = alarms.get(alarm);
 		a.start = false;
 	}
 
+	/**
+	 * @Title: getAlarmRemainStep
+	 * @Description: 获取指定 alarm 的剩余 step 数
+	 * @param: @param alarm
+	 * @param: @return
+	 * @return: int
+	 */
 	public final int getAlarmRemainStep(int alarm) {
 		Alarm a = alarms.get(alarm);
 		return a.remainSteps;
 	}
 
+	/**
+	 * @Title: isAlarmStart
+	 * @Description: 返回指定的 alarm 是否已经启动
+	 * @param: @param alarm
+	 * @param: @return
+	 * @return: boolean
+	 */
 	public final boolean isAlarmStart(int alarm) {
 		Alarm a = alarms.get(alarm);
 		return a.start;
 	}
 
+	/**
+	 * @Title: goAlarm
+	 * @Description: 系统函数，用来操作所有的 alarm
+	 * @param:
+	 * @return: void
+	 */
 	protected final void goAlarm() {
 		for (int i = 0; i < alarms.size(); i++) {
 			Alarm a = alarms.get(i);
@@ -574,8 +627,15 @@ public class FGPerformer extends FGEventsListener {
 	}
 
 	/**
-	 * 这个函数测试在（x, y）位置是否和 Performer target 有碰撞。<br>
-	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @Title: collision_point
+	 * @Description: 这个函数测试在（x, y）位置是否和 Performer target 有碰撞。<br>
+	 *               如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @param: @param x
+	 * @param: @param y
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
 	 */
 	public final FGPerformer collision_point(int x, int y, FGPerformer target,
 			boolean notme) {
@@ -590,6 +650,17 @@ public class FGPerformer extends FGEventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
+	/**
+	 * @Title: collision_point
+	 * @Description: 这个函数测试在（x, y）位置是否和属于 target类 的 performer 有碰撞。<br>
+	 *               如果有碰撞，返回第一个检测到的产生碰撞的 Performer， 否则返回 null
+	 * @param: @param x
+	 * @param: @param y
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
+	 */
 	public final FGPerformer collision_point(int x, int y, Class<?> target,
 			boolean notme) {
 		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
@@ -601,9 +672,18 @@ public class FGPerformer extends FGEventsListener {
 	}
 
 	/**
-	 * 这个函数测试指定对角的矩形（已填充）是否和 Performer target 有碰撞。<br>
-	 * 举例来说，你可以使用这个函数测试某个区域里是否没有障碍物。<br>
-	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @Title: collision_rectangle
+	 * @Description: 这个函数测试指定对角的矩形（已填充）是否和 Performer target 有碰撞。<br>
+	 *               举例来说，你可以使用这个函数测试某个区域里是否没有障碍物。<br>
+	 *               如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @param: @param left
+	 * @param: @param top
+	 * @param: @param width
+	 * @param: @param height
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
 	 */
 	public final FGPerformer collision_rectangle(int left, int top, int width,
 			int height, FGPerformer target, boolean notme) {
@@ -618,6 +698,20 @@ public class FGPerformer extends FGEventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
+	/**
+	 * @Title: collision_rectangle
+	 * @Description: 这个函数测试指定对角的矩形（已填充）是否和属于 target类 的 performer 有碰撞。<br>
+	 *               举例来说，你可以使用这个函数测试某个区域里是否没有障碍物。<br>
+	 *               如果有碰撞，返回第一个检测到的产生碰撞的 Performer， 否则返回 null
+	 * @param: @param left
+	 * @param: @param top
+	 * @param: @param width
+	 * @param: @param height
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
+	 */
 	public final FGPerformer collision_rectangle(int left, int top, int width,
 			int height, Class<?> target, boolean notme) {
 		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
@@ -629,9 +723,17 @@ public class FGPerformer extends FGEventsListener {
 	}
 
 	/**
-	 * 这个函数测试指定圆心（xc,yc）的圆（已填充）是否和 Performer target 有碰撞。<br>
-	 * 举例来说，你可以使用这个函数测试某 Performer 是否靠近某特定位置。<br>
-	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @Title: collision_circle
+	 * @Description: 这个函数测试指定圆心（xc,yc）的圆（已填充）是否和 Performer target 有碰撞。<br>
+	 *               举例来说，你可以使用这个函数测试某 Performer 是否靠近某特定位置。<br>
+	 *               如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @param: @param xc
+	 * @param: @param yc
+	 * @param: @param radius
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
 	 */
 	public final FGPerformer collision_circle(int xc, int yc, int radius,
 			FGPerformer target, boolean notme) {
@@ -646,6 +748,19 @@ public class FGPerformer extends FGEventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
+	/**
+	 * @Title: collision_circle
+	 * @Description: 这个函数测试指定圆心（xc,yc）的圆（已填充）是否和属于 target类 的 performer 有碰撞。<br>
+	 *               举例来说，你可以使用这个函数测试某 Performer 是否靠近某特定位置。<br>
+	 *               如果有碰撞，返回第一个检测到的产生碰撞的 Performer， 否则返回 null
+	 * @param: @param xc
+	 * @param: @param yc
+	 * @param: @param radius
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
+	 */
 	public final FGPerformer collision_circle(int xc, int yc, int radius,
 			Class<?> target, boolean notme) {
 		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
@@ -657,9 +772,19 @@ public class FGPerformer extends FGEventsListener {
 	}
 
 	/**
-	 * 这个函数测试线段（x1,y1）到 (x2,y2) 是否和 Performer target 有碰撞。<br>
-	 * 这是个强大的函数。你可以这样使用这个函数，通过检测线段是否与他们之间的墙相交来测试某 Performer 是否可以看到另一 Performer 。<br>
-	 * 如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @Title: collision_line
+	 * @Description: 这个函数测试线段（x1,y1）到 (x2,y2) 是否和 Performer target 有碰撞。<br>
+	 *               这是个强大的函数。你可以这样使用这个函数，通过检测线段是否与他们之间的墙相交来测试某 Performer
+	 *               是否可以看到另一 Performer 。<br>
+	 *               如果有碰撞，返回碰撞的 Performer， 否则返回 null
+	 * @param: @param x1
+	 * @param: @param y1
+	 * @param: @param x2
+	 * @param: @param y2
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
 	 */
 	public final FGPerformer collision_line(int x1, int y1, int x2, int y2,
 			FGPerformer target, boolean notme) {
@@ -674,6 +799,21 @@ public class FGPerformer extends FGEventsListener {
 		return gc_tmp.isCollisionWith(target.collisionMask) ? target : null;
 	}
 
+	/**
+	 * @Title: collision_line
+	 * @Description: 这个函数测试线段（x1,y1）到 (x2,y2) 是否和属于 target类 的 performer 有碰撞。<br>
+	 *               这是个强大的函数。你可以这样使用这个函数，通过检测线段是否与他们之间的墙相交来测试某 Performer
+	 *               是否可以看到另一 Performer 。<br>
+	 *               如果有碰撞，返回第一个检测到的产生碰撞的 Performer， 否则返回 null
+	 * @param: @param x1
+	 * @param: @param y1
+	 * @param: @param x2
+	 * @param: @param y2
+	 * @param: @param target
+	 * @param: @param notme 是否检测自己
+	 * @param: @return
+	 * @return: FGPerformer
+	 */
 	public final FGPerformer collision_line(int x1, int y1, int x2, int y2,
 			Class<?> target, boolean notme) {
 		for (FGPerformer p : FGStage.getPerformersByClass(target)) {
