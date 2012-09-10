@@ -60,8 +60,7 @@ public class FGPoint {
 
 	// 得到两点距离的平方
 	public int squareDistance(FGPoint p2) {
-		return (x - p2.getX()) * (x - p2.getX()) + (y - p2.getY())
-				* (y - p2.getY());
+		return (x - p2.x) * (x - p2.x) + (y - p2.y) * (y - p2.y);
 	}
 
 	public boolean equals(FGPoint p) {
