@@ -16,7 +16,6 @@
  */
 package org.foxteam.noisyfox.THEngine.Performers.Enemys;
 
-import org.foxteam.noisyfox.FoxGaming.Core.FGDebug;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -149,9 +148,6 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 						.getX(myFlag);
 				float dy = GlobalResources.PATHBEZIER3_ENEMY_DOOL_BLUE
 						.getY(myFlag);
-				if (myNumber == 1) {
-					FGDebug.print(dx + "," + dy);
-				}
 				dy -= 50;
 				float newX = 0;
 				float newY = baseY + dy;
