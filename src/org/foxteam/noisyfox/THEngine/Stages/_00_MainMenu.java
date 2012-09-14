@@ -33,6 +33,9 @@ public class _00_MainMenu extends FGStage {
 
 	@Override
 	protected void onCreate() {
+		this.setSize(FGGamingThread.getScreenHeight(),
+				FGGamingThread.getScreenWidth());
+
 		FGBackground bkg = new FGBackground();
 
 		bkg.loadFromBitmap(
