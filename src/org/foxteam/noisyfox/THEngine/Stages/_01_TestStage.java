@@ -24,6 +24,7 @@ import org.foxteam.noisyfox.THEngine.Performers.SystemController;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Boss_Pig;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Box_Score;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Butterfly;
+import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Doll_Blue;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Duck;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
 
@@ -62,7 +63,15 @@ public final class _01_TestStage extends FGStage {
 		ec.addEnemy(250, Enemy_Fly.class, 200, 0, 0, 200);
 		ec.addEnemy(260, Enemy_Box_Score.class, 200, 0, 0, 100);
 		ec.addEnemy(300, Enemy_Butterfly.class, 100, 0);
-		ec.addEnemy(500, Enemy_Boss_Pig.class, 0, 0);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 1);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 2);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 3);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 4);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 1);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 2);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 3);
+		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 4);
+		ec.addEnemy(800, Enemy_Boss_Pig.class, 0, 0);
 		ec.perform(getStageIndex());
 
 	}

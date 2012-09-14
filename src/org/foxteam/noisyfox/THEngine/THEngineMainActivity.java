@@ -7,6 +7,7 @@ public class THEngineMainActivity extends FGGameActivity {
 
 	@Override
 	public void onEngineReady() {
+		GlobalResources.loadResources();
 		new _00_MainMenu();
 		new _01_TestStage();
 	}
