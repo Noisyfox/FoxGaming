@@ -160,19 +160,17 @@ public abstract class FGStage {
 	}
 
 	protected final void sortWithDepth() {
-		synchronized (performers) {
-			Comparator<FGPerformer> cmp = new Comparator<FGPerformer>() {
-				@Override
-				public int compare(FGPerformer lhs, FGPerformer rhs) {
-					if (lhs.depth > rhs.depth)
-						return -1;
-					if (lhs.depth < rhs.depth)
-						return 1;
-					return 0;
-				}
-			};
-			Collections.sort(performers, cmp);
-		}
+		Comparator<FGPerformer> cmp = new Comparator<FGPerformer>() {
+			@Override
+			public int compare(FGPerformer lhs, FGPerformer rhs) {
+				if (lhs.depth > rhs.depth)
+					return -1;
+				if (lhs.depth < rhs.depth)
+					return 1;
+				return 0;
+			}
+		};
+		Collections.sort(performers, cmp);
 	}
 
 	/**
@@ -237,18 +235,17 @@ public abstract class FGStage {
 	}
 
 	protected final void employPerformer() {
-		synchronized (performers) {
-			synchronized (employingPerformer) {
-				for (FGPerformer p : employingPerformer) {
-					if (performers.contains(p))
-						continue;
-					performers.add(p);
-					emploiedPerformer.add(p);
-				}
-				sortWithDepth();
-				employingPerformer.clear();
+		synchronized (employingPerformer) {
+			for (FGPerformer p : employingPerformer) {
+				if (performers.contains(p))
+					continue;
+				performers.add(p);
+				emploiedPerformer.add(p);
 			}
+			sortWithDepth();
+			employingPerformer.clear();
 		}
+
 		for (FGPerformer p : emploiedPerformer) {
 			p.employed = true;
 			p.performing = true;
@@ -269,19 +266,18 @@ public abstract class FGStage {
 	}
 
 	protected final void dismissPerformer() {
-		synchronized (performers) {
-			synchronized (dismissingPerformer) {
-				for (FGPerformer p : dismissingPerformer) {
-					if (!performers.contains(p))
-						continue;
-					performers.remove(p);
+		synchronized (dismissingPerformer) {
+			for (FGPerformer p : dismissingPerformer) {
+				if (!performers.contains(p))
+					continue;
+				performers.remove(p);
 
-					dismissedPerformer.add(p);
-				}
-				sortWithDepth();
-				dismissingPerformer.clear();
+				dismissedPerformer.add(p);
 			}
+			sortWithDepth();
+			dismissingPerformer.clear();
 		}
+
 		for (FGPerformer p : dismissedPerformer) {
 			p.callEvent(FGEventsListener.EVENT_ONDESTORY);
 			p.employed = false;
@@ -292,10 +288,8 @@ public abstract class FGStage {
 
 	public final void broadcastEvent(int event, Object... args) {
 		ensureAvailable();
-		synchronized (performers) {
-			for (FGPerformer p : performers) {
-				p.callEvent(event, args);
-			}
+		for (FGPerformer p : performers) {
+			p.callEvent(event, args);
 		}
 	}
 
@@ -328,6 +322,10 @@ public abstract class FGStage {
 	}
 
 	public final void setSize(int height, int width) {
+		if (height <= 0 || width <= 0) {
+			throw new IllegalArgumentException(
+					"Stage's height and width must larger than 0!");
+		}
 		this.height = height;
 		this.width = width;
 	}
@@ -412,11 +410,9 @@ public abstract class FGStage {
 	// 处理定时器
 	protected final void operateAlarm() {
 		ensureAvailable();
-		synchronized (performers) {
-			for (FGPerformer p : performers) {
-				if (!p.frozen) {
-					p.goAlarm();
-				}
+		for (FGPerformer p : performers) {
+			if (!p.frozen) {
+				p.goAlarm();
 			}
 		}
 	}
@@ -424,41 +420,39 @@ public abstract class FGStage {
 	// 处理碰撞检测
 	protected final void operateCollision() {
 		ensureAvailable();
-		synchronized (performers) {
-			for (FGPerformer p : performers) {
-				synchronized (p) {
+		for (FGPerformer p : performers) {
+			synchronized (p) {
 
-					if (p.collisionMask != null && !p.frozen) {
-						for (FGPerformer tp : p.requiredCollisionDetection) {
+				if (p.collisionMask != null && !p.frozen) {
+					for (FGPerformer tp : p.requiredCollisionDetection) {
 
-							if (index2Stage(tp.stage) == currentStage
-									&& !tp.frozen && tp.collisionMask != null) {
+						if (index2Stage(tp.stage) == currentStage && !tp.frozen
+								&& tp.collisionMask != null) {
 
-								if (p.collisionMask
-										.isCollisionWith(tp.collisionMask)) {
-									collisions.offer(p);
-									collisions.offer(tp);
-								}
+							if (p.collisionMask
+									.isCollisionWith(tp.collisionMask)) {
+								collisions.offer(p);
+								collisions.offer(tp);
 							}
 						}
-
-						for (FGPerformer p2 : performers) {
-							if (p2 != p && p2.collisionMask != null
-									&& !p2.frozen) {
-								for (Class<?> c : p.requiredClassCollisionDetection) {
-									if (c.isInstance(p2)) {
-										if (p.collisionMask
-												.isCollisionWith(p2.collisionMask)) {
-
-											collisions.offer(p);
-											collisions.offer(p2);
-										}
-									}
-								}
-							}
-						}
-
 					}
+
+					for (FGPerformer p2 : performers) {
+						if (p2 != p && p2.collisionMask != null && !p2.frozen) {
+							for (Class<?> c : p.requiredClassCollisionDetection) {
+								if (c.isInstance(p2)) {
+									if (p.collisionMask
+											.isCollisionWith(p2.collisionMask)) {
+
+										collisions.offer(p);
+										collisions.offer(p2);
+									}
+									break;
+								}
+							}
+						}
+					}
+
 				}
 			}
 		}
@@ -471,11 +465,9 @@ public abstract class FGStage {
 
 	// 检测 Performer 是否离开 Stage
 	protected final void detectOutOfStage() {
-		synchronized (performers) {
-			for (FGPerformer p : performers) {
-				if (!p.frozen && p.isOutOfStage()) {
-					p.callEvent(FGEventsListener.EVENT_ONOUTOFSTAGE);
-				}
+		for (FGPerformer p : performers) {
+			if (!p.frozen && p.isOutOfStage()) {
+				p.callEvent(FGEventsListener.EVENT_ONOUTOFSTAGE);
 			}
 		}
 	}
@@ -483,11 +475,9 @@ public abstract class FGStage {
 	// 更新每个 Performer 的位置
 	protected final void updateMovement() {
 
-		synchronized (performers) {
-			for (FGPerformer p : performers) {
-				if (!p.frozen) {
-					p.updateMovement();
-				}
+		for (FGPerformer p : performers) {
+			if (!p.frozen) {
+				p.updateMovement();
 			}
 		}
 	}
@@ -495,12 +485,10 @@ public abstract class FGStage {
 	// 执行每个 Performer 的 ScreenPlay
 	protected final void playScreenPlay() {
 
-		synchronized (performers) {
-			for (FGPerformer p : performers) {
-				if (!p.frozen && p.myScreenPlay != null) {
-					if (p.myScreenPlay.play()) {
-						p.myScreenPlay = null;
-					}
+		for (FGPerformer p : performers) {
+			if (!p.frozen && p.myScreenPlay != null) {
+				if (p.myScreenPlay.play()) {
+					p.myScreenPlay = null;
 				}
 			}
 		}

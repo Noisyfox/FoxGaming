@@ -63,6 +63,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static long allStepCount = 0;
 	private static long gameStartTime = 0;
 	private static List<Finger> registedFingers = new ArrayList<Finger>();
+	private static List<Integer> actionedFingers = new ArrayList<Integer>();
 	private static List<Integer> registedKeys = new ArrayList<Integer>();
 	private static List<Integer> blockedKeys = new ArrayList<Integer>();
 
@@ -136,15 +137,11 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	 */
 	public static void blockKeyFromSystem(int keyCode, boolean unblock) {
 		if (!unblock) {
-			blockedKeys.add(keyCode);
-		} else {
-			for (int i = 0; i < blockedKeys.size();) {
-				if (blockedKeys.get(i) == keyCode) {
-					blockedKeys.remove(i);
-				} else {
-					i++;
-				}
+			if (!blockedKeys.contains(keyCode)) {
+				blockedKeys.add(keyCode);
 			}
+		} else {
+			blockedKeys.remove(Integer.valueOf(keyCode));
 		}
 	}
 
@@ -350,10 +347,12 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			}
 
 			// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
+			actionedFingers.clear();
 			synchronized (listTouchEvent) {
 				while (!listTouchEvent.isEmpty()) {
 					TouchEvent e = listTouchEvent.get(0);
 					listTouchEvent.remove(0);
+					actionedFingers.add(e.whichFinger);
 					switch (e.event) {
 					case MotionEvent.ACTION_DOWN:
 						FGStage.currentStage.broadcastEvent(
@@ -371,8 +370,10 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			}
 			synchronized (registedFingers) {
 				for (Finger f : registedFingers) {
-					FGStage.currentStage.broadcastEvent(
-							FGEventsListener.EVENT_ONTOUCH, f.id, f.x, f.y);
+					if (!actionedFingers.contains(f.id)) {
+						FGStage.currentStage.broadcastEvent(
+								FGEventsListener.EVENT_ONTOUCH, f.id, f.x, f.y);
+					}
 				}
 			}
 			// 处理按键事件队列并广播EVENT_ONKEY*事件
@@ -496,12 +497,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			}
 		}
 
-		for (int i : blockedKeys) {
-			if (keyCode == i) {
-				return true;
-			}
-		}
-		return false;
+		return blockedKeys.contains(keyCode);
 	}
 
 	@Override
@@ -509,12 +505,11 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		if (currentState != STATEFLAG_RUNNING)
 			return true;
 
-		// 重写的触屏逻辑
 		synchronized (listTouchEvent) {
 			synchronized (registedFingers) {
 
-				final int fingerCount = event.getPointerCount();
-				final int action = event.getActionMasked();
+				final int fingerCount = event.getPointerCount();// 获取手指数量
+				final int action = event.getActionMasked();// 事件类型
 				final int actionID = event.getPointerId(event.getActionIndex());// 仅在非ACTION_MOVE事件中做手指的唯一标记
 				int fingerIndex = -1;
 				for (int i = 0; i < fingerCount; i++) {
@@ -619,6 +614,79 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		return true;
 	}
 
+	// ********************************************************************************
+	// * 游戏运行状态控制函数
+	// ********************************************************************************
+	protected void gameStart() {
+		if (currentState != STATEFLAG_STOPED
+				&& currentState != STATEFLAG_WAITING) {
+			return;
+		}
+
+		currentState = STATEFLAG_RUNNING;
+	}
+
+	protected void gameEnd() {
+		if (currentState != STATEFLAG_RUNNING) {
+			return;
+		}
+
+		processing = false;
+		currentState = STATEFLAG_STOPING;
+	}
+
+	protected void gamePause() {
+		if (currentState != STATEFLAG_RUNNING) {
+			return;
+		}
+
+		FGSimpleBGM.onPause();
+		FGSimpleSoundEffect.onPause();
+		currentState = STATEFLAG_PAUSE;
+	}
+
+	protected void gameResume() {
+		if (currentState != STATEFLAG_PAUSED) {
+			return;
+		}
+
+		FGSimpleBGM.onResume();
+		FGSimpleSoundEffect.onResume();
+		currentState = STATEFLAG_RESUME;
+	}
+
+	// ********************************************************************************
+	// * Surface 事件响应函数
+	// ********************************************************************************
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+		FGDebug.print("serface changed");
+		if (width != 0 && height != 0) {
+			if (FGGamingThread.width == 0 && FGGamingThread.height == 0) {
+				lastScreenHeight = height;
+				lastScreenWidth = width;
+			}
+			FGGamingThread.width = width;
+			FGGamingThread.height = height;
+		}
+		FGDebug.print("Current view size:" + height + "x" + width);
+	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		processing = true;
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		processing = false;
+		// running = false;
+	}
+
+	// ********************************************************************************
+	// * 私有辅助类
+	// ********************************************************************************
 	private class Finger {
 		int id = 0;
 		int x = 0;
@@ -666,70 +734,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		public int getEvent() {
 			return event;
 		}
-	}
-
-	protected void gameStart() {
-		if (currentState != STATEFLAG_STOPED
-				&& currentState != STATEFLAG_WAITING) {
-			return;
-		}
-
-		currentState = STATEFLAG_RUNNING;
-	}
-
-	protected void gameEnd() {
-		if (currentState != STATEFLAG_RUNNING) {
-			return;
-		}
-
-		processing = false;
-		currentState = STATEFLAG_STOPING;
-	}
-
-	protected void gamePause() {
-		if (currentState != STATEFLAG_RUNNING) {
-			return;
-		}
-
-		FGSimpleBGM.onPause();
-		FGSimpleSoundEffect.onPause();
-		currentState = STATEFLAG_PAUSE;
-	}
-
-	protected void gameResume() {
-		if (currentState != STATEFLAG_PAUSED) {
-			return;
-		}
-
-		FGSimpleBGM.onResume();
-		FGSimpleSoundEffect.onResume();
-		currentState = STATEFLAG_RESUME;
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		FGDebug.print("serface changed");
-		if (width != 0 && height != 0) {
-			if (FGGamingThread.width == 0 && FGGamingThread.height == 0) {
-				lastScreenHeight = height;
-				lastScreenWidth = width;
-			}
-			FGGamingThread.width = width;
-			FGGamingThread.height = height;
-		}
-		FGDebug.print("Current view size:" + height + "x" + width);
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		processing = true;
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		processing = false;
-		// running = false;
 	}
 
 }
