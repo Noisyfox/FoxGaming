@@ -61,6 +61,7 @@ public class FGPerformer extends FGEventsListener {
 	public String description = "";// 不产生实际作用，仅在调试、编辑时做参考用
 
 	public FGPerformer() {
+		// 初始化 alarm
 		alarms = new ArrayList<Alarm>();
 		for (int i = 0; i < 10; i++) {
 			Alarm a = new Alarm();

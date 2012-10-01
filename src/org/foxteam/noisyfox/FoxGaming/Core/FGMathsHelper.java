@@ -45,17 +45,17 @@ public final class FGMathsHelper {
 			FGPoint p1, FGPoint p2) {
 		int x = point.getX() - vertex.getX();
 		int y = point.getY() - vertex.getY();
-		int p1X = p1.getX() - vertex.getX();
-		int p1Y = p1.getY() - vertex.getY();
-		int p2X = p2.getX() - vertex.getX();
-		int p2Y = p2.getY() - vertex.getY();
+		// int p1X = p1.getX() - vertex.getX();
+		// int p1Y = p1.getY() - vertex.getY();
+		// int p2X = p2.getX() - vertex.getX();
+		// int p2Y = p2.getY() - vertex.getY();
 
-		int v1 = x * p1Y - y * p1X;
-		int v2 = x * p2Y - y * p2X;
+		int v1 = x * (p1.getY() - vertex.getY()) - y
+				* (p1.getX() - vertex.getX());
+		int v2 = x * (p2.getY() - vertex.getY()) - y
+				* (p2.getX() - vertex.getX());
 
-		if (v1 * v2 <= 0)
-			return true;
-		return false;
+		return v1 * v2 <= 0;
 	}
 
 	// 判断两条线段是否相交
@@ -86,14 +86,16 @@ public final class FGMathsHelper {
 
 	// 向量数量积
 	public static int dotProduct(FGPoint vertex, FGPoint p1, FGPoint p2) {
-		int x1, y1;
-		int x2, y2;
+		// int x1, y1;
+		// int x2, y2;
 
-		x1 = p1.getX() - vertex.getX();
-		y1 = p1.getY() - vertex.getY();
-		x2 = p2.getX() - vertex.getX();
-		y2 = p2.getY() - vertex.getY();
-		return x1 * x2 + y1 * y2;
+		// x1 = p1.getX() - vertex.getX();
+		// y1 = p1.getY() - vertex.getY();
+		// x2 = p2.getX() - vertex.getX();
+		// y2 = p2.getY() - vertex.getY();
+
+		return (p1.getX() - vertex.getX()) * (p2.getX() - vertex.getX())
+				+ (p1.getY() - vertex.getY()) * (p2.getY() - vertex.getY());
 	}
 
 	// 点到直线距离平方
@@ -130,10 +132,7 @@ public final class FGMathsHelper {
 			// 判断圆心是不是在线段两侧
 			if (dotProduct(p1, c, p2) * dotProduct(p2, c, p1) <= 0) {
 				// 在线段两侧，则只需要验证两个端点即可
-				if (hasOut && !hasIn) {
-					return false;
-				}
-				return true;
+				return !(hasOut && !hasIn);
 			}
 		}
 		// 直线或者圆心在线段上方，只需判断圆心到直线距离即可

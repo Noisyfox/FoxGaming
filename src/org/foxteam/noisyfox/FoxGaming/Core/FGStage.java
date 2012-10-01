@@ -40,6 +40,16 @@ public abstract class FGStage {
 	protected static FGStage currentStage = null;// 当前活动的stage
 	protected static FGStage targetStage = null;// 要跳转到的stage
 	protected static float speed = 30f;// 当前活动的stage的speed
+	protected static Comparator<FGPerformer> depthComparator = new Comparator<FGPerformer>() {
+		@Override
+		public int compare(FGPerformer lhs, FGPerformer rhs) {
+			if (lhs.depth > rhs.depth)
+				return -1;
+			if (lhs.depth < rhs.depth)
+				return 1;
+			return 0;
+		}
+	};
 
 	protected List<FGPerformer> performers = null;
 	protected List<FGViews> activatedViews = null;
@@ -160,17 +170,7 @@ public abstract class FGStage {
 	}
 
 	protected final void sortWithDepth() {
-		Comparator<FGPerformer> cmp = new Comparator<FGPerformer>() {
-			@Override
-			public int compare(FGPerformer lhs, FGPerformer rhs) {
-				if (lhs.depth > rhs.depth)
-					return -1;
-				if (lhs.depth < rhs.depth)
-					return 1;
-				return 0;
-			}
-		};
-		Collections.sort(performers, cmp);
+		Collections.sort(performers, depthComparator);
 	}
 
 	/**
