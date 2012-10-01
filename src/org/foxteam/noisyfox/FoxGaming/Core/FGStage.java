@@ -43,11 +43,7 @@ public abstract class FGStage {
 	protected static Comparator<FGPerformer> depthComparator = new Comparator<FGPerformer>() {
 		@Override
 		public int compare(FGPerformer lhs, FGPerformer rhs) {
-			if (lhs.depth > rhs.depth)
-				return -1;
-			if (lhs.depth < rhs.depth)
-				return 1;
-			return 0;
+			return rhs.depth - lhs.depth;
 		}
 	};
 
