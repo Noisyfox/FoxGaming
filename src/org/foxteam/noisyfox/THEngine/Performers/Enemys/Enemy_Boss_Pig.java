@@ -25,6 +25,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_2;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 /**
  * @ClassName: Enemy_Boss_Pig
@@ -152,6 +153,9 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 		this.bindCollisionMask(null);
 
 		FGGamingThread.score += 1000;
+
+		((SectionStage) FGStage.getCurrentStage()).stageClear();
+
 	}
 
 	@Override

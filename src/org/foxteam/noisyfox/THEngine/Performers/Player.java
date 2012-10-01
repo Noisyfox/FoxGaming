@@ -28,6 +28,8 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Ma
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Normal;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
+import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 /**
  * @ClassName: Player
@@ -44,9 +46,9 @@ public class Player extends Hitable {
 	FGPoint fingerPressStart = null;
 	FGPoint meStart = null;
 
-	boolean controllable = true;
+	public boolean controllable = true;
 
-	boolean onAnimation = false;
+	public boolean onAnimation = false;
 
 	static int remainLife = 3;
 	FGSprite playerSprite = new FGSprite();
@@ -58,6 +60,8 @@ public class Player extends Hitable {
 
 	Class<?> myMissile = null;
 	int missile_level = 1;
+
+	public boolean fire = true;
 
 	@Override
 	protected void onStep() {
@@ -290,7 +294,7 @@ public class Player extends Hitable {
 
 	@Override
 	protected void onAlarm(int whichAlarm) {
-		if (whichAlarm == 0) {
+		if (whichAlarm == 0 && fire) {
 			Bullet_Player b = new Bullet_Player_Normal((int) this.getX(),
 					(int) this.getY() - this.getSprite().getOffsetY());
 			b.setDepth(this.getDepth() + 1);
@@ -315,7 +319,7 @@ public class Player extends Hitable {
 		} else if (whichAlarm == 3) {// 无敌闪烁
 			invincibleFlash = !invincibleFlash;
 
-		} else if (whichAlarm == 4) {// 发射导弹
+		} else if (whichAlarm == 4 && fire) {// 发射导弹
 			if (myMissile != null) {
 				try {
 					float dDeg = 0;
@@ -399,8 +403,13 @@ public class Player extends Hitable {
 				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
 				1, 0.5f, (int) this.getX(), (int) this.getY(), -1);
 
+		// 丢下奖励
+		new PowerUp_Missile((int) getX(), (int) getY())
+				.setDepth(getDepth() + 1);
+
 		if (--remainLife < 0) {
 			this.dismiss();
+			((SectionStage) FGStage.getCurrentStage()).gameOver();
 		} else {
 
 			this.setPosition(this.getX(), FGStage.getCurrentStage().getHeight()

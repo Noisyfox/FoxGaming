@@ -16,11 +16,8 @@
  */
 package org.foxteam.noisyfox.THEngine.Stages;
 
-import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.Performers.EnemyController;
-import org.foxteam.noisyfox.THEngine.Performers.Player;
-import org.foxteam.noisyfox.THEngine.Performers.SystemController;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Boss_Pig;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Box_Score;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Butterfly;
@@ -35,12 +32,10 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
  * @date: 2012-8-16 上午11:04:33
  * 
  */
-public final class _01_TestStage extends FGStage {
+public final class _01_TestStage extends SectionStage {
 
 	@Override
-	protected void onCreate() {
-		setStageSpeed(30);
-		new SystemController();
+	protected void prepareStage() {
 
 		FGBackground bkg = new FGBackground();
 		bkg.loadFromBitmap(
@@ -53,10 +48,10 @@ public final class _01_TestStage extends FGStage {
 		bkg.setScaleMode(FGBackground.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
 		setBackground(bkg);
 
-		Player pl = new Player();
-		pl.perform(getStageIndex());
+	}
 
-		EnemyController ec = new EnemyController();
+	@Override
+	protected final void addEnemys(EnemyController ec) {
 		ec.addEnemy(120, Enemy_Duck.class, 0, 90, 0);
 		ec.addEnemy(150, Enemy_Duck.class, 0, 100, 1);
 		ec.addEnemy(200, Enemy_Fly.class, 50, 0, 0, 100);
@@ -71,9 +66,7 @@ public final class _01_TestStage extends FGStage {
 		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 2);
 		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 3);
 		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 4);
-		ec.addEnemy(800, Enemy_Boss_Pig.class, 0, 0);
-		ec.perform(getStageIndex());
-
+		ec.addEnemy(730, Enemy_Boss_Pig.class, 0, 0);
 	}
 
 }
