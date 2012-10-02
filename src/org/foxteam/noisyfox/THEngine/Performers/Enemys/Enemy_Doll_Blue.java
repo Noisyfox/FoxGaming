@@ -45,7 +45,7 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 	private int listNumber = 0;// 该队伍一共多少怪物
 	private int myNumber = 0;// 自己排在第几个
 
-	private static float hSpeedMin = 5;
+	private static float hSpeedMin = 1;
 	private float mySpeed = 0;
 
 	private int myY = 0;
