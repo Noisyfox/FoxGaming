@@ -45,6 +45,7 @@ public class Enemy_Fly extends EnemyInAir {
 	FGConvertor GCConvertor = new FGConvertor();
 	FGSpriteConvertor SpConvertor = new FGSpriteConvertor();
 	boolean canFire = false;// 是否发射子弹
+	boolean returns = false;
 	int inX = 0;// 从哪个位置进入屏幕
 	int maxY = 0;// 进入屏幕的深度
 	float myDirection = 270;// 底部的朝向，同时也是发射子弹的方向
@@ -90,7 +91,11 @@ public class Enemy_Fly extends EnemyInAir {
 				.wait((int) ((flySprite.getHeight() - flySprite.getOffsetY() + maxY) / mySpeed));
 		myMovement.stop();
 		myMovement.wait((int) (STAYTIME * FGStage.getSpeed()));
-		myMovement.moveTowards(90, mySpeed);
+		if (returns) {
+			myMovement.moveTowards(90, mySpeed);
+		} else {
+			myMovement.moveTowards(270, mySpeed);
+		}
 		this.playAScreenPlay(myMovement);
 	}
 
@@ -104,9 +109,9 @@ public class Enemy_Fly extends EnemyInAir {
 			}
 		} else {
 			this.stopAlarm(1);
-
-			if (myDirection != 90) {
-				float rDir = FGMathsHelper.directionTo(myDirection, 90);
+			int targetDeg = returns ? 90 : 270;
+			if (myDirection != targetDeg) {
+				float rDir = FGMathsHelper.directionTo(myDirection, targetDeg);
 				if (Math.abs(rDir) <= 5) {
 					myDirection = FGMathsHelper.degreeIn360(myDirection + rDir);
 				} else {
@@ -178,6 +183,7 @@ public class Enemy_Fly extends EnemyInAir {
 		this.perform(FGStage.getCurrentStage().getStageIndex());
 		canFire = extraConfig[0] == 0;
 		maxY = extraConfig[1];
+		returns = extraConfig[2] == 0;
 		inX = x;
 	}
 

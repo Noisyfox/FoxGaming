@@ -663,6 +663,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			int height) {
 		FGDebug.print("serface changed");
 		if (width != 0 && height != 0) {
+			processing = true;
 			if (FGGamingThread.width == 0 && FGGamingThread.height == 0) {
 				lastScreenHeight = height;
 				lastScreenWidth = width;
@@ -675,7 +676,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		processing = true;
 	}
 
 	@Override

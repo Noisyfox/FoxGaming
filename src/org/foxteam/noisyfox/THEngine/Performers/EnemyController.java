@@ -17,11 +17,12 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
+
+import android.util.SparseArray;
 
 /**
  * @ClassName: EnemyController
@@ -33,13 +34,13 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 public final class EnemyController extends FGPerformer {
 
 	private int totalStep = 0;
-	HashMap<Integer, List<EnemyDef>> enemys = new HashMap<Integer, List<EnemyDef>>();
+	SparseArray<List<EnemyDef>> enemys = new SparseArray<List<EnemyDef>>();
 
 	public void addEnemy(int step, Class<?> enemyType, int x, int y,
 			int... extraConfig) {
-		Integer key = new Integer(step);
+		int key = step;
 		List<EnemyDef> enemyList = null;
-		if (enemys.containsKey(key)) {
+		if (enemys.get(key) != null) {
 			enemyList = enemys.get(key);
 		} else {
 			enemyList = new ArrayList<EnemyDef>();
@@ -55,8 +56,8 @@ public final class EnemyController extends FGPerformer {
 
 	@Override
 	protected void onStepEnd() {
-		Integer key = new Integer(++totalStep);
-		if (enemys.containsKey(key)) {
+		int key = ++totalStep;
+		if (enemys.get(key) != null) {
 			List<EnemyDef> enemyList = enemys.get(key);
 			for (EnemyDef ed : enemyList) {
 				try {
@@ -69,6 +70,13 @@ public final class EnemyController extends FGPerformer {
 				}
 			}
 		}
+	}
+
+	public void jumpTo(int step) {
+		if (step < 0) {
+			throw new IllegalArgumentException();
+		}
+		totalStep = step;
 	}
 
 	private class EnemyDef {

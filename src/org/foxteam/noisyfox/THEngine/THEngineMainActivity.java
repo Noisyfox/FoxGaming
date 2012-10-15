@@ -15,6 +15,7 @@ public class THEngineMainActivity extends FGGameActivity {
 	@Override
 	public void onCreate() {
 		this.forcePortrait();
+		normalMode();
 	}
 
 }

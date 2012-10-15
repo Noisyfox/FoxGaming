@@ -54,19 +54,26 @@ public final class _01_TestStage extends SectionStage {
 	protected final void addEnemys(EnemyController ec) {
 		ec.addEnemy(120, Enemy_Duck.class, 0, 90, 0);
 		ec.addEnemy(150, Enemy_Duck.class, 0, 100, 1);
-		ec.addEnemy(200, Enemy_Fly.class, 50, 0, 0, 100);
-		ec.addEnemy(250, Enemy_Fly.class, 200, 0, 0, 200);
+		ec.addEnemy(200, Enemy_Fly.class, 50, 0, 1, 100, 0);
+		ec.addEnemy(250, Enemy_Fly.class, 200, 0, 1, 200, 0);
 		ec.addEnemy(260, Enemy_Box_Score.class, 200, 0, 0, 100);
 		ec.addEnemy(300, Enemy_Butterfly.class, 100, 0);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 1);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 2);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 3);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 0, 4, 4);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 1);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 2);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 3);
-		ec.addEnemy(400, Enemy_Doll_Blue.class, 0, 0, 1, 4, 4);
-		ec.addEnemy(730, Enemy_Boss_Pig.class, 0, 0);
+		ec.addEnemy(310, Enemy_Fly.class, 50, 0, 0, 200, 1);
+		ec.addEnemy(310, Enemy_Fly.class, 150, 0, 0, 200, 1);
+		ec.addEnemy(400, Enemy_Butterfly.class, 200, 0);
+		ec.addEnemy(410, Enemy_Fly.class, 150, 0, 0, 200, 1);
+		ec.addEnemy(410, Enemy_Fly.class, 250, 0, 0, 200, 1);
+
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 0, 4, 1);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 0, 4, 2);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 0, 4, 3);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 0, 4, 4);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 1, 4, 1);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 1, 4, 2);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 1, 4, 3);
+		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 1, 4, 4);
+		ec.addEnemy(930, Enemy_Boss_Pig.class, 0, 0);
+		ec.jumpTo(600);
 	}
 
 }

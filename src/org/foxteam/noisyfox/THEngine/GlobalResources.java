@@ -38,7 +38,7 @@ public class GlobalResources {
 		PATHBEZIER3_ENEMY_DOOL_BLUE.addNode(50, 0);
 		PATHBEZIER3_ENEMY_DOOL_BLUE.endPath(320, 0, true);
 
-		//初始化分数字体
+		// 初始化分数字体
 		GRAPHICFONT_SCORE = new FGGraphicFont();
 		GRAPHICFONT_SCORE.mapFont(
 				org.foxteam.noisyfox.THEngine.R.drawable.ascii_score,
