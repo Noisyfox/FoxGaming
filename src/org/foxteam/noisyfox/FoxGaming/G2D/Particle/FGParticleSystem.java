@@ -34,7 +34,7 @@ public class FGParticleSystem {
 	public void clear() {
 
 	}
-	
+
 	public int count() {
 		return 0;
 	}
