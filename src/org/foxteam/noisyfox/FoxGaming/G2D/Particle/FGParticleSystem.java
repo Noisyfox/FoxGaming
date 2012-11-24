@@ -3,6 +3,14 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+/**
+ * 
+ * @ClassName: FGParticleSystem
+ * @Description: 粒子系统
+ * @author: Noisyfox
+ * @date: 2012-11-24 下午5:38:27
+ *
+ */
 public class FGParticleSystem {
 
 	public void update() {
