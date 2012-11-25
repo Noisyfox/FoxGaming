@@ -10,7 +10,7 @@ import android.graphics.Color;
  * @Description: 粒子类型
  * @author: Noisyfox
  * @date: 2012-11-24 下午5:38:15
- *
+ * 
  */
 public class FGParticleType {
 
@@ -39,9 +39,9 @@ public class FGParticleType {
 	}
 
 	protected ColorType _color_type = ColorType.color1;
-	protected Color _color_color1 = null;
-	protected Color _color_color2 = null;
-	protected Color _color_color3 = null;
+	protected int _color_color1 = Color.WHITE;
+	protected int _color_color2 = Color.WHITE;
+	protected int _color_color3 = Color.WHITE;
 	protected int _color_RGB_R_min = -1;
 	protected int _color_RGB_R_max = -1;
 	protected int _color_RGB_G_min = -1;
@@ -54,6 +54,15 @@ public class FGParticleType {
 	protected int _color_HSV_S_max = -1;
 	protected int _color_HSV_V_min = -1;
 	protected int _color_HSV_V_max = -1;
+
+	protected enum AlphaType {
+		alpha1, alpha2, alpha3;
+	}
+
+	protected AlphaType _alpha_type = AlphaType.alpha1;
+	protected double _alpha_1 = 0.0;
+	protected double _alpha_2 = 0.0;
+	protected double _alpha_3 = 0.0;
 
 	protected int _lifeTime_min = 100;
 	protected int _lifeTime_max = 100;
@@ -129,14 +138,14 @@ public class FGParticleType {
 
 	}
 
-	public void setColor(Color color) {
+	public void setColor(int color) {
 
 		_color_type = ColorType.color1;
 		_color_color1 = color;
 
 	}
 
-	public void setColor(Color color1, Color color2) {
+	public void setColor(int color1, int color2) {
 
 		_color_type = ColorType.color2;
 		_color_color1 = color1;
@@ -144,7 +153,7 @@ public class FGParticleType {
 
 	}
 
-	public void setColor(Color color1, Color color2, Color color3) {
+	public void setColor(int color1, int color2, int color3) {
 
 		_color_type = ColorType.color3;
 		_color_color1 = color1;
@@ -186,6 +195,43 @@ public class FGParticleType {
 		_color_HSV_S_max = maxS;
 		_color_HSV_V_min = minV;
 		_color_HSV_V_max = maxV;
+
+	}
+
+	public void setAlpha(double alpha) {
+
+		if (alpha < 0.0 || alpha > 1.0) {
+			throw new IllegalArgumentException();
+		}
+
+		_alpha_type = AlphaType.alpha1;
+		_alpha_1 = alpha;
+
+	}
+
+	public void setAlpha(double alpha1, double alpha2) {
+
+		if (alpha1 < 0.0 || alpha1 > 1.0 || alpha2 < 0.0 || alpha2 > 1.0) {
+			throw new IllegalArgumentException();
+		}
+
+		_alpha_type = AlphaType.alpha2;
+		_alpha_1 = alpha1;
+		_alpha_2 = alpha2;
+
+	}
+
+	public void setAlpha(double alpha1, double alpha2, double alpha3) {
+
+		if (alpha1 < 0.0 || alpha1 > 1.0 || alpha2 < 0.0 || alpha2 > 1.0
+				|| alpha3 < 0.0 || alpha3 > 1.0) {
+			throw new IllegalArgumentException();
+		}
+
+		_alpha_type = AlphaType.alpha3;
+		_alpha_1 = alpha1;
+		_alpha_2 = alpha2;
+		_alpha_3 = alpha3;
 
 	}
 

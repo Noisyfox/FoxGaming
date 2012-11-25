@@ -6,7 +6,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
  * @Description: 粒子破坏器
  * @author: Noisyfox
  * @date: 2012-11-24 下午5:39:49
- *
+ * 
  */
 public class FGParticleDestroyer {
 

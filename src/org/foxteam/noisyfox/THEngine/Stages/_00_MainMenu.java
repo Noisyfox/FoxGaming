@@ -18,11 +18,9 @@ package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
-import org.foxteam.noisyfox.THEngine.Performers.GaussianTest;
 
 /**
  * @ClassName: _00_MainMenu
@@ -54,10 +52,7 @@ public class _00_MainMenu extends FGStage {
 				- bGameStart.getHeight() / 2 - 5);
 		FGGamingThread.score = 0;
 		this.setStageSpeed(10);
-		
-		FGPerformer t = new GaussianTest();
-		t.perform(this.getStageIndex());
-		t.setPosition(200, 200);
+
 	}
 
 }
