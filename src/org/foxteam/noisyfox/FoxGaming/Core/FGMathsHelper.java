@@ -16,6 +16,8 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
+import java.util.Random;
+
 import org.foxteam.noisyfox.FoxGaming.G2D.FGCircle;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGPoint;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGPolygon;
@@ -30,6 +32,35 @@ import android.graphics.Rect;
  * 
  */
 public final class FGMathsHelper {
+
+	private static double[] GaussianDistributionList;
+	private static double GaussianDistributionMax = 0.0;
+	private static int GaussianDistributionListLength = 100000;
+	private static Random random = new Random();
+
+	// 生成一个高斯分布数列
+	public static void generateGaussianDistribution() {
+		GaussianDistributionList = new double[GaussianDistributionListLength];
+
+		for (int i = 0; i < GaussianDistributionListLength; i++) {
+			GaussianDistributionList[i] = Math.abs(random.nextGaussian());
+			GaussianDistributionMax = Math.max(GaussianDistributionMax,
+					GaussianDistributionList[i]);
+			GaussianDistributionMax = Math.min(GaussianDistributionMax, 6.0);
+		}
+	}
+
+	// 生成一个介于 0 和 1 之间的符合高斯分布的随机数
+	public static double randomGaussian() {
+
+		int index = random.nextInt(GaussianDistributionListLength);
+
+		if (GaussianDistributionMax < 0.00000001) {
+			return 0;
+		}
+
+		return GaussianDistributionList[index] / GaussianDistributionMax;
+	}
 
 	// 判断一个点是否在一个圆内
 	public static boolean pointInCircle(FGPoint p, FGCircle c) {

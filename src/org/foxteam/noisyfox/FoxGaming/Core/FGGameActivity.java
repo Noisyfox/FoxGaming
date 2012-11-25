@@ -124,6 +124,8 @@ public class FGGameActivity extends Activity {
 		FGDebug.print("prepareEngine()");
 		gameEngine = new FGGameCore(this);
 		setContentView(FGGameCore.gameView);
+		
+		FGMathsHelper.generateGaussianDistribution();
 	}
 
 	/**
