@@ -31,6 +31,8 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile;
 import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
+import android.graphics.Color;
+
 /**
  * @ClassName: Player
  * @Description: TODO
@@ -370,7 +372,9 @@ public class Player extends Hitable {
 	@Override
 	protected void onDraw() {
 		if (!this.invincible || invincibleFlash) {
-			super.onDraw();
+			// super.onDraw();
+			this.getSprite().draw(getCanvas(), (int) this.getX(),
+					(int) this.getY(), null, Color.BLUE);
 		}
 	}
 

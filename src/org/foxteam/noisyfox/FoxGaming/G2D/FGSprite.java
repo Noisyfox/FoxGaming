@@ -23,6 +23,9 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
@@ -197,14 +200,38 @@ public class FGSprite {
 	public final void draw(Canvas c, int x, int y,
 			FGSpriteConvertor spriteConvertor) {
 
+		draw(c, x, y, spriteConvertor, Color.WHITE);
+
+	}
+
+	public final void draw(Canvas c, int x, int y,
+			FGSpriteConvertor spriteConvertor, int color) {
+
+		Paint paint = new Paint();
+
+		if (color != Color.WHITE) {
+			float hsv[] = new float[3];
+			Color.colorToHSV(color, hsv);
+			float k = (hsv[2] - hsv[1] + 1f) * 0.5f;
+			int R = Color.red(color);
+			int G = Color.green(color);
+			int B = Color.blue(color);
+
+			ColorMatrix cm = new ColorMatrix();
+			float carray[] = { k, 0, 0, 0, (1 - k) * (float) R, 0, k, 0, 0,
+					(1 - k) * (float) G, 0, 0, k, 0, (1 - k) * (float) B, 0, 0,
+					0, 1, 0 };
+			cm.set(carray);
+			paint.setColorFilter(new ColorMatrixColorFilter(cm));
+		}
+
 		if (spriteConvertor != null) {
-			Paint paint = new Paint();
 			Matrix m = spriteConvertor.getConvertMatrix(offsetX, offsetY);
 			m.postTranslate(x - offsetX, y - offsetY);
 			paint.setAlpha((int) (255.0 * spriteConvertor.getAlpha()));
 			c.drawBitmap(frames[currentFrame], m, paint);
 		} else {
-			c.drawBitmap(frames[currentFrame], x - offsetX, y - offsetY, null);
+			c.drawBitmap(frames[currentFrame], x - offsetX, y - offsetY, paint);
 		}
 
 	}
