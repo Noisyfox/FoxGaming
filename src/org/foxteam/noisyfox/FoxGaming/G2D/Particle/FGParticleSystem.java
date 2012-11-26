@@ -571,6 +571,58 @@ public class FGParticleSystem {
 
 	}
 
+	public void bindParticleEmitter(FGParticleEmitter emitter) {
+		if (emitter != null && !particleEmitters.contains(emitter)) {
+			Emitters e = new Emitters();
+			e.emitter = emitter;
+			particleEmitters.add(e);
+		}
+	}
+
+	public void bindParticleAttractor(FGParticleAttractor attractor) {
+		if (attractor != null && !particleAttractors.contains(attractor)) {
+			particleAttractors.add(attractor);
+		}
+	}
+
+	public void bindPraticleDestroyer(FGParticleDestroyer destroyer) {
+		if (destroyer != null && !particleDestroyers.contains(destroyer)) {
+			particleDestroyers.add(destroyer);
+		}
+	}
+
+	public void bindPraticleDeflector(FGParticleDeflector deflector) {
+		if (deflector != null && !particleDeflectors.contains(deflector)) {
+			particleDeflectors.add(deflector);
+		}
+	}
+
+	public void bindParticleChanger(FGParticleChanger changer) {
+		if (changer != null && !particleChangers.contains(changer)) {
+			particleChangers.add(changer);
+		}
+	}
+
+	public void unbindParticleEmitter(FGParticleEmitter emitter) {
+		particleEmitters.remove(emitter);
+	}
+
+	public void unbindParticleAttractor(FGParticleAttractor attractor) {
+		particleAttractors.remove(attractor);
+	}
+
+	public void unbindPraticleDestroyer(FGParticleDestroyer destroyer) {
+		particleDestroyers.remove(destroyer);
+	}
+
+	public void unbindPraticleDeflector(FGParticleDeflector deflector) {
+		particleDeflectors.remove(deflector);
+	}
+
+	public void unbindParticleChanger(FGParticleChanger changer) {
+		particleChangers.remove(changer);
+	}
+
 	/**
 	 * 
 	 * @ClassName: Paritcles
@@ -623,6 +675,17 @@ public class FGParticleSystem {
 		FGParticleEmitter emitter = null;
 		int counter = -1;
 		int trigger = 0;
+
+		@Override
+		public boolean equals(Object o) {
+			if (o.getClass().isInstance(this)) {
+				return ((Emitters) o).emitter == emitter;
+			} else if (o.getClass().isInstance(emitter)) {
+				return emitter == o;
+			}
+
+			return super.equals(o);
+		}
 
 	}
 
