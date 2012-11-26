@@ -213,6 +213,15 @@ public final class FGMathsHelper {
 		return random.nextInt(max - min + 1) + min;
 	}
 
+	// 获取一个 >= min && < max 的随机浮点数
+	public static double random(double min, double max) {
+		if (min > max) {
+			throw new IllegalArgumentException("MAX can't be smaller than MIN!");
+		}
+
+		return random.nextDouble() * (max - min) + min;
+	}
+
 	// 返回位置1(x1,y1)到位置2(x2,y2)的距离.
 	public static float point_distance(float x1, float y1, float x2, float y2) {
 		return (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
