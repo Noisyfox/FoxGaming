@@ -209,8 +209,8 @@ public final class FGMathsHelper {
 		if (max < min) {
 			throw new IllegalArgumentException("MAX can't be smaller than MIN!");
 		}
-		return (int) Math.round((double) (min - 0.49)
-				+ (double) (max - min + 0.98) * Math.random());
+
+		return random.nextInt(max - min + 1) + min;
 	}
 
 	// 返回位置1(x1,y1)到位置2(x2,y2)的距离.
