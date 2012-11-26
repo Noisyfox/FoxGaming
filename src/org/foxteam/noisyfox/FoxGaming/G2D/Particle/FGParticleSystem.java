@@ -254,6 +254,30 @@ public class FGParticleSystem {
 			p.speed = speed;
 			p.direction = direction;
 
+			// 发射每步都会生成的粒子
+			if (p.type._particleOnStep_enabled) {
+				if (p.type._particleOnStep_number < 0) {
+
+					if (p.counter >= -p.type._particleOnStep_number) {
+						p.trigger = random
+								.nextInt(-p.type._particleOnStep_number);
+						p.counter = 0;
+					} else {
+						p.counter++;
+					}
+
+					if (p.trigger == p.counter) {
+						this.createParticle(p.type._particleOnStep_type, p.x,
+								p.y, 1);
+					}
+				} else {
+					p.counter = -1;
+					p.trigger = 0;
+					this.createParticle(p.type._particleOnStep_type, p.x, p.y,
+							p.type._particleOnStep_number);
+				}
+			}
+
 			// 循环变量加1
 			i++;
 
@@ -580,6 +604,9 @@ public class FGParticleSystem {
 
 		int lifeTime = 0;
 		int stayTime = 0;
+
+		int counter = -1;
+		int trigger = 0;
 
 	}
 
