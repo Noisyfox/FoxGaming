@@ -105,7 +105,7 @@ public class FGParticleType {
 
 	public void setSize(double minSize, double maxSize,
 			double incrementPerStep, double wiggle) {
-		if (minSize < 0 || minSize > maxSize) {
+		if (minSize < 0 || minSize > maxSize || wiggle < 0) {
 			throw new IllegalArgumentException();
 		}
 
@@ -126,7 +126,8 @@ public class FGParticleType {
 	public void setOrientation(float minAngle, float maxAngle,
 			double incrementPerStep, double wiggle, boolean relative) {
 
-		if (minAngle < 0 || minAngle > maxAngle || maxAngle >= 360) {
+		if (minAngle < 0 || minAngle > maxAngle || maxAngle >= 360
+				|| wiggle < 0) {
 			throw new IllegalArgumentException();
 		}
 
@@ -275,7 +276,7 @@ public class FGParticleType {
 	public void setSpeed(double minSpeed, double maxSpeed,
 			double incrementPerStep, double wiggle) {
 
-		if (minSpeed < 0 || minSpeed > maxSpeed) {
+		if (minSpeed < 0 || minSpeed > maxSpeed || wiggle < 0) {
 			throw new IllegalArgumentException();
 		}
 
@@ -290,7 +291,7 @@ public class FGParticleType {
 			double incrementPerStep, double wiggle) {
 
 		if (minDirection < 0 || minDirection > maxDirection
-				|| maxDirection >= 360) {
+				|| maxDirection >= 360 || wiggle < 0) {
 			throw new IllegalArgumentException();
 		}
 

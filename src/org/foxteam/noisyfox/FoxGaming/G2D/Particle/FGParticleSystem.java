@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleEmitter.EmitType;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleType.ColorType;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,6 +23,8 @@ import android.graphics.Color;
 public class FGParticleSystem {
 
 	private boolean _drawOrder_old2new = true;
+	private int _position_x = 0;
+	private int _position_y = 0;
 
 	private List<Particles> particlePool = new LinkedList<Particles>();
 	private List<Emitters> particleEmitters = new LinkedList<Emitters>();
@@ -34,10 +38,17 @@ public class FGParticleSystem {
 
 	}
 
+	public void setPosition(int x, int y) {
+
+		_position_x = x;
+		_position_y = y;
+
+	}
+
 	public void update() {
 
 		// 先清除所有已经死亡的particle
-		int _poolSize = particlePool.size();
+		int _poolSize = particlePool.size();// 统计所有上一轮剩余的粒子数量
 		for (int i = 0; i < _poolSize;) {
 			Particles p = particlePool.get(i);
 			if (p.stayTime > p.lifeTime) {
@@ -52,8 +63,206 @@ public class FGParticleSystem {
 			}
 		}
 
-		// 发射器发射粒子
-		for (Emitters pe : particleEmitters) {
+		// 处理所有现存粒子，仅处理该step之前生成的粒子
+		for (int i = 0; i < _poolSize;) {
+			Particles p = particlePool.get(i);
+			p.stayTime++;
+			// 判断是否应被破坏器破坏
+			boolean needToChange = false;
+			for (FGParticleDestroyer pd : particleDestroyers) {
+				needToChange = pointInSpecifiedRegion(p.x, p.y,
+						pd._region_x_min, pd._region_x_max, pd._region_y_min,
+						pd._region_y_max, pd._region_shape);
+				if (needToChange) {
+					particlePool.remove(i);
+					_poolSize--;
+					break;
+				}
+			}
+			if (needToChange) {
+				continue;
+			}
+
+			// 如果没有破坏，则判断有无被转换
+			needToChange = false;
+			for (FGParticleChanger pc : particleChangers) {
+				if (pointInSpecifiedRegion(p.x, p.y, pc._region_x_min,
+						pc._region_x_max, pc._region_y_min, pc._region_y_max,
+						pc._region_shape)
+						&& p.type == pc._changeType_target) {
+
+					switch (pc._changeKind) {
+					case motion: {
+						p.motionBaseType = pc._changeType_final;
+						break;
+					}
+					case shape: {
+						p.shapeBaseType = pc._changeType_final;
+						break;
+					}
+					case all: {
+						particlePool.remove(i);
+						_poolSize--;
+						createParticle(pc._changeType_final, p.x, p.y, 1);
+						needToChange = true;
+						break;
+					}
+					}
+
+				}
+			}
+			if (needToChange) {
+				continue;
+			}
+
+			needToChange = false;
+
+			// 计算形状
+			if (p.shapeBaseType._frameAni_enabled) {
+				p.frame += p.shapeBaseType._frameAni_speed;
+			} else {
+				p.frame = 0;
+			}
+
+			p.angle += p.shapeBaseType._orientation_incrementPerStep
+					+ FGMathsHelper.random(
+							-p.shapeBaseType._orientation_wiggle,
+							p.shapeBaseType._orientation_wiggle);
+
+			p.size += p.shapeBaseType._size_incrementPerStep
+					+ FGMathsHelper.random(-p.shapeBaseType._size_wiggle,
+							p.shapeBaseType._size_wiggle);
+
+			double k = (double) p.stayTime / (double) p.lifeTime;
+			// 计算颜色
+			switch (p.type._color_type) {
+			case color2: {
+				p.color = colorGradation(p.type._color_color1,
+						p.type._color_color2, (float) k);
+				break;
+			}
+			case color3: {
+				if (k <= 0.5) {
+					p.color = colorGradation(p.type._color_color1,
+							p.type._color_color2, (float) (k * 2.0));
+				} else {
+					p.color = colorGradation(p.type._color_color2,
+							p.type._color_color3, (float) (k * 2.0 - 1.0));
+				}
+				break;
+			}
+			}
+
+			// 计算 alpha
+			switch (p.type._alpha_type) {
+			case alpha2: {
+				p.alpha = k * (p.type._alpha_2 - p.type._alpha_1)
+						+ p.type._alpha_1;
+				break;
+			}
+			case alpha3: {
+				if (k <= 0.5) {
+					p.alpha = k * 2.0 * (p.type._alpha_2 - p.type._alpha_1)
+							+ p.type._alpha_1;
+				} else {
+					p.alpha = (k * 2.0 + 1.0)
+							* (p.type._alpha_3 - p.type._alpha_2)
+							+ p.type._alpha_2;
+				}
+				break;
+			}
+			}
+
+			float x = p.x;
+			float y = p.y;
+			double speedx = FGMathsHelper.lengthdir_x((float) p.speed,
+					(float) p.direction);
+			double speedy = FGMathsHelper.lengthdir_y((float) p.speed,
+					(float) p.direction);
+
+			// 计算吸引器
+			for (FGParticleAttractor fa : particleAttractors) {
+				float distance = FGMathsHelper.point_distance(p.x, p.y,
+						fa._position_x, fa._position_y);
+				if (distance > fa._force_distance_max)
+					continue;
+
+				// 计算力大小
+				double force = fa._force_force;
+				switch (fa._force_kind) {
+				case linear: {
+					force *= 1.0 - distance / fa._force_distance_max;
+					break;
+				}
+				case quadratic: {
+					force *= 1.0 - (distance / fa._force_distance_max)
+							* (distance / fa._force_distance_max);
+					break;
+				}
+				}
+				// 计算力的x y分量
+				float dir = FGMathsHelper.point_direction(p.x, p.y,
+						fa._position_x, fa._position_y);
+				float fx = FGMathsHelper.lengthdir_x((float) force, dir);
+				float fy = FGMathsHelper.lengthdir_y((float) force, dir);
+
+				// 应用力
+				if (fa._force_additive) {
+					speedx += fx;
+					speedy += fy;
+				} else {
+					x += fx;
+					y += fy;
+				}
+			}
+
+			// 计算速度
+			double direction = Math.toDegrees(Math.atan2(-speedy, speedx));
+			if (speedx * speedx + speedy * speedy
+					+ p.motionBaseType._speed_incrementPerStep <= 0) {
+				speedx = 0;
+				speedy = 0;
+			} else {
+				speedx += FGMathsHelper.lengthdir_x(
+						(float) p.motionBaseType._speed_incrementPerStep,
+						(float) direction);
+				speedy += FGMathsHelper.lengthdir_y(
+						(float) p.motionBaseType._speed_incrementPerStep,
+						(float) direction);
+				direction = Math.toDegrees(Math.atan2(-speedy, speedx));
+			}
+
+			// 计算角度
+			direction = FGMathsHelper
+					.degreeIn360((float) (direction + p.motionBaseType._direction_incrementPerStep));
+			float speed = (float) Math.abs(speedx * speedx + speedy * speedy);
+
+			if (speedx != 0 || speedy != 0) {
+				speedx = FGMathsHelper.lengthdir_x(speed, (float) direction);
+				speedy = FGMathsHelper.lengthdir_y(speed, (float) direction);
+			}
+
+			// 计算位置
+			x += speedx;
+			y += speedy;
+
+			// 计算偏转器
+
+			// 最后完成所有计算
+			p.x = (int) x;
+			p.y = (int) y;
+			p.speed = speed;
+			p.direction = direction;
+
+			// 循环变量加1
+			i++;
+
+		}
+
+		// 最后由发射器发射粒子
+		for (int i = 0; i < particleEmitters.size();) {
+			Emitters pe = particleEmitters.get(i);
+
 			if (pe.emitter._emit_particle_number < 0) {
 				if (pe.counter >= -pe.emitter._emit_particle_number) {
 					pe.trigger = random
@@ -65,14 +274,74 @@ public class FGParticleSystem {
 
 				if (pe.trigger == pe.counter) {
 					createParticlesRegion(pe);
+					if (pe.emitter.emitType == EmitType.burst) {
+						particleEmitters.remove(i);
+					} else {
+						i++;
+					}
 				}
 			} else {
 				pe.counter = -1;
 				pe.trigger = 0;
 				createParticlesRegion(pe);
+				if (pe.emitter.emitType == EmitType.burst) {
+					particleEmitters.remove(i);
+				} else {
+					i++;
+				}
 			}
+
 		}
 
+	}
+
+	private int colorGradation(int color1, int color2, float k) {
+		int r = (int) ((float) (Color.red(color2) - Color.red(color1)) * k + (float) Color
+				.red(color1));
+
+		int g = (int) ((float) (Color.green(color2) - Color.green(color1)) * k + (float) Color
+				.green(color1));
+
+		int b = (int) ((float) (Color.blue(color2) - Color.blue(color1)) * k + (float) Color
+				.blue(color1));
+
+		return Color.rgb(r, g, b);
+
+	}
+
+	private boolean pointInSpecifiedRegion(float x, float y, int minX,
+			int minY, int maxX, int maxY, FGParticleRegionShape shape) {
+		boolean isIn = false;
+		if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+			switch (shape) {
+			case rectangle:
+				isIn = true;
+				break;
+			case ellipse:
+				isIn = pointInEllipse(x - (float) (maxX + minX) / 2f, y
+						- (float) (maxY + minY) / 2f,
+						(float) (maxX - minX) / 2f, (float) (maxY - minY) / 2f);
+				break;
+			case diamond:
+				isIn = pointInDiamond(x - (float) (maxX + minX) / 2f, y
+						- (float) (maxY + minY) / 2f,
+						(float) (maxX - minX) / 2f, (float) (maxY - minY) / 2f);
+				break;
+			}
+		}
+		return isIn;
+	}
+
+	// 判断指定点是否在一个以a为长半轴长，b为短半轴长，中心在原点的菱形内部
+	private boolean pointInDiamond(float x, float y, float a, float b) {
+		x = Math.abs(x);
+		y = Math.abs(y);
+		return a != 0 && b != 0 && a * y + b * x <= a * b;
+	}
+
+	// 判断指定点是否在一个以a为长半轴长，b为短半轴长，圆心在原点的椭圆形内部
+	private boolean pointInEllipse(float x, float y, float a, float b) {
+		return a != 0 && b != 0 && x * x / a / a + y * y / b / b <= 1f;
 	}
 
 	private void createParticlesRegion(Emitters emitter) {
@@ -138,7 +407,7 @@ public class FGParticleSystem {
 		}
 	}
 
-	public void draw(Canvas c, int x, int y) {
+	public void draw(Canvas c) {
 
 		if (_drawOrder_old2new) {
 
@@ -146,15 +415,16 @@ public class FGParticleSystem {
 
 				Particles p = particlePool.get(i);
 
-				if (p.type._particleSprite != null) {
+				if (p.shapeBaseType._particleSprite != null) {
 					p.convertor.setAlpha(p.alpha);
 					p.convertor.setRotation(p.angle);
-					p.convertor.setScale(p.type._scale_x * p.size,
-							p.type._scale_y * p.size);
+					p.convertor.setScale(p.shapeBaseType._scale_x * p.size,
+							p.shapeBaseType._scale_y * p.size);
 
-					p.type._particleSprite.setCurrentFrame((int) p.frame);
-					p.type._particleSprite.draw(c, x + p.x, y + p.y,
-							p.convertor, p.color);
+					p.shapeBaseType._particleSprite
+							.setCurrentFrame((int) p.frame);
+					p.shapeBaseType._particleSprite.draw(c, _position_x + p.x,
+							_position_y + p.y, p.convertor, p.color);
 				}
 
 			}
@@ -165,15 +435,16 @@ public class FGParticleSystem {
 
 				Particles p = particlePool.get(i);
 
-				if (p.type._particleSprite != null) {
+				if (p.shapeBaseType._particleSprite != null) {
 					p.convertor.setAlpha(p.alpha);
 					p.convertor.setRotation(p.angle);
-					p.convertor.setScale(p.type._scale_x * p.size,
-							p.type._scale_y * p.size);
+					p.convertor.setScale(p.shapeBaseType._scale_x * p.size,
+							p.shapeBaseType._scale_y * p.size);
 
-					p.type._particleSprite.setCurrentFrame((int) p.frame);
-					p.type._particleSprite.draw(c, x + p.x, y + p.y,
-							p.convertor, p.color);
+					p.shapeBaseType._particleSprite
+							.setCurrentFrame((int) p.frame);
+					p.shapeBaseType._particleSprite.draw(c, _position_x + p.x,
+							_position_y + p.y, p.convertor, p.color);
 				}
 			}
 
@@ -181,9 +452,9 @@ public class FGParticleSystem {
 
 	}
 
-	public void updateAndDraw(Canvas c, int x, int y) {
+	public void updateAndDraw(Canvas c) {
 		update();
-		draw(c, x, y);
+		draw(c);
 	}
 
 	public void setDrawOrder(boolean old2new) {
@@ -193,7 +464,7 @@ public class FGParticleSystem {
 	}
 
 	public void createParticle(FGParticleType type, int x, int y, int number) {
-
+		createParticle(type, x, y, Color.WHITE, number);
 	}
 
 	public void createParticle(FGParticleType type, int x, int y, int color,
@@ -201,14 +472,62 @@ public class FGParticleSystem {
 
 		for (int i = 0; i < number; i++) {
 			Particles p = new Particles();
+			p.type = type;
+			p.shapeBaseType = type;
+			p.motionBaseType = type;
 			p.x = x;
 			p.y = y;
 			p.color = color;
-			
-			//初始化粒子
-			
-			
+
+			// 初始化粒子
+			if (p.shapeBaseType._frameAni_enabled
+					&& p.shapeBaseType._frameAni_startWithRandomFrame) {
+				p.frame = random.nextInt(p.shapeBaseType._particleSprite
+						.getFrameCount());
+			}
+
+			p.size = FGMathsHelper.random(p.shapeBaseType._size_min,
+					p.shapeBaseType._size_max);
+
+			p.angle = FGMathsHelper.random(
+					p.shapeBaseType._orientation_angle_min,
+					p.shapeBaseType._orientation_angle_max);
+
+			if ((type._color_type == ColorType.color1 && type._color_color1 != Color.WHITE)
+					|| type._color_type == ColorType.color2
+					|| type._color_type == ColorType.color3) {
+				p.color = type._color_color1;
+			} else if (type._color_type == ColorType.RGB) {
+				p.color = Color.rgb(FGMathsHelper.random(type._color_RGB_R_min,
+						type._color_RGB_R_max), FGMathsHelper.random(
+						type._color_RGB_G_min, type._color_RGB_G_max),
+						FGMathsHelper.random(type._color_RGB_B_min,
+								type._color_RGB_B_max));
+			} else if (type._color_type == ColorType.HSV) {
+				p.color = Color.HSVToColor(new float[] {
+						(float) (FGMathsHelper.random(type._color_HSV_H_min,
+								type._color_HSV_H_max)) / 255f * 360f,
+						(float) (FGMathsHelper.random(type._color_HSV_S_min,
+								type._color_HSV_S_max)) / 255f,
+						(float) (FGMathsHelper.random(type._color_HSV_V_min,
+								type._color_HSV_V_max)) / 255f });
+			}
+
+			p.alpha = type._alpha_1;
+
+			p.lifeTime = FGMathsHelper.random(type._lifeTime_min,
+					type._lifeTime_max);
+
+			p.speed = FGMathsHelper.random(p.motionBaseType._speed_min,
+					p.motionBaseType._speed_max);
+
+			p.direction = FGMathsHelper.random(p.motionBaseType._direction_min,
+					p.motionBaseType._direction_max);
+
+			particlePool.add(p);
+
 		}
+
 	}
 
 	public void clear() {
@@ -239,6 +558,8 @@ public class FGParticleSystem {
 	private class Particles {
 
 		FGParticleType type = null;
+		FGParticleType motionBaseType = null;
+		FGParticleType shapeBaseType = null;
 		FGSpriteConvertor convertor = new FGSpriteConvertor();
 
 		double frame = 0.0;
