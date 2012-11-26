@@ -56,10 +56,6 @@ public class FGParticleEmitter {
 
 	public void stream(FGParticleType type, int number) {
 
-		if (number < 0) {
-			throw new IllegalArgumentException();
-		}
-
 		emitType = EmitType.stream;
 		_emit_particle_type = type;
 		_emit_particle_number = number;

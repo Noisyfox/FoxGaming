@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.*;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
@@ -32,8 +33,25 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
  */
 public class Bullet_Player_Missile_Manual extends Bullet_Player {
 
+	FGParticleSystem pSystem = new FGParticleSystem();
+	FGParticleType pType = new FGParticleType();
+	FGParticleEmitter pEmitter = new FGParticleEmitter();
+
 	@Override
 	protected void onCreate() {
+
+		FGSprite particleSprite = new FGSprite();
+		particleSprite.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.particle_missilesmoke,
+				false);
+		particleSprite.setOffset(3, 3);
+		pType.setSprite(particleSprite);
+		pType.setLifeTime(15, 25);
+		pType.setSize(0.8, 1.5, -0.03, 0.01);
+		pType.setOrientation(0, 359.9f, 0, 1, false);
+		pType.setAlpha(1.0, 0.0);
+		pEmitter.stream(pType, -2);
+		pSystem.bindParticleEmitter(pEmitter);
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
@@ -51,6 +69,21 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 
 		this.setDamage(10);
 
+	}
+
+	@Override
+	protected void onDraw() {
+		super.onDraw();
+		pSystem.draw(getCanvas());
+	}
+
+	@Override
+	protected void onStep() {
+		super.onStep();
+		pEmitter.setRegion((int) getX() - 2, (int) getY(), (int) getX() + 2,
+				(int) getY() + 2, FGParticleRegionShape.rectangle,
+				FGParticleRegionDistribution.linear);
+		pSystem.update();
 	}
 
 	@Override

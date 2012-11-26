@@ -60,9 +60,9 @@ public class FGParticleType {
 	}
 
 	protected AlphaType _alpha_type = AlphaType.alpha1;
-	protected double _alpha_1 = 0.0;
-	protected double _alpha_2 = 0.0;
-	protected double _alpha_3 = 0.0;
+	protected double _alpha_1 = 1.0;
+	protected double _alpha_2 = 1.0;
+	protected double _alpha_3 = 1.0;
 
 	protected int _lifeTime_min = 100;
 	protected int _lifeTime_max = 100;

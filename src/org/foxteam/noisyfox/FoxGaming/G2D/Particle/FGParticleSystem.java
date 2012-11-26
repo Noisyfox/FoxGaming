@@ -124,14 +124,12 @@ public class FGParticleSystem {
 				p.frame = 0;
 			}
 
-			p.angle += p.shapeBaseType._orientation_incrementPerStep
-					+ FGMathsHelper.random(
-							-p.shapeBaseType._orientation_wiggle,
-							p.shapeBaseType._orientation_wiggle);
-
 			p.size += p.shapeBaseType._size_incrementPerStep
 					+ FGMathsHelper.random(-p.shapeBaseType._size_wiggle,
 							p.shapeBaseType._size_wiggle);
+			if (p.size < 0) {
+				p.size = 0;
+			}
 
 			double k = (double) p.stayTime / (double) p.lifeTime;
 			// 计算颜色
@@ -249,9 +247,25 @@ public class FGParticleSystem {
 			// 计算偏转器
 
 			// 最后完成所有计算
+			direction += FGMathsHelper.random(
+					-p.shapeBaseType._direction_wiggle,
+					p.shapeBaseType._direction_wiggle);
 			p.x = (int) x;
 			p.y = (int) y;
 			p.speed = speed;
+			// 计算图像旋转角度
+			if (p.shapeBaseType._orientation_relative) {
+				p.angle += direction
+						- p.direction
+						+ FGMathsHelper.random(
+								-p.shapeBaseType._orientation_wiggle,
+								p.shapeBaseType._orientation_wiggle);
+			} else {
+				p.angle += p.shapeBaseType._orientation_incrementPerStep
+						+ FGMathsHelper.random(
+								-p.shapeBaseType._orientation_wiggle,
+								p.shapeBaseType._orientation_wiggle);
+			}
 			p.direction = direction;
 
 			// 发射每步都会生成的粒子
@@ -303,6 +317,8 @@ public class FGParticleSystem {
 					} else {
 						i++;
 					}
+				}else{
+					i++;
 				}
 			} else {
 				pe.counter = -1;
@@ -370,7 +386,12 @@ public class FGParticleSystem {
 
 	private void createParticlesRegion(Emitters emitter) {
 
-		for (int i = 0; i < emitter.emitter._emit_particle_number; i++) {
+		int number = emitter.emitter._emit_particle_number;
+		if (number < 0) {
+			number = 1;
+		}
+
+		for (int i = 0; i < number; i++) {
 			double _degree = random.nextDouble() * 360.0;
 			double _length = 0.0;
 
@@ -422,9 +443,9 @@ public class FGParticleSystem {
 
 			// 计算坐标
 			int x = (int) (FGMathsHelper.lengthdir_x((float) _length,
-					(float) _degree) + a);
+					(float) _degree) + (emitter.emitter._region_x_max + emitter.emitter._region_x_min) / 2.0);
 			int y = (int) (FGMathsHelper.lengthdir_y((float) _length,
-					(float) _degree) + b);
+					(float) _degree) + (emitter.emitter._region_y_max + emitter.emitter._region_y_min) / 2.0);
 
 			createParticle(emitter.emitter._emit_particle_type, x, y, 1);
 
