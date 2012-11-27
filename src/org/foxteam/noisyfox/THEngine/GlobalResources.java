@@ -91,9 +91,10 @@ public class GlobalResources {
 						org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_missile_guided,
 						false);
 		FRAMES_BULLET_PLAYER_MISSILE_MANUAL = new FGFrame();
-		FRAMES_BULLET_PLAYER_MISSILE_MANUAL.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.particle_missilesmoke,
-				false);
+		FRAMES_BULLET_PLAYER_MISSILE_MANUAL
+				.loadFromBitmap(
+						org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_missile_manual,
+						false);
 		FRAMES_BULLET_PLAYER_NORMAL = new FGFrame();
 		FRAMES_BULLET_PLAYER_NORMAL.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_normal,
