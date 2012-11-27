@@ -8,7 +8,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
  * @date: 2012-11-24 下午5:40:28
  * 
  */
-public class FGParticleChanger {
+public final class FGParticleChanger {
 
 	protected int _region_x_min = 0;
 	protected int _region_x_max = 0;

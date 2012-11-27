@@ -8,6 +8,6 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
  * @date: 2012-11-24 下午5:39:31
  * 
  */
-public class FGParticleEffect {
+public final class FGParticleEffect {
 
 }

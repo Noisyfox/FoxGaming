@@ -20,7 +20,7 @@ import android.graphics.Color;
  * @date: 2012-11-24 下午5:38:27
  * 
  */
-public class FGParticleSystem {
+public final class FGParticleSystem {
 
 	private boolean _drawOrder_old2new = true;
 	private int _position_x = 0;
@@ -317,7 +317,7 @@ public class FGParticleSystem {
 					} else {
 						i++;
 					}
-				}else{
+				} else {
 					i++;
 				}
 			} else {

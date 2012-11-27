@@ -12,7 +12,7 @@ import android.graphics.Color;
  * @date: 2012-11-24 下午5:38:15
  * 
  */
-public class FGParticleType {
+public final class FGParticleType {
 
 	protected FGSprite _particleSprite = null;
 

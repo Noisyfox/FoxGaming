@@ -8,7 +8,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
  * @date: 2012-11-24 下午5:39:49
  * 
  */
-public class FGParticleDestroyer {
+public final class FGParticleDestroyer {
 
 	protected int _region_x_min = 0;
 	protected int _region_x_max = 0;

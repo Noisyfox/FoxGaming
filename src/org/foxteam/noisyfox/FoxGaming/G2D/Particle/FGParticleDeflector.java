@@ -8,7 +8,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
  * @date: 2012-11-24 下午5:37:54
  * 
  */
-public class FGParticleDeflector {
+public final class FGParticleDeflector {
 
 	protected int _region_x_min = 0;
 	protected int _region_x_max = 0;

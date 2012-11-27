@@ -8,7 +8,7 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
  * @date: 2012-11-24 下午5:37:27
  * 
  */
-public class FGParticleAttractor {
+public final class FGParticleAttractor {
 
 	protected int _position_x = 0;
 	protected int _position_y = 0;
