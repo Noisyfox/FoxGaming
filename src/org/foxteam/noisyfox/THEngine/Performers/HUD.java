@@ -43,18 +43,15 @@ public class HUD extends FGPerformer {
 	protected void onCreate() {
 		mainView = FGStage.getCurrentStage().getView(0);
 
-		mySmallIcon.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.player_icon, false);
+		mySmallIcon.bindFrames(GlobalResources.FRAMES_PLAYER_ICON);
 
-		flashText_STAGECLEAR.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.flashtext_stage_clear,
-				false);
+		flashText_STAGECLEAR
+				.bindFrames(GlobalResources.FRAMES_FLASHTEXT_STAGE_CLEAR);
 		flashText_STAGECLEAR.setOffset(flashText_STAGECLEAR.getWidth() / 2,
 				flashText_STAGECLEAR.getHeight());
 
-		flashText_GAMEOVER.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.flashtext_game_over,
-				false);
+		flashText_GAMEOVER
+				.bindFrames(GlobalResources.FRAMES_FLASHTEXT_GAME_OVER);
 		flashText_GAMEOVER.setOffset(flashText_STAGECLEAR.getWidth() / 2,
 				flashText_STAGECLEAR.getHeight());
 

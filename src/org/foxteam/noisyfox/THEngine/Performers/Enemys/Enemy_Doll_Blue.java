@@ -58,9 +58,7 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 	@Override
 	protected void onCreate() {
 
-		dollSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.enemy_doll_blue, 12,
-				1, false);
+		dollSprite.bindFrames(GlobalResources.FRAMES_ENEMY_DOLL_BLUE);
 		dollSprite.setOffset(dollSprite.getWidth() / 2,
 				dollSprite.getHeight() / 2);
 		this.bindSprite(dollSprite);
@@ -227,9 +225,8 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 
 	@Override
 	protected void Explosion(Bullet bullet) {
-		new Explosion(
-				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
-				1, 0.5f, (int) this.getX(), (int) this.getY(), -1);
+		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
+				(int) this.getX(), (int) this.getY(), -1);
 		this.dismiss();
 
 		this.bindCollisionMask(null);

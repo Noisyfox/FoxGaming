@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
@@ -36,9 +37,7 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	protected void onCreate() {
 
 		FGSprite bulletSprite = new FGSprite();
-		bulletSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_normal,
-				false);
+		bulletSprite.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_NORMAL);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2 + 1, 0);
 
 		this.bindSprite(bulletSprite);
@@ -66,8 +65,8 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	public void hitOn(Hitable target) {
 		if (Enemy.class.isInstance(target)) {
 			new Explosion(
-					org.foxteam.noisyfox.THEngine.R.drawable.explosion_bullet_player_normal,
-					10, 1, 0.3f, (int) this.getX(), (int) this.getY()
+					GlobalResources.FRAMES_EXPLOSION_BULLET_PLAYER_NORMAL, 1,
+					0.3f, (int) this.getX(), (int) this.getY()
 							- this.getSprite().getOffsetY(), -1);
 			this.dismiss();
 		}

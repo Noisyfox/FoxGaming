@@ -26,6 +26,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGConvertor;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
@@ -61,9 +62,7 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
-				.loadFromBitmap(
-						org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_missile_guided,
-						false);
+				.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_MISSILE_GUIDED);
 		bulletSprite.setOffset(4, 10);
 		this.bindSprite(bulletSprite);
 
@@ -146,10 +145,8 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 					.getOffsetY(), this.direction);
 			int y = -(int) FGMathsHelper.lengthdir_y(this.getSprite()
 					.getOffsetY(), this.direction);
-			new Explosion(
-					org.foxteam.noisyfox.THEngine.R.drawable.explosion_missile_small,
-					5, 1, 0.3f, (int) this.getX() + x, (int) this.getY() + y,
-					-1);
+			new Explosion(GlobalResources.FRAMES_EXPLOSION_MISSILE_SMALL, 1,
+					0.3f, (int) this.getX() + x, (int) this.getY() + y, -1);
 			this.dismiss();
 		}
 	}

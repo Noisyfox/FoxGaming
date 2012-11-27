@@ -16,12 +16,6 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
-import java.io.InputStream;
-
-import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -36,31 +30,9 @@ import android.graphics.Paint;
  * @date: 2012-6-25 下午11:23:07
  * 
  */
-public class FGSprite {
-	/**
-	 * Source image
-	 */
-	private Bitmap sourceImage;
+public final class FGSprite {
 
-	/**
-	 * The number of frames
-	 */
-	private int numberFrames; // = 0;
-
-	/**
-	 * list of frames
-	 */
-	private Bitmap[] frames;
-
-	/**
-	 * Width of each frame in the source image
-	 */
-	private int srcFrameWidth;
-
-	/**
-	 * Height of each frame in the source image
-	 */
-	private int srcFrameHeight;
+	private FGFrame frames = null;
 
 	private int currentFrame = 0;// start from 0, smaller than numberFrames
 
@@ -72,140 +44,92 @@ public class FGSprite {
 
 	}
 
-	public final void loadFromBitmap(Bitmap bitmap) {
-		loadFromBitmap(bitmap, 1, 1);
-	}
-
-	public final void loadFromBitmap(Bitmap bitmap, int horizontalNumber,
-			int verticalNumber) {
-		initializeFrames(bitmap, horizontalNumber, verticalNumber);
-	}
-
-	public void loadFromBitmap(int resId, boolean cDensityDpi) {
-		loadFromBitmap(resId, 1, 1, cDensityDpi);
-	}
-
-	public void loadFromBitmap(int resId, int horizontalNumber,
-			int verticalNumber, boolean cDensityDpi) {
-		Bitmap b = null;
-		if (cDensityDpi) {
-			b = BitmapFactory.decodeResource(FGGameCore.getMainContext()
-					.getResources(), resId);
-		} else {
-			InputStream is = FGGameCore.getMainContext().getResources()
-					.openRawResource(resId);
-			b = BitmapFactory.decodeStream(is);
-		}
-
-		loadFromBitmap(b, horizontalNumber, verticalNumber);
-	}
-
-	private void initializeFrames(Bitmap image, int horizontalNumber,
-			int verticalNumber) {
-
-		if (image == null || horizontalNumber <= 0 || verticalNumber <= 0) {
-			throw new IllegalArgumentException();
-		}
-
-		int imageW = image.getWidth();
-		int imageH = image.getHeight();
-
-		int frameWidth = imageW % horizontalNumber == 0 ? imageW
-				/ horizontalNumber : (imageW - imageW % horizontalNumber)
-				/ horizontalNumber;
-		int frameHeight = imageH % verticalNumber == 0 ? imageH
-				/ verticalNumber : (imageH - imageH % verticalNumber)
-				/ verticalNumber;
-
-		if (frameWidth <= 0 || frameHeight <= 0) {
-			throw new IllegalArgumentException();
-		}
-
-		srcFrameWidth = frameWidth;
-		srcFrameHeight = frameHeight;
-
-		sourceImage = image;
-		numberFrames = horizontalNumber * verticalNumber;
-
-		frames = new Bitmap[numberFrames];
-
-		int currentFrame = 0;
-
-		for (int yy = 0; yy < imageH; yy += frameHeight) {
-			for (int xx = 0; xx < imageW; xx += frameWidth) {
-				frames[currentFrame] = Bitmap.createBitmap(sourceImage, xx, yy,
-						srcFrameWidth, srcFrameHeight);
-				currentFrame++;
-			}
-		}
-	}
-
-	public final int getHeight() {
-		return srcFrameHeight;
-	}
-
-	public final int getWidth() {
-		return srcFrameWidth;
-	}
-
-	public final void setOffset(int x, int y) {
+	public void setOffset(int x, int y) {
 		offsetX = x;
 		offsetY = y;
 	}
 
-	public final int getOffsetX() {
+	public int getOffsetX() {
 		return offsetX;
 	}
 
-	public final int getOffsetY() {
+	public int getOffsetY() {
 		return offsetY;
 	}
 
-	public final void setVisible(boolean visible) {
+	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
 
-	public final boolean isVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
-	public final int getFrameCount() {
-		return numberFrames;
+	public void bindFrames(FGFrame frame) {
+		frames = frame;
 	}
 
-	public final int getCurrentFrame() {
+	public FGFrame getFrames() {
+		return frames;
+	}
+
+	public int getCurrentFrame() {
 		return currentFrame;
 	}
 
-	public final void setCurrentFrame(int frameIndex) {
+	public void setCurrentFrame(int frameIndex) {
 		while (frameIndex < 0)
-			frameIndex += numberFrames;
-		while (frameIndex >= numberFrames)
-			frameIndex -= numberFrames;
+			frameIndex += frames.numberFrames;
+		while (frameIndex >= frames.numberFrames)
+			frameIndex -= frames.numberFrames;
 		currentFrame = frameIndex;
 	}
 
-	public final void previousFrame() {
+	public void previousFrame() {
 		setCurrentFrame(currentFrame - 1);
 	}
 
-	public final void nextFrame() {
+	public void nextFrame() {
 		setCurrentFrame(currentFrame + 1);
 	}
 
-	public final void draw(Canvas c, int x, int y) {
+	public final int getHeight() {
+		if (frames != null) {
+			return frames.srcFrameHeight;
+		}
+		return 0;
+	}
+
+	public final int getWidth() {
+		if (frames != null) {
+			return frames.srcFrameWidth;
+		}
+		return 0;
+	}
+
+	public final int getFrameCount() {
+		if (frames != null) {
+			return frames.numberFrames;
+		}
+		return 0;
+	}
+
+	public void draw(Canvas c, int x, int y) {
 		draw(c, x, y, null);
 	}
 
-	public final void draw(Canvas c, int x, int y,
-			FGSpriteConvertor spriteConvertor) {
+	public void draw(Canvas c, int x, int y, FGSpriteConvertor spriteConvertor) {
 
 		draw(c, x, y, spriteConvertor, Color.WHITE);
 
 	}
 
-	public final void draw(Canvas c, int x, int y,
-			FGSpriteConvertor spriteConvertor, int color) {
+	public void draw(Canvas c, int x, int y, FGSpriteConvertor spriteConvertor,
+			int color) {
+
+		if (frames == null) {
+			return;
+		}
 
 		Paint paint = new Paint();
 
@@ -229,9 +153,10 @@ public class FGSprite {
 			Matrix m = spriteConvertor.getConvertMatrix(offsetX, offsetY);
 			m.postTranslate(x - offsetX, y - offsetY);
 			paint.setAlpha((int) (255.0 * spriteConvertor.getAlpha()));
-			c.drawBitmap(frames[currentFrame], m, paint);
+			c.drawBitmap(frames.getFrame(currentFrame), m, paint);
 		} else {
-			c.drawBitmap(frames[currentFrame], x - offsetX, y - offsetY, paint);
+			c.drawBitmap(frames.getFrame(currentFrame), x - offsetX, y
+					- offsetY, paint);
 		}
 
 	}

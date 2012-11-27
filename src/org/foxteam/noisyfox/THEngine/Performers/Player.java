@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player_Missile_Guided;
@@ -95,8 +96,7 @@ public class Player extends Hitable {
 
 		mainView = FGStage.getCurrentStage().getView(0);
 
-		playerSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.player, false);
+		playerSprite.bindFrames(GlobalResources.FRAMES_PLAYER);
 		playerSprite.setOffset(playerSprite.getWidth() / 2,
 				playerSprite.getHeight() / 2);
 		this.bindSprite(playerSprite);
@@ -399,9 +399,8 @@ public class Player extends Hitable {
 
 	@Override
 	protected void Explosion(Bullet bullet) {
-		new Explosion(
-				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
-				1, 0.5f, (int) this.getX(), (int) this.getY(), -1);
+		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
+				(int) this.getX(), (int) this.getY(), -1);
 
 		// 丢下奖励
 		new PowerUp_Missile((int) getX(), (int) getY())

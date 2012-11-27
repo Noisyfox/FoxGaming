@@ -22,6 +22,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
@@ -43,9 +44,7 @@ public class Enemy_Butterfly extends EnemyInAir {
 	@Override
 	protected void onCreate() {
 		FGSprite butterflySprite = new FGSprite();
-		butterflySprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.enemy_butterfly, 4, 1,
-				false);
+		butterflySprite.bindFrames(GlobalResources.FRAMES_ENEMY_BUTTERFLY);
 		butterflySprite.setOffset(butterflySprite.getWidth() / 2,
 				butterflySprite.getHeight() / 2);
 		this.bindSprite(butterflySprite);
@@ -150,9 +149,8 @@ public class Enemy_Butterfly extends EnemyInAir {
 
 	@Override
 	protected void Explosion(Bullet bullet) {
-		new Explosion(
-				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
-				1, 0.5f, (int) this.getX(), (int) this.getY(), -1);
+		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
+				(int) this.getX(), (int) this.getY(), -1);
 
 		new PowerUp_Missile((int) getX(), (int) getY())
 				.setDepth(getDepth() + 1);

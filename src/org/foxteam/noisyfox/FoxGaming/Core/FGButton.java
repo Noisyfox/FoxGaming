@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
+import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
@@ -42,10 +43,14 @@ public abstract class FGButton extends FGPerformer {
 	 * @Description: 构造函数
 	 * @param: @param width
 	 * @param: @param height
-	 * @param: @param resId 资源id
+	 * @param: @param frames 要绑定的 frames,必须是3帧
 	 */
-	public FGButton(int width, int height, int resId) {
-		mySprite.loadFromBitmap(resId, 3, 1, false);
+	public FGButton(int width, int height, FGFrame frames) {
+		if (frames == null || frames.getFrameCount() != 3) {
+			throw new IllegalArgumentException();
+		}
+
+		mySprite.bindFrames(frames);
 		mySprite.setOffset(mySprite.getWidth() / 2, mySprite.getHeight() / 2);
 		this.bindCollisionMask(myMask);
 		setSize(width, height);

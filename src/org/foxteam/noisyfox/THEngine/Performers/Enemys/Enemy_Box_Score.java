@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
@@ -40,10 +41,7 @@ public class Enemy_Box_Score extends EnemyOnGround {
 	@Override
 	protected void onCreate() {
 		FGSprite boxSprite = new FGSprite();
-		boxSprite
-				.loadFromBitmap(
-						org.foxteam.noisyfox.THEngine.R.drawable.enemy_box_score,
-						false);
+		boxSprite.bindFrames(GlobalResources.FRAMES_ENEMY_BOX_SCORE);
 		boxSprite.setOffset(22, 13);
 		this.bindSprite(boxSprite);
 
@@ -74,9 +72,8 @@ public class Enemy_Box_Score extends EnemyOnGround {
 
 	@Override
 	protected void Explosion(Bullet bullet) {
-		new Explosion(
-				org.foxteam.noisyfox.THEngine.R.drawable.explosion_normal, 7,
-				1, 0.5f, (int) this.getX(), (int) this.getY(), -1);
+		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
+				(int) this.getX(), (int) this.getY(), -1);
 		PowerUp p = new PowerUp_Score((int) getX(), (int) getY());
 		p.setDepth(getDepth());
 

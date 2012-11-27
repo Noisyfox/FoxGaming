@@ -55,16 +55,17 @@ public class Explosion extends FGPerformer {
 				+ FGStage.getCurrentBackground().getVSpeed());
 	}
 
-	public Explosion(int resId, int frameNumber, int turns, float lastTime,
-			int x, int y, int depth) {
+	public Explosion(FGFrame frames, int turns, float lastTime, int x, int y,
+			int depth) {
 		if (turns < 1) {
 			throw new IllegalArgumentException(
 					"turns must be larger than zero!");
 		}
-		s.loadFromBitmap(resId, frameNumber, 1, false);
+		s.bindFrames(frames);
 		s.setOffset(s.getWidth() / 2, s.getHeight() / 2);
 		this.turns = turns;
-		frameSpeed = lastTime / (float) turns / (float) (frameNumber - 1)
+		frameSpeed = lastTime / (float) turns
+				/ (float) (frames.getFrameCount() - 1)
 				* FGStage.getCurrentStage().getStageSpeed();
 		this.setDepth(depth);
 		this.perform(FGStage.getCurrentStage().getStageIndex());

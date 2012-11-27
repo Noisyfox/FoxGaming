@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
@@ -38,8 +39,7 @@ public class PowerUp_Score extends PowerUp {
 		super(x, y);
 
 		FGSprite scoreSprite = new FGSprite();
-		scoreSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.powerup_score, false);
+		scoreSprite.bindFrames(GlobalResources.FRAMES_POWERUP_SCORE);
 		scoreSprite.setOffset(scoreSprite.getWidth() / 2,
 				scoreSprite.getHeight() / 2);
 		this.bindSprite(scoreSprite);
@@ -61,10 +61,8 @@ public class PowerUp_Score extends PowerUp {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Player.class.isInstance(target)) {
-			new Explosion(
-					org.foxteam.noisyfox.THEngine.R.drawable.explosion_flashtext_score_500,
-					2, 5, 0.5f, (int) this.getX(), (int) this.getY(),
-					getDepth());
+			new Explosion(GlobalResources.FRAMES_EXPLOSION_FLASHTEXT_SCORE_500,
+					5, 0.5f, (int) this.getX(), (int) this.getY(), getDepth());
 
 			FGGamingThread.score += 500;
 			this.dismiss();

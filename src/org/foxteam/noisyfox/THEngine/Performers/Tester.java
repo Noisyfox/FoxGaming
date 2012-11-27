@@ -7,6 +7,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleRegionDistribution;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleRegionShape;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleSystem;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleType;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 
 public class Tester extends FGPerformer {
 
@@ -22,9 +23,7 @@ public class Tester extends FGPerformer {
 	@Override
 	protected void onCreate() {
 		FGSprite particleSprite = new FGSprite();
-		particleSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.particle_missilesmoke,
-				false);
+		particleSprite.bindFrames(GlobalResources.FRAMES_PARTICLE_MISSILESMOKE);
 		particleSprite.setOffset(3, 3);
 		pType.setSprite(particleSprite);
 		pType.setLifeTime(15, 25);

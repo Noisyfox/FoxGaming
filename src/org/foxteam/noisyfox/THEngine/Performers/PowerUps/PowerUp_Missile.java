@@ -18,6 +18,7 @@ package org.foxteam.noisyfox.THEngine.Performers.PowerUps;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
@@ -39,9 +40,7 @@ public class PowerUp_Missile extends PowerUp {
 	public PowerUp_Missile(int x, int y) {
 		super(x, y);
 
-		missileSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.powerup_missile, 2, 1,
-				false);
+		missileSprite.bindFrames(GlobalResources.FRAMES_POWERUP_MISSILE);
 		missileSprite.setOffset(missileSprite.getWidth() / 2,
 				missileSprite.getHeight() / 2);
 		this.bindSprite(missileSprite);

@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.*;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
@@ -41,23 +42,19 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 	protected void onCreate() {
 
 		FGSprite particleSprite = new FGSprite();
-		particleSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.particle_missilesmoke,
-				false);
+		particleSprite.bindFrames(GlobalResources.FRAMES_PARTICLE_MISSILESMOKE);
 		particleSprite.setOffset(3, 3);
 		pType.setSprite(particleSprite);
-		pType.setLifeTime(15, 25);
-		pType.setSize(0.8, 1.5, -0.03, 0.01);
+		pType.setLifeTime(10, 15);
+		pType.setSize(0.8, 1.3, -0.03, 0.01);
 		pType.setOrientation(0, 359.9f, 0, 1, false);
 		pType.setAlpha(1.0, 0.0);
-		pEmitter.stream(pType, -2);
+		pEmitter.stream(pType, -1);
 		pSystem.bindParticleEmitter(pEmitter);
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
-				.loadFromBitmap(
-						org.foxteam.noisyfox.THEngine.R.drawable.bullet_player_missile_manual,
-						false);
+				.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_MISSILE_MANUAL);
 		bulletSprite.setOffset(4, 10);
 		this.bindSprite(bulletSprite);
 
@@ -73,8 +70,8 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 
 	@Override
 	protected void onDraw() {
-		super.onDraw();
 		pSystem.draw(getCanvas());
+		super.onDraw();
 	}
 
 	@Override
@@ -95,9 +92,8 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 	@Override
 	public void hitOn(Hitable target) {
 		if (Enemy.class.isInstance(target)) {
-			new Explosion(
-					org.foxteam.noisyfox.THEngine.R.drawable.explosion_missile_small,
-					5, 1, 0.3f, (int) this.getX(), (int) this.getY()
+			new Explosion(GlobalResources.FRAMES_EXPLOSION_MISSILE_SMALL, 1,
+					0.3f, (int) this.getX(), (int) this.getY()
 							- this.getSprite().getOffsetY(), -1);
 			this.dismiss();
 		}

@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Performers.Bullets;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 
@@ -38,8 +39,7 @@ public class Bullet_Enemy_2 extends Bullet_Enemy {
 	protected void onCreate() {
 
 		FGSprite bulletSprite = new FGSprite();
-		bulletSprite.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.bullet_enemy_2, false);
+		bulletSprite.bindFrames(GlobalResources.FRAMES_BULLET_ENEMY_2);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2,
 				bulletSprite.getHeight() / 2);
 
