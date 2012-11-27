@@ -25,7 +25,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
-import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_2;
+import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_3;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 
 import android.graphics.Canvas;
@@ -191,7 +191,7 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 		} else if (whichAlarm == 1) {// 等待进入以及等待返回
 			myStatus++;
 		} else if (whichAlarm == 2) {// 发射子弹
-			Bullet b = new Bullet_Enemy_2((int) this.getX(), (int) this.getY(),
+			Bullet b = new Bullet_Enemy_3((int) this.getX(), (int) this.getY(),
 					FGMathsHelper.point_direction(getX(), getY(), FGStage
 							.getCurrentStage().getWidth() / 2, FGStage
 							.getCurrentStage().getHeight() / 2),
