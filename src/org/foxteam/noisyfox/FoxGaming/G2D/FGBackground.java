@@ -210,6 +210,9 @@ public class FGBackground {
 
 	public void doAndDraw(Canvas c, int left, int top, int height, int width) {
 
+		if (sourceImage == null)
+			return;
+
 		c.save();
 		c.clipRect(left, top, left + width, top + height);
 
