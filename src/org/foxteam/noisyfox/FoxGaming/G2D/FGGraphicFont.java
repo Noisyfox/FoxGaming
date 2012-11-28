@@ -108,8 +108,9 @@ public final class FGGraphicFont {
 	}
 
 	public void drawText(Canvas c, float x, float y, String text) {
-		for (int i = 0; i < text.length(); i++) {
-			String key = text.substring(i, i + 1);
+		char[] stc = text.toCharArray();
+		for (int i = 0; i < stc.length; i++) {
+			String key = String.valueOf(stc[i]);
 			float rX = x - offsetX;
 
 			switch (alignment) {

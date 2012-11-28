@@ -47,8 +47,8 @@ public abstract class FGStage {
 		}
 	};
 
-	protected List<FGPerformer> performers = null;
-	protected List<FGViews> activatedViews = null;
+	protected List<FGPerformer> performers = new ArrayList<FGPerformer>();
+	protected List<FGViews> activatedViews = new ArrayList<FGViews>();
 	protected int width = 480;// stage 的宽
 	protected int height = 800;// stage 的高
 	protected float stageSpeed = 30f;
@@ -56,11 +56,11 @@ public abstract class FGStage {
 	protected FGBackground background = null;
 	protected int stageIndex = -1;
 	private boolean available = false;
-	private List<FGPerformer> employingPerformer = null;
-	private List<FGPerformer> emploiedPerformer = null;
-	private List<FGPerformer> dismissingPerformer = null;
-	private List<FGPerformer> dismissedPerformer = null;
-	private Queue<FGPerformer> collisions = null;
+	private List<FGPerformer> employingPerformer = new ArrayList<FGPerformer>();
+	private List<FGPerformer> emploiedPerformer = new ArrayList<FGPerformer>();
+	private List<FGPerformer> dismissingPerformer = new ArrayList<FGPerformer>();
+	private List<FGPerformer> dismissedPerformer = new ArrayList<FGPerformer>();
+	private Queue<FGPerformer> collisions = new ConcurrentLinkedQueue<FGPerformer>();
 
 	/**
 	 * @Title: onCreate
@@ -72,13 +72,6 @@ public abstract class FGStage {
 	protected abstract void onCreate();
 
 	public FGStage() {
-		performers = new ArrayList<FGPerformer>();
-		activatedViews = new ArrayList<FGViews>();
-		employingPerformer = new ArrayList<FGPerformer>();
-		dismissingPerformer = new ArrayList<FGPerformer>();
-		emploiedPerformer = new ArrayList<FGPerformer>();
-		dismissedPerformer = new ArrayList<FGPerformer>();
-		collisions = new ConcurrentLinkedQueue<FGPerformer>();
 		stages.add(this);
 		stageIndex = stages.size() - 1;
 		available = true;
@@ -177,28 +170,33 @@ public abstract class FGStage {
 	 */
 	private static final void updateStageIndex() {
 		synchronized (stages) {
-			for (int i = 0; i < stages.size(); i++) {
-				stages.get(i).stageIndex = i;
-
-				synchronized (stages.get(i).performers) {
-					for (FGPerformer p : stages.get(i).performers) {
+			int i = 0;
+			for (FGStage s : stages) {
+				s.stageIndex = i;
+				synchronized (s.performers) {
+					for (FGPerformer p : s.performers) {
 						p.stage = i;
 					}
 				}
-
+				i++;
 			}
+			// for (int i = 0; i < stages.size(); i++) {
+			// stages.get(i).stageIndex = i;
+			//
+			// synchronized (stages.get(i).performers) {
+			// for (FGPerformer p : stages.get(i).performers) {
+			// p.stage = i;
+			// }
+			// }
+			//
+			// }
 		}
-	}
-
-	// 保证该stage不被异常调用
-	private final void ensureAvailable() {
-		if (!available)
-			throw new RuntimeException("无法操作一个已经不存在的stage");
 	}
 
 	// 初始化该 Stage
 	protected void initStage() {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
 
 		// 注销所有存在的 Performer
 		for (FGPerformer p : performers) {
@@ -221,7 +219,9 @@ public abstract class FGStage {
 	}
 
 	protected final void employPerformer(FGPerformer performer) {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		synchronized (employingPerformer) {
 			if (employingPerformer.contains(performer)) {
 				return;
@@ -252,7 +252,9 @@ public abstract class FGStage {
 	}
 
 	protected final void dismissPerformer(FGPerformer performer) {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		synchronized (dismissingPerformer) {
 			if (dismissingPerformer.contains(performer)) {
 				return;
@@ -283,7 +285,9 @@ public abstract class FGStage {
 	}
 
 	public final void broadcastEvent(int event, Object... args) {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		for (FGPerformer p : performers) {
 			p.callEvent(event, args);
 		}
@@ -335,7 +339,9 @@ public abstract class FGStage {
 	}
 
 	public final void setStageSpeed(float stageSpeed) {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		this.stageSpeed = stageSpeed;
 	}
 
@@ -360,12 +366,16 @@ public abstract class FGStage {
 	}
 
 	public final int getStageIndex() {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		return stageIndex;
 	}
 
 	public final void setStageIndex(int index) {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		if (index < 0 || index > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
 		}
@@ -378,7 +388,9 @@ public abstract class FGStage {
 	}
 
 	public final void closeStage() {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		if (currentStage.equals(this)) {
 			throw new IllegalArgumentException("无法移除当前活动的stage");
 		}
@@ -405,7 +417,9 @@ public abstract class FGStage {
 
 	// 处理定时器
 	protected final void operateAlarm() {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		for (FGPerformer p : performers) {
 			if (!p.frozen) {
 				p.goAlarm();
@@ -415,7 +429,9 @@ public abstract class FGStage {
 
 	// 处理碰撞检测
 	protected final void operateCollision() {
-		ensureAvailable();
+		if (!available)
+			throw new RuntimeException("无法操作一个已经不存在的stage");
+
 		for (FGPerformer p : performers) {
 			synchronized (p) {
 

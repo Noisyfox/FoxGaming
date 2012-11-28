@@ -24,6 +24,8 @@ import java.util.Queue;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -66,13 +68,15 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static List<Integer> actionedFingers = new ArrayList<Integer>();
 	private static List<Integer> registedKeys = new ArrayList<Integer>();
 	private static List<Integer> blockedKeys = new ArrayList<Integer>();
+	private static PaintFlagsDrawFilter paintFlagsDrawFilter = new PaintFlagsDrawFilter(
+			0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
 	private boolean processing = false;
 	private int lastScreenWidth = 0;
 	private int lastScreenHeight = 0;
-	private List<TouchEvent> listTouchEvent = new ArrayList<TouchEvent>();
+	private List<TouchEvent> listTouchEvent = new LinkedList<TouchEvent>();
 	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
 	private long stepCount = 0;
 	private long SPS_startTime;
@@ -80,6 +84,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
 	private Matrix viewMatrix = new Matrix();
+	private boolean antiAlias = true;
 
 	protected FGGamingThread(SurfaceHolder surfaceHolder) {
 		FGGamingThread.surfaceHolder = surfaceHolder;
@@ -237,6 +242,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 					viewMatrix.postTranslate(v.targetView.centerX()
 							- v.sourceView.centerX(), v.targetView.centerY()
 							- v.sourceView.centerY());
+					targetCanvas.setDrawFilter(antiAlias ? paintFlagsDrawFilter
+							: null);
 					targetCanvas.drawBitmap(bufferBitmap, viewMatrix, null);
 					targetCanvas.restore();
 				}
@@ -321,6 +328,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 				prepareBufferBitmap();
 				FGStage.currentStage.employPerformer();
 			}
+
+			bufferCanvas.setDrawFilter(antiAlias ? paintFlagsDrawFilter : null);
 
 			// 处理当前场景的performer
 			// 最先广播EVENT_ONSTEPSTART事件

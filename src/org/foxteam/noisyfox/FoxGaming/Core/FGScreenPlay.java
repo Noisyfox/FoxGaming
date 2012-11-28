@@ -46,13 +46,6 @@ public final class FGScreenPlay {
 
 	private boolean isPlaying = false;
 
-	private void ensureAvaliable() {
-		if (isPlaying) {
-			throw new IllegalStateException(
-					"Can't change the activited screenplay!");
-		}
-	}
-
 	/**
 	 * @Title: clear
 	 * @Description: 清空该 screenplay 包含的所有动作
@@ -60,7 +53,10 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void clear() {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		movements.clear();
 		movements_tmp.clear();
@@ -73,15 +69,18 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void wait(int steps) {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		if (steps <= 0) {
 			throw new IllegalArgumentException();
 		}
 
 		List<Float> m = new ArrayList<Float>();
-		m.add(new Float((float) MOVEMETN_WAIT));
-		m.add(new Float((float) steps));
+		m.add(Float.valueOf(MOVEMETN_WAIT));
+		m.add(Float.valueOf(steps));
 		movements.add(m);
 	}
 
@@ -92,10 +91,13 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void stop() {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		List<Float> m = new ArrayList<Float>();
-		m.add(new Float((float) MOVEMETN_STOP));
+		m.add(Float.valueOf(MOVEMETN_STOP));
 		movements.add(m);
 	}
 
@@ -107,12 +109,15 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void jumpTo(int x, int y) {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		List<Float> m = new ArrayList<Float>();
-		m.add(new Float((float) MOVEMETN_JUMPTO));
-		m.add(new Float((float) x));
-		m.add(new Float((float) y));
+		m.add(Float.valueOf(MOVEMETN_JUMPTO));
+		m.add(Float.valueOf(x));
+		m.add(Float.valueOf(y));
 		movements.add(m);
 	}
 
@@ -124,12 +129,15 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void moveTowards(float dir, float speed) {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		List<Float> m = new ArrayList<Float>();
-		m.add(new Float((float) MOVEMETN_MOVETOWARDS_DS));
-		m.add(new Float((float) dir));
-		m.add(new Float((float) speed));
+		m.add(Float.valueOf(MOVEMETN_MOVETOWARDS_DS));
+		m.add(Float.valueOf(dir));
+		m.add(Float.valueOf(speed));
 		movements.add(m);
 	}
 
@@ -142,13 +150,16 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void moveTowards(int x, int y, float speed) {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		List<Float> m = new ArrayList<Float>();
-		m.add(new Float((float) MOVEMETN_MOVETOWARDS_XY));
-		m.add(new Float((float) x));
-		m.add(new Float((float) y));
-		m.add(new Float((float) speed));
+		m.add(Float.valueOf(MOVEMETN_MOVETOWARDS_XY));
+		m.add(Float.valueOf(x));
+		m.add(Float.valueOf(y));
+		m.add(Float.valueOf(speed));
 		movements.add(m);
 	}
 
@@ -162,17 +173,20 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	public void moveTowardsWait(int x, int y, int totalSteps) {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		if (totalSteps <= 0) {
 			throw new IllegalArgumentException();
 		}
 
 		List<Float> m = new ArrayList<Float>();
-		m.add(new Float((float) MOVEMETN_MOVETOWARDSWAIT));
-		m.add(new Float((float) x));
-		m.add(new Float((float) y));
-		m.add(new Float((float) totalSteps));
+		m.add(Float.valueOf(MOVEMETN_MOVETOWARDSWAIT));
+		m.add(Float.valueOf(x));
+		m.add(Float.valueOf(y));
+		m.add(Float.valueOf(totalSteps));
 		movements.add(m);
 	}
 
@@ -183,7 +197,10 @@ public final class FGScreenPlay {
 	 * @return: void
 	 */
 	protected void prepareToPlay(FGPerformer bindPerformer) {
-		ensureAvaliable();
+		if (isPlaying) {
+			throw new IllegalStateException(
+					"Can't change the activited screenplay!");
+		}
 
 		this.bindPerformer = bindPerformer;
 		movements_tmp.clear();
@@ -192,7 +209,7 @@ public final class FGScreenPlay {
 		for (List<Float> mv : movements) {
 			Queue<Float> mv_tmp = new ConcurrentLinkedQueue<Float>();
 			for (Float v : mv) {
-				mv_tmp.offer(new Float(v.floatValue()));
+				mv_tmp.offer(Float.valueOf(v.floatValue()));
 			}
 			movements_tmp.offer(mv_tmp);
 		}

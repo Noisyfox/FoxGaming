@@ -32,7 +32,9 @@ import android.graphics.Canvas;
  */
 public class FGPerformer extends FGEventsListener {
 
-	private List<Alarm> alarms;
+	private static final int ALARM_COUNT_MAX = 10;
+
+	private Alarm[] alarms = new Alarm[ALARM_COUNT_MAX];
 	private boolean visible = true;
 	private float x = 0, y = 0;
 	public float xprevious = 0;// Performer 以前的 x 坐标
@@ -62,10 +64,8 @@ public class FGPerformer extends FGEventsListener {
 
 	public FGPerformer() {
 		// 初始化 alarm
-		alarms = new ArrayList<Alarm>();
-		for (int i = 0; i < 10; i++) {
-			Alarm a = new Alarm();
-			alarms.add(a);
+		for (int i = 0; i < ALARM_COUNT_MAX; i++) {
+			alarms[i] = new Alarm();
 		}
 	}
 
@@ -540,7 +540,7 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: void
 	 */
 	public final void setAlarm(int alarm, int step, boolean repeat) {
-		Alarm a = alarms.get(alarm);
+		Alarm a = alarms[alarm];
 		a.setSteps = step;
 		a.repeat = repeat;
 	}
@@ -552,7 +552,7 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: void
 	 */
 	public final void startAlarm(int alarm) {
-		Alarm a = alarms.get(alarm);
+		Alarm a = alarms[alarm];
 		a.remainSteps = a.setSteps;
 		a.start = true;
 	}
@@ -564,7 +564,7 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: void
 	 */
 	public final void stopAlarm(int alarm) {
-		Alarm a = alarms.get(alarm);
+		Alarm a = alarms[alarm];
 		a.start = false;
 	}
 
@@ -576,7 +576,7 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: int
 	 */
 	public final int getAlarmRemainStep(int alarm) {
-		Alarm a = alarms.get(alarm);
+		Alarm a = alarms[alarm];
 		return a.remainSteps;
 	}
 
@@ -588,7 +588,7 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: boolean
 	 */
 	public final boolean isAlarmStart(int alarm) {
-		Alarm a = alarms.get(alarm);
+		Alarm a = alarms[alarm];
 		return a.start;
 	}
 
@@ -599,8 +599,28 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: void
 	 */
 	protected final void goAlarm() {
-		for (int i = 0; i < alarms.size(); i++) {
-			Alarm a = alarms.get(i);
+		// int i = 0;
+		// for (Alarm a : alarms) {
+		// if (a.start) {
+		// if (a.remainSteps > 0) {
+		// a.remainSteps -= 1;
+		// if (a.remainSteps == 0) {
+		// callEvent(FGEventsListener.EVENT_ONALARM, i);
+		// if (a.repeat) {
+		// a.remainSteps = a.setSteps;
+		// } else {
+		// a.start = false;
+		// }
+		// }
+		// } else {
+		// a.start = false;
+		// a.remainSteps = 0;
+		// }
+		// }
+		// i++;
+		// }
+		for (int i = 0; i < ALARM_COUNT_MAX; i++) {
+			Alarm a = alarms[i];
 			if (a.start) {
 				if (a.remainSteps > 0) {
 					a.remainSteps -= 1;

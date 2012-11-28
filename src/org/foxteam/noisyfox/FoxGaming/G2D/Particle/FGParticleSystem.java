@@ -1,5 +1,6 @@
 package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -27,11 +28,11 @@ public final class FGParticleSystem {
 	private int _position_y = 0;
 
 	private List<Particles> particlePool = new LinkedList<Particles>();
-	private List<Emitters> particleEmitters = new LinkedList<Emitters>();
-	private List<FGParticleAttractor> particleAttractors = new LinkedList<FGParticleAttractor>();
-	private List<FGParticleDestroyer> particleDestroyers = new LinkedList<FGParticleDestroyer>();
-	private List<FGParticleDeflector> particleDeflectors = new LinkedList<FGParticleDeflector>();
-	private List<FGParticleChanger> particleChangers = new LinkedList<FGParticleChanger>();
+	private List<Emitters> particleEmitters = new ArrayList<Emitters>();
+	private List<FGParticleAttractor> particleAttractors = new ArrayList<FGParticleAttractor>();
+	private List<FGParticleDestroyer> particleDestroyers = new ArrayList<FGParticleDestroyer>();
+	private List<FGParticleDeflector> particleDeflectors = new ArrayList<FGParticleDeflector>();
+	private List<FGParticleChanger> particleChangers = new ArrayList<FGParticleChanger>();
 	private static Random random = new Random();
 
 	public FGParticleSystem() {

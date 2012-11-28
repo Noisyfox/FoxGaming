@@ -238,31 +238,32 @@ public final class FGPathBezier3 {
 		FGPointF me;
 	}
 
-	private void ensureAvaliable() {
+	// 获取路径的长度
+	public float getLength() {
 		if (!computed) {
 			throw new IllegalStateException();
 		}
-	}
-
-	// 获取路径的长度
-	public float getLength() {
-		ensureAvaliable();
 
 		float length = 0;
-		for (int i = 0; i < pathPoints.size() - 1; i++) {
+		int size = pathPoints.size();
+		for (int i = 0; i < size - 1; i++) {
 			length += pathPoints.get(i).distance(pathPoints.get(i + 1));
 		}
 		return length;
 	}
 
 	public int getMaxFlag() {
-		ensureAvaliable();
+		if (!computed) {
+			throw new IllegalStateException();
+		}
 
 		return pathPoints.size() - 1;
 	}
 
 	public int nextPositionFlag(int currentFlag, float dLength) {
-		ensureAvaliable();
+		if (!computed) {
+			throw new IllegalStateException();
+		}
 
 		int flag = currentFlag;
 		float length = 0;
@@ -313,13 +314,17 @@ public final class FGPathBezier3 {
 	}
 
 	public float getX(int positionFlag) {
-		ensureAvaliable();
+		if (!computed) {
+			throw new IllegalStateException();
+		}
 
 		return pathPoints.get(positionFlag).x;
 	}
 
 	public float getY(int positionFlag) {
-		ensureAvaliable();
+		if (!computed) {
+			throw new IllegalStateException();
+		}
 
 		return pathPoints.get(positionFlag).y;
 	}

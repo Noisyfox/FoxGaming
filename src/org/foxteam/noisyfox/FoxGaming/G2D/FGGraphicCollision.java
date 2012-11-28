@@ -42,8 +42,11 @@ public class FGGraphicCollision {
 	List<FGPoint> points = new ArrayList<FGPoint>();
 	Rect reducedArea = new Rect(0, 0, 0, 0);
 	List<FGPolygon> polygons_tmp = new ArrayList<FGPolygon>();
+	int polygons_tmp_size = 0;
 	List<FGCircle> circles_tmp = new ArrayList<FGCircle>();
+	int circles_tmp_size = 0;
 	List<FGPoint> points_tmp = new ArrayList<FGPoint>();
+	int points_tmp_size = 0;
 	Rect reducedArea_tmp = new Rect(0, 0, 0, 0);
 
 	int baseX = 0;
@@ -62,8 +65,11 @@ public class FGGraphicCollision {
 		reducedArea.setEmpty();
 
 		polygons_tmp.clear();
+		polygons_tmp_size = 0;
 		circles_tmp.clear();
+		circles_tmp_size = 0;
 		points_tmp.clear();
+		points_tmp_size = 0;
 		reducedArea_tmp.setEmpty();
 	}
 
@@ -82,6 +88,7 @@ public class FGGraphicCollision {
 
 		FGCircle c_tmp = new FGCircle(x, y, r, fill);
 		circles_tmp.add(c_tmp);
+		circles_tmp_size++;
 
 		reducedArea_tmp.left = reducedArea.left;
 		reducedArea_tmp.top = reducedArea.top;
@@ -127,6 +134,7 @@ public class FGGraphicCollision {
 
 		FGPoint p_tmp = new FGPoint(x, y);
 		points_tmp.add(p_tmp);
+		points_tmp_size++;
 
 		reducedArea_tmp.left = reducedArea.left;
 		reducedArea_tmp.top = reducedArea.top;
@@ -167,6 +175,7 @@ public class FGGraphicCollision {
 
 		FGPolygon p_tmp = new FGPolygon(v_tmp, fill);
 		polygons_tmp.add(p_tmp);
+		polygons_tmp_size++;
 
 		reducedArea_tmp.left = reducedArea.left;
 		reducedArea_tmp.top = reducedArea.top;
@@ -205,50 +214,48 @@ public class FGGraphicCollision {
 
 	public final void applyConvertor(FGConvertor convertor) {
 		reducedArea_tmp.setEmpty();
-		for (int i = 0; i < points.size(); i++) {
-			mapPoint(points.get(i), points_tmp.get(i), convertor);
+		int i = 0;
+		for (FGPoint pt : points_tmp) {
+			mapPoint(points.get(i), pt, convertor);
 
-			reducedArea_tmp.left = Math.min(points_tmp.get(i).x,
-					reducedArea_tmp.left);
-			reducedArea_tmp.top = Math.min(points_tmp.get(i).y,
-					reducedArea_tmp.top);
-			reducedArea_tmp.right = Math.max(points_tmp.get(i).x,
-					reducedArea_tmp.right);
-			reducedArea_tmp.bottom = Math.max(points_tmp.get(i).y,
+			reducedArea_tmp.left = Math.min(pt.x, reducedArea_tmp.left);
+			reducedArea_tmp.top = Math.min(pt.y, reducedArea_tmp.top);
+			reducedArea_tmp.right = Math.max(pt.x, reducedArea_tmp.right);
+			reducedArea_tmp.bottom = Math.max(pt.y, reducedArea_tmp.bottom);
+
+			i++;
+		}
+
+		i = 0;
+		for (FGCircle ct : circles_tmp) {
+			mapPoint(circles.get(i), ct, convertor);
+
+			reducedArea_tmp.left = Math.min(ct.x - ct.r, reducedArea_tmp.left);
+			reducedArea_tmp.top = Math.min(ct.y - ct.r, reducedArea_tmp.top);
+			reducedArea_tmp.right = Math
+					.max(ct.x + ct.r, reducedArea_tmp.right);
+			reducedArea_tmp.bottom = Math.max(ct.y + ct.r,
 					reducedArea_tmp.bottom);
+
+			i++;
 		}
 
-		for (int i = 0; i < circles.size(); i++) {
-			mapPoint(circles.get(i), circles_tmp.get(i), convertor);
-
-			reducedArea_tmp.left = Math.min(
-					circles_tmp.get(i).x - circles_tmp.get(i).r,
-					reducedArea_tmp.left);
-			reducedArea_tmp.top = Math.min(
-					circles_tmp.get(i).y - circles_tmp.get(i).r,
-					reducedArea_tmp.top);
-			reducedArea_tmp.right = Math.max(
-					circles_tmp.get(i).x + circles_tmp.get(i).r,
-					reducedArea_tmp.right);
-			reducedArea_tmp.bottom = Math.max(circles_tmp.get(i).y
-					+ circles_tmp.get(i).r, reducedArea_tmp.bottom);
-		}
-
-		for (int i = 0; i < polygons.size(); i++) {
+		i = 0;
+		for (FGPolygon pt : polygons_tmp) {
 			for (int j = 0; j < polygons.get(i).num_vertexs; j++) {
-				mapPoint(polygons.get(i).vertex[j],
-						polygons_tmp.get(i).vertex[j], convertor);
+				mapPoint(polygons.get(i).vertex[j], pt.vertex[j], convertor);
 
-				reducedArea_tmp.left = Math.min(
-						polygons_tmp.get(i).vertex[j].x, reducedArea_tmp.left);
-				reducedArea_tmp.top = Math.min(polygons_tmp.get(i).vertex[j].y,
+				reducedArea_tmp.left = Math.min(pt.vertex[j].x,
+						reducedArea_tmp.left);
+				reducedArea_tmp.top = Math.min(pt.vertex[j].y,
 						reducedArea_tmp.top);
-				reducedArea_tmp.right = Math.max(
-						polygons_tmp.get(i).vertex[j].x, reducedArea_tmp.right);
-				reducedArea_tmp.bottom = Math
-						.max(polygons_tmp.get(i).vertex[j].y,
-								reducedArea_tmp.bottom);
+				reducedArea_tmp.right = Math.max(pt.vertex[j].x,
+						reducedArea_tmp.right);
+				reducedArea_tmp.bottom = Math.max(pt.vertex[j].y,
+						reducedArea_tmp.bottom);
 			}
+
+			i++;
 		}
 
 		// convertor.getConvertMatrix().mapRect(reducedArea_tmp, reducedArea);
@@ -270,224 +277,235 @@ public class FGGraphicCollision {
 
 		// 优先进行点的判断
 		// 点与点
-		for (FGPoint p1 : points_tmp) {
-			for (FGPoint p2 : target.points_tmp) {
-				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
-					return true;
-				}
-			}
-		}
-		// 点与圆面
-		for (FGCircle c : target.circles_tmp) {
+		if (points_tmp_size != 0 && target.points_tmp_size != 0)
 			for (FGPoint p1 : points_tmp) {
-				if (c.filled()) {
-					if (FGMathsHelper.pointInCircle(p1, c)) {
+				for (FGPoint p2 : target.points_tmp) {
+					if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
 						return true;
 					}
 				}
 			}
-		}
-		for (FGCircle c : circles_tmp) {
-			for (FGPoint p1 : target.points_tmp) {
-				if (c.filled()) {
-					if (FGMathsHelper.pointInCircle(p1, c)) {
-						return true;
+		// 点与圆面
+		if (points_tmp_size != 0 && target.circles_tmp_size != 0)
+			for (FGCircle c : target.circles_tmp) {
+				for (FGPoint p1 : points_tmp) {
+					if (c.filled()) {
+						if (FGMathsHelper.pointInCircle(p1, c)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
+		if (target.points_tmp_size != 0 && circles_tmp_size != 0)
+			for (FGCircle c : circles_tmp) {
+				for (FGPoint p1 : target.points_tmp) {
+					if (c.filled()) {
+						if (FGMathsHelper.pointInCircle(p1, c)) {
+							return true;
+						}
+					}
+				}
+			}
 		// 点与多边形
-		for (FGPolygon pol : target.polygons_tmp) {
-			for (FGPoint p : points_tmp) {
-				if (pol.filled()) {
-					if (FGMathsHelper.pointInPolygon(p, pol)) {
-						return true;
+		if (points_tmp_size != 0 && target.polygons_tmp_size != 0)
+			for (FGPolygon pol : target.polygons_tmp) {
+				for (FGPoint p : points_tmp) {
+					if (pol.filled()) {
+						if (FGMathsHelper.pointInPolygon(p, pol)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
-		for (FGPolygon pol : polygons_tmp) {
-			for (FGPoint p : target.points_tmp) {
-				if (pol.filled()) {
-					if (FGMathsHelper.pointInPolygon(p, pol)) {
-						return true;
+		if (target.points_tmp_size != 0 && polygons_tmp_size != 0)
+			for (FGPolygon pol : polygons_tmp) {
+				for (FGPoint p : target.points_tmp) {
+					if (pol.filled()) {
+						if (FGMathsHelper.pointInPolygon(p, pol)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
 
 		// 接下来判断圆
 		// 圆与圆
-		for (FGCircle c1 : circles_tmp) {
-			for (FGCircle c2 : target.circles_tmp) {
-				int d2 = c1.squareDistance(c2);
-				int r2 = (c1.getR() + c2.getR()) * (c1.getR() + c2.getR());
-				int r22 = (c1.getR() - c2.getR()) * (c1.getR() - c2.getR());
-				// 两圆相交、相切
-				if (d2 <= r2 && d2 >= r22) {
-					return true;
-				}
+		if (circles_tmp_size != 0 && target.circles_tmp_size != 0)
+			for (FGCircle c1 : circles_tmp) {
+				for (FGCircle c2 : target.circles_tmp) {
+					int d2 = c1.squareDistance(c2);
+					int r2 = (c1.getR() + c2.getR()) * (c1.getR() + c2.getR());
+					int r22 = (c1.getR() - c2.getR()) * (c1.getR() - c2.getR());
+					// 两圆相交、相切
+					if (d2 <= r2 && d2 >= r22) {
+						return true;
+					}
 
-				// 两圆内含
-				if (c1.getR() < c2.getR() && c2.filled() && d2 < r22) {
-					return true;
-				}
-				if (c1.getR() > c2.getR() && c1.filled() && d2 < r22) {
-					return true;
+					// 两圆内含
+					if (c1.getR() < c2.getR() && c2.filled() && d2 < r22) {
+						return true;
+					}
+					if (c1.getR() > c2.getR() && c1.filled() && d2 < r22) {
+						return true;
+					}
 				}
 			}
-		}
 		// 圆与多边形
-		for (FGPolygon pol : target.polygons_tmp) {
-			for (FGCircle c : circles_tmp) {
-				if (pol.isLine()) {
-					// 圆与线段
-					if (FGMathsHelper.circleVSline(c, pol.getVertex(0),
-							pol.getVertex(1), true)) {
-						return true;
+		if (circles_tmp_size != 0 && target.polygons_tmp_size != 0)
+			for (FGPolygon pol : target.polygons_tmp) {
+				for (FGCircle c : circles_tmp) {
+					if (pol.isLine()) {
+						// 圆与线段
+						if (FGMathsHelper.circleVSline(c, pol.getVertex(0),
+								pol.getVertex(1), true)) {
+							return true;
+						}
+						continue;
 					}
-					continue;
-				}
-				// 圆与多边形
-				// 有任何一边与圆相交
-				for (int i = 0; i < pol.getEdgeNumber(); i++) {
-					if (FGMathsHelper.circleVSline(c, pol.getVertex(i),
-							pol.getVertex(i + 1), true)) {
-						return true;
+					// 圆与多边形
+					// 有任何一边与圆相交
+					for (int i = 0; i < pol.getEdgeNumber(); i++) {
+						if (FGMathsHelper.circleVSline(c, pol.getVertex(i),
+								pol.getVertex(i + 1), true)) {
+							return true;
+						}
 					}
-				}
-				// 没有边相交，则判断是否有包含关系
-				if (FGMathsHelper.pointInCircle(pol.getVertex(0), c)) {
-					if (c.filled()) {
-						return true;
-					}
-				} else if (pol.filled()) {
-					if (FGMathsHelper.pointInPolygon(c, pol)) {
-						return true;
+					// 没有边相交，则判断是否有包含关系
+					if (FGMathsHelper.pointInCircle(pol.getVertex(0), c)) {
+						if (c.filled()) {
+							return true;
+						}
+					} else if (pol.filled()) {
+						if (FGMathsHelper.pointInPolygon(c, pol)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
 
-		for (FGPolygon pol : polygons_tmp) {
-			for (FGCircle c : target.circles_tmp) {
-				if (pol.isLine()) {
-					// 圆与线段
-					if (FGMathsHelper.circleVSline(c, pol.getVertex(0),
-							pol.getVertex(1), true)) {
-						return true;
+		if (target.circles_tmp_size != 0 && polygons_tmp_size != 0)
+			for (FGPolygon pol : polygons_tmp) {
+				for (FGCircle c : target.circles_tmp) {
+					if (pol.isLine()) {
+						// 圆与线段
+						if (FGMathsHelper.circleVSline(c, pol.getVertex(0),
+								pol.getVertex(1), true)) {
+							return true;
+						}
+						continue;
 					}
-					continue;
-				}
-				// 圆与多边形
-				// 有任何一边与圆相交
-				for (int i = 0; i < pol.getEdgeNumber(); i++) {
-					if (FGMathsHelper.circleVSline(c, pol.getVertex(i),
-							pol.getVertex(i + 1), true)) {
-						return true;
+					// 圆与多边形
+					// 有任何一边与圆相交
+					for (int i = 0; i < pol.getEdgeNumber(); i++) {
+						if (FGMathsHelper.circleVSline(c, pol.getVertex(i),
+								pol.getVertex(i + 1), true)) {
+							return true;
+						}
 					}
-				}
-				// 没有边相交，则判断是否有包含关系
-				if (FGMathsHelper.pointInCircle(pol.getVertex(0), c)) {
-					if (c.filled()) {
-						return true;
-					}
-				} else if (pol.filled()) {
-					if (FGMathsHelper.pointInPolygon(c, pol)) {
-						return true;
+					// 没有边相交，则判断是否有包含关系
+					if (FGMathsHelper.pointInCircle(pol.getVertex(0), c)) {
+						if (c.filled()) {
+							return true;
+						}
+					} else if (pol.filled()) {
+						if (FGMathsHelper.pointInPolygon(c, pol)) {
+							return true;
+						}
 					}
 				}
 			}
-		}
 
 		// 最后是多边形
 		// 两条直线
-		for (FGPolygon pol1 : target.polygons_tmp) {
-			for (FGPolygon pol2 : polygons_tmp) {
-				if (pol1.isLine() && pol2.isLine()) {
-					if (FGMathsHelper.lineVSline(pol1.getVertex(0),
-							pol1.getVertex(1), pol2.getVertex(0),
-							pol2.getVertex(1))) {
-						return true;
+		if (polygons_tmp_size != 0 && target.polygons_tmp_size != 0)
+			for (FGPolygon pol1 : target.polygons_tmp) {
+				for (FGPolygon pol2 : polygons_tmp) {
+					if (pol1.isLine() && pol2.isLine()) {
+						if (FGMathsHelper.lineVSline(pol1.getVertex(0),
+								pol1.getVertex(1), pol2.getVertex(0),
+								pol2.getVertex(1))) {
+							return true;
+						}
+						continue;
 					}
-					continue;
 				}
 			}
-		}
 		// 直线和多边形
-		for (FGPolygon pol1 : target.polygons_tmp) {
-			for (FGPolygon pol2 : polygons_tmp) {
-				if (pol1.isLine() && !pol2.isLine()) {
-					boolean b1 = FGMathsHelper.pointInPolygon(
-							pol1.getVertex(0), pol2);
-					boolean b2 = FGMathsHelper.pointInPolygon(
-							pol1.getVertex(1), pol2);
-					if ((b1 && (!b2)) || ((!b1) && b2)) {
-						return true;
+		if (polygons_tmp_size != 0 && target.polygons_tmp_size != 0)
+			for (FGPolygon pol1 : target.polygons_tmp) {
+				for (FGPolygon pol2 : polygons_tmp) {
+					if (pol1.isLine() && !pol2.isLine()) {
+						boolean b1 = FGMathsHelper.pointInPolygon(
+								pol1.getVertex(0), pol2);
+						boolean b2 = FGMathsHelper.pointInPolygon(
+								pol1.getVertex(1), pol2);
+						if ((b1 && (!b2)) || ((!b1) && b2)) {
+							return true;
+						}
+						if (b1 && b2 && pol2.filled()) {
+							return true;
+						}
+						continue;
 					}
-					if (b1 && b2 && pol2.filled()) {
-						return true;
+					if (!pol1.isLine() && pol2.isLine()) {
+						boolean b1 = FGMathsHelper.pointInPolygon(
+								pol2.getVertex(0), pol1);
+						boolean b2 = FGMathsHelper.pointInPolygon(
+								pol2.getVertex(1), pol1);
+						if ((b1 && (!b2)) || ((!b1) && b2)) {
+							return true;
+						}
+						if (b1 && b2 && pol1.filled()) {
+							return true;
+						}
+						continue;
 					}
-					continue;
-				}
-				if (!pol1.isLine() && pol2.isLine()) {
-					boolean b1 = FGMathsHelper.pointInPolygon(
-							pol2.getVertex(0), pol1);
-					boolean b2 = FGMathsHelper.pointInPolygon(
-							pol2.getVertex(1), pol1);
-					if ((b1 && (!b2)) || ((!b1) && b2)) {
-						return true;
-					}
-					if (b1 && b2 && pol1.filled()) {
-						return true;
-					}
-					continue;
 				}
 			}
-		}
 		// 多边形和多边形
-		for (FGPolygon pol1 : target.polygons_tmp) {
-			for (FGPolygon pol2 : polygons_tmp) {
-				if (!pol1.isLine() && !pol2.isLine()) {
-					{
-						boolean hasIn = false;
-						boolean hasOut = false;
-						int nVertex = pol1.getVertexNumber();
-						for (int i = 0; i < nVertex; i++) {
-							if (FGMathsHelper.pointInPolygon(pol1.getVertex(i),
-									pol2)) {
-								hasIn = true;
-							} else {
-								hasOut = true;
+		if (polygons_tmp_size != 0 && target.polygons_tmp_size != 0)
+			for (FGPolygon pol1 : target.polygons_tmp) {
+				for (FGPolygon pol2 : polygons_tmp) {
+					if (!pol1.isLine() && !pol2.isLine()) {
+						{
+							boolean hasIn = false;
+							boolean hasOut = false;
+							int nVertex = pol1.getVertexNumber();
+							for (int i = 0; i < nVertex; i++) {
+								if (FGMathsHelper.pointInPolygon(
+										pol1.getVertex(i), pol2)) {
+									hasIn = true;
+								} else {
+									hasOut = true;
+								}
+							}
+							if (hasIn && hasOut) {
+								return true;
+							} else if (hasIn && pol2.filled()) {
+								return true;
 							}
 						}
-						if (hasIn && hasOut) {
-							return true;
-						} else if (hasIn && pol2.filled()) {
-							return true;
-						}
-					}
-					{
-						boolean hasIn = false;
-						boolean hasOut = false;
-						int nVertex = pol2.getVertexNumber();
-						for (int i = 0; i < nVertex; i++) {
-							if (FGMathsHelper.pointInPolygon(pol2.getVertex(i),
-									pol1)) {
-								hasIn = true;
-							} else {
-								hasOut = true;
+						{
+							boolean hasIn = false;
+							boolean hasOut = false;
+							int nVertex = pol2.getVertexNumber();
+							for (int i = 0; i < nVertex; i++) {
+								if (FGMathsHelper.pointInPolygon(
+										pol2.getVertex(i), pol1)) {
+									hasIn = true;
+								} else {
+									hasOut = true;
+								}
 							}
-						}
-						if (hasIn && hasOut) {
-							return true;
-						} else if (hasIn && pol1.filled()) {
-							return true;
+							if (hasIn && hasOut) {
+								return true;
+							} else if (hasIn && pol1.filled()) {
+								return true;
+							}
 						}
 					}
 				}
 			}
-		}
 		return false;
 	}
 
