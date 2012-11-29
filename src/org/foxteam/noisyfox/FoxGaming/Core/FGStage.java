@@ -55,6 +55,7 @@ public abstract class FGStage {
 	protected int backgroundColor = Color.WHITE;
 	protected FGBackground background = null;
 	protected int stageIndex = -1;
+	protected boolean closed = false;
 	private boolean available = false;
 	private List<FGPerformer> employingPerformer = new ArrayList<FGPerformer>();
 	private List<FGPerformer> emploiedPerformer = new ArrayList<FGPerformer>();
@@ -79,11 +80,6 @@ public abstract class FGStage {
 		if (stageIndex == 0) {
 			targetStage = this;
 		}
-	}
-
-	public FGStage(int index) {
-		this();
-		setStageIndex(index);
 	}
 
 	public static final FGStage getCurrentStage() {
@@ -379,9 +375,7 @@ public abstract class FGStage {
 		if (index < 0 || index > stages.size() - 1) {
 			throw new IllegalArgumentException("不存在的stage");
 		}
-		if (currentStage.equals(this)) {
-			throw new IllegalArgumentException("无法改变当前活动的stage");
-		}
+
 		stages.remove(this);
 		stages.add(index, this);
 		updateStageIndex();
@@ -391,21 +385,23 @@ public abstract class FGStage {
 		if (!available)
 			throw new RuntimeException("无法操作一个已经不存在的stage");
 
-		if (currentStage.equals(this)) {
-			throw new IllegalArgumentException("无法移除当前活动的stage");
+		closed = true;
+
+		// 如果当前 Stage 不在活动状态则立即销毁，否则在当前 Stage 转为不活动时再销毁
+		if (!this.equals(FGStage.currentStage)
+				&& !this.equals(FGStage.targetStage)) {
+			// 移除stage中所有performer
+			for (FGPerformer p : performers) {
+				p.employed = false;
+				p.performing = false;
+			}
+			performers.clear();
+
+			stages.remove(this);// 移除stage记录
+
+			updateStageIndex();
+			available = false;
 		}
-
-		// 移除stage中所有performer
-		for (FGPerformer p : performers) {
-			p.employed = false;
-			p.performing = false;
-		}
-		performers.clear();
-
-		stages.remove(this);// 移除stage记录
-
-		updateStageIndex();
-		available = false;
 	}
 
 	/**

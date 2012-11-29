@@ -297,7 +297,13 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 					FGStage.currentStage
 							.broadcastEvent(FGEventsListener.EVENT_ONDESTORY);
 
-					FGStage.currentStage.initStage();
+					if (FGStage.currentStage.closed) {
+						FGStage s = FGStage.currentStage;
+						FGStage.currentStage = FGStage.targetStage;
+						s.closeStage();
+					} else {
+						FGStage.currentStage.initStage();
+					}
 				}
 
 				FGStage.currentStage = FGStage.targetStage;
