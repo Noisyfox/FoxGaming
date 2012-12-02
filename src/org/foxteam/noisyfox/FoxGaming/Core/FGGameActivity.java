@@ -150,10 +150,19 @@ public class FGGameActivity extends Activity {
 			setContentView(FGGameCore.gameView);
 		} else {
 			// Debug.startMethodTracing("fox.trace");
+
+			FGDebug.print(" ");
+			FGDebug.print("FoxGaming Engine started!");
+			FGDebug.print("Version 1.0 alpha");
+			FGDebug.print(" ");
+
 			onCreate();
 
 			prepareEngine();
 			onEngineReady();
+
+			// 创建引擎初始界面
+			(FGStage.targetStage = new FGSplashStage()).setStageIndex(0);
 
 			FGDebug.print("Game start!");
 			gameEngine.gameStart();
@@ -184,6 +193,12 @@ public class FGGameActivity extends Activity {
 		if (isFinishing()) {
 			dispose();
 			// Debug.stopMethodTracing();
+
+			FGDebug.print(" ");
+			FGDebug.print("FoxGaming Engine finished!");
+			FGDebug.print("Thanks for using!");
+			FGDebug.print(" ");
+
 			FGDebug.forceExit();
 		}
 	}
