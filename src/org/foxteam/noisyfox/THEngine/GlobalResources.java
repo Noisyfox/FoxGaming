@@ -19,6 +19,8 @@ package org.foxteam.noisyfox.THEngine;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicFont;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGPathBezier3;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleType;
 
 /**
  * @ClassName: GlobalResources
@@ -59,6 +61,10 @@ public class GlobalResources {
 	public static FGFrame FRAMES_POWERUP_MISSILE = null;
 	public static FGFrame FRAMES_POWERUP_SCORE = null;
 	public static FGFrame FRAMES_PLAYER_ICON = null;
+	public static FGFrame FRAMES_TOUCH_SCREEN_TO_CONTINUE = null;
+
+	// 通用的粒子类型
+	public static FGParticleType PARTICLE_TYPE_MILLSILSMOKE = null;
 
 	public static void loadResources() {
 		// 初始化 敌机 玩偶怪 的移动路径
@@ -183,5 +189,21 @@ public class GlobalResources {
 		FRAMES_POWERUP_SCORE.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.powerup_score, 1, 1,
 				false);
+		FRAMES_TOUCH_SCREEN_TO_CONTINUE = new FGFrame();
+		FRAMES_TOUCH_SCREEN_TO_CONTINUE
+				.loadFromBitmap(
+						org.foxteam.noisyfox.THEngine.R.drawable.touch_screen_to_continue,
+						true);
+
+		// 初始化粒子
+		PARTICLE_TYPE_MILLSILSMOKE = new FGParticleType();
+		FGSprite _particleSprite = new FGSprite();
+		_particleSprite.bindFrames(GlobalResources.FRAMES_PARTICLE_MISSILESMOKE);
+		_particleSprite.setOffset(3, 3);
+		PARTICLE_TYPE_MILLSILSMOKE.setSprite(_particleSprite);
+		PARTICLE_TYPE_MILLSILSMOKE.setLifeTime(10, 15);
+		PARTICLE_TYPE_MILLSILSMOKE.setSize(0.8, 1.3, -0.03, 0.01);
+		PARTICLE_TYPE_MILLSILSMOKE.setOrientation(0, 359.9f, 0, 1, false);
+		PARTICLE_TYPE_MILLSILSMOKE.setAlpha(1.0, 0.0);
 	}
 }

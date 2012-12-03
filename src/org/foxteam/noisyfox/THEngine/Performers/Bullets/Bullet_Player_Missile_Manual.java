@@ -35,21 +35,11 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
 public class Bullet_Player_Missile_Manual extends Bullet_Player {
 
 	FGParticleSystem pSystem = new FGParticleSystem();
-	FGParticleType pType = new FGParticleType();
 	FGParticleEmitter pEmitter = new FGParticleEmitter();
 
 	@Override
 	protected void onCreate() {
-
-		FGSprite particleSprite = new FGSprite();
-		particleSprite.bindFrames(GlobalResources.FRAMES_PARTICLE_MISSILESMOKE);
-		particleSprite.setOffset(3, 3);
-		pType.setSprite(particleSprite);
-		pType.setLifeTime(10, 15);
-		pType.setSize(0.8, 1.3, -0.03, 0.01);
-		pType.setOrientation(0, 359.9f, 0, 1, false);
-		pType.setAlpha(1.0, 0.0);
-		pEmitter.stream(pType, -1);
+		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
 		pSystem.bindParticleEmitter(pEmitter);
 
 		FGSprite bulletSprite = new FGSprite();

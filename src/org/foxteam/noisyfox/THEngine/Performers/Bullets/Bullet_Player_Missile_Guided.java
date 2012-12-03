@@ -26,6 +26,10 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGConvertor;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleEmitter;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleRegionDistribution;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleRegionShape;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleSystem;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
@@ -43,6 +47,8 @@ import android.graphics.Canvas;
 public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	FGConvertor GCConvertor = new FGConvertor();
 	FGSpriteConvertor SpConvertor = new FGSpriteConvertor();
+	FGParticleSystem pSystem = new FGParticleSystem();
+	FGParticleEmitter pEmitter = new FGParticleEmitter();
 
 	private static final float TARGET_SEARCH_TIME = 0.5f; // 发射后锁定敌机的时间限制，单位秒，超过这个时间就不会去锁定目标，只会直线飞行
 
@@ -51,6 +57,7 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 
 	@Override
 	protected void onDraw() {
+		pSystem.draw(getCanvas());
 		if (this.getSprite() != null) {
 			Canvas c = getCanvas();
 			this.getSprite().draw(c, (int) getX(), (int) getY(), SpConvertor);
@@ -59,6 +66,8 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 
 	@Override
 	protected void onCreate() {
+		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
+		pSystem.bindParticleEmitter(pEmitter);
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
@@ -123,6 +132,11 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 		if (this.getCollisionMask() != null) {
 			this.getCollisionMask().applyConvertor(GCConvertor);
 		}
+
+		pEmitter.setRegion((int) getX() - 2, (int) getY(), (int) getX() + 2,
+				(int) getY() + 2, FGParticleRegionShape.rectangle,
+				FGParticleRegionDistribution.linear);
+		pSystem.update();
 	}
 
 	@Override

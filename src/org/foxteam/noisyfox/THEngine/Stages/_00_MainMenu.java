@@ -18,8 +18,11 @@ package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
 
 /**
@@ -30,6 +33,8 @@ import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
  * 
  */
 public class _00_MainMenu extends FGStage {
+
+	private boolean _1stin = true;
 
 	@Override
 	protected void onCreate() {
@@ -46,12 +51,66 @@ public class _00_MainMenu extends FGStage {
 		bkg.setScaleMode(FGBackground.ADAPTATION_OPTION_SCALE_MAXUSAGE);
 		setBackground(bkg);
 
-		FGButton bGameStart = new Button_GameStart();
-		bGameStart.perform(this.getStageIndex());
-		bGameStart.setPosition(this.getWidth() / 2, this.getHeight()
-				- bGameStart.getHeight() / 2 - 5);
 		FGGamingThread.score = 0;
 		this.setStageSpeed(10);
+
+		if (_1stin) {
+			_1stin = false;
+			FGPerformer controller = new MenuController();
+			controller.perform(stageIndex);
+		} else {
+			FGButton bGameStart = new Button_GameStart();
+			bGameStart.perform(stageIndex);
+			bGameStart.setPosition(getWidth() / 2,
+					getHeight() - bGameStart.getHeight() / 2 - 5);
+		}
+
+	}
+
+	private class MenuController extends FGPerformer {
+
+		FGSprite touchText = new FGSprite();
+		boolean seeText = false;
+		boolean buttonShown = false;
+
+		@Override
+		protected void onDraw() {
+			if (seeText)
+				touchText.draw(getCanvas(), getWidth() / 2, getHeight() - 20);
+		}
+
+		@Override
+		protected void onAlarm(int whichAlarm) {
+			if (whichAlarm == 0) {
+				seeText = !seeText;
+			}
+		}
+
+		@Override
+		protected void onCreate() {
+			touchText
+					.bindFrames(GlobalResources.FRAMES_TOUCH_SCREEN_TO_CONTINUE);
+			touchText
+					.setOffset(touchText.getWidth() / 2, touchText.getHeight());
+
+			setAlarm(0, (int) (0.5 * getSpeed()), true);
+			startAlarm(0);
+		}
+
+		@Override
+		protected void onTouchPress(int whichfinger, int x, int y) {
+			if (buttonShown)
+				return;
+
+			buttonShown = true;
+			stopAlarm(0);
+			seeText = false;
+
+			FGButton bGameStart = new Button_GameStart();
+			bGameStart.perform(stageIndex);
+			bGameStart.setPosition(getWidth() / 2,
+					getHeight() - bGameStart.getHeight() / 2 - 5);
+		}
 
 	}
 
