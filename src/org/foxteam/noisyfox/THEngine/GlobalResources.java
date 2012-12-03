@@ -198,7 +198,8 @@ public class GlobalResources {
 		// 初始化粒子
 		PARTICLE_TYPE_MILLSILSMOKE = new FGParticleType();
 		FGSprite _particleSprite = new FGSprite();
-		_particleSprite.bindFrames(GlobalResources.FRAMES_PARTICLE_MISSILESMOKE);
+		_particleSprite
+				.bindFrames(GlobalResources.FRAMES_PARTICLE_MISSILESMOKE);
 		_particleSprite.setOffset(3, 3);
 		PARTICLE_TYPE_MILLSILSMOKE.setSprite(_particleSprite);
 		PARTICLE_TYPE_MILLSILSMOKE.setLifeTime(10, 15);
