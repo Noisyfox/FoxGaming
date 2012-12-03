@@ -34,13 +34,15 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy;
  */
 public class Bullet_Player_Missile_Manual extends Bullet_Player {
 
-	FGParticleSystem pSystem = new FGParticleSystem();
+	static FGParticleSystem pSystem = new FGParticleSystem();
 	FGParticleEmitter pEmitter = new FGParticleEmitter();
 
 	@Override
 	protected void onCreate() {
 		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
 		pSystem.bindParticleEmitter(pEmitter);
+		FGStage.getCurrentStage().managedParticleSystem_requireManaged(pSystem,
+				depth + 1);
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
@@ -59,8 +61,12 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 	}
 
 	@Override
+	protected void onDestory() {
+		pSystem.unbindParticleEmitter(pEmitter);
+	}
+
+	@Override
 	protected void onDraw() {
-		pSystem.draw(getCanvas());
 		super.onDraw();
 	}
 
@@ -70,7 +76,6 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 		pEmitter.setRegion((int) getX() - 2, (int) getY(), (int) getX() + 2,
 				(int) getY() + 2, FGParticleRegionShape.rectangle,
 				FGParticleRegionDistribution.linear);
-		pSystem.update();
 	}
 
 	@Override

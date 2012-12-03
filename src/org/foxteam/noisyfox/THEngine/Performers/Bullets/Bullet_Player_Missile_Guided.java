@@ -47,7 +47,7 @@ import android.graphics.Canvas;
 public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	FGConvertor GCConvertor = new FGConvertor();
 	FGSpriteConvertor SpConvertor = new FGSpriteConvertor();
-	FGParticleSystem pSystem = new FGParticleSystem();
+	static FGParticleSystem pSystem = new FGParticleSystem();
 	FGParticleEmitter pEmitter = new FGParticleEmitter();
 
 	private static final float TARGET_SEARCH_TIME = 0.5f; // 发射后锁定敌机的时间限制，单位秒，超过这个时间就不会去锁定目标，只会直线飞行
@@ -57,7 +57,6 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 
 	@Override
 	protected void onDraw() {
-		pSystem.draw(getCanvas());
 		if (this.getSprite() != null) {
 			Canvas c = getCanvas();
 			this.getSprite().draw(c, (int) getX(), (int) getY(), SpConvertor);
@@ -68,6 +67,8 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	protected void onCreate() {
 		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
 		pSystem.bindParticleEmitter(pEmitter);
+		FGStage.getCurrentStage().managedParticleSystem_requireManaged(pSystem,
+				depth + 1);
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite
@@ -87,6 +88,11 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 		this.setAlarm(0, (int) (FGStage.getSpeed() * TARGET_SEARCH_TIME), false);
 		this.startAlarm(0);
 
+	}
+
+	@Override
+	protected void onDestory() {
+		pSystem.unbindParticleEmitter(pEmitter);
 	}
 
 	@Override
@@ -136,7 +142,6 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 		pEmitter.setRegion((int) getX() - 2, (int) getY(), (int) getX() + 2,
 				(int) getY() + 2, FGParticleRegionShape.rectangle,
 				FGParticleRegionDistribution.linear);
-		pSystem.update();
 	}
 
 	@Override

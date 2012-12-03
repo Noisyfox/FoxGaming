@@ -24,6 +24,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
+import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleSystem;
 
 import android.graphics.Color;
 
@@ -46,9 +47,17 @@ public abstract class FGStage {
 			return rhs.depth - lhs.depth;
 		}
 	};
+	protected static Comparator<ManagedParticleSystem> depthComparator2 = new Comparator<ManagedParticleSystem>() {
+		@Override
+		public int compare(ManagedParticleSystem lhs, ManagedParticleSystem rhs) {
+			return rhs.depth - lhs.depth;
+		}
+	};
 
 	protected List<FGPerformer> performers = new ArrayList<FGPerformer>();
 	protected List<FGViews> activatedViews = new ArrayList<FGViews>();
+	protected List<ManagedParticleSystem> managedParticleSystem = new ArrayList<ManagedParticleSystem>();
+	protected int managedParticleSystemSize = 0;
 	protected int width = 480;// stage 的宽
 	protected int height = 800;// stage 的高
 	protected float stageSpeed = 30f;
@@ -500,6 +509,70 @@ public abstract class FGStage {
 				}
 			}
 		}
+	}
+
+	// 托管的粒子系统
+	protected class ManagedParticleSystem {
+		FGParticleSystem particleSystem = null;
+		int depth = 0;
+
+		public ManagedParticleSystem(FGParticleSystem particleSystem, int depth) {
+			if (particleSystem == null) {
+				throw new IllegalArgumentException();
+			}
+
+			this.particleSystem = particleSystem;
+			this.depth = depth;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this.getClass().isInstance(o)) {
+				return ((ManagedParticleSystem) o).particleSystem == particleSystem;
+			}
+			return super.equals(o);
+		}
+
+	}
+
+	protected void updateParticleSystems() {
+		for (ManagedParticleSystem mps : managedParticleSystem) {
+			mps.particleSystem.update();
+		}
+	}
+
+	public void managedParticleSystem_requireManaged(
+			FGParticleSystem particleSystem, int depth) {
+		ManagedParticleSystem mps = new ManagedParticleSystem(particleSystem,
+				depth);
+		if (!managedParticleSystem.contains(mps)) {
+			managedParticleSystem.add(mps);
+			managedParticleSystemSize++;
+		}
+
+		Collections.sort(managedParticleSystem, depthComparator2);
+	}
+
+	public int managedParticleSystem_managedCount() {
+		return managedParticleSystemSize;
+	}
+
+	public FGParticleSystem managedParticleSystem_getParticleSystem(int index) {
+		return managedParticleSystem.get(index).particleSystem;
+	}
+
+	public int managedParticleSystem_getDepth(int index) {
+		return managedParticleSystem.get(index).depth;
+	}
+
+	public void managedParticleSystem_setDepth(int index, int depth) {
+		managedParticleSystem.get(index).depth = depth;
+		Collections.sort(managedParticleSystem, depthComparator2);
+	}
+
+	public void managedParticleSystem_removeParticleSystem(int index) {
+		managedParticleSystem.remove(index);
+		managedParticleSystemSize--;
 	}
 
 }

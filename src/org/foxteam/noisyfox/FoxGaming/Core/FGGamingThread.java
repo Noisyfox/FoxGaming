@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage.ManagedParticleSystem;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -419,6 +421,10 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 			// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
 			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEP);
+
+			// 更新粒子特效
+			FGStage.currentStage.updateParticleSystems();
+
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 			bufferCanvas.drawColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
 			if (FGStage.currentStage.background != null) {// 绘制背景
@@ -427,7 +433,38 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 								FGStage.currentStage.height,
 								FGStage.currentStage.width);
 			}
-			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
+			if (FGStage.currentStage.managedParticleSystemSize == 0) {
+				FGStage.currentStage
+						.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
+			} else {
+				// 处理粒子和performer的绘制顺序
+				int index = 0;
+				ManagedParticleSystem m = FGStage.currentStage.managedParticleSystem
+						.get(index);
+				int nowDepth = m.depth;
+
+				for (FGPerformer p : FGStage.currentStage.performers) {
+					if (p.depth <= nowDepth) {
+						while (p.depth <= nowDepth
+								&& index < FGStage.currentStage.managedParticleSystemSize) {
+							m.particleSystem.draw(bufferCanvas);
+							index++;
+							if (index < FGStage.currentStage.managedParticleSystemSize) {
+								m = FGStage.currentStage.managedParticleSystem
+										.get(index);
+								nowDepth = m.depth;
+							}
+						}
+					}
+					p.callEvent(FGEventsListener.EVENT_ONDRAW);
+				}
+
+				for (int i = index; i < FGStage.currentStage.managedParticleSystemSize; i++) {
+					FGStage.currentStage.managedParticleSystem.get(i).particleSystem
+							.draw(bufferCanvas);
+				}
+
+			}
 			// 系统绘制
 			screenRefresh();
 

@@ -594,10 +594,12 @@ public final class FGParticleSystem {
 	}
 
 	public void bindParticleEmitter(FGParticleEmitter emitter) {
-		if (emitter != null && !particleEmitters.contains(emitter)) {
+		if (emitter != null) {
 			Emitters e = new Emitters();
 			e.emitter = emitter;
-			particleEmitters.add(e);
+			if (!particleEmitters.contains(e)) {
+				particleEmitters.add(e);
+			}
 		}
 	}
 
@@ -626,7 +628,9 @@ public final class FGParticleSystem {
 	}
 
 	public void unbindParticleEmitter(FGParticleEmitter emitter) {
-		particleEmitters.remove(emitter);
+		Emitters e = new Emitters();
+		e.emitter = emitter;
+		particleEmitters.remove(e);
 	}
 
 	public void unbindParticleAttractor(FGParticleAttractor attractor) {
@@ -702,8 +706,6 @@ public final class FGParticleSystem {
 		public boolean equals(Object o) {
 			if (o.getClass().isInstance(this)) {
 				return ((Emitters) o).emitter == emitter;
-			} else if (o.getClass().isInstance(emitter)) {
-				return emitter == o;
 			}
 
 			return super.equals(o);
