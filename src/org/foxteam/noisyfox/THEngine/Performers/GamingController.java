@@ -37,6 +37,7 @@ public final class GamingController extends FGPerformer {
 	boolean stageClear = false;
 
 	boolean normalPlaying = true;
+	boolean aniFin = false;
 
 	HUD hud = null;
 
@@ -73,9 +74,25 @@ public final class GamingController extends FGPerformer {
 	@Override
 	protected void onKeyRelease(int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			// FGStage.previousStage();
 			if (normalPlaying) {
 				SectionStage.getMenu().show(MenuType.pause);
+			} else if (aniFin) {
+				if (stageClear) {
+					SectionStage.getMenu().show(MenuType.stageclear);
+				} else {
+					SectionStage.getMenu().show(MenuType.gameover);
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void onTouchRelease(int whichfinger) {
+		if (!normalPlaying && aniFin) {
+			if (stageClear) {
+				SectionStage.getMenu().show(MenuType.stageclear);
+			} else {
+				SectionStage.getMenu().show(MenuType.gameover);
 			}
 		}
 	}
@@ -89,6 +106,7 @@ public final class GamingController extends FGPerformer {
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// stage clear
 			normalPlaying = false;
+			aniFin = false;
 			Player player = (Player) FGStage.getPerformersByClass(Player.class)[0];
 			player.invincible = true;
 			player.invincibleFlash = true;
@@ -114,6 +132,7 @@ public final class GamingController extends FGPerformer {
 
 		} else if (whichAlarm == 1) {// game over
 			normalPlaying = false;
+			aniFin = true;
 			hud.toggleFlashText(2);
 
 		} else if (whichAlarm == 2) {
@@ -138,7 +157,7 @@ public final class GamingController extends FGPerformer {
 
 		} else if (whichAlarm == 4) {
 			FGStage.getPerformersByClass(Player.class)[0].dismiss();
-
+			aniFin = true;
 		}
 	}
 

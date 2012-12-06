@@ -29,11 +29,15 @@ public class GamingMenu extends FGPerformer {
 	private int stage_height = 0;
 	private MenuState menuState = MenuState.hided;
 	private MenuType menuType;
-	private static FGButton button_pause_returnMainMenu = null;
-	private static FGButton button_pause_resumegame = null;
+	private FGButton button_common_returnMainMenu = null;
+	private FGButton button_pause_resumeGame = null;
+	private FGButton button_common_restart = null;
+	private FGButton button_stageClear_nextStage = null;
 	private boolean aniOK = false;
 	private boolean drawMe = false;
 	private ButtonGroup buttonGroup_pause = new ButtonGroup();
+	private ButtonGroup buttonGroup_gameOver = new ButtonGroup();
+	private ButtonGroup buttonGroup_stageClear = new ButtonGroup();
 	private ButtonGroup buttonGroup_current = null;
 	private float k = 0;
 
@@ -46,25 +50,48 @@ public class GamingMenu extends FGPerformer {
 	}
 
 	public GamingMenu() {
-		button_pause_returnMainMenu = this.new Button_ReturnMainMenu();
-		button_pause_resumegame = this.new Button_ResumeGame();
-		buttonGroup_pause.addButton(button_pause_resumegame);
-		buttonGroup_pause.addButton(button_pause_returnMainMenu);
+		button_common_returnMainMenu = this.new Button_ReturnMainMenu();
+		button_pause_resumeGame = this.new Button_ResumeGame();
+		button_common_restart = this.new Button_Restart();
+		button_stageClear_nextStage = this.new Button_NextStage();
+		buttonGroup_pause.addButton(button_pause_resumeGame);
+		buttonGroup_pause.addButton(button_common_restart);
+		buttonGroup_pause.addButton(button_common_returnMainMenu);
 		buttonGroup_pause.setDirection(false);
+
+		buttonGroup_gameOver.addButton(button_common_restart);
+		buttonGroup_gameOver.addButton(button_common_returnMainMenu);
+		buttonGroup_gameOver.setDirection(false);
+
+		buttonGroup_stageClear.addButton(button_stageClear_nextStage);
+		buttonGroup_stageClear.addButton(button_common_restart);
+		buttonGroup_stageClear.addButton(button_common_returnMainMenu);
+		buttonGroup_stageClear.setDirection(false);
 	}
 
 	public void show(MenuType type) {
-		if (menuState != MenuState.hided)
+		if (menuState != MenuState.hided || menuState == MenuState.shown)
 			return;
 
-		buttonGroup_pause.setPlaceRegion(-100,
+		switch (type) {
+		case pause:
+			buttonGroup_current = buttonGroup_pause;
+			break;
+		case gameover:
+			buttonGroup_current = buttonGroup_gameOver;
+			break;
+		case stageclear:
+			buttonGroup_current = buttonGroup_stageClear;
+			break;
+
+		}
+
+		buttonGroup_current.setPlaceRegion(-100,
 				FGGamingThread.getScreenHeight() / 2 - 120,
 				FGGamingThread.getScreenWidth() + 100,
 				FGGamingThread.getScreenHeight() / 2 + 120,
 				FGGamingThread.getScreenWidth() / 2,
 				FGGamingThread.getScreenHeight() / 2);
-
-		buttonGroup_current = buttonGroup_pause;
 
 		menuType = type;
 		cStage = FGStage.getCurrentStage();
@@ -81,6 +108,9 @@ public class GamingMenu extends FGPerformer {
 	}
 
 	public void hide() {
+		if (menuState != MenuState.shown)
+			return;
+
 		menuState = MenuState.hiding;
 		aniOK = false;
 		k = 1;
@@ -211,7 +241,6 @@ public class GamingMenu extends FGPerformer {
 		public void onClick() {
 			FGStage.previousStage();
 		}
-
 	}
 
 	private class Button_ResumeGame extends FGButton {
@@ -224,7 +253,30 @@ public class GamingMenu extends FGPerformer {
 		public void onClick() {
 			hide();
 		}
+	}
 
+	private class Button_NextStage extends FGButton {
+
+		public Button_NextStage() {
+			super(200, 60, GlobalResources.FRAMES_BUTTON_NEXTSTAGE);
+		}
+
+		@Override
+		public void onClick() {
+			FGStage.restartStage();
+		}
+	}
+
+	private class Button_Restart extends FGButton {
+
+		public Button_Restart() {
+			super(200, 60, GlobalResources.FRAMES_BUTTON_RESTART);
+		}
+
+		@Override
+		public void onClick() {
+			FGStage.restartStage();
+		}
 	}
 
 }

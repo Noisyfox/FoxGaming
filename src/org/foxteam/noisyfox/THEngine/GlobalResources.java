@@ -44,6 +44,8 @@ public class GlobalResources {
 	public static FGFrame FRAMES_BUTTON_GAMESTART = null;
 	public static FGFrame FRAMES_BUTTON_RETURNMAINMENU = null;
 	public static FGFrame FRAMES_BUTTON_RESUMEGAME = null;
+	public static FGFrame FRAMES_BUTTON_RESTART = null;
+	public static FGFrame FRAMES_BUTTON_NEXTSTAGE = null;
 	public static FGFrame FRAMES_ENEMY_BOX_SCORE = null;
 	public static FGFrame FRAMES_ENEMY_BUTTERFLY = null;
 	public static FGFrame FRAMES_ENEMY_DOLL_BLUE = null;
@@ -117,8 +119,16 @@ public class GlobalResources {
 				3, 1, false);
 		FRAMES_BUTTON_RESUMEGAME = new FGFrame();
 		FRAMES_BUTTON_RESUMEGAME.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.button_resumegame,
-				3, 1, false);
+				org.foxteam.noisyfox.THEngine.R.drawable.button_resumegame, 3,
+				1, false);
+		FRAMES_BUTTON_RESTART = new FGFrame();
+		FRAMES_BUTTON_RESTART.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.button_restart, 3, 1,
+				false);
+		FRAMES_BUTTON_NEXTSTAGE = new FGFrame();
+		FRAMES_BUTTON_NEXTSTAGE.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.button_nextstage, 3,
+				1, false);
 		FRAMES_ENEMY_BOX_SCORE = new FGFrame();
 		FRAMES_ENEMY_BOX_SCORE
 				.loadFromBitmap(

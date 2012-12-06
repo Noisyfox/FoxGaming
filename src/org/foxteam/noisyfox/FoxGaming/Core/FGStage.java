@@ -40,6 +40,7 @@ public abstract class FGStage {
 	private static List<FGStage> stages = new ArrayList<FGStage>();
 	protected static FGStage currentStage = null;// 当前活动的stage
 	protected static FGStage targetStage = null;// 要跳转到的stage
+	protected static boolean switchStage = false;
 	protected static float speed = 30f;// 当前活动的stage的speed
 	protected static Comparator<FGPerformer> depthComparator = new Comparator<FGPerformer>() {
 		@Override
@@ -88,6 +89,7 @@ public abstract class FGStage {
 		// 如果当前创建的stage是游戏中惟一的一个stage则自动将其设置为目标stage
 		if (stageIndex == 0) {
 			targetStage = this;
+			switchStage = true;
 		}
 	}
 
@@ -109,6 +111,7 @@ public abstract class FGStage {
 		if (index2Stage(stage) == currentStage)
 			return;
 		targetStage = index2Stage(stage);
+		switchStage = true;
 	}
 
 	/**
@@ -126,7 +129,14 @@ public abstract class FGStage {
 	}
 
 	/**
-	 * 静态函数 获取当前活动的stage的speed<br>
+	 * 静态函数 重新开始当前舞台<br>
+	 */
+	public static final void restartStage() {
+		switchStage = true;
+	}
+
+	/**
+	 * 静态函数 获取当前活动的舞台的speed<br>
 	 */
 	public static final float getSpeed() {
 		return speed;
@@ -229,6 +239,8 @@ public abstract class FGStage {
 		dismissingPerformer.clear();
 		dismissedPerformer.clear();
 		collisions.clear();
+		managedParticleSystem.clear();
+		managedParticleSystemSize = 0;
 	}
 
 	protected final void employPerformer(FGPerformer performer) {

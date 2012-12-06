@@ -39,7 +39,7 @@ public class Hitable extends FGPerformer {
 	}
 
 	public final void hitBy(Bullet bullet) {
-		if (!invincible) {
+		if (!invincible && hp > 0) {
 			hp -= bullet.damage;
 
 			bullet.hitOn(this);

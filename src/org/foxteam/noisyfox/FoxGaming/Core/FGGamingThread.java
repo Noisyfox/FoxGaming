@@ -302,7 +302,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 		if (FGStage.targetStage != null) {
 			// 先处理 Stage
-			if (FGStage.targetStage != FGStage.currentStage) {// Stage 发生变化
+			if (FGStage.switchStage) {// Stage 发生变化
+				FGStage.switchStage = false;
 				boolean gameStart = FGStage.currentStage == null;
 				if (FGStage.currentStage != null) {// 不是第一次进游戏
 					FGStage.currentStage
