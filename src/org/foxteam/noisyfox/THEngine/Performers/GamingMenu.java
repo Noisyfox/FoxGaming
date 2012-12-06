@@ -34,6 +34,7 @@ public class GamingMenu extends FGPerformer {
 	private boolean aniOK = false;
 	private boolean drawMe = false;
 	private ButtonGroup buttonGroup_pause = new ButtonGroup();
+	private ButtonGroup buttonGroup_current = null;
 	private float k = 0;
 
 	private enum MenuState {
@@ -62,6 +63,8 @@ public class GamingMenu extends FGPerformer {
 				FGGamingThread.getScreenHeight() / 2 + 120,
 				FGGamingThread.getScreenWidth() / 2,
 				FGGamingThread.getScreenHeight() / 2);
+
+		buttonGroup_current = buttonGroup_pause;
 
 		menuType = type;
 		cStage = FGStage.getCurrentStage();
@@ -133,15 +136,10 @@ public class GamingMenu extends FGPerformer {
 			FGSimpleBGM.pause();// 暂停声音
 
 			// 添加按钮
-			button_pause_returnMainMenu.perform(FGStage.getCurrentStage()
-					.getStageIndex());
-			button_pause_returnMainMenu.setDepth(depth - 1);
+			buttonGroup_current.performAll(FGStage.getCurrentStage()
+					.getStageIndex(), depth - 1);
 
-			button_pause_resumegame.perform(FGStage.getCurrentStage()
-					.getStageIndex());
-			button_pause_resumegame.setDepth(depth - 1);
-
-			buttonGroup_pause.control(0);
+			buttonGroup_current.control(0);
 
 			drawMe = true;
 			menuState = MenuState.shown;
@@ -152,24 +150,10 @@ public class GamingMenu extends FGPerformer {
 			if (!aniOK) {
 				if (sssc.getAlpha() > 0.5) {
 					sssc.setAlpha(sssc.getAlpha() - 0.1);// 屏幕变暗
-					// } else if (button_pause_returnMainMenu.getX() + 100 <
-					// FGGamingThread
-					// .getScreenWidth() / 2) {
-					// button_pause_returnMainMenu.setPosition(
-					// button_pause_returnMainMenu.getX() + 100,
-					// button_pause_returnMainMenu.getY());
-					// } else if (button_pause_returnMainMenu.getX() + 1 <
-					// FGGamingThread
-					// .getScreenWidth() / 2) {
-					// button_pause_returnMainMenu.setPosition(
-					// FGGamingThread.getScreenWidth() / 2,
-					// button_pause_returnMainMenu.getY());
-					// button_pause_returnMainMenu.setEnabled(true);
-					// aniOK = true;
 					k = 0;
 				} else if (k < 1) {
 					k += 0.3;
-					buttonGroup_pause.control(k);
+					buttonGroup_current.control(k);
 				} else {
 					aniOK = true;
 				}
@@ -177,9 +161,9 @@ public class GamingMenu extends FGPerformer {
 			break;
 		}
 		case hiding: {
-			if (k>0) {
+			if (k > 0) {
 				k -= 0.3;
-				buttonGroup_pause.control(k);
+				buttonGroup_current.control(k);
 			} else if (sssc.getAlpha() < 1) {
 				sssc.setAlpha(sssc.getAlpha() + 0.1);
 			} else {
@@ -195,8 +179,7 @@ public class GamingMenu extends FGPerformer {
 
 				FGSimpleBGM.play();// 恢复声音
 
-				button_pause_returnMainMenu.dismiss();
-				button_pause_resumegame.dismiss();
+				buttonGroup_current.dismissAll();// 清除按钮
 
 				drawMe = false;
 

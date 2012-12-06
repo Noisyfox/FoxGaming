@@ -43,6 +43,19 @@ public class ButtonGroup {
 	public void setDirection(boolean horizon) {
 		isHorizon = horizon;
 	}
+	
+	public void dismissAll(){
+		for (FGButton b : buttons) {
+			b.dismiss();
+		}
+	}
+	
+	public void performAll(int stage,int depth){
+		for (FGButton b : buttons) {
+			b.perform(stage);
+			b.setDepth(depth);
+		}
+	}
 
 	public void control(float k) {
 		if (k < 0)
