@@ -18,6 +18,7 @@ package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.THEngine.Performers.EnemyController;
+import org.foxteam.noisyfox.THEngine.Performers.GamingMenu;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.GamingController;
 
@@ -30,15 +31,24 @@ import org.foxteam.noisyfox.THEngine.Performers.GamingController;
  */
 public abstract class SectionStage extends FGStage {
 
+	private static GamingMenu menu = new GamingMenu();
+
 	private Player player = null;
 	private GamingController gameController = null;
+	private EnemyController enemyController = null;
+
+	public static GamingMenu getMenu() {
+		return menu;
+	}
 
 	public final void stageClear() {
 		gameController.stageClear();
+		enemyController.pause();
 	}
 
 	public final void gameOver() {
 		gameController.gameOver();
+		enemyController.pause();
 	}
 
 	@Override
@@ -52,9 +62,11 @@ public abstract class SectionStage extends FGStage {
 
 		prepareStage();
 
-		EnemyController ec = new EnemyController();
-		addEnemys(ec);
-		ec.perform(this.getStageIndex());
+		enemyController = new EnemyController();
+		addEnemys(enemyController);
+		enemyController.perform(this.getStageIndex());
+
+		menu.perform(this.getStageIndex());
 	}
 
 	protected abstract void prepareStage();

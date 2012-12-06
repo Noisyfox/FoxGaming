@@ -401,7 +401,7 @@ public class Player extends Hitable {
 	protected void Explosion(Bullet bullet) {
 		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
 				(int) this.getX(), (int) this.getY(), -1);
-		
+
 		FGVibrator.vibrate(500);
 
 		// 丢下奖励

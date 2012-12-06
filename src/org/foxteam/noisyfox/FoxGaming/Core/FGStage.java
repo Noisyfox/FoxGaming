@@ -147,6 +147,14 @@ public abstract class FGStage {
 	}
 
 	/**
+	 * 静态函数 获取当前活动的 stage 的中所有 Performer
+	 */
+	public static final FGPerformer[] getPerformers() {
+		FGPerformer[] p = new FGPerformer[currentStage.performers.size()];
+		return currentStage.performers.toArray(p);
+	}
+
+	/**
 	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
 	 */
 	public static final FGPerformer[] getPerformersByClass(Class<?> c) {
@@ -299,6 +307,8 @@ public abstract class FGStage {
 	}
 
 	public final void addView(FGViews view) {
+		if (view == null)
+			return;
 		if (activatedViews.contains(view)) {
 			FGDebug.warning("View already activated!");
 			return;

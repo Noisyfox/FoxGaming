@@ -72,6 +72,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static List<Integer> blockedKeys = new ArrayList<Integer>();
 	private static PaintFlagsDrawFilter paintFlagsDrawFilter = new PaintFlagsDrawFilter(
 			0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+	private static Matrix viewMatrix = new Matrix();
+	private static boolean antiAlias = true;
 
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
@@ -85,8 +87,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private long lessTime = 0;// 当无法维持帧速时向别的帧借用的处理时间
 	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
-	private Matrix viewMatrix = new Matrix();
-	private boolean antiAlias = true;
 
 	protected FGGamingThread(SurfaceHolder surfaceHolder) {
 		FGGamingThread.surfaceHolder = surfaceHolder;
@@ -133,6 +133,15 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	public static int getScreenHeight() {
 		return height;
+	}
+
+	public static Bitmap getScreenshots() {
+		Bitmap canvasBmp = Bitmap.createBitmap(width, height,
+				Bitmap.Config.ARGB_8888);
+		Canvas cn = new Canvas(canvasBmp);
+		drawToCanvas(cn);
+		return canvasBmp;
+
 	}
 
 	/**
@@ -222,11 +231,17 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	 * @param:
 	 * @return: void
 	 */
-	public void screenRefresh() {
+	public final void screenRefresh() {
 		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
 		if (targetCanvas != null) {
-			targetCanvas.drawARGB(0, 0, 0, 255);
+			drawToCanvas(targetCanvas);
+			surfaceHolder.unlockCanvasAndPost(targetCanvas);
+		}
+	}
 
+	private static final void drawToCanvas(Canvas targetCanvas) {
+		if (targetCanvas != null) {
+			targetCanvas.drawARGB(0, 0, 0, 255);
 			// 处理视角
 			if (FGStage.currentStage.activatedViews.size() == 0) {
 				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
@@ -250,8 +265,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 					targetCanvas.restore();
 				}
 			}
-
-			surfaceHolder.unlockCanvasAndPost(targetCanvas);
 		}
 	}
 

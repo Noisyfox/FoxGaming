@@ -35,6 +35,7 @@ public final class EnemyController extends FGPerformer {
 
 	private int totalStep = 0;
 	SparseArray<List<EnemyDef>> enemys = new SparseArray<List<EnemyDef>>();
+	private boolean paused = false;
 
 	public void addEnemy(int step, Class<?> enemyType, int x, int y,
 			int... extraConfig) {
@@ -56,6 +57,9 @@ public final class EnemyController extends FGPerformer {
 
 	@Override
 	protected void onStepEnd() {
+		if (paused)
+			return;
+
 		int key = ++totalStep;
 		if (enemys.get(key) != null) {
 			List<EnemyDef> enemyList = enemys.get(key);
@@ -77,6 +81,14 @@ public final class EnemyController extends FGPerformer {
 			throw new IllegalArgumentException();
 		}
 		totalStep = step;
+	}
+
+	public void pause() {
+		paused = true;
+	}
+
+	public void resume() {
+		paused = false;
 	}
 
 	private class EnemyDef {

@@ -17,6 +17,8 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
+import org.foxteam.noisyfox.THEngine.Performers.GamingMenu.MenuType;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 import android.view.KeyEvent;
 
@@ -27,12 +29,14 @@ import android.view.KeyEvent;
  * @date: 2012-7-18 下午11:19:55
  * 
  */
-public class GamingController extends FGPerformer {
+public final class GamingController extends FGPerformer {
 
 	private int bgmId;
 	boolean bossMode = false;
 
 	boolean stageClear = false;
+
+	boolean normalPlaying = true;
 
 	HUD hud = null;
 
@@ -69,7 +73,10 @@ public class GamingController extends FGPerformer {
 	@Override
 	protected void onKeyRelease(int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			FGStage.previousStage();
+			// FGStage.previousStage();
+			if (normalPlaying) {
+				SectionStage.getMenu().show(MenuType.pause);
+			}
 		}
 	}
 
@@ -81,9 +88,11 @@ public class GamingController extends FGPerformer {
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// stage clear
+			normalPlaying = false;
 			Player player = (Player) FGStage.getPerformersByClass(Player.class)[0];
 			player.invincible = true;
 			player.invincibleFlash = true;
+			player.bindCollisionMask(null);
 			player.onAnimation = true;
 			player.controllable = false;
 			player.fire = false;
@@ -104,6 +113,7 @@ public class GamingController extends FGPerformer {
 			player.playAScreenPlay(ani);
 
 		} else if (whichAlarm == 1) {// game over
+			normalPlaying = false;
 			hud.toggleFlashText(2);
 
 		} else if (whichAlarm == 2) {
