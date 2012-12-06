@@ -10,6 +10,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
+import org.foxteam.noisyfox.THEngine.ButtonGroup;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 
 import android.graphics.Bitmap;
@@ -29,8 +30,11 @@ public class GamingMenu extends FGPerformer {
 	private MenuState menuState = MenuState.hided;
 	private MenuType menuType;
 	private static FGButton button_pause_returnMainMenu = null;
+	private static FGButton button_pause_resumegame = null;
 	private boolean aniOK = false;
 	private boolean drawMe = false;
+	private ButtonGroup buttonGroup_pause = new ButtonGroup();
+	private float k = 0;
 
 	private enum MenuState {
 		showing, shown, hiding, hided;
@@ -42,11 +46,22 @@ public class GamingMenu extends FGPerformer {
 
 	public GamingMenu() {
 		button_pause_returnMainMenu = this.new Button_ReturnMainMenu();
+		button_pause_resumegame = this.new Button_ResumeGame();
+		buttonGroup_pause.addButton(button_pause_resumegame);
+		buttonGroup_pause.addButton(button_pause_returnMainMenu);
+		buttonGroup_pause.setDirection(false);
 	}
 
 	public void show(MenuType type) {
 		if (menuState != MenuState.hided)
 			return;
+
+		buttonGroup_pause.setPlaceRegion(-100,
+				FGGamingThread.getScreenHeight() / 2 - 120,
+				FGGamingThread.getScreenWidth() + 100,
+				FGGamingThread.getScreenHeight() / 2 + 120,
+				FGGamingThread.getScreenWidth() / 2,
+				FGGamingThread.getScreenHeight() / 2);
 
 		menuType = type;
 		cStage = FGStage.getCurrentStage();
@@ -65,6 +80,7 @@ public class GamingMenu extends FGPerformer {
 	public void hide() {
 		menuState = MenuState.hiding;
 		aniOK = false;
+		k = 1;
 	}
 
 	@Override
@@ -120,10 +136,12 @@ public class GamingMenu extends FGPerformer {
 			button_pause_returnMainMenu.perform(FGStage.getCurrentStage()
 					.getStageIndex());
 			button_pause_returnMainMenu.setDepth(depth - 1);
-			button_pause_returnMainMenu.setPosition(
-					-button_pause_returnMainMenu.getWidth() / 2f,
-					FGGamingThread.getScreenHeight() / 2);
-			button_pause_returnMainMenu.setEnabled(false);
+
+			button_pause_resumegame.perform(FGStage.getCurrentStage()
+					.getStageIndex());
+			button_pause_resumegame.setDepth(depth - 1);
+
+			buttonGroup_pause.control(0);
 
 			drawMe = true;
 			menuState = MenuState.shown;
@@ -134,28 +152,34 @@ public class GamingMenu extends FGPerformer {
 			if (!aniOK) {
 				if (sssc.getAlpha() > 0.5) {
 					sssc.setAlpha(sssc.getAlpha() - 0.1);// 屏幕变暗
-				} else if (button_pause_returnMainMenu.getX() + 100 < FGGamingThread
-						.getScreenWidth() / 2) {
-					button_pause_returnMainMenu.setPosition(
-							button_pause_returnMainMenu.getX() + 100,
-							button_pause_returnMainMenu.getY());
-				} else if (button_pause_returnMainMenu.getX() + 1 < FGGamingThread
-						.getScreenWidth() / 2) {
-					button_pause_returnMainMenu.setPosition(
-							FGGamingThread.getScreenWidth() / 2,
-							button_pause_returnMainMenu.getY());
-					button_pause_returnMainMenu.setEnabled(true);
+					// } else if (button_pause_returnMainMenu.getX() + 100 <
+					// FGGamingThread
+					// .getScreenWidth() / 2) {
+					// button_pause_returnMainMenu.setPosition(
+					// button_pause_returnMainMenu.getX() + 100,
+					// button_pause_returnMainMenu.getY());
+					// } else if (button_pause_returnMainMenu.getX() + 1 <
+					// FGGamingThread
+					// .getScreenWidth() / 2) {
+					// button_pause_returnMainMenu.setPosition(
+					// FGGamingThread.getScreenWidth() / 2,
+					// button_pause_returnMainMenu.getY());
+					// button_pause_returnMainMenu.setEnabled(true);
+					// aniOK = true;
+					k = 0;
+				} else if (k < 1) {
+					k += 0.3;
+					buttonGroup_pause.control(k);
+				} else {
 					aniOK = true;
 				}
 			}
 			break;
 		}
 		case hiding: {
-			if (button_pause_returnMainMenu.getX() > -button_pause_returnMainMenu
-					.getWidth() / 2f) {
-				button_pause_returnMainMenu.setPosition(
-						button_pause_returnMainMenu.getX() - 100,
-						button_pause_returnMainMenu.getY());
+			if (k>0) {
+				k -= 0.3;
+				buttonGroup_pause.control(k);
 			} else if (sssc.getAlpha() < 1) {
 				sssc.setAlpha(sssc.getAlpha() + 0.1);
 			} else {
@@ -172,6 +196,7 @@ public class GamingMenu extends FGPerformer {
 				FGSimpleBGM.play();// 恢复声音
 
 				button_pause_returnMainMenu.dismiss();
+				button_pause_resumegame.dismiss();
 
 				drawMe = false;
 
@@ -189,6 +214,7 @@ public class GamingMenu extends FGPerformer {
 	@Override
 	protected void onDestory() {
 		menuState = MenuState.hided;
+		aniOK = false;
 		drawMe = false;
 	}
 
@@ -201,6 +227,19 @@ public class GamingMenu extends FGPerformer {
 		@Override
 		public void onClick() {
 			FGStage.previousStage();
+		}
+
+	}
+
+	private class Button_ResumeGame extends FGButton {
+
+		public Button_ResumeGame() {
+			super(200, 60, GlobalResources.FRAMES_BUTTON_RESUMEGAME);
+		}
+
+		@Override
+		public void onClick() {
+			hide();
 		}
 
 	}

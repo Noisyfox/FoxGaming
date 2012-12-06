@@ -49,6 +49,8 @@ public abstract class SectionStage extends FGStage {
 	public final void gameOver() {
 		gameController.gameOver();
 		enemyController.pause();
+		if (background != null)
+			background.setSpeed(0, 0);
 	}
 
 	@Override

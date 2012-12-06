@@ -43,6 +43,7 @@ public class GlobalResources {
 	public static FGFrame FRAMES_BULLET_PLAYER_NORMAL = null;
 	public static FGFrame FRAMES_BUTTON_GAMESTART = null;
 	public static FGFrame FRAMES_BUTTON_RETURNMAINMENU = null;
+	public static FGFrame FRAMES_BUTTON_RESUMEGAME = null;
 	public static FGFrame FRAMES_ENEMY_BOX_SCORE = null;
 	public static FGFrame FRAMES_ENEMY_BUTTERFLY = null;
 	public static FGFrame FRAMES_ENEMY_DOLL_BLUE = null;
@@ -113,6 +114,10 @@ public class GlobalResources {
 		FRAMES_BUTTON_RETURNMAINMENU = new FGFrame();
 		FRAMES_BUTTON_RETURNMAINMENU.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.button_returnmainmenu,
+				3, 1, false);
+		FRAMES_BUTTON_RESUMEGAME = new FGFrame();
+		FRAMES_BUTTON_RESUMEGAME.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.button_resumegame,
 				3, 1, false);
 		FRAMES_ENEMY_BOX_SCORE = new FGFrame();
 		FRAMES_ENEMY_BOX_SCORE
