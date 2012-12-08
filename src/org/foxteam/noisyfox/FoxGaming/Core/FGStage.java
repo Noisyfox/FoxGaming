@@ -597,4 +597,12 @@ public abstract class FGStage {
 		managedParticleSystemSize--;
 	}
 
+	public void managedParticleSystem_removeParticleSystem(
+			FGParticleSystem particleSystem) {
+		if (managedParticleSystem.contains(particleSystem)) {
+			managedParticleSystem.remove(particleSystem);
+			managedParticleSystemSize--;
+		}
+	}
+
 }

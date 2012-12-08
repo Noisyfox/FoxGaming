@@ -23,6 +23,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Bullet;
 import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 import android.graphics.Canvas;
 
@@ -58,7 +59,7 @@ public class Enemy_Duck extends EnemyInAir {
 		speed = 20f / FGStage.getSpeed();
 
 		this.motion_set(frmL ? 0 : -180, speed);
-		this.motion_add(270, FGStage.getCurrentBackground().getVSpeed());
+		this.motion_add(270, SectionStage.getScrollSpeedV());
 
 		this.setAlarm(0, (int) (FGStage.getSpeed() * 3f), true);// 发射子弹
 		this.startAlarm(0);
@@ -93,8 +94,8 @@ public class Enemy_Duck extends EnemyInAir {
 		if (whichAlarm == 0) {// 发射子弹
 			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
 					- this.getSprite().getOffsetY()
-					+ this.getSprite().getHeight(), 270, FGStage
-					.getCurrentBackground().getVSpeed());
+					+ this.getSprite().getHeight(), 270,
+					SectionStage.getScrollSpeedV());
 			b.setDepth(this.getDepth() + 1);
 		} else if (whichAlarm == 1) {// 播放动画
 			this.getSprite().nextFrame();

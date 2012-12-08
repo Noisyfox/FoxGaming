@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.THEngine.Performers.PowerUps;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
-import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
@@ -25,6 +24,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.Hitable;
 import org.foxteam.noisyfox.THEngine.Performers.Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 /**
  * @ClassName: PowerUp_Score
@@ -50,8 +50,8 @@ public class PowerUp_Score extends PowerUp {
 				scoreSprite.getHeight());
 		this.bindCollisionMask(co);
 
-		setMovement(false, FGStage.getCurrentBackground().getVSpeed(), FGStage
-				.getCurrentBackground().getHSpeed());
+		setMovement(false, SectionStage.getScrollSpeedV(),
+				SectionStage.getScrollSpeedH());
 	}
 
 	@Override

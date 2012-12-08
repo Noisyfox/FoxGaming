@@ -25,6 +25,8 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Doll_Blue;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Duck;
 import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
 
+import android.os.Bundle;
+
 /**
  * @ClassName: _01_TestStage
  * @Description: TODO
@@ -35,14 +37,16 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.Enemy_Fly;
 public final class _01_TestStage extends SectionStage {
 
 	@Override
-	protected void prepareStage() {
+	protected void prepareStage(Bundle savedState) {
+
+		setStageScrollSpeed(0, 30f / getStageSpeed());
 
 		FGBackground bkg = new FGBackground();
 		bkg.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.background_teststage,
 				false);
 		bkg.setAdaptation(FGBackground.ADAPTATION_SMART);
-		bkg.setSpeed(0, 30f / getStageSpeed());
+		bkg.setSpeed(getScrollSpeedH(), getScrollSpeedV());
 		bkg.setAlignment(FGBackground.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
 		bkg.setDrawMode(FGBackground.ADAPTATION_OPTION_DRAW_REPEATING);
 		bkg.setScaleMode(FGBackground.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
@@ -73,6 +77,11 @@ public final class _01_TestStage extends SectionStage {
 		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 1, 4, 3);
 		ec.addEnemy(600, Enemy_Doll_Blue.class, 0, 0, 1, 4, 4);
 		ec.addEnemy(930, Enemy_Boss_Pig.class, 0, 0);
+	}
+
+	@Override
+	protected void onSectionEnd(Bundle savedState) {
+
 	}
 
 }

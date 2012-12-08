@@ -135,6 +135,8 @@ public final class GamingController extends FGPerformer {
 			aniFin = true;
 			hud.toggleFlashText(2);
 
+			setAlarm(5, (int) (FGStage.getSpeed() * 1f), false);
+			startAlarm(5);
 		} else if (whichAlarm == 2) {
 			hud.toggleFlashText(1);
 			setAlarm(3, (int) (FGStage.getSpeed() * 5f), false);
@@ -158,6 +160,15 @@ public final class GamingController extends FGPerformer {
 		} else if (whichAlarm == 4) {
 			FGStage.getPerformersByClass(Player.class)[0].dismiss();
 			aniFin = true;
+
+			setAlarm(5, (int) (FGStage.getSpeed() * 1f), false);
+			startAlarm(5);
+		} else if (whichAlarm == 5) {// 自动弹出菜单
+			if (stageClear) {
+				SectionStage.getMenu().show(MenuType.stageclear);
+			} else {
+				SectionStage.getMenu().show(MenuType.gameover);
+			}
 		}
 	}
 

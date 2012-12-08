@@ -26,6 +26,7 @@ import org.foxteam.noisyfox.THEngine.Performers.Explosion;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUp;
 import org.foxteam.noisyfox.THEngine.Performers.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Score;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 /**
  * @ClassName: Enemy_Box_Score
@@ -55,7 +56,7 @@ public class Enemy_Box_Score extends EnemyOnGround {
 
 		this.setPosition(inX, -boxSprite.getHeight() + boxSprite.getOffsetY());
 
-		this.motion_set(270, FGStage.getCurrentBackground().getVSpeed());
+		this.motion_set(270, SectionStage.getScrollSpeedV());
 	}
 
 	@Override

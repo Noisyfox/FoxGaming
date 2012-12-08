@@ -32,6 +32,8 @@ import org.foxteam.noisyfox.THEngine.Performers.Enemys.EnemyInAir;
 import org.foxteam.noisyfox.THEngine.Performers.PowerUps.PowerUp_Missile;
 import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
+import android.os.Bundle;
+
 /**
  * @ClassName: Player
  * @Description: TODO
@@ -63,6 +65,29 @@ public class Player extends Hitable {
 	int missile_level = 1;
 
 	public boolean fire = true;
+
+	public void loadState(Bundle savedState) {
+		remainLife = savedState.getInt("THEA_player_remainLife", 0);
+		missile_level = savedState.getInt("THEA_player_missileLevel", 1);
+		switch (savedState.getInt("THEA_player_missileType", 0)) {
+		case 0:
+			myMissile = null;
+			break;
+		case 1:
+			myMissile = Bullet_Player_Missile_Guided.class;
+			break;
+		case 2:
+			myMissile = Bullet_Player_Missile_Manual.class;
+			break;
+		}
+	}
+
+	public void saveState(Bundle savedState) {
+		savedState.putInt("THEA_player_remainLife", remainLife);
+		savedState.putInt("THEA_player_missileType", myMissile == null ? 0
+				: (myMissile == Bullet_Player_Missile_Guided.class ? 1 : 2));// 导弹类型，0无1跟踪2非跟踪
+		savedState.putInt("THEA_player_missileLevel", missile_level);
+	}
 
 	@Override
 	protected void onStep() {

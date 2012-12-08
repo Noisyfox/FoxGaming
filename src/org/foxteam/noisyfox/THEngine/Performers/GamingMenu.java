@@ -12,6 +12,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.ButtonGroup;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,7 +24,7 @@ public class GamingMenu extends FGPerformer {
 	private FGFrame ssf = new FGFrame();
 	private FGSprite sss = new FGSprite();
 	private FGSpriteConvertor sssc = new FGSpriteConvertor();
-	private FGStage cStage = null;
+	private SectionStage cStage = null;
 	private FGBackground cBKG = null;
 	private int stage_width = 0;
 	private int stage_height = 0;
@@ -94,7 +95,7 @@ public class GamingMenu extends FGPerformer {
 				FGGamingThread.getScreenHeight() / 2);
 
 		menuType = type;
-		cStage = FGStage.getCurrentStage();
+		cStage = (SectionStage) FGStage.getCurrentStage();
 		mainView = cStage.getView(0);
 		stage_width = cStage.getWidth();
 		stage_height = cStage.getHeight();
@@ -157,11 +158,7 @@ public class GamingMenu extends FGPerformer {
 			cStage.setSize(FGGamingThread.getScreenHeight(),
 					FGGamingThread.getScreenWidth());
 
-			FGPerformer ps[] = FGStage.getPerformers();
-			for (FGPerformer p : ps) {
-				if (p != this)
-					p.freezeMe();
-			}// 冻结其它所有 Performer
+			freezeAll(true);// 冻结其它所有 Performer
 
 			FGSimpleBGM.pause();// 暂停声音
 
@@ -202,10 +199,7 @@ public class GamingMenu extends FGPerformer {
 				cStage.addView(mainView);// 恢复 Stage
 				cStage.setSize(stage_height, stage_width);
 
-				FGPerformer ps[] = FGStage.getPerformers();
-				for (FGPerformer p : ps) {
-					p.unfreezeMe();
-				}// 恢复所有 Performer
+				freezeAll(false);// 恢复所有 Performer
 
 				FGSimpleBGM.play();// 恢复声音
 
@@ -239,7 +233,8 @@ public class GamingMenu extends FGPerformer {
 
 		@Override
 		public void onClick() {
-			FGStage.previousStage();
+			freezeAll(false);
+			FGStage.switchToStage(0);
 		}
 	}
 
@@ -263,7 +258,8 @@ public class GamingMenu extends FGPerformer {
 
 		@Override
 		public void onClick() {
-			FGStage.restartStage();
+			freezeAll(false);
+			cStage.nextSection();
 		}
 	}
 
@@ -275,7 +271,23 @@ public class GamingMenu extends FGPerformer {
 
 		@Override
 		public void onClick() {
-			FGStage.restartStage();
+			freezeAll(false);
+			cStage.restartSection();
+		}
+	}
+
+	private final void freezeAll(boolean freeze) {
+		FGPerformer ps[] = FGStage.getPerformers();
+		if (freeze) {
+			for (FGPerformer p : ps) {
+				if (p != this) {
+					p.freezeMe();
+				}
+			}
+		} else {
+			for (FGPerformer p : ps) {
+				p.unfreezeMe();
+			}
 		}
 	}
 

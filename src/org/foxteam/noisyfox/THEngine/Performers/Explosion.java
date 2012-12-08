@@ -18,6 +18,7 @@ package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
+import org.foxteam.noisyfox.THEngine.Stages.SectionStage;
 
 /**
  * @ClassName: Explosion
@@ -51,8 +52,8 @@ public class Explosion extends FGPerformer {
 
 	@Override
 	protected void onStep() {
-		this.setPosition(this.getX(), this.getY()
-				+ FGStage.getCurrentBackground().getVSpeed());
+		this.setPosition(this.getX(),
+				this.getY() + SectionStage.getScrollSpeedV());
 	}
 
 	public Explosion(FGFrame frames, int turns, float lastTime, int x, int y,
