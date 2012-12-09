@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameActivity;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 
 import android.view.KeyEvent;
 
@@ -38,8 +39,8 @@ public class Button_GameStart extends FGButton {
 
 	@Override
 	public void onClick() {
+		SectionStage.initSectionStage();
 		FGStage.nextStage();
-		Player.remainLife = 3;
 	}
 
 	@Override
