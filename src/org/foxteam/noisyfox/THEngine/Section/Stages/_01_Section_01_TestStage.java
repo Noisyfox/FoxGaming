@@ -35,7 +35,7 @@ import android.os.Bundle;
  * @date: 2012-8-16 上午11:04:33
  * 
  */
-public final class Section_01_TestStage extends SectionStage {
+public final class _01_Section_01_TestStage extends SectionStage {
 
 	@Override
 	protected void prepareStage(Bundle savedState) {
