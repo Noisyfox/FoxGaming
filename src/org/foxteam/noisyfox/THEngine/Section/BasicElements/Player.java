@@ -44,9 +44,9 @@ public class Player extends Hitable {
 
 	FGViews mainView = null;
 
-	FGPoint meOnScreen = null;
-	FGPoint fingerPressStart = null;
-	FGPoint meStart = null;
+	FGPointF meOnScreen = new FGPointF();
+	FGPointF fingerPressStart = new FGPointF();
+	FGPointF meStart = new FGPointF();
 
 	public boolean controllable = true;
 
@@ -89,33 +89,6 @@ public class Player extends Hitable {
 	}
 
 	@Override
-	protected void onStep() {
-		if (!onAnimation) {
-			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
-
-			mainView.setPositionFromStage(
-					(FGStage.getCurrentStage().getWidth() - mainView
-							.getWidthFromStage()) * per, 0);
-
-			this.setPosition(mainView.coordinateScreen2Stage_X(
-					meOnScreen.getX(), meOnScreen.getY()), mainView
-					.coordinateScreen2Stage_Y(meOnScreen.getX(),
-							meOnScreen.getY()));
-		} else {
-			meOnScreen.setPosition(mainView.coordinateStage2Screen_X(
-					(int) this.getX(), (int) this.getY()), mainView
-					.coordinateStage2Screen_Y((int) this.getX(),
-							(int) this.getY()));
-
-			float per = meOnScreen.getX() / mainView.getWidthFromScreen();
-
-			mainView.setPositionFromStage(
-					(FGStage.getCurrentStage().getWidth() - mainView
-							.getWidthFromStage()) * per, 0);
-		}
-	}
-
-	@Override
 	protected void onCreate() {
 
 		mainView = FGStage.getCurrentStage().getView(0);
@@ -125,16 +98,11 @@ public class Player extends Hitable {
 				playerSprite.getHeight() / 2);
 		this.bindSprite(playerSprite);
 
-		fingerPressStart = new FGPoint();
-		meStart = new FGPoint();
-		meOnScreen = new FGPoint();
-
 		birthAni.moveTowardsWait(
 				FGStage.getCurrentStage().getWidth() / 2,
 				FGStage.getCurrentStage().getHeight()
 						+ playerSprite.getOffsetY() + 40,
 				(int) (1.5f * FGStage.getSpeed()));
-
 		birthAni.moveTowardsWait(
 				FGStage.getCurrentStage().getWidth() / 2,
 				FGStage.getCurrentStage().getHeight()
@@ -163,9 +131,31 @@ public class Player extends Hitable {
 	}
 
 	@Override
-	protected void onDestory() {
-		// TODO Auto-generated method stub
-		super.onDestory();
+	protected void onStep() {
+		float kw = mainView.getWidthFromScreen() / mainView.getWidthFromStage();
+		float kh = mainView.getHeightFromScreen()
+				/ mainView.getHeightFromStage();
+
+		if (!onAnimation) {
+
+			float view_width = mainView.getWidthFromScreen();
+			float v_left = playerSprite.getOffsetX() * kw;
+			float v_right = playerSprite.getWidth() * kw - v_left;
+
+			float per = (meOnScreen.getX() - v_left)
+					/ (view_width - v_left - v_right);
+
+			this.setPosition(0, meOnScreen.getY() / kh);
+			updateViewK(per);
+
+		} else {
+
+			updateViewX(getX());
+
+			meOnScreen.setPosition((getX() - mainView.getXFromStage()) * kw,
+					getY() * kh);
+
+		}
 	}
 
 	@Override
@@ -175,128 +165,42 @@ public class Player extends Hitable {
 				fingerPressStart.setPosition(x, y);
 				meStart.setPosition(meOnScreen.getX(), meOnScreen.getY());
 			} else {
-				int dx = x - fingerPressStart.getX();
-				int dy = y - fingerPressStart.getY();
-				int myX = meStart.getX() + dx;
-				int myY = meStart.getY() + dy;
-				int realX = mainView.coordinateScreen2Stage_X(myX, myY);
-				int realY = mainView.coordinateScreen2Stage_Y(myX, myY);
 
-				if (realX < this.getSprite().getOffsetX()) {
+				float view_width = mainView.getWidthFromScreen();
+				float view_height = mainView.getHeightFromScreen();
+				float kw = view_width / mainView.getWidthFromStage();
+				float kh = view_height / mainView.getHeightFromStage();
+				float v_left = playerSprite.getOffsetX() * kw;
+				float v_right = playerSprite.getWidth() * kw - v_left;
+				float v_top = playerSprite.getOffsetY() * kh;
+				float v_bottom = playerSprite.getHeight() * kh - v_top;
 
-					if (realX < this.getSprite().getOffsetX() - 5) {
-						int fingerXReal = mainView.coordinateScreen2Stage_X(
-								fingerPressStart.getX(),
-								fingerPressStart.getY());
-						int fingerYReal = mainView.coordinateScreen2Stage_Y(
-								fingerPressStart.getX(),
-								fingerPressStart.getY());
+				float dx = x - fingerPressStart.getX();
+				float dy = y - fingerPressStart.getY();
 
-						fingerPressStart.setPosition(mainView
-								.coordinateStage2Screen_X(
-										fingerXReal
-												- this.getSprite().getOffsetX()
-												+ realX, fingerYReal),
-								fingerPressStart.getY());
-					}
+				// 先计算飞机在屏幕上的最终位置
+				float player_x = meStart.getX() + dx;
+				float player_y = meStart.getY() + dy;
 
-					realX = this.getSprite().getOffsetX();
+				if (player_x < v_left)
+					player_x = v_left;
+				else if (player_x > view_width - v_right)
+					player_x = view_width - v_right;
+				if (player_y < v_top)
+					player_y = v_top;
+				else if (player_y > view_height - v_bottom)
+					player_y = view_height - v_bottom;
 
-				} else if (realX > FGStage.getCurrentStage().getWidth()
-						- this.getSprite().getWidth()
-						+ this.getSprite().getOffsetX()) {
+				meOnScreen.setPosition(player_x, player_y);
 
-					if (realX > FGStage.getCurrentStage().getWidth()
-							- this.getSprite().getWidth()
-							+ this.getSprite().getOffsetX() + 5) {
-						int fingerXReal = mainView.coordinateScreen2Stage_X(
-								fingerPressStart.getX(),
-								fingerPressStart.getY());
-						int fingerYReal = mainView.coordinateScreen2Stage_Y(
-								fingerPressStart.getX(),
-								fingerPressStart.getY());
+				// 计算实际位移
+				float rdx = player_x - meStart.getX();
+				float rdy = player_y - meStart.getY();
+				float ddx = dx - rdx;
+				float ddy = dy - rdy;
+				fingerPressStart.setPosition(fingerPressStart.getX() + ddx,
+						fingerPressStart.getY() + ddy);
 
-						fingerPressStart
-								.setPosition(
-										mainView.coordinateStage2Screen_X(
-												fingerXReal
-														+ realX
-														- (FGStage
-																.getCurrentStage()
-																.getWidth()
-																- this.getSprite()
-																		.getWidth() + this
-																.getSprite()
-																.getOffsetX()),
-												fingerYReal), fingerPressStart
-												.getY());
-					}
-
-					realX = FGStage.getCurrentStage().getWidth()
-							- this.getSprite().getWidth()
-							+ this.getSprite().getOffsetX();
-
-				}
-
-				if (realY < this.getSprite().getOffsetY()) {
-
-					if (realY < this.getSprite().getOffsetY() - 5) {
-						int fingerXReal = mainView.coordinateScreen2Stage_X(
-								fingerPressStart.getX(),
-								fingerPressStart.getX());
-						int fingerYReal = mainView.coordinateScreen2Stage_Y(
-								fingerPressStart.getY(),
-								fingerPressStart.getY());
-
-						fingerPressStart.setPosition(fingerPressStart.getX(),
-								mainView.coordinateStage2Screen_Y(fingerXReal,
-										fingerYReal
-												- this.getSprite().getOffsetY()
-												+ realY));
-					}
-
-					realY = this.getSprite().getOffsetY();
-
-				} else if (realY > FGStage.getCurrentStage().getHeight()
-						- this.getSprite().getHeight()
-						+ this.getSprite().getOffsetY()) {
-
-					if (realY > FGStage.getCurrentStage().getHeight()
-							- this.getSprite().getHeight()
-							+ this.getSprite().getOffsetY() + 5) {
-						int fingerXReal = mainView.coordinateScreen2Stage_X(
-								fingerPressStart.getX(),
-								fingerPressStart.getX());
-						int fingerYReal = mainView.coordinateScreen2Stage_Y(
-								fingerPressStart.getY(),
-								fingerPressStart.getY());
-
-						fingerPressStart
-								.setPosition(
-										fingerPressStart.getX(),
-										mainView.coordinateStage2Screen_Y(
-												fingerXReal,
-												fingerYReal
-														+ realY
-														- (FGStage
-																.getCurrentStage()
-																.getHeight()
-																- this.getSprite()
-																		.getHeight() + this
-																.getSprite()
-																.getOffsetY())));
-					}
-
-					realY = FGStage.getCurrentStage().getHeight()
-							- this.getSprite().getHeight()
-							+ this.getSprite().getOffsetY();
-
-				}
-
-				myX = mainView.coordinateStage2Screen_X(realX, realY);
-				myY = mainView.coordinateStage2Screen_Y(realX, realY);
-
-				meOnScreen.setPosition(myX, myY);
 			}
 		}
 	}
@@ -309,11 +213,63 @@ public class Player extends Hitable {
 		}
 	}
 
-	@Override
-	protected void onTouchRelease(int whichfinger) {
-		if (whichfinger == 0) {
+	/**
+	 * 将飞机保持在屏幕水平方向k处
+	 * 
+	 * @param k
+	 *            水平方向的百分比
+	 */
+	private void updateViewK(float k) {
 
-		}
+		if (k < 0)
+			k = 0;
+		else if (k > 1)
+			k = 1;
+
+		float player_x = 0;
+		float view_x = 0;
+		float stage_width = FGStage.getCurrentStage().getWidth();
+		float view_width = mainView.getWidthFromStage();
+
+		float s_left = playerSprite.getOffsetX();
+		float s_right = playerSprite.getWidth() - s_left;
+
+		player_x = (stage_width - s_left - s_right) * k + s_left;
+		view_x = player_x - (view_width - s_left - s_right) * k - s_left;
+
+		this.setPosition(player_x, getY());
+		mainView.setPositionFromStage(view_x, mainView.getYFromStage());
+
+	}
+
+	/**
+	 * 将飞机保持在 stage 水平方向x处
+	 * 
+	 * @param x
+	 *            横坐标
+	 */
+	private void updateViewX(float x) {
+
+		float s_left = playerSprite.getOffsetX();
+		float s_right = playerSprite.getWidth() - s_left;
+		float stage_width = FGStage.getCurrentStage().getWidth();
+		if (x < s_left)
+			x = s_left;
+		else if (x > stage_width - s_right)
+			x = stage_width - s_right;
+
+		float player_x = 0;
+		float view_x = 0;
+		float view_width = mainView.getWidthFromStage();
+
+		float k = (x - s_left) / (stage_width - s_left - s_right);
+
+		player_x = x;
+		view_x = player_x - (view_width - s_left - s_right) * k - s_left;
+
+		this.setPosition(player_x, getY());
+		mainView.setPositionFromStage(view_x, mainView.getYFromStage());
+
 	}
 
 	@Override
