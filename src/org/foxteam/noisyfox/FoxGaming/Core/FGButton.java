@@ -37,6 +37,8 @@ public abstract class FGButton extends FGPerformer {
 	private int touchDown = -1;
 	private int height = 0;
 	private int width = 0;
+	private int touchSize_height = 0;
+	private int touchSize_width = 0;
 
 	/**
 	 * @Title: Button
@@ -54,6 +56,7 @@ public abstract class FGButton extends FGPerformer {
 		mySprite.setOffset(mySprite.getWidth() / 2, mySprite.getHeight() / 2);
 		this.bindCollisionMask(myMask);
 		setSize(width, height);
+		setTouchSize(width, height);
 	}
 
 	/**
@@ -69,8 +72,14 @@ public abstract class FGButton extends FGPerformer {
 
 		mySC.setScale((double) width / (double) mySprite.getWidth(),
 				(double) height / (double) mySprite.getHeight());
+	}
+
+	public final void setTouchSize(int width, int height) {
+		touchSize_width = Math.abs(width);
+		touchSize_height = Math.abs(height);
 		myMask.clear();
-		myMask.addRectangle(-width / 2, -height / 2, width, height);
+		myMask.addRectangle(-touchSize_width / 2, -touchSize_height / 2,
+				touchSize_width, touchSize_height);
 	}
 
 	public final int getWidth() {
@@ -79,6 +88,14 @@ public abstract class FGButton extends FGPerformer {
 
 	public final int getHeight() {
 		return height;
+	}
+
+	public final int getTouchSizeWidth() {
+		return touchSize_width;
+	}
+
+	public final int getTouchSizeHeight() {
+		return touchSize_height;
 	}
 
 	public final void setEnabled(boolean enable) {

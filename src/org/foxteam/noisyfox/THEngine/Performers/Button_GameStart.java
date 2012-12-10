@@ -35,6 +35,7 @@ public class Button_GameStart extends FGButton {
 
 	public Button_GameStart() {
 		super(170, 53, GlobalResources.FRAMES_BUTTON_GAMESTART);
+		setTouchSize(200, 100);
 	}
 
 	@Override

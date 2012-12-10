@@ -24,6 +24,8 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * @ClassName: GraphicFont
@@ -44,6 +46,9 @@ public final class FGGraphicFont {
 	int frameWidth = 0;
 	int frameHeight = 0;
 	int alignment = ALIGN_LEFT;
+
+	static Rect srcRect = new Rect();
+	static RectF dstRect = new RectF();
 
 	public void mapFont(int resId, String chars, boolean cDensityDpi) {
 		Bitmap b = null;
@@ -107,32 +112,53 @@ public final class FGGraphicFont {
 		return (int) (frameWidth + characterSpacing);
 	}
 
-	public void drawText(Canvas c, float x, float y, String text) {
+	/**
+	 * 绘制字体
+	 * 
+	 * @param c
+	 * @param x
+	 * @param y
+	 * @param scale
+	 *            每个字需要缩放的倍数，这不会改变实际绘制时的字间距
+	 * @param text
+	 */
+	public void drawText(Canvas c, float x, float y, float scale, String text) {
+		if (scale < 0)
+			return;
+
 		char[] stc = text.toCharArray();
+
 		for (int i = 0; i < stc.length; i++) {
 			String key = String.valueOf(stc[i]);
 			float rX = x - offsetX;
 
 			switch (alignment) {
 			case ALIGN_LEFT:
-				rX += i * (characterSpacing + (float) frameWidth);
+				rX += i * (characterSpacing + (float) frameWidth * scale);
 				break;
 			case ALIGN_RIGHT:
 				rX += (i - text.length() + 1)
-						* (characterSpacing + (float) frameWidth);
+						* (characterSpacing + (float) frameWidth * scale);
 				break;
 			case ALIGN_CENTER:
 				rX += (i - text.length() / 2)
-						* (characterSpacing + (float) frameWidth);
+						* (characterSpacing + (float) frameWidth * scale);
 				break;
 			}
 
 			float rY = (y - offsetY);
 			Bitmap charBitmap = fontMap.get(key);
 			if (charBitmap != null) {
-				c.drawBitmap(charBitmap, rX, rY, null);
+				srcRect.set(0, 0, frameWidth, frameHeight);
+				dstRect.set(rX, rY, rX + frameWidth * scale, rY + frameHeight
+						* scale);
+				c.drawBitmap(charBitmap, srcRect, dstRect, null);
 			}
 		}
+	}
+
+	public void drawText(Canvas c, float x, float y, String text) {
+		drawText(c, x, y, 1, text);
 	}
 
 }
