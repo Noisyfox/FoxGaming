@@ -24,6 +24,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
+import org.foxteam.noisyfox.THEngine.Performers.Button_HighScore;
 
 /**
  * @ClassName: _00_MainMenu
@@ -52,7 +53,7 @@ public class _00_MainMenu extends FGStage {
 		setBackground(bkg);
 
 		FGGamingThread.score = 0;
-		this.setStageSpeed(10);
+		this.setStageSpeed(30);
 
 		if (_1stin) {
 			_1stin = false;
@@ -61,8 +62,13 @@ public class _00_MainMenu extends FGStage {
 		} else {
 			FGButton bGameStart = new Button_GameStart();
 			bGameStart.perform(stageIndex);
-			bGameStart.setPosition(getWidth() / 2,
+			bGameStart.setPosition(getWidth() / 4,
 					getHeight() - bGameStart.getHeight() / 2 - 5);
+
+			FGButton bHighScore = new Button_HighScore();
+			bHighScore.perform(stageIndex);
+			bHighScore.setPosition(getWidth() / 4 * 3,
+					getHeight() - bHighScore.getHeight() / 2 - 5);
 		}
 
 	}
@@ -108,8 +114,13 @@ public class _00_MainMenu extends FGStage {
 
 			FGButton bGameStart = new Button_GameStart();
 			bGameStart.perform(stageIndex);
-			bGameStart.setPosition(getWidth() / 2,
+			bGameStart.setPosition(getWidth() / 4,
 					getHeight() - bGameStart.getHeight() / 2 - 5);
+
+			FGButton bHighScore = new Button_HighScore();
+			bHighScore.perform(stageIndex);
+			bHighScore.setPosition(getWidth() / 4 * 3,
+					getHeight() - bHighScore.getHeight() / 2 - 5);
 		}
 
 	}

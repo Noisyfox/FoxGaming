@@ -16,11 +16,14 @@
  */
 package org.foxteam.noisyfox.THEngine;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicFont;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGPathBezier3;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleType;
+
+import android.graphics.Typeface;
 
 /**
  * @ClassName: GlobalResources
@@ -42,10 +45,12 @@ public class GlobalResources {
 	public static FGFrame FRAMES_BULLET_PLAYER_MISSILE_MANUAL = null;
 	public static FGFrame FRAMES_BULLET_PLAYER_NORMAL = null;
 	public static FGFrame FRAMES_BUTTON_GAMESTART = null;
+	public static FGFrame FRAMES_BUTTON_HIGHSCORE = null;
 	public static FGFrame FRAMES_BUTTON_RETURNMAINMENU = null;
 	public static FGFrame FRAMES_BUTTON_RESUMEGAME = null;
 	public static FGFrame FRAMES_BUTTON_RESTART = null;
 	public static FGFrame FRAMES_BUTTON_NEXTSTAGE = null;
+	public static FGFrame FRAMES_BUTTON_SINAWEIBO = null;
 	public static FGFrame FRAMES_ENEMY_BOX_SCORE = null;
 	public static FGFrame FRAMES_ENEMY_BUTTERFLY = null;
 	public static FGFrame FRAMES_ENEMY_DOLL_BLUE = null;
@@ -66,9 +71,13 @@ public class GlobalResources {
 	public static FGFrame FRAMES_POWERUP_SCORE = null;
 	public static FGFrame FRAMES_PLAYER_ICON = null;
 	public static FGFrame FRAMES_TOUCH_SCREEN_TO_CONTINUE = null;
+	public static FGFrame FRAMES_HIGHSCORE_BACKGROUND = null;
 
 	// 通用的粒子类型
 	public static FGParticleType PARTICLE_TYPE_MILLSILSMOKE = null;
+
+	// 字体
+	public static Typeface FONT_VINERITC = null;
 
 	public static void loadResources() {
 		// 初始化 敌机 玩偶怪 的移动路径
@@ -113,6 +122,10 @@ public class GlobalResources {
 		FRAMES_BUTTON_GAMESTART.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.button_gamestart, 3,
 				1, false);
+		FRAMES_BUTTON_HIGHSCORE = new FGFrame();
+		FRAMES_BUTTON_HIGHSCORE.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.button_highscore, 3,
+				1, false);
 		FRAMES_BUTTON_RETURNMAINMENU = new FGFrame();
 		FRAMES_BUTTON_RETURNMAINMENU.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.button_returnmainmenu,
@@ -129,6 +142,10 @@ public class GlobalResources {
 		FRAMES_BUTTON_NEXTSTAGE.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.button_nextstage, 3,
 				1, false);
+		FRAMES_BUTTON_SINAWEIBO = new FGFrame();
+		FRAMES_BUTTON_SINAWEIBO.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.button_weibo, 3, 1,
+				false);
 		FRAMES_ENEMY_BOX_SCORE = new FGFrame();
 		FRAMES_ENEMY_BOX_SCORE
 				.loadFromBitmap(
@@ -214,6 +231,10 @@ public class GlobalResources {
 				.loadFromBitmap(
 						org.foxteam.noisyfox.THEngine.R.drawable.touch_screen_to_continue,
 						true);
+		FRAMES_HIGHSCORE_BACKGROUND = new FGFrame();
+		FRAMES_HIGHSCORE_BACKGROUND.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.highscore_background,
+				true);
 
 		// 初始化粒子
 		PARTICLE_TYPE_MILLSILSMOKE = new FGParticleType();
@@ -226,5 +247,9 @@ public class GlobalResources {
 		PARTICLE_TYPE_MILLSILSMOKE.setSize(0.8, 1.3, -0.03, 0.01);
 		PARTICLE_TYPE_MILLSILSMOKE.setOrientation(0, 359.9f, 0, 1, false);
 		PARTICLE_TYPE_MILLSILSMOKE.setAlpha(1.0, 0.0);
+
+		// 加载字体
+		FONT_VINERITC = Typeface.createFromAsset(FGGameCore.getMainContext()
+				.getAssets(), "VINERITC.TTF");
 	}
 }
