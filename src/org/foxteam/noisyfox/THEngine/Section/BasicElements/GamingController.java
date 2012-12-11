@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
 import org.foxteam.noisyfox.FoxGaming.Core.*;
+import org.foxteam.noisyfox.THEngine.Performers.HighScore;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.GamingMenu.MenuType;
 
 import android.view.KeyEvent;
@@ -166,6 +167,7 @@ public final class GamingController extends FGPerformer {
 			if (stageClear) {
 				SectionStage.getMenu().show(MenuType.stageclear);
 			} else {
+				HighScore.requireHighScoreRecordedHandled();
 				SectionStage.getMenu().show(MenuType.gameover);
 			}
 		}

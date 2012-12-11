@@ -1,13 +1,20 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
+import org.foxteam.noisyfox.THEngine.THEngineMainActivity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +22,8 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
+import android.os.Message;
+import android.widget.EditText;
 
 public final class HighScore extends FGPerformer {
 
@@ -38,6 +47,8 @@ public final class HighScore extends FGPerformer {
 	static FGFrame cachedFrame = new FGFrame();
 	static FGSprite cachedSprite = new FGSprite();
 	static FGSpriteConvertor aniConvertor = new FGSpriteConvertor();
+	static String[] highScoreData_name = new String[10];
+	static long[] highScoreData_score = new long[10];
 
 	static float edgePercentHeight = 35f / 380f;// 图案上下边缘各占的比例
 	static float edgePercentWidth = 35f / 300f;// 图案左右边缘各占的比例
@@ -105,7 +116,7 @@ public final class HighScore extends FGPerformer {
 		x = edgeWidth + 3;
 		tmpCanvas.drawText("NAME", x, y_start, highscoreTextPaint);
 		for (int i = 1; i <= 10; i++) {
-			tmpCanvas.drawText("anonym", x, y_start + dy * i,
+			tmpCanvas.drawText(highScoreData_name[i - 1], x, y_start + dy * i,
 					highscoreTextPaint);
 		}
 		// 绘制右边一列：分数
@@ -113,7 +124,8 @@ public final class HighScore extends FGPerformer {
 		x = width - edgeWidth - 3;
 		tmpCanvas.drawText("SCORE", x, y_start, highscoreTextPaint);
 		for (int i = 1; i <= 10; i++) {
-			tmpCanvas.drawText("0", x, y_start + dy * i, highscoreTextPaint);
+			tmpCanvas.drawText(highScoreData_score[i - 1] + "", x, y_start + dy
+					* i, highscoreTextPaint);
 		}
 
 		cachedFrame.loadFromBitmap(tmpBitmap);
@@ -179,6 +191,8 @@ public final class HighScore extends FGPerformer {
 	public void show() {
 		if (state != AniState.hided)
 			return;
+		loadHighScoreData();
+
 		state = AniState.showing;
 
 		perform(FGStage.getCurrentStage().getStageIndex());
@@ -199,6 +213,74 @@ public final class HighScore extends FGPerformer {
 	protected void onDestory() {
 		share2Weibo.dismiss();
 		state = AniState.hided;
+	}
+
+	public static void loadHighScoreData() {
+		SharedPreferences sp = FGGameCore.getMainContext()
+				.getSharedPreferences("HighScore", Context.MODE_PRIVATE);
+
+		for (int i = 0; i < 10; i++) {
+			highScoreData_name[i] = sp.getString(i + "name", "anonym");
+			highScoreData_score[i] = sp.getLong(i + "score", 0);
+		}
+
+		saveHighScoreData();
+	}
+
+	public static void saveHighScoreData() {
+
+		SharedPreferences sp = FGGameCore.getMainContext()
+				.getSharedPreferences("HighScore", Context.MODE_PRIVATE);
+
+		Editor e = sp.edit();
+
+		for (int i = 0; i < 10; i++) {
+			e.putString(i + "name", highScoreData_name[i]);
+			e.putLong(i + "score", highScoreData_score[i]);
+		}
+
+		e.commit();
+	}
+
+	public static void addHighScore(String name, long score) {
+		for (int i = 9; i >= 0; i--) {
+			if (score > highScoreData_score[i]) {
+				if (i != 9) {
+					highScoreData_score[i + 1] = highScoreData_score[i];
+					highScoreData_name[i + 1] = highScoreData_name[i];
+				}
+				highScoreData_score[i] = score;
+				highScoreData_name[i] = name;
+			} else {
+				break;
+			}
+		}
+		saveHighScoreData();
+	}
+
+	/**
+	 * 弹出对话框要求输入用户名
+	 * 
+	 * @param score
+	 */
+	public static void requireHighScoreRecorded(final long score) {
+		final EditText e = new EditText(FGGameCore.getMainContext());
+		e.setHint("请不要输入中文!");
+		e.setText("anonym");
+		new AlertDialog.Builder(FGGameCore.getMainContext())
+				.setTitle("请输入你的名字").setView(e)
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						addHighScore(e.getText().toString(), score);
+					}
+				}).setNegativeButton("下次再说", null).show();
+	}
+
+	public static void requireHighScoreRecordedHandled() {
+		Message message = new Message();
+		message.what = THEngineMainActivity.MESSAGE_SHOWHIGHSCOREDIALOG;
+		THEngineMainActivity.getHandler().sendMessage(message);
 	}
 
 }
