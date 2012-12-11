@@ -40,9 +40,6 @@ public final class SDKUtil {
 										// CommonService.getImaxToken();
 				Log.v(TAG, "imax_token = " + token);
 				// 通知主线程初始化成功，不要在回调方法中执行会阻塞线程的操作
-				// Message msg = new Message();
-				// msg.what = TYPE_INIT_SUCCESS;
-				// MessageHandler.sendMessage(msg);
 				inited = true;
 				if (callBack != null)
 					callBack.onComplete(result);
@@ -55,9 +52,6 @@ public final class SDKUtil {
 				Log.v(TAG, "-----sdk init faild-----");
 				Log.v(TAG, "error message = " + message);
 				// 通知主线程初始化失败，不要在回调方法中执行会阻塞线程的操作
-				// Message msg = new Message();
-				// msg.what = TYPE_INIT_FAILD;
-				// MessageHandler.sendMessage(msg);
 				inited = false;
 				if (callBack != null)
 					callBack.onError(message);
@@ -119,20 +113,10 @@ public final class SDKUtil {
 
 		// 获取分享类的实例
 		mShare = ShareStatus.getInstance();
-		// 当前时间，如果没有输入分享的类容，则默认分享当前时间
-		// SimpleDateFormat sDateFormat = new SimpleDateFormat(
-		// "yyyy-MM-dd hh:mm:ss");
-		// String date = sDateFormat.format(new Date());
-		/**
-		 * 分享的内容不能为空，否则会分享失败；相同的内容重复分享也会失败
-		 */
-		// String content = mContent.getText().toString();
-		// if (content == null || content.equals("")) {
-		// content = date;
-		// }
 
 		/**
-		 * 一次分享到多家平台，之间用逗号隔开，至少需要填写一家 分享的内容不能为空，否则会分享失败，分享内容的最大长度请参考第三方平台的说明
+		 * 分享的内容不能为空，否则会分享失败；相同的内容重复分享也会失败 一次分享到多家平台，之间用逗号隔开，至少需要填写一家
+		 * 分享的内容不能为空，否则会分享失败，分享内容的最大长度请参考第三方平台的说明
 		 * 分享的图片最大不能超过3M，APP可在上传前对图片进行裁剪；如果只分享文字微博则此参数传入null
 		 * 请确保在调用SDK初始化接口成功后再调用其他接口！！！
 		 */
@@ -153,9 +137,6 @@ public final class SDKUtil {
 				Log.v(TAG, "response = " + result);
 				// 提示分享结果
 				// 通知主线程分享成功，不要在回调方法中执行会阻塞线程的操作
-				// Message msg = new Message();
-				// msg.what = TYPE_SHARE_SUCCESS;
-				// MessageHandler.sendMessage(msg);
 				if (callBack != null)
 					callBack.onComplete(result);
 			}
@@ -164,9 +145,6 @@ public final class SDKUtil {
 			public void onError(String message) {
 				// HTTP请求发生异常错误
 				// 通知主线程分享失败，不要在回调方法中执行会阻塞线程的操作
-				// Message msg = new Message();
-				// msg.what = TYPE_SHARE_FAILD;
-				// MessageHandler.sendMessage(msg);
 
 				Log.v(TAG, "-----statusShare failed-----");
 				Log.v(TAG, "response = " + message);
