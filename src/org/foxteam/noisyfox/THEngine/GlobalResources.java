@@ -51,6 +51,7 @@ public class GlobalResources {
 	public static FGFrame FRAMES_BUTTON_RESTART = null;
 	public static FGFrame FRAMES_BUTTON_NEXTSTAGE = null;
 	public static FGFrame FRAMES_BUTTON_SINAWEIBO = null;
+	public static FGFrame FRAMES_BUTTON_SENDWEIBO = null;
 	public static FGFrame FRAMES_ENEMY_BOX_SCORE = null;
 	public static FGFrame FRAMES_ENEMY_BUTTERFLY = null;
 	public static FGFrame FRAMES_ENEMY_DOLL_BLUE = null;
@@ -146,6 +147,10 @@ public class GlobalResources {
 		FRAMES_BUTTON_SINAWEIBO.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.button_weibo, 3, 1,
 				false);
+		FRAMES_BUTTON_SENDWEIBO = new FGFrame();
+		FRAMES_BUTTON_SENDWEIBO.loadFromBitmap(
+				org.foxteam.noisyfox.THEngine.R.drawable.button_sendweibo, 3,
+				1, false);
 		FRAMES_ENEMY_BOX_SCORE = new FGFrame();
 		FRAMES_ENEMY_BOX_SCORE
 				.loadFromBitmap(

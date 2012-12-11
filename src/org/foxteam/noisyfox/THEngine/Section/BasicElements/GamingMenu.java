@@ -157,7 +157,7 @@ public class GamingMenu extends FGPerformer {
 			cStage.setSize(FGGamingThread.getScreenHeight(),
 					FGGamingThread.getScreenWidth());
 
-			freezeAll(true);// 冻结其它所有 Performer
+			freezeAll(true, true);// 冻结其它所有 Performer
 
 			FGSimpleBGM.pause();// 暂停声音
 
@@ -198,7 +198,7 @@ public class GamingMenu extends FGPerformer {
 				cStage.addView(mainView);// 恢复 Stage
 				cStage.setSize(stage_height, stage_width);
 
-				freezeAll(false);// 恢复所有 Performer
+				freezeAll(false, true);// 恢复所有 Performer
 
 				FGSimpleBGM.play();// 恢复声音
 
@@ -232,7 +232,7 @@ public class GamingMenu extends FGPerformer {
 
 		@Override
 		public void onClick() {
-			freezeAll(false);
+			freezeAll(false, true);
 			FGStage.switchToStage(0);
 		}
 	}
@@ -257,7 +257,7 @@ public class GamingMenu extends FGPerformer {
 
 		@Override
 		public void onClick() {
-			freezeAll(false);
+			freezeAll(false, true);
 			cStage.nextSection();
 		}
 	}
@@ -270,23 +270,8 @@ public class GamingMenu extends FGPerformer {
 
 		@Override
 		public void onClick() {
-			freezeAll(false);
+			freezeAll(false, true);
 			cStage.restartSection();
-		}
-	}
-
-	private final void freezeAll(boolean freeze) {
-		FGPerformer ps[] = FGStage.getPerformers();
-		if (freeze) {
-			for (FGPerformer p : ps) {
-				if (p != this) {
-					p.freezeMe();
-				}
-			}
-		} else {
-			for (FGPerformer p : ps) {
-				p.unfreezeMe();
-			}
 		}
 	}
 

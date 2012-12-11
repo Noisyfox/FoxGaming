@@ -1,4 +1,4 @@
-package org.foxteam.noisyfox.THEngine;
+package org.foxteam.noisyfox.common.huawei;
 
 import com.imax.vmall.sdk.android.oauthv2.OAuth2;
 import com.imax.vmall.sdk.android.oauthv2.OAuth2Listener;
@@ -27,8 +27,8 @@ public class AuthActivity extends Activity {
 				redirect_url);
 
 		// APP控制WebView的布局和外观
-		setContentView(R.layout.activity_auth);
-		webView = (WebView) findViewById(R.id.webview);
+		setContentView(org.foxteam.noisyfox.THEngine.R.layout.activity_auth);
+		webView = (WebView) findViewById(org.foxteam.noisyfox.THEngine.R.id.webview);
 
 		// OAuth 2.0 鉴权
 		oauth.authorize(webView, new OAuth2Listener() {

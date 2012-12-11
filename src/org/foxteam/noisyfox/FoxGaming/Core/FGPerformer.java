@@ -257,6 +257,21 @@ public class FGPerformer extends FGEventsListener {
 		frozen = false;
 	}
 
+	public final void freezeAll(boolean freeze, boolean notMe) {
+		FGPerformer ps[] = FGStage.getPerformers();
+		if (freeze) {
+			for (FGPerformer p : ps) {
+				if (p != this || !notMe) {
+					p.freezeMe();
+				}
+			}
+		} else {
+			for (FGPerformer p : ps) {
+				p.unfreezeMe();
+			}
+		}
+	}
+
 	/**
 	 * @Title: bindSprite
 	 * @Description: 为这个 performer 绑定一个 sprite，系统会自动更新及绘制
@@ -599,26 +614,6 @@ public class FGPerformer extends FGEventsListener {
 	 * @return: void
 	 */
 	protected final void goAlarm() {
-		// int i = 0;
-		// for (Alarm a : alarms) {
-		// if (a.start) {
-		// if (a.remainSteps > 0) {
-		// a.remainSteps -= 1;
-		// if (a.remainSteps == 0) {
-		// callEvent(FGEventsListener.EVENT_ONALARM, i);
-		// if (a.repeat) {
-		// a.remainSteps = a.setSteps;
-		// } else {
-		// a.start = false;
-		// }
-		// }
-		// } else {
-		// a.start = false;
-		// a.remainSteps = 0;
-		// }
-		// }
-		// i++;
-		// }
 		for (int i = 0; i < ALARM_COUNT_MAX; i++) {
 			Alarm a = alarms[i];
 			if (a.start) {
