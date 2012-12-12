@@ -3,10 +3,7 @@ package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
-import org.foxteam.noisyfox.FoxGaming.Core.FGSimpleBGM;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
-import org.foxteam.noisyfox.FoxGaming.Core.FGViews;
-import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
@@ -19,14 +16,14 @@ import android.view.KeyEvent;
 
 public class GamingMenu extends FGPerformer {
 
-	private FGViews mainView = null;
+	// private FGViews mainView = null;
 	private FGFrame ssf = new FGFrame();
 	private FGSprite sss = new FGSprite();
 	private FGSpriteConvertor sssc = new FGSpriteConvertor();
 	private SectionStage cStage = null;
-	private FGBackground cBKG = null;
-	private int stage_width = 0;
-	private int stage_height = 0;
+	// private FGBackground cBKG = null;
+	// private int stage_width = 0;
+	// private int stage_height = 0;
 	private MenuState menuState = MenuState.hided;
 	private MenuType menuType;
 	private FGButton button_common_returnMainMenu = null;
@@ -95,9 +92,9 @@ public class GamingMenu extends FGPerformer {
 
 		menuType = type;
 		cStage = (SectionStage) FGStage.getCurrentStage();
-		mainView = cStage.getView(0);
-		stage_width = cStage.getWidth();
-		stage_height = cStage.getHeight();
+		// mainView = cStage.getView(0);
+		// stage_width = cStage.getWidth();
+		// stage_height = cStage.getHeight();
 		Bitmap currentScreen = FGGamingThread.getScreenshots();
 		ssf.loadFromBitmap(currentScreen);
 		sss.bindFrames(ssf);
@@ -151,15 +148,16 @@ public class GamingMenu extends FGPerformer {
 		switch (menuState) {
 		case showing: {
 			// 暂停所有
-			cBKG = cStage.getBackground();
-			cStage.setBackground(null);// 暂停背景
-			cStage.removeView(0);
-			cStage.setSize(FGGamingThread.getScreenHeight(),
-					FGGamingThread.getScreenWidth());
-
-			freezeAll(true, true);// 冻结其它所有 Performer
-
-			FGSimpleBGM.pause();// 暂停声音
+			cStage.pauseSection(this);
+			// cBKG = cStage.getBackground();
+			// cStage.setBackground(null);// 暂停背景
+			// cStage.removeView(0);
+			// cStage.setSize(FGGamingThread.getScreenHeight(),
+			// FGGamingThread.getScreenWidth());
+			//
+			// freezeAll(true, true);// 冻结其它所有 Performer
+			//
+			// FGSimpleBGM.pause();// 暂停声音
 
 			// 添加按钮
 			buttonGroup_current.performAll(FGStage.getCurrentStage()
@@ -194,13 +192,14 @@ public class GamingMenu extends FGPerformer {
 				sssc.setAlpha(sssc.getAlpha() + 0.1);
 			} else {
 				// 恢复所有
-				cStage.setBackground(cBKG);
-				cStage.addView(mainView);// 恢复 Stage
-				cStage.setSize(stage_height, stage_width);
-
-				freezeAll(false, true);// 恢复所有 Performer
-
-				FGSimpleBGM.play();// 恢复声音
+				cStage.resumeSection(this);
+				// cStage.setBackground(cBKG);
+				// cStage.addView(mainView);// 恢复 Stage
+				// cStage.setSize(stage_height, stage_width);
+				//
+				// freezeAll(false, true);// 恢复所有 Performer
+				//
+				// FGSimpleBGM.play();// 恢复声音
 
 				buttonGroup_current.dismissAll();// 清除按钮
 

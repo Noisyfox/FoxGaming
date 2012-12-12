@@ -17,8 +17,13 @@
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
+import org.foxteam.noisyfox.FoxGaming.Core.FGSimpleBGM;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.Core.FGViews;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 /**
@@ -38,6 +43,13 @@ public abstract class SectionStage extends FGStage {
 	private static EnemyController enemyController = null;
 	private static float scrollSpeedV = 0;
 	private static float scrollSpeedH = 0;
+
+	private boolean paused = false;
+	private FGBackground pauseCache_Background = null;
+	private int pauseCache_stageWidth = 0;
+	private int pauseCache_stageHeight = 0;
+	private FGViews[] pauseCache_Views;
+	private boolean pauseCache_isBGMPlaying = true;
 
 	private int sectionNumber = -1;// 当前关卡的编号
 
@@ -108,8 +120,66 @@ public abstract class SectionStage extends FGStage {
 		FGStage.restartStage();
 	}
 
+	public final void pauseSection(FGPerformer me) {
+		if (paused)
+			return;
+
+		Bitmap cache = FGGamingThread.getScreenshots();
+		FGBackground bkg = new FGBackground();
+		bkg.loadFromBitmap(cache);
+		pauseCache_Background = getBackground();
+		pauseCache_stageWidth = width;
+		pauseCache_stageHeight = height;
+		pauseCache_Views = new FGViews[activatedViews.size()];
+		pauseCache_Views = activatedViews.toArray(pauseCache_Views);
+		// pauseCache_isBGMPlaying = FGSimpleBGM.;
+
+		activatedViews.clear();
+		setBackground(bkg);
+		setSize(FGGamingThread.getScreenHeight(),
+				FGGamingThread.getScreenWidth());
+		FGSimpleBGM.pause();
+
+		if (me != null) {
+			me.freezeAll(true, true);
+		} else {
+			for (FGPerformer p : performers) {
+				p.freezeMe();
+			}
+		}
+
+		paused = true;
+
+	}
+
+	public final void resumeSection(FGPerformer me) {
+		if (!paused)
+			return;
+
+		for (FGViews v : pauseCache_Views) {
+			addView(v);
+		}
+		setBackground(pauseCache_Background);
+
+		setSize(pauseCache_stageHeight, pauseCache_stageWidth);
+
+		if (pauseCache_isBGMPlaying)
+			FGSimpleBGM.play();
+
+		if (me != null) {
+			me.freezeAll(false, true);
+		} else {
+			for (FGPerformer p : performers) {
+				p.unfreezeMe();
+			}
+		}
+
+		paused = false;
+	}
+
 	@Override
 	protected final void onCreate() {
+		paused = false;
 
 		setStageSpeed(30);
 		gameController = new GamingController();

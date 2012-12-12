@@ -243,6 +243,8 @@ public final class HighScore extends FGPerformer {
 	}
 
 	public static void addHighScore(String name, long score) {
+		loadHighScoreData();
+
 		for (int i = 9; i >= 0; i--) {
 			if (score > highScoreData_score[i]) {
 				if (i != 9) {
