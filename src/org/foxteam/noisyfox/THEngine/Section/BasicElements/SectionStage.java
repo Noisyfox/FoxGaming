@@ -16,6 +16,9 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGSimpleBGM;
@@ -43,6 +46,7 @@ public abstract class SectionStage extends FGStage {
 	private static EnemyController enemyController = null;
 	private static float scrollSpeedV = 0;
 	private static float scrollSpeedH = 0;
+	private static List<SectionStage> allSections = new ArrayList<SectionStage>();
 
 	private boolean paused = false;
 	private FGBackground pauseCache_Background = null;
@@ -57,6 +61,7 @@ public abstract class SectionStage extends FGStage {
 		super();
 		sectionCount++;
 		sectionNumber = sectionCount;
+		allSections.add(this);
 	}
 
 	// 初始化游戏时数据
@@ -106,6 +111,10 @@ public abstract class SectionStage extends FGStage {
 		enemyController.pause();
 		if (background != null)
 			background.setSpeed(0, 0);
+	}
+
+	public static final void startSection() {
+		FGStage.switchToStage(allSections.get(0).stageIndex);
 	}
 
 	public final void nextSection() {

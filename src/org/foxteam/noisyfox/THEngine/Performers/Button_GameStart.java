@@ -18,7 +18,6 @@ package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameActivity;
-import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 
@@ -41,7 +40,7 @@ public class Button_GameStart extends FGButton {
 	@Override
 	public void onClick() {
 		SectionStage.initSectionStage();
-		FGStage.nextStage();
+		SectionStage.startSection();
 	}
 
 	@Override
