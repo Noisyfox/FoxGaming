@@ -25,6 +25,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
 import org.foxteam.noisyfox.THEngine.Performers.Button_HighScore;
+import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
 /**
  * @ClassName: _00_MainMenu
@@ -70,6 +71,8 @@ public class _00_MainMenu extends FGStage {
 			bHighScore.setPosition(getWidth() / 4 * 3,
 					getHeight() - bHighScore.getHeight() / 2 - 5);
 		}
+
+		new StageSwitchEffect();
 
 	}
 

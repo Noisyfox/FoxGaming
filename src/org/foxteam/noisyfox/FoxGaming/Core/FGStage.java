@@ -108,8 +108,8 @@ public abstract class FGStage {
 	 * 静态函数 跳转到指定舞台<br>
 	 */
 	public static final void switchToStage(int stage) {
-		if (index2Stage(stage) == currentStage)
-			return;
+		// if (index2Stage(stage) == currentStage)
+		// return;
 		targetStage = index2Stage(stage);
 		switchStage = true;
 	}

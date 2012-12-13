@@ -9,6 +9,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.ButtonGroup;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
+import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -232,7 +233,8 @@ public class GamingMenu extends FGPerformer {
 		@Override
 		public void onClick() {
 			freezeAll(false, true);
-			FGStage.switchToStage(0);
+			StageSwitchEffect.switchToStage(0);
+			//FGStage.switchToStage(0);
 		}
 	}
 

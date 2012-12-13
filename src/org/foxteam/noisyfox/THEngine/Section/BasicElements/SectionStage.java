@@ -25,6 +25,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGSimpleBGM;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.Core.FGViews;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
+import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -114,7 +115,8 @@ public abstract class SectionStage extends FGStage {
 	}
 
 	public static final void startSection() {
-		FGStage.switchToStage(allSections.get(0).stageIndex);
+		StageSwitchEffect.switchToStage(allSections.get(0).stageIndex);
+		// FGStage.switchToStage(allSections.get(0).stageIndex);
 	}
 
 	public final void nextSection() {
@@ -122,11 +124,12 @@ public abstract class SectionStage extends FGStage {
 		player.saveState(savedState);
 		savedState.putLong("THEA_score", FGGamingThread.score);
 		onSectionEnd(savedState);
-		FGStage.restartStage();
+		StageSwitchEffect.switchToStage(stageIndex);
 	}
 
 	public final void restartSection() {
-		FGStage.restartStage();
+		StageSwitchEffect.switchToStage(stageIndex);
+		//FGStage.restartStage();
 	}
 
 	public final void pauseSection(FGPerformer me) {
@@ -206,6 +209,8 @@ public abstract class SectionStage extends FGStage {
 		enemyController.perform(this.getStageIndex());
 
 		menu.perform(this.getStageIndex());
+
+		new StageSwitchEffect();
 	}
 
 	protected abstract void prepareStage(Bundle savedState);
