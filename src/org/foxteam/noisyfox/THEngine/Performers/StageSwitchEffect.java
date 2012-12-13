@@ -3,7 +3,7 @@ package org.foxteam.noisyfox.THEngine.Performers;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 
-public class StageSwitchEffect extends FGPerformer {
+public final class StageSwitchEffect extends FGPerformer {
 
 	boolean isOnStageStart = false;
 	boolean exitStage = false;

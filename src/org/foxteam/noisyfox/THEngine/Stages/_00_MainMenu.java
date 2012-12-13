@@ -40,7 +40,7 @@ public class _00_MainMenu extends FGStage {
 
 	@Override
 	protected void onCreate() {
-		this.setSize(FGGamingThread.getScreenHeight(),
+		setSize(FGGamingThread.getScreenHeight(),
 				FGGamingThread.getScreenWidth());
 
 		FGBackground bkg = new FGBackground();
@@ -54,7 +54,7 @@ public class _00_MainMenu extends FGStage {
 		setBackground(bkg);
 
 		FGGamingThread.score = 0;
-		this.setStageSpeed(30);
+		setStageSpeed(30);
 
 		if (_1stin) {
 			_1stin = false;

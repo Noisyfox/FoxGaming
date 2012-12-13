@@ -4,7 +4,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.THEngine.Performers.HighScore;
 import org.foxteam.noisyfox.THEngine.Performers.WeiboShareProcessor;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
-import org.foxteam.noisyfox.THEngine.Section.Stages._01_Section_01_TestStage;
+import org.foxteam.noisyfox.THEngine.Section.Stages._02_Section_01_TestStage;
 import org.foxteam.noisyfox.THEngine.Stages.*;
 import org.foxteam.noisyfox.common.huawei.SDKUtil;
 
@@ -56,8 +56,9 @@ public class THEngineMainActivity extends FGGameActivity {
 		GlobalResources.loadResources();
 		SectionStage.initSectionStage();
 
-		new _00_MainMenu();
-		new _01_Section_01_TestStage();
+		SectionStage.setSpecialStage(new _00_MainMenu(), new _01_GameClear());
+
+		new _02_Section_01_TestStage();
 	}
 
 	@Override

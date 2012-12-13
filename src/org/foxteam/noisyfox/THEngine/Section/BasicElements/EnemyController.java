@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
+import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.THEngine.Section.Enemys.Enemy;
 
 import android.util.SparseArray;
@@ -36,9 +37,13 @@ public final class EnemyController extends FGPerformer {
 	private int totalStep = 0;
 	SparseArray<List<EnemyDef>> enemys = new SparseArray<List<EnemyDef>>();
 	private boolean paused = false;
+	private List<Enemy> boss = new ArrayList<Enemy>();
+	private int bossCount = 0;
+	private int maxStep = 0;
+	private boolean cleared = false;
 
-	public void addEnemy(int step, Class<?> enemyType, int x, int y,
-			int... extraConfig) {
+	public void addEnemy(int step, boolean isBoss, Class<?> enemyType, int x,
+			int y, int... extraConfig) {
 		int key = step;
 		List<EnemyDef> enemyList = null;
 		if (enemys.get(key) != null) {
@@ -52,7 +57,11 @@ public final class EnemyController extends FGPerformer {
 		ed.x = x;
 		ed.y = y;
 		ed.extraConfig = extraConfig;
+		ed.isBoss = isBoss;
 		enemyList.add(ed);
+
+		if (step > maxStep)
+			maxStep = step;
 	}
 
 	@Override
@@ -60,20 +69,44 @@ public final class EnemyController extends FGPerformer {
 		if (paused)
 			return;
 
-		int key = ++totalStep;
-		if (enemys.get(key) != null) {
-			List<EnemyDef> enemyList = enemys.get(key);
-			for (EnemyDef ed : enemyList) {
-				try {
-					Enemy enemy = (Enemy) ed.enemyClass.newInstance();
-					enemy.createEnemy(ed.x, ed.y, ed.extraConfig);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+		if (bossCount == 0) {
+			int key = ++totalStep;
+			if (key > maxStep) {
+				if (!cleared) {
+					((SectionStage) FGStage.getCurrentStage()).stageClear();
+					cleared = true;
+				}
+			} else {
+				if (enemys.get(key) != null) {
+					List<EnemyDef> enemyList = enemys.get(key);
+					for (EnemyDef ed : enemyList) {
+						try {
+							Enemy enemy = (Enemy) ed.enemyClass.newInstance();
+							enemy.createEnemy(ed.x, ed.y, ed.extraConfig);
+							if (ed.isBoss) {
+								boss.add(enemy);
+								bossCount++;
+							}
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		} else {
+			for (int i = 0; i < bossCount;) {
+				Enemy b = boss.get(i);
+				if (!b.isPerforming()) {
+					boss.remove(i);
+					bossCount--;
+				} else {
+					i++;
 				}
 			}
 		}
+
 	}
 
 	public void jumpTo(int step) {
@@ -96,6 +129,7 @@ public final class EnemyController extends FGPerformer {
 		private int x = 0;
 		private int y = 0;
 		private int[] extraConfig = null;
+		private boolean isBoss = false;
 	}
 
 }

@@ -66,6 +66,7 @@ public class GlobalResources {
 	public static FGFrame FRAMES_FLASHTEXT_GAME_OVER = null;
 	public static FGFrame FRAMES_FLASHTEXT_STAGE_CLEAR = null;
 	public static FGFrame FRAMES_PARTICLE_MISSILESMOKE = null;
+	public static FGFrame FRAMES_PARTICLE_FIREWORKS_PATH = null;
 	public static FGFrame FRAMES_PLAYER = null;
 	public static FGFrame FRAMES_POWERUP_MISSILE = null;
 	public static FGFrame FRAMES_POWERUP_SCORE = null;
@@ -75,6 +76,7 @@ public class GlobalResources {
 
 	// 通用的粒子类型
 	public static FGParticleType PARTICLE_TYPE_MILLSILSMOKE = null;
+	public static FGParticleType PARTICLE_TYPE_FIREWORKS_PATH = null;
 
 	// 字体
 	public static Typeface FONT_VINERITC = null;
@@ -211,6 +213,11 @@ public class GlobalResources {
 		FRAMES_PARTICLE_MISSILESMOKE.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.particle_missilesmoke,
 				1, 1, false);
+		FRAMES_PARTICLE_FIREWORKS_PATH = new FGFrame();
+		FRAMES_PARTICLE_FIREWORKS_PATH
+				.loadFromBitmap(
+						org.foxteam.noisyfox.THEngine.R.drawable.particle_fireworks_path,
+						1, 1, false);
 		FRAMES_PLAYER = new FGFrame();
 		FRAMES_PLAYER.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.player, 1, 1, false);
@@ -247,6 +254,18 @@ public class GlobalResources {
 		PARTICLE_TYPE_MILLSILSMOKE.setSize(0.8, 1.3, -0.03, 0.01);
 		PARTICLE_TYPE_MILLSILSMOKE.setOrientation(0, 359.9f, 0, 1, false);
 		PARTICLE_TYPE_MILLSILSMOKE.setAlpha(1.0, 0.0);
+
+		PARTICLE_TYPE_FIREWORKS_PATH = new FGParticleType();
+		_particleSprite = new FGSprite();
+		_particleSprite
+				.bindFrames(GlobalResources.FRAMES_PARTICLE_FIREWORKS_PATH);
+		_particleSprite.setOffset(1, 1);
+		PARTICLE_TYPE_FIREWORKS_PATH.setSprite(_particleSprite);
+		PARTICLE_TYPE_FIREWORKS_PATH.setLifeTime(10, 15);
+		PARTICLE_TYPE_FIREWORKS_PATH.setSize(3, 4, -0.3, 0.01);
+		PARTICLE_TYPE_FIREWORKS_PATH.setAlpha(1.0, 0.0);
+		PARTICLE_TYPE_FIREWORKS_PATH.setGravity(1, 270);
+		PARTICLE_TYPE_FIREWORKS_PATH.setColorHSV(31, 1, 0.64, 60, 1, 1);
 
 		// 加载字体
 		FONT_VINERITC = Typeface.createFromAsset(FGGameCore.getMainContext()

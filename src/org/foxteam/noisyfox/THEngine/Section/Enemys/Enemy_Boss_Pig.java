@@ -24,7 +24,6 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
-import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_2;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
 
@@ -152,8 +151,6 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 		this.bindCollisionMask(null);
 
 		FGGamingThread.score += 1000;
-
-		((SectionStage) FGStage.getCurrentStage()).stageClear();
 
 	}
 

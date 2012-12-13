@@ -48,6 +48,8 @@ public abstract class SectionStage extends FGStage {
 	private static float scrollSpeedV = 0;
 	private static float scrollSpeedH = 0;
 	private static List<SectionStage> allSections = new ArrayList<SectionStage>();
+	private static FGStage mainMenuStage = null;
+	private static FGStage gameClearStage = null;
 
 	private boolean paused = false;
 	private FGBackground pauseCache_Background = null;
@@ -71,6 +73,11 @@ public abstract class SectionStage extends FGStage {
 		savedState.putInt("THEA_player_remainLife", 3);
 		savedState.putInt("THEA_player_missileType", 0);// 导弹类型，0无1跟踪2非跟踪
 		savedState.putInt("THEA_player_missileLevel", 1);
+	}
+
+	public final static void setSpecialStage(FGStage mainMenu, FGStage gameClear) {
+		mainMenuStage = mainMenu;
+		gameClearStage = gameClear;
 	}
 
 	public final static void setStageScrollSpeed(float hSpeed, float vSpeed) {
@@ -129,7 +136,7 @@ public abstract class SectionStage extends FGStage {
 
 	public final void restartSection() {
 		StageSwitchEffect.switchToStage(stageIndex);
-		//FGStage.restartStage();
+		// FGStage.restartStage();
 	}
 
 	public final void pauseSection(FGPerformer me) {
@@ -187,6 +194,26 @@ public abstract class SectionStage extends FGStage {
 		}
 
 		paused = false;
+	}
+
+	public static final boolean hasNextSection() {
+		if (SectionStage.class.isInstance(FGStage.getCurrentStage())) {
+			SectionStage stage = (SectionStage) FGStage.getCurrentStage();
+			return stage.sectionNumber < SectionStage.sectionCount;
+		}
+		return false;
+	}
+
+	public static final void returnMainMenu() {
+		if (mainMenuStage != null) {
+			StageSwitchEffect.switchToStage(mainMenuStage.getStageIndex());
+		}
+	}
+
+	public static final void gameClear() {
+		if (gameClearStage != null) {
+			StageSwitchEffect.switchToStage(gameClearStage.getStageIndex());
+		}
 	}
 
 	@Override

@@ -78,7 +78,9 @@ public final class GamingController extends FGPerformer {
 				SectionStage.getMenu().show(MenuType.pause);
 			} else if (aniFin) {
 				if (stageClear) {
-					SectionStage.getMenu().show(MenuType.stageclear);
+					if (SectionStage.hasNextSection()) {
+						SectionStage.getMenu().show(MenuType.stageclear);
+					}
 				} else {
 					SectionStage.getMenu().show(MenuType.gameover);
 				}
@@ -90,7 +92,9 @@ public final class GamingController extends FGPerformer {
 	protected void onTouchRelease(int whichfinger) {
 		if (!normalPlaying && aniFin) {
 			if (stageClear) {
-				SectionStage.getMenu().show(MenuType.stageclear);
+				if (SectionStage.hasNextSection()) {
+					SectionStage.getMenu().show(MenuType.stageclear);
+				}
 			} else {
 				SectionStage.getMenu().show(MenuType.gameover);
 			}
@@ -165,7 +169,11 @@ public final class GamingController extends FGPerformer {
 			startAlarm(5);
 		} else if (whichAlarm == 5) {// 自动弹出菜单
 			if (stageClear) {
-				SectionStage.getMenu().show(MenuType.stageclear);
+				if (SectionStage.hasNextSection()) {
+					SectionStage.getMenu().show(MenuType.stageclear);
+				} else {
+					SectionStage.gameClear();
+				}
 			} else {
 				HighScore.requireHighScoreRecordedHandled();
 				SectionStage.getMenu().show(MenuType.gameover);

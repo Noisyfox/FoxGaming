@@ -181,8 +181,8 @@ public final class FGParticleType {
 
 	}
 
-	public void setColorHSV(int minH, double minS, double minV, int maxH, double maxS,
-			double maxV) {
+	public void setColorHSV(int minH, double minS, double minV, int maxH,
+			double maxS, double maxV) {
 
 		if (minH < 0 || minH > maxH || maxH > 359 || minS < 0 || minS > maxS
 				|| maxS > 1 || minV < 0 || minV > maxV || maxV > 1) {
