@@ -276,7 +276,7 @@ public final class HighScore extends FGPerformer {
 					public void onClick(DialogInterface arg0, int arg1) {
 						addHighScore(e.getText().toString(), score);
 					}
-				}).setNegativeButton("下次再说", null).show();
+				}).setNegativeButton("下次再说", null).setCancelable(false).show();
 	}
 
 	public static void requireHighScoreRecordedHandled() {
