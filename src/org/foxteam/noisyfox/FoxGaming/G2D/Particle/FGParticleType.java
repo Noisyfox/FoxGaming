@@ -50,10 +50,10 @@ public final class FGParticleType {
 	protected int _color_RGB_B_max = -1;
 	protected int _color_HSV_H_min = -1;
 	protected int _color_HSV_H_max = -1;
-	protected int _color_HSV_S_min = -1;
-	protected int _color_HSV_S_max = -1;
-	protected int _color_HSV_V_min = -1;
-	protected int _color_HSV_V_max = -1;
+	protected double _color_HSV_S_min = -1;
+	protected double _color_HSV_S_max = -1;
+	protected double _color_HSV_V_min = -1;
+	protected double _color_HSV_V_max = -1;
 
 	protected enum AlphaType {
 		alpha1, alpha2, alpha3;
@@ -181,11 +181,11 @@ public final class FGParticleType {
 
 	}
 
-	public void setColorHSV(int minH, int minS, int minV, int maxH, int maxS,
-			int maxV) {
+	public void setColorHSV(int minH, double minS, double minV, int maxH, double maxS,
+			double maxV) {
 
-		if (minH < 0 || minH > maxH || maxH > 255 || minS < 0 || minS > maxS
-				|| maxS > 255 || minV < 0 || minV > maxV || maxV > 255) {
+		if (minH < 0 || minH > maxH || maxH > 359 || minS < 0 || minS > maxS
+				|| maxS > 1 || minV < 0 || minV > maxV || maxV > 1) {
 			throw new IllegalArgumentException();
 		}
 

@@ -552,11 +552,11 @@ public final class FGParticleSystem {
 			} else if (type._color_type == ColorType.HSV) {
 				p.color = Color.HSVToColor(new float[] {
 						(float) (FGMathsHelper.random(type._color_HSV_H_min,
-								type._color_HSV_H_max)) / 255f * 360f,
-						(float) (FGMathsHelper.random(type._color_HSV_S_min,
-								type._color_HSV_S_max)) / 255f,
+								type._color_HSV_H_max)),
+						(float) FGMathsHelper.random(type._color_HSV_S_min,
+								type._color_HSV_S_max),
 						(float) (FGMathsHelper.random(type._color_HSV_V_min,
-								type._color_HSV_V_max)) / 255f });
+								type._color_HSV_V_max)) });
 			}
 
 			p.alpha = type._alpha_1;
