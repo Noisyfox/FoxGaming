@@ -2,6 +2,7 @@ package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
+import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
@@ -46,10 +47,10 @@ public final class _01_GameClear extends FGStage {
 
 		@Override
 		protected void onCreate() {
-			setAlarm(0, (int) (stageSpeed * 1f), false);
+			setAlarm(0, (int) (stageSpeed * 1.5f), false);
 			startAlarm(0);
 
-			setAlarm(1, (int) (stageSpeed * 1f), true);
+			setAlarm(1, (int) (stageSpeed * 1.5f), true);
 			startAlarm(1);
 
 			managedParticleSystem_requireManaged(fireWorkParticleSystem,
@@ -102,7 +103,6 @@ public final class _01_GameClear extends FGStage {
 			} else if (whichAlarm == 1) {
 				fireWork f = new fireWork();
 				f.perform(stageIndex);
-				f.setPosition(width / 2, height - 1);
 			}
 		}
 
@@ -117,13 +117,20 @@ public final class _01_GameClear extends FGStage {
 
 		FGParticleEmitter emitter_launch = new FGParticleEmitter();// 发射轨迹
 		FGParticleEmitter emitter_boom = new FGParticleEmitter();// 最后爆炸效果
+		float boomSpeed = 0;
 
 		@Override
 		protected void onCreate() {
 			emitter_launch.stream(GlobalResources.PARTICLE_TYPE_FIREWORKS_PATH,
 					1);
+			emitter_boom.burst(GlobalResources.PARTICLE_TYPE_FIREWORKS_BOOM,
+					100);
+
 			fireWorkParticleSystem.bindParticleEmitter(emitter_launch);
-			this.motion_setSpeed(0, -10);
+			setPosition(width / 2, height - 1);
+			this.motion_set(90, 35);
+
+			boomSpeed = (float) FGMathsHelper.random(-10.0, 10.0);
 		}
 
 		@Override
@@ -142,10 +149,20 @@ public final class _01_GameClear extends FGStage {
 
 		@Override
 		protected void onStep() {
-			emitter_launch.setRegion((int) getX() - 1, (int) getY() - 1,
-					(int) getX() + 1, (int) getY() + 1,
-					FGParticleRegionShape.ellipse,
-					FGParticleRegionDistribution.linear);
+			if (this.vspeed > boomSpeed) {
+				fireWorkParticleSystem.bindParticleEmitter(emitter_boom);
+				emitter_boom.setRegion((int) getX() - 1, (int) getY() - 1,
+						(int) getX() + 1, (int) getY() + 1,
+						FGParticleRegionShape.ellipse,
+						FGParticleRegionDistribution.linear);
+				this.dismiss();
+			} else {
+				emitter_launch.setRegion((int) getX() - 1, (int) getY() - 1,
+						(int) getX() + 1, (int) getY() + 1,
+						FGParticleRegionShape.ellipse,
+						FGParticleRegionDistribution.linear);
+				this.motion_add(270, 0.98f);
+			}
 		}
 
 	}

@@ -176,7 +176,7 @@ public final class FGParticleSystem {
 			float y = p.y;
 			double speedx = FGMathsHelper.lengthdir_x((float) p.speed,
 					(float) p.direction);
-			double speedy = FGMathsHelper.lengthdir_y((float) p.speed,
+			double speedy = -FGMathsHelper.lengthdir_y((float) p.speed,
 					(float) p.direction);
 
 			// 计算吸引器
@@ -203,7 +203,7 @@ public final class FGParticleSystem {
 				float dir = FGMathsHelper.point_direction(p.x, p.y,
 						fa._position_x, fa._position_y);
 				float fx = FGMathsHelper.lengthdir_x((float) force, dir);
-				float fy = FGMathsHelper.lengthdir_y((float) force, dir);
+				float fy = -FGMathsHelper.lengthdir_y((float) force, dir);
 
 				// 应用力
 				if (fa._force_additive) {
@@ -215,9 +215,18 @@ public final class FGParticleSystem {
 				}
 			}
 
+			// 计算重力
+			speedx += FGMathsHelper.lengthdir_x(
+					(float) p.motionBaseType._gravity_amount,
+					(float) p.motionBaseType._gravity_direction);
+			speedy += -FGMathsHelper.lengthdir_y(
+					(float) p.motionBaseType._gravity_amount,
+					(float) p.motionBaseType._gravity_direction);
+
 			// 计算速度
 			double direction = Math.toDegrees(Math.atan2(-speedy, speedx));
-			if (speedx * speedx + speedy * speedy
+
+			if (Math.sqrt(speedx * speedx + speedy * speedy)
 					+ p.motionBaseType._speed_incrementPerStep <= 0) {
 				speedx = 0;
 				speedy = 0;
@@ -225,20 +234,20 @@ public final class FGParticleSystem {
 				speedx += FGMathsHelper.lengthdir_x(
 						(float) p.motionBaseType._speed_incrementPerStep,
 						(float) direction);
-				speedy += FGMathsHelper.lengthdir_y(
+				speedy += -FGMathsHelper.lengthdir_y(
 						(float) p.motionBaseType._speed_incrementPerStep,
 						(float) direction);
 				direction = Math.toDegrees(Math.atan2(-speedy, speedx));
 			}
 
 			// 计算角度
-			direction = FGMathsHelper
-					.degreeIn360((float) (direction + p.motionBaseType._direction_incrementPerStep));
-			float speed = (float) Math.abs(speedx * speedx + speedy * speedy);
+			direction = direction
+					+ p.motionBaseType._direction_incrementPerStep;
+			float speed = (float) Math.sqrt(speedx * speedx + speedy * speedy);
 
 			if (speedx != 0 || speedy != 0) {
 				speedx = FGMathsHelper.lengthdir_x(speed, (float) direction);
-				speedy = FGMathsHelper.lengthdir_y(speed, (float) direction);
+				speedy = -FGMathsHelper.lengthdir_y(speed, (float) direction);
 			}
 
 			// 计算位置
@@ -256,8 +265,8 @@ public final class FGParticleSystem {
 			p.speed = speed;
 			// 计算图像旋转角度
 			if (p.shapeBaseType._orientation_relative) {
-				p.angle += direction
-						- p.direction
+				p.angle = p.baseAngle
+						+ direction
 						+ FGMathsHelper.random(
 								-p.shapeBaseType._orientation_wiggle,
 								p.shapeBaseType._orientation_wiggle);
@@ -267,7 +276,8 @@ public final class FGParticleSystem {
 								-p.shapeBaseType._orientation_wiggle,
 								p.shapeBaseType._orientation_wiggle);
 			}
-			p.direction = direction;
+			p.angle = FGMathsHelper.degreeIn360((float) p.angle);
+			p.direction = FGMathsHelper.degreeIn360((float) direction);
 
 			// 发射每步都会生成的粒子
 			if (p.type._particleOnStep_enabled) {
@@ -535,9 +545,13 @@ public final class FGParticleSystem {
 			p.size = FGMathsHelper.random(p.shapeBaseType._size_min,
 					p.shapeBaseType._size_max);
 
-			p.angle = FGMathsHelper.random(
+			// p.angle = FGMathsHelper.random(
+			// p.shapeBaseType._orientation_angle_min,
+			// p.shapeBaseType._orientation_angle_max);
+			p.baseAngle = FGMathsHelper.random(
 					p.shapeBaseType._orientation_angle_min,
 					p.shapeBaseType._orientation_angle_max);
+			p.angle = p.baseAngle;
 
 			if ((type._color_type == ColorType.color1 && type._color_color1 != Color.WHITE)
 					|| type._color_type == ColorType.color2
@@ -667,6 +681,7 @@ public final class FGParticleSystem {
 		double frame = 0.0;
 
 		double angle = 0.0;
+		double baseAngle = 0.0;
 
 		double size = 1.0;
 

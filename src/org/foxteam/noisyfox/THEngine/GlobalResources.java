@@ -67,6 +67,7 @@ public class GlobalResources {
 	public static FGFrame FRAMES_FLASHTEXT_STAGE_CLEAR = null;
 	public static FGFrame FRAMES_PARTICLE_MISSILESMOKE = null;
 	public static FGFrame FRAMES_PARTICLE_FIREWORKS_PATH = null;
+	public static FGFrame FRAMES_PARTICLE_FIREWORKS_BOOM = null;
 	public static FGFrame FRAMES_PLAYER = null;
 	public static FGFrame FRAMES_POWERUP_MISSILE = null;
 	public static FGFrame FRAMES_POWERUP_SCORE = null;
@@ -77,6 +78,7 @@ public class GlobalResources {
 	// 通用的粒子类型
 	public static FGParticleType PARTICLE_TYPE_MILLSILSMOKE = null;
 	public static FGParticleType PARTICLE_TYPE_FIREWORKS_PATH = null;
+	public static FGParticleType PARTICLE_TYPE_FIREWORKS_BOOM = null;
 
 	// 字体
 	public static Typeface FONT_VINERITC = null;
@@ -218,6 +220,11 @@ public class GlobalResources {
 				.loadFromBitmap(
 						org.foxteam.noisyfox.THEngine.R.drawable.particle_fireworks_path,
 						1, 1, false);
+		FRAMES_PARTICLE_FIREWORKS_BOOM = new FGFrame();
+		FRAMES_PARTICLE_FIREWORKS_BOOM
+				.loadFromBitmap(
+						org.foxteam.noisyfox.THEngine.R.drawable.particle_fireworks_boom,
+						1, 1, false);
 		FRAMES_PLAYER = new FGFrame();
 		FRAMES_PLAYER.loadFromBitmap(
 				org.foxteam.noisyfox.THEngine.R.drawable.player, 1, 1, false);
@@ -264,8 +271,23 @@ public class GlobalResources {
 		PARTICLE_TYPE_FIREWORKS_PATH.setLifeTime(10, 15);
 		PARTICLE_TYPE_FIREWORKS_PATH.setSize(3, 4, -0.3, 0.01);
 		PARTICLE_TYPE_FIREWORKS_PATH.setAlpha(1.0, 0.0);
-		PARTICLE_TYPE_FIREWORKS_PATH.setGravity(1, 270);
+		PARTICLE_TYPE_FIREWORKS_PATH.setGravity(0.6, 270);
 		PARTICLE_TYPE_FIREWORKS_PATH.setColorHSV(31, 1, 0.64, 60, 1, 1);
+
+		PARTICLE_TYPE_FIREWORKS_BOOM = new FGParticleType();
+		_particleSprite = new FGSprite();
+		_particleSprite
+				.bindFrames(GlobalResources.FRAMES_PARTICLE_FIREWORKS_BOOM);
+		_particleSprite.setOffset(5, 0);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setSprite(_particleSprite);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setLifeTime(25, 35);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setSize(1, 2, 0, 0.01);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setAlpha(1.0, 0.0);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setGravity(0.6, 270);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setColorHSV(31, 1, 0.64, 60, 1, 1);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setDirection(0, 359.9, 0, 0);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setOrientation(0, 0, 0, 0, true);
+		PARTICLE_TYPE_FIREWORKS_BOOM.setSpeed(8, 13, 0, 0);
 
 		// 加载字体
 		FONT_VINERITC = Typeface.createFromAsset(FGGameCore.getMainContext()
