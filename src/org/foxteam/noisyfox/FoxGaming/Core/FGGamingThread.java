@@ -494,7 +494,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		stepCount++;
 		allStepCount++;
 		long frameFinishTime = System.currentTimeMillis();
-		float speed = FGStage.getSpeed();
+		float speed = FGStage.speed;
 		long sleepTime = (long) (1.0f / speed * 1000.0f)
 				- (frameFinishTime - frameStartTime);
 		try {
@@ -503,7 +503,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 					Thread.sleep(sleepTime - lessTime);
 					lessTime = 0;
 				} else {
-					lessTime -= sleepTime;
+					Thread.sleep(sleepTime / 2);
+					lessTime -= sleepTime / 2;
 				}
 			} else {
 				if (lessTime - sleepTime > MAXLESSTIME) {

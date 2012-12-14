@@ -47,10 +47,10 @@ public final class _01_GameClear extends FGStage {
 
 		@Override
 		protected void onCreate() {
-			setAlarm(0, (int) (stageSpeed * 1.5f), false);
+			setAlarm(0, (int) (stageSpeed * 2f), false);
 			startAlarm(0);
 
-			setAlarm(1, (int) (stageSpeed * 1.5f), true);
+			setAlarm(1, (int) (stageSpeed * 2f), true);
 			startAlarm(1);
 
 			managedParticleSystem_requireManaged(fireWorkParticleSystem,

@@ -1,7 +1,6 @@
 package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +26,7 @@ public final class FGParticleSystem {
 	private int _position_x = 0;
 	private int _position_y = 0;
 
-	private List<Particles> particlePool = new LinkedList<Particles>();
+	private Particles[] particlePool;
 	private List<Emitters> particleEmitters = new ArrayList<Emitters>();
 	private List<FGParticleAttractor> particleAttractors = new ArrayList<FGParticleAttractor>();
 	private List<FGParticleDestroyer> particleDestroyers = new ArrayList<FGParticleDestroyer>();
@@ -35,8 +34,11 @@ public final class FGParticleSystem {
 	private List<FGParticleChanger> particleChangers = new ArrayList<FGParticleChanger>();
 	private static Random random = new Random();
 
-	public FGParticleSystem() {
+	private int maxParticleNumber = 200;
+	private int aliveParticlePoint = -1;
 
+	public FGParticleSystem() {
+		setMaxParticleNumber(200);
 	}
 
 	public void setPosition(int x, int y) {
@@ -46,15 +48,36 @@ public final class FGParticleSystem {
 
 	}
 
+	private final void removeParticle(int index) {
+		if (index > aliveParticlePoint) {
+			throw new IllegalArgumentException();
+		}
+
+		Particles p = particlePool[index];
+		for (int i = index; i < aliveParticlePoint; i++) {
+			particlePool[i] = particlePool[i + 1];
+		}
+		particlePool[aliveParticlePoint] = p;
+		aliveParticlePoint--;
+	}
+
+	private final Particles addParticle() {
+		if (aliveParticlePoint < particlePool.length - 1) {
+			aliveParticlePoint++;
+			return particlePool[aliveParticlePoint];
+		}
+		return null;
+	}
+
 	public void update() {
 
 		// 先清除所有已经死亡的particle
-		int _poolSize = particlePool.size();// 统计所有上一轮剩余的粒子数量
+		int _poolSize = aliveParticlePoint + 1;// 统计所有上一轮剩余的粒子数量
 		for (int i = 0; i < _poolSize;) {
-			Particles p = particlePool.get(i);
+			Particles p = particlePool[i];
 			if (p.stayTime > p.lifeTime) {
 				_poolSize--;
-				particlePool.remove(i);
+				removeParticle(i);
 				if (p.type._particleOnDeath_enabled) {
 					createParticle(p.type._particleOnDeath_type, p.x, p.y,
 							p.type._particleOnDeath_number);
@@ -66,7 +89,7 @@ public final class FGParticleSystem {
 
 		// 处理所有现存粒子，仅处理该step之前生成的粒子
 		for (int i = 0; i < _poolSize;) {
-			Particles p = particlePool.get(i);
+			Particles p = particlePool[i];
 			p.stayTime++;
 			// 判断是否应被破坏器破坏
 			boolean needToChange = false;
@@ -75,7 +98,7 @@ public final class FGParticleSystem {
 						pd._region_x_min, pd._region_x_max, pd._region_y_min,
 						pd._region_y_max, pd._region_shape);
 				if (needToChange) {
-					particlePool.remove(i);
+					removeParticle(i);
 					_poolSize--;
 					break;
 				}
@@ -102,7 +125,7 @@ public final class FGParticleSystem {
 						break;
 					}
 					case all: {
-						particlePool.remove(i);
+						removeParticle(i);
 						_poolSize--;
 						createParticle(pc._changeType_final, p.x, p.y, 1);
 						needToChange = true;
@@ -467,9 +490,9 @@ public final class FGParticleSystem {
 
 		if (_drawOrder_old2new) {
 
-			for (int i = 0; i < particlePool.size(); i++) {
+			for (int i = 0; i < aliveParticlePoint + 1; i++) {
 
-				Particles p = particlePool.get(i);
+				Particles p = particlePool[i];
 
 				if (p.shapeBaseType._particleSprite != null) {
 					p.convertor.setAlpha(p.alpha);
@@ -487,9 +510,9 @@ public final class FGParticleSystem {
 
 		} else {
 
-			for (int i = particlePool.size() - 1; i >= 0; i--) {
+			for (int i = aliveParticlePoint; i >= 0; i--) {
 
-				Particles p = particlePool.get(i);
+				Particles p = particlePool[i];
 
 				if (p.shapeBaseType._particleSprite != null) {
 					p.convertor.setAlpha(p.alpha);
@@ -527,13 +550,20 @@ public final class FGParticleSystem {
 			int number) {
 
 		for (int i = 0; i < number; i++) {
-			Particles p = new Particles();
+			Particles p = addParticle();
+			if (p == null) {
+				continue;
+			}
+
 			p.type = type;
 			p.shapeBaseType = type;
 			p.motionBaseType = type;
 			p.x = x;
 			p.y = y;
 			p.color = color;
+			p.counter = -1;
+			p.trigger = 0;
+			p.stayTime = 0;
 
 			// 初始化粒子
 			if (p.shapeBaseType._frameAni_enabled
@@ -545,9 +575,6 @@ public final class FGParticleSystem {
 			p.size = FGMathsHelper.random(p.shapeBaseType._size_min,
 					p.shapeBaseType._size_max);
 
-			// p.angle = FGMathsHelper.random(
-			// p.shapeBaseType._orientation_angle_min,
-			// p.shapeBaseType._orientation_angle_max);
 			p.baseAngle = FGMathsHelper.random(
 					p.shapeBaseType._orientation_angle_min,
 					p.shapeBaseType._orientation_angle_max);
@@ -584,15 +611,13 @@ public final class FGParticleSystem {
 			p.direction = FGMathsHelper.random(p.motionBaseType._direction_min,
 					p.motionBaseType._direction_max);
 
-			particlePool.add(p);
-
 		}
 
 	}
 
 	public void clear() {
 
-		particlePool.clear();
+		aliveParticlePoint = -1;
 		particleEmitters.clear();
 		particleAttractors.clear();
 		particleDestroyers.clear();
@@ -603,7 +628,7 @@ public final class FGParticleSystem {
 
 	public int count() {
 
-		return particlePool.size();
+		return aliveParticlePoint + 1;
 
 	}
 
@@ -661,6 +686,38 @@ public final class FGParticleSystem {
 
 	public void unbindParticleChanger(FGParticleChanger changer) {
 		particleChangers.remove(changer);
+	}
+
+	/**
+	 * 设置该粒子系统最多可容纳的粒子数量
+	 * 
+	 * @param number
+	 */
+	public void setMaxParticleNumber(int number) {
+		if (number <= 0) {
+			throw new IllegalArgumentException();
+		}
+
+		maxParticleNumber = number;
+
+		Particles[] p = particlePool;
+		particlePool = new Particles[maxParticleNumber];
+		if (p != null) {
+			for (int i = 0; i < Math.min(maxParticleNumber, p.length); i++) {
+				particlePool[i] = p[i];
+			}
+			for (int i = Math.min(maxParticleNumber, p.length) - 1; i < maxParticleNumber; i++) {
+				particlePool[i] = new Particles();
+			}
+		} else {
+			for (int i = 0; i < maxParticleNumber; i++) {
+				particlePool[i] = new Particles();
+			}
+		}
+
+		if (aliveParticlePoint > maxParticleNumber - 1) {
+			aliveParticlePoint = maxParticleNumber - 1;
+		}
 	}
 
 	/**
