@@ -53,11 +53,19 @@ public final class EnemyController extends FGPerformer {
 			enemys.put(key, enemyList);
 		}
 		EnemyDef ed = new EnemyDef();
-		ed.enemyClass = enemyType;
 		ed.x = x;
 		ed.y = y;
 		ed.extraConfig = extraConfig;
 		ed.isBoss = isBoss;
+		try {
+			ed.instance = (Enemy) enemyType.newInstance();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		enemyList.add(ed);
 
 		if (step > maxStep)
@@ -80,17 +88,10 @@ public final class EnemyController extends FGPerformer {
 				if (enemys.get(key) != null) {
 					List<EnemyDef> enemyList = enemys.get(key);
 					for (EnemyDef ed : enemyList) {
-						try {
-							Enemy enemy = (Enemy) ed.enemyClass.newInstance();
-							enemy.createEnemy(ed.x, ed.y, ed.extraConfig);
-							if (ed.isBoss) {
-								boss.add(enemy);
-								bossCount++;
-							}
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
+						ed.instance.createEnemy(ed.x, ed.y, ed.extraConfig);
+						if (ed.isBoss) {
+							boss.add(ed.instance);
+							bossCount++;
 						}
 					}
 				}
@@ -125,11 +126,11 @@ public final class EnemyController extends FGPerformer {
 	}
 
 	private class EnemyDef {
-		private Class<?> enemyClass = null;
 		private int x = 0;
 		private int y = 0;
 		private int[] extraConfig = null;
 		private boolean isBoss = false;
+		private Enemy instance = null;
 	}
 
 }
