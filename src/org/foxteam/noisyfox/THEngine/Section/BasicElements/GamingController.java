@@ -73,7 +73,8 @@ public final class GamingController extends FGPerformer {
 
 	@Override
 	protected void onKeyRelease(int keyCode) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
+		if (keyCode == KeyEvent.KEYCODE_BACK
+				|| keyCode == KeyEvent.KEYCODE_MENU) {
 			if (normalPlaying) {
 				SectionStage.getMenu().show(MenuType.pause);
 			} else if (aniFin) {

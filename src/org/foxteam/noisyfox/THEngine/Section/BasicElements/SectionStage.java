@@ -123,7 +123,6 @@ public abstract class SectionStage extends FGStage {
 
 	public static final void startSection() {
 		StageSwitchEffect.switchToStage(allSections.get(0).stageIndex);
-		// FGStage.switchToStage(allSections.get(0).stageIndex);
 	}
 
 	public final void nextSection() {
@@ -136,7 +135,6 @@ public abstract class SectionStage extends FGStage {
 
 	public final void restartSection() {
 		StageSwitchEffect.switchToStage(stageIndex);
-		// FGStage.restartStage();
 	}
 
 	public final void pauseSection(FGPerformer me) {

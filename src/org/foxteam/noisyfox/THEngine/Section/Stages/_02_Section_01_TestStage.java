@@ -79,7 +79,7 @@ public final class _02_Section_01_TestStage extends SectionStage {
 		ec.addEnemy(600, false, Enemy_Doll_Blue.class, 0, 0, 1, 4, 4);
 		ec.addEnemy(930, true, Enemy_Boss_Pig.class, 0, 0);
 
-		//ec.jumpTo(931);
+		// ec.jumpTo(931);
 	}
 
 	@Override

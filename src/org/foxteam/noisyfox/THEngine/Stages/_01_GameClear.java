@@ -14,6 +14,8 @@ import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.HighScore;
 import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
+import android.view.KeyEvent;
+
 public final class _01_GameClear extends FGStage {
 
 	FGButton returnMainMenu = new Button_ReturnMainMenu();
@@ -58,10 +60,6 @@ public final class _01_GameClear extends FGStage {
 		}
 
 		@Override
-		protected void onDraw() {
-		}
-
-		@Override
 		protected void onDestory() {
 			managedParticleSystem_removeParticleSystem(fireWorkParticleSystem);
 		}
@@ -93,6 +91,10 @@ public final class _01_GameClear extends FGStage {
 				returnMainMenu.perform(stageIndex);
 				returnMainMenu.setPosition(getWidth() / 2, getHeight()
 						- returnMainMenu.getHeight() / 2 - 5);
+			} else {
+				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					StageSwitchEffect.switchToStage(0);
+				}
 			}
 		}
 
@@ -104,11 +106,6 @@ public final class _01_GameClear extends FGStage {
 				fireWork f = new fireWork();
 				f.perform(stageIndex);
 			}
-		}
-
-		@Override
-		protected void onStep() {
-
 		}
 
 	}
@@ -136,10 +133,6 @@ public final class _01_GameClear extends FGStage {
 		@Override
 		protected void onDestory() {
 			fireWorkParticleSystem.unbindParticleEmitter(emitter_launch);
-		}
-
-		@Override
-		protected void onAlarm(int whichAlarm) {
 		}
 
 		@Override
