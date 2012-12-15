@@ -243,6 +243,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 				break;
 
 			case STATEFLAG_RESUME:
+				FGEGLHelper.bindSurfaceView(surfaceView);
 				if (FGStage.currentStage != null) {
 					FGStage.currentStage
 							.broadcastEvent(FGEventsListener.EVENT_ONGAMERESUME);
