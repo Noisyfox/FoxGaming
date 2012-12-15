@@ -35,8 +35,6 @@ import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Hitable;
 import org.foxteam.noisyfox.THEngine.Section.Enemys.Enemy;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: Bullet_Player_Missile_Guided
  * @Description: TODO
@@ -58,8 +56,7 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	@Override
 	protected void onDraw() {
 		if (this.getSprite() != null) {
-			Canvas c = getCanvas();
-			this.getSprite().draw(c, (int) getX(), (int) getY(), SpConvertor);
+			this.getSprite().draw((int) getX(), (int) getY(), SpConvertor);
 		}
 	}
 

@@ -17,15 +17,16 @@
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import java.io.InputStream;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 
+import javax.microedition.khronos.opengles.GL10;
+
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.RectF;
 
 /**
  * @ClassName: GraphicFont
@@ -39,7 +40,8 @@ public final class FGGraphicFont {
 	public static final int ALIGN_RIGHT = 2;
 	public static final int ALIGN_CENTER = 3;
 
-	HashMap<String, Bitmap> fontMap = new HashMap<String, Bitmap>();
+	HashMap<String, Integer> fontMap = new HashMap<String, Integer>();
+	FGFrame frames = new FGFrame();
 	float offsetX = 0;
 	float offsetY = 0;
 	float characterSpacing = 0;
@@ -47,10 +49,9 @@ public final class FGGraphicFont {
 	int frameHeight = 0;
 	int alignment = ALIGN_LEFT;
 
-	static Rect srcRect = new Rect();
-	static RectF dstRect = new RectF();
+	GL10 gl;
 
-	public void mapFont(int resId, String chars, boolean cDensityDpi) {
+	public void mapFont(GL10 gl, int resId, String chars, boolean cDensityDpi) {
 		Bitmap b = null;
 		if (cDensityDpi) {
 			b = BitmapFactory.decodeResource(FGGameCore.getMainContext()
@@ -61,13 +62,14 @@ public final class FGGraphicFont {
 			b = BitmapFactory.decodeStream(is);
 		}
 
-		mapFont(b, chars);
+		mapFont(gl, b, chars);
 	}
 
-	public void mapFont(Bitmap src, String chars) {
+	public void mapFont(GL10 gl, Bitmap src, String chars) {
 		if (chars.length() == 0) {
 			throw new IllegalArgumentException();
 		}
+		this.gl = gl;
 		char[] c = chars.toCharArray();
 
 		int imageW = src.getWidth();
@@ -77,13 +79,12 @@ public final class FGGraphicFont {
 				: (imageW - imageW % c.length) / c.length;
 		frameHeight = imageH;
 
+		frames.loadFromBitmap(gl, src, c.length, 1);
+
 		fontMap.clear();
 
 		for (int i = 0; i < c.length; i++) {
-			String key = String.valueOf(c[i]);
-			Bitmap fontBitmap = Bitmap.createBitmap(src, i * frameWidth, 0,
-					frameWidth, imageH);
-			fontMap.put(key, fontBitmap);
+			fontMap.put(String.valueOf(c[i]), Integer.valueOf(i));
 		}
 	}
 
@@ -122,7 +123,7 @@ public final class FGGraphicFont {
 	 *            每个字需要缩放的倍数，这不会改变实际绘制时的字间距
 	 * @param text
 	 */
-	public void drawText(Canvas c, float x, float y, float scale, String text) {
+	public void drawText(float x, float y, float scale, String text) {
 		if (scale < 0)
 			return;
 
@@ -147,18 +148,31 @@ public final class FGGraphicFont {
 			}
 
 			float rY = (y - offsetY);
-			Bitmap charBitmap = fontMap.get(key);
+			Integer charBitmap = fontMap.get(key);
 			if (charBitmap != null) {
-				srcRect.set(0, 0, frameWidth, frameHeight);
-				dstRect.set(rX, rY, rX + frameWidth * scale, rY + frameHeight
-						* scale);
-				c.drawBitmap(charBitmap, srcRect, dstRect, null);
+
+				FloatBuffer coordBuffer = FGEGLHelper.fBuffer(new float[] { 0,
+						0, frames.maxU, 0, 0, frames.maxV, frames.maxU,
+						frames.maxV, });
+				FloatBuffer verticleBuffer = FGEGLHelper.fBuffer(new float[] {
+						rX, rY, rX + frameWidth * scale, rY, rX,
+						rY + frameHeight * scale, rX + frameWidth * scale,
+						rY + frameHeight * scale });
+
+				FGEGLHelper.useTexture(true);
+				frames.gl.glBindTexture(GL10.GL_TEXTURE_2D,
+						frames.getFrameTexture(charBitmap));
+				frames.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, coordBuffer);
+				frames.gl.glVertexPointer(2, GL10.GL_FLOAT, 0, verticleBuffer);
+				frames.gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+				frames.gl.glColor4f(1f, 1f, 1f, 1f);
+				FGEGLHelper.useTexture(false);
 			}
 		}
 	}
 
-	public void drawText(Canvas c, float x, float y, String text) {
-		drawText(c, x, y, 1, text);
+	public void drawText(float x, float y, String text) {
+		drawText(x, y, 1, text);
 	}
 
 }

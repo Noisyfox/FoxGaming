@@ -45,8 +45,7 @@ public class _00_MainMenu extends FGStage {
 
 		FGBackground bkg = new FGBackground();
 
-		bkg.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.background_menu, false);
+		bkg.bindFrame(GlobalResources.FRAMES_BACKGROUND_MAINMENU);
 		bkg.setAdaptation(FGBackground.ADAPTATION_SMART);
 		bkg.setDrawMode(FGBackground.ADAPTATION_OPTION_DRAW_SINGLE);
 		bkg.setAlignment(FGBackground.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
@@ -85,7 +84,7 @@ public class _00_MainMenu extends FGStage {
 		@Override
 		protected void onDraw() {
 			if (seeText)
-				touchText.draw(getCanvas(), getWidth() / 2, getHeight() - 20);
+				touchText.draw(getWidth() / 2, getHeight() - 20);
 		}
 
 		@Override

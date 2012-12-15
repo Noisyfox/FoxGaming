@@ -20,8 +20,6 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: HUD
  * @Description: TODO
@@ -41,7 +39,7 @@ public class HUD extends FGPerformer {
 
 	@Override
 	protected void onCreate() {
-		mainView = FGStage.getCurrentStage().getView(0);
+		mainView = FGStage.getCurrentStage().getView();
 
 		mySmallIcon.bindFrames(GlobalResources.FRAMES_PLAYER_ICON);
 
@@ -62,16 +60,13 @@ public class HUD extends FGPerformer {
 	@Override
 	protected void onDraw() {
 		this.setPosition(mainView.getXFromStage(), mainView.getYFromStage());
-
-		Canvas c = this.getCanvas();
 		// 绘制分数
-		GlobalResources.GRAPHICFONT_SCORE.drawText(c, this.getX() + 100,
+		GlobalResources.GRAPHICFONT_SCORE.drawText(this.getX() + 100,
 				this.getY() + 2, FGGamingThread.score + "");
 		// 绘制剩余自机
 		for (int i = 0; i < Player.remainLife; i++) {
 			mySmallIcon
-					.draw(c,
-							(int) getX() + i * (mySmallIcon.getWidth() + 1),
+					.draw((int) getX() + i * (mySmallIcon.getWidth() + 1),
 							(int) getY()
 									+ 4
 									+ GlobalResources.GRAPHICFONT_SCORE
@@ -83,12 +78,12 @@ public class HUD extends FGPerformer {
 			case 0:
 				break;
 			case 1:
-				flashText_STAGECLEAR.draw(c,
+				flashText_STAGECLEAR.draw(
 						(int) (getX() + mainView.getWidthFromStage() / 2),
 						(int) (getY() + mainView.getHeightFromStage() / 2 - 5));
 				break;
 			case 2:
-				flashText_GAMEOVER.draw(c,
+				flashText_GAMEOVER.draw(
 						(int) (getX() + mainView.getWidthFromStage() / 2),
 						(int) (getY() + mainView.getHeightFromStage() / 2 - 5));
 				break;

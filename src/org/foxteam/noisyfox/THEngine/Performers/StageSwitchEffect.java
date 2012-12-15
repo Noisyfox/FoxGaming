@@ -1,7 +1,11 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
+
+import android.graphics.Color;
 
 public final class StageSwitchEffect extends FGPerformer {
 
@@ -28,8 +32,13 @@ public final class StageSwitchEffect extends FGPerformer {
 
 	@Override
 	protected void onDraw() {
-		if (alpha > 0.001f)
-			getCanvas().drawARGB((int) (alpha * 255), 0, 0, 0);
+		if (alpha > 0.001f) {
+			FGDraw.setAlpha(alpha);
+			FGDraw.setColor(Color.BLACK);
+			FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+					.getCurrentStage().getWidth(), FGStage.getCurrentStage()
+					.getHeight());
+		}
 	}
 
 	@Override

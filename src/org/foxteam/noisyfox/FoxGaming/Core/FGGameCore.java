@@ -16,7 +16,6 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.view.KeyEvent;
@@ -31,13 +30,13 @@ import android.view.KeyEvent;
 public final class FGGameCore {
 
 	protected static FGGameView gameView;
-	protected static Activity mainActivity;
+	protected static FGGameActivity mainActivity;
 
 	protected FGGamingThread thread_Gaming = null;
 
 	private static boolean inited = false;
 
-	public FGGameCore(Activity mainActivity) {
+	public FGGameCore(FGGameActivity mainActivity) {
 		FGGameCore.mainActivity = mainActivity;
 		if (inited) {
 		} else {
@@ -54,6 +53,7 @@ public final class FGGameCore {
 	 * @return: void
 	 */
 	private void initializeCore() {
+
 		gameView = new FGGameView(mainActivity);// 创建 View
 		setupGameThread();// 启动主线程
 		gameView.getHolder().addCallback(thread_Gaming);
@@ -80,7 +80,7 @@ public final class FGGameCore {
 		gameView.setOnKeyListener(null);
 
 		gameView = new FGGameView(mainActivity);
-		FGGamingThread.surfaceHolder = gameView.getHolder();
+		FGGamingThread.surfaceView = gameView;
 
 		gameView.getHolder().addCallback(thread_Gaming);
 		gameView.setOnTouchListener(thread_Gaming);
@@ -96,7 +96,7 @@ public final class FGGameCore {
 	 * @return: void
 	 */
 	private void setupGameThread() {
-		thread_Gaming = new FGGamingThread(gameView.getHolder());
+		thread_Gaming = new FGGamingThread(gameView);
 		thread_Gaming.start();
 	}
 
@@ -131,7 +131,7 @@ public final class FGGameCore {
 		return mainActivity;
 	}
 
-	public static Activity getMainActivity() {
+	public static FGGameActivity getMainActivity() {
 		return mainActivity;
 	}
 

@@ -17,7 +17,7 @@ public class Tester extends FGPerformer {
 
 	@Override
 	protected void onDraw() {
-		pSystem.draw(getCanvas());
+		pSystem.draw();
 	}
 
 	@Override

@@ -19,11 +19,12 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.microedition.khronos.opengles.GL10;
+
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 
 /**
@@ -34,8 +35,6 @@ import android.graphics.Rect;
  * 
  */
 public class FGGraphicCollision {
-
-	private static Paint p = new Paint();
 
 	List<FGPolygon> polygons = new ArrayList<FGPolygon>();
 	List<FGCircle> circles = new ArrayList<FGCircle>();
@@ -51,12 +50,6 @@ public class FGGraphicCollision {
 
 	int baseX = 0;
 	int baseY = 0;
-
-	public FGGraphicCollision() {
-		p.setColor(Color.RED);
-		p.setStyle(Paint.Style.STROKE);
-		p.setAlpha(100);
-	}
 
 	public void clear() {
 		polygons.clear();
@@ -509,18 +502,22 @@ public class FGGraphicCollision {
 		return false;
 	}
 
-	public void draw(Canvas c) {
-
+	public void draw() {
+		GL10 gl = FGEGLHelper.getBufferGL();
 		for (FGPoint p : points_tmp) {
-			p.draw(c);
+			p.draw(gl);
 		}
 		for (FGCircle ci : circles_tmp) {
-			ci.draw(c);
+			ci.draw(gl);
 		}
 		for (FGPolygon pol : polygons_tmp) {
-			pol.draw(c);
+			pol.draw(gl);
 		}
-		c.drawRect(reducedArea_tmp, p);
+
+		FGDraw.setColor(Color.RED);
+		FGDraw.setAlpha(1);
+		FGDraw.drawRect(gl, reducedArea_tmp.left, reducedArea_tmp.top,
+				reducedArea_tmp.right, reducedArea_tmp.bottom);
 	}
 
 	// 静态函数，判断多个target之间是否发生碰撞

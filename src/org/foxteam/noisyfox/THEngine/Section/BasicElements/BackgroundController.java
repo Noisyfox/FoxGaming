@@ -3,30 +3,29 @@ package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 
 public final class BackgroundController extends FGPerformer {
 
 	private static List<BKG> bkgs = new ArrayList<BKG>();
-	private static Paint paint = new Paint();
 	private static int SQUARE_COUNT_MAX = 20;
 
 	@Override
 	protected void onDraw() {
-		Canvas c = getCanvas();
 
 		for (BKG b : bkgs) {
 			if (b.y + b.height <= 0)
 				continue;
 
-			paint.setColor(b.color);
-			c.drawRect(b.x, b.y, b.x + b.width, b.y + b.height, paint);
+			FGDraw.setColor(b.color);
+			FGDraw.drawRect(FGEGLHelper.getBufferGL(), b.x, b.y, b.x + b.width,
+					b.y + b.height);
 		}
 	}
 

@@ -19,12 +19,14 @@ package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGSimpleBGM;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.Core.FGViews;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
 import android.graphics.Bitmap;
@@ -55,7 +57,7 @@ public abstract class SectionStage extends FGStage {
 	private FGBackground pauseCache_Background = null;
 	private int pauseCache_stageWidth = 0;
 	private int pauseCache_stageHeight = 0;
-	private FGViews[] pauseCache_Views;
+	private FGViews pauseCache_View;
 	private boolean pauseCache_isBGMPlaying = true;
 
 	private int sectionNumber = -1;// 当前关卡的编号
@@ -142,16 +144,18 @@ public abstract class SectionStage extends FGStage {
 			return;
 
 		Bitmap cache = FGGamingThread.getScreenshots();
+		FGFrame f = new FGFrame();
+		f.loadFromBitmap(FGEGLHelper.getBufferGL(), cache);
 		FGBackground bkg = new FGBackground();
-		bkg.loadFromBitmap(cache);
+		bkg.bindFrame(f);
 		pauseCache_Background = getBackground();
 		pauseCache_stageWidth = width;
 		pauseCache_stageHeight = height;
-		pauseCache_Views = new FGViews[activatedViews.size()];
-		pauseCache_Views = activatedViews.toArray(pauseCache_Views);
+		pauseCache_View = activatedView;
 		// pauseCache_isBGMPlaying = FGSimpleBGM.;
 
-		activatedViews.clear();
+		activatedView = null;
+
 		setBackground(bkg);
 		setSize(FGGamingThread.getScreenHeight(),
 				FGGamingThread.getScreenWidth());
@@ -173,9 +177,8 @@ public abstract class SectionStage extends FGStage {
 		if (!paused)
 			return;
 
-		for (FGViews v : pauseCache_Views) {
-			addView(v);
-		}
+		setView(pauseCache_View);
+
 		setBackground(pauseCache_Background);
 
 		setSize(pauseCache_stageHeight, pauseCache_stageWidth);

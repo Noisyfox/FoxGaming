@@ -27,9 +27,7 @@ public final class _01_GameClear extends FGStage {
 				FGGamingThread.getScreenWidth());
 		FGBackground bkg = new FGBackground();
 
-		bkg.loadFromBitmap(
-				org.foxteam.noisyfox.THEngine.R.drawable.background_gameclear,
-				false);
+		bkg.bindFrame(GlobalResources.FRAMES_BACKGROUND_GAMECLEAR);
 		bkg.setAdaptation(FGBackground.ADAPTATION_SMART);
 		bkg.setDrawMode(FGBackground.ADAPTATION_OPTION_DRAW_SINGLE);
 		bkg.setAlignment(FGBackground.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_TOP);

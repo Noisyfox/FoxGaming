@@ -32,8 +32,6 @@ import org.foxteam.noisyfox.THEngine.Section.BasicElements.Player;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: Enemy_Fly
  * @Description: TODO
@@ -130,9 +128,8 @@ public class Enemy_Fly extends EnemyInAir {
 
 	@Override
 	protected void onDraw() {
-		Canvas c = this.getCanvas();
-		this.getSprite().draw(c, (int) this.getX(), (int) this.getY(),
-				SpConvertor);
+		this.getSprite()
+				.draw((int) this.getX(), (int) this.getY(), SpConvertor);
 	}
 
 	@Override

@@ -25,8 +25,6 @@ import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: Enemy_Duck
  * @Description: 从屏幕的一侧水平移动到另一侧，均匀抛下静止子弹
@@ -117,11 +115,10 @@ public class Enemy_Duck extends EnemyInAir {
 
 	@Override
 	protected void onDraw() {
-		Canvas c = this.getCanvas();
 		if (!frmL) {
-			this.getSprite().draw(c, (int) this.getX(), (int) this.getY());
+			this.getSprite().draw((int) this.getX(), (int) this.getY());
 		} else {
-			this.getSprite().draw(c, (int) this.getX(), (int) this.getY(), sc);
+			this.getSprite().draw((int) this.getX(), (int) this.getY(), sc);
 		}
 	}
 

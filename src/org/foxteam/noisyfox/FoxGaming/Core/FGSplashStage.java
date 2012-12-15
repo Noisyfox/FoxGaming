@@ -20,8 +20,8 @@ public final class FGSplashStage extends FGStage {
 
 		new splashController().perform(stageIndex);
 
-		logo.loadFromBitmap(org.foxteam.noisyfox.THEngine.R.drawable.foxgaming,
-				true);
+		logo.loadFromBitmap(FGEGLHelper.getBufferGL(),
+				org.foxteam.noisyfox.THEngine.R.drawable.foxgaming, true);
 		logoS.bindFrames(logo);
 		logoS.setOffset(logoS.getWidth() / 2, logoS.getHeight() / 2);
 	}
@@ -72,7 +72,7 @@ public final class FGSplashStage extends FGStage {
 
 		@Override
 		protected void onDraw() {
-			logoS.draw(getCanvas(), (int) this.getX(), (int) this.getY(), c);
+			logoS.draw((int) this.getX(), (int) this.getY(), c);
 		}
 
 		@Override

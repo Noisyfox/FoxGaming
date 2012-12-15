@@ -91,7 +91,7 @@ public class Player extends Hitable {
 	@Override
 	protected void onCreate() {
 
-		mainView = FGStage.getCurrentStage().getView(0);
+		mainView = FGStage.getCurrentStage().getView();
 
 		playerSprite.bindFrames(GlobalResources.FRAMES_PLAYER);
 		playerSprite.setOffset(playerSprite.getWidth() / 2,

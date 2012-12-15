@@ -21,8 +21,6 @@ import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: performer
  * @Description: 游戏运行时操作的主体对象
@@ -73,8 +71,7 @@ public class FGPerformer extends FGEventsListener {
 	@Override
 	protected void onDraw() {
 		if (sprite != null) {
-			Canvas c = FGGamingThread.bufferCanvas;
-			sprite.draw(c, (int) x, (int) y);
+			sprite.draw((int) x, (int) y);
 		}
 	}
 
@@ -144,7 +141,7 @@ public class FGPerformer extends FGEventsListener {
 				onDraw();
 			}
 			if (FGDebug.debugMode && collisionMask != null) {// 便于调试
-				collisionMask.draw(getCanvas());
+				collisionMask.draw();
 			}
 			break;
 		case FGEventsListener.EVENT_ONSTEP:
@@ -534,16 +531,6 @@ public class FGPerformer extends FGEventsListener {
 		if (myScreenPlay != null) {
 			myScreenPlay.prepareToPlay(this);
 		}
-	}
-
-	/**
-	 * @Title: getCanvas
-	 * @Description: 获取缓冲画布
-	 * @param: @return
-	 * @return: Canvas
-	 */
-	public final Canvas getCanvas() {
-		return FGGamingThread.bufferCanvas;
 	}
 
 	/**

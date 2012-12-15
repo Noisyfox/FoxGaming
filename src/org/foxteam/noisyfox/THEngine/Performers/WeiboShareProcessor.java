@@ -5,10 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
@@ -34,7 +36,6 @@ public final class WeiboShareProcessor extends FGPerformer {
 	private boolean caped = false;
 	private float k = 0;
 	private boolean ap = false;
-	private boolean showConfirm = false;
 	static AniState state = AniState.hided;
 	Paint p = new Paint();
 	private static String shareStr = "";
@@ -45,18 +46,22 @@ public final class WeiboShareProcessor extends FGPerformer {
 
 	@Override
 	protected void onDraw() {
-		getCanvas().drawRGB(0, 0, 0);
-		sss.draw(getCanvas(), 0, 0, sssc);
+		FGDraw.setAlpha(1);
+		FGDraw.setColor(Color.BLACK);
+		FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+				.getCurrentStage().getWidth(), FGStage.getCurrentStage()
+				.getHeight());
+		sss.draw(0, 0, sssc);
 		if (!caped) {
+			FGDraw.setAlpha(1);
+			FGDraw.setColor(Color.WHITE);
 			int y = (int) (k * FGStage.getCurrentStage().getHeight() / 2);
-			getCanvas().drawRect(0, 0, FGStage.getCurrentStage().getWidth(), y,
-					p);
-			getCanvas().drawRect(0, FGStage.getCurrentStage().getHeight() - y,
-					FGStage.getCurrentStage().getWidth(),
-					FGStage.getCurrentStage().getHeight(), p);
-		}
-		if (showConfirm) {
-
+			FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+					.getCurrentStage().getWidth(), y);
+			FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, FGStage
+					.getCurrentStage().getHeight() - y, FGStage
+					.getCurrentStage().getWidth(), FGStage.getCurrentStage()
+					.getHeight());
 		}
 	}
 
@@ -64,12 +69,11 @@ public final class WeiboShareProcessor extends FGPerformer {
 	protected void onCreate() {
 		p.setColor(Color.WHITE);
 		screenShot = FGGamingThread.getScreenshots();
-		ssf.loadFromBitmap(screenShot);
+		ssf.loadFromBitmap(FGEGLHelper.getBufferGL(), screenShot);
 		sss.bindFrames(ssf);
 		sssc.setAlpha(1);
 		freezeAll(true, true);
 		state = AniState.showing;
-		showConfirm = false;
 
 		try {
 			saveMyBitmap(screenShot, Environment.getExternalStorageDirectory()

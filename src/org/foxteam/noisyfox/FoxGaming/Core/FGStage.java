@@ -56,7 +56,7 @@ public abstract class FGStage {
 	};
 
 	protected List<FGPerformer> performers = new ArrayList<FGPerformer>();
-	protected List<FGViews> activatedViews = new ArrayList<FGViews>();
+	protected FGViews activatedView = null;
 	protected List<ManagedParticleSystem> managedParticleSystem = new ArrayList<ManagedParticleSystem>();
 	protected int managedParticleSystemSize = 0;
 	protected int width = 480;// stage 的宽
@@ -228,7 +228,7 @@ public abstract class FGStage {
 		}
 
 		performers.clear();
-		activatedViews.clear();
+		activatedView = null;
 		width = 480;
 		height = 800;
 		stageSpeed = 30f;
@@ -318,34 +318,12 @@ public abstract class FGStage {
 		}
 	}
 
-	public final void addView(FGViews view) {
-		if (view == null)
-			return;
-		if (activatedViews.contains(view)) {
-			FGDebug.warning("View already activated!");
-			return;
-		}
-		activatedViews.add(view);
+	public final void setView(FGViews view) {
+		activatedView = view;
 	}
 
-	public final int getViewNumber() {
-		return activatedViews.size();
-	}
-
-	public final FGViews getView(int index) {
-		return activatedViews.get(index);
-	}
-
-	public final void removeView(FGViews view) {
-		if (!activatedViews.contains(view)) {
-			FGDebug.warning("View not activated!");
-			return;
-		}
-		activatedViews.remove(view);
-	}
-
-	public final void removeView(int index) {
-		activatedViews.remove(index);
+	public final FGViews getView() {
+		return activatedView;
 	}
 
 	public final void setSize(int height, int width) {

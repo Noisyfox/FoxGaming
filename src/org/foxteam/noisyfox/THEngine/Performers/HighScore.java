@@ -1,6 +1,7 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -67,8 +68,7 @@ public final class HighScore extends FGPerformer {
 		if (state == AniState.hided)
 			return;
 
-		cachedSprite.draw(getCanvas(), (int) inX, cachedSprite.getOffsetY(),
-				aniConvertor);
+		cachedSprite.draw((int) inX, cachedSprite.getOffsetY(), aniConvertor);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public final class HighScore extends FGPerformer {
 					* i, highscoreTextPaint);
 		}
 
-		cachedFrame.loadFromBitmap(tmpBitmap);
+		cachedFrame.loadFromBitmap(FGEGLHelper.getBufferGL(), tmpBitmap);
 		cachedSprite.bindFrames(cachedFrame);
 		cachedSprite.setOffset(0, cachedSprite.getHeight() / 2);
 		aniConvertor.setScale(1, hk);

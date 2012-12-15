@@ -28,8 +28,6 @@ import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_3;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: Enemy_Doll_Blue
  * @Description: 小怪的一种，行为:从屏幕的一侧排成一排竖直进入，后依次从屏幕上部向另一侧飞离,期间向屏幕正中间发射一枚子弹
@@ -215,11 +213,10 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 
 	@Override
 	protected void onDraw() {
-		Canvas c = this.getCanvas();
 		if (!faceLeft) {
-			this.getSprite().draw(c, (int) this.getX(), (int) this.getY());
+			this.getSprite().draw((int) this.getX(), (int) this.getY());
 		} else {
-			this.getSprite().draw(c, (int) this.getX(), (int) this.getY(), sc);
+			this.getSprite().draw((int) this.getX(), (int) this.getY(), sc);
 		}
 	}
 

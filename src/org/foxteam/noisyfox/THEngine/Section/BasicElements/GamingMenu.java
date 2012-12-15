@@ -1,9 +1,11 @@
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
@@ -89,7 +91,7 @@ public class GamingMenu extends FGPerformer {
 		menuType = type;
 		cStage = (SectionStage) FGStage.getCurrentStage();
 		Bitmap currentScreen = FGGamingThread.getScreenshots();
-		ssf.loadFromBitmap(currentScreen);
+		ssf.loadFromBitmap(FGEGLHelper.getBufferGL(), currentScreen);
 		sss.bindFrames(ssf);
 		setDepth(-1001);
 		menuState = MenuState.showing;
@@ -110,9 +112,12 @@ public class GamingMenu extends FGPerformer {
 	protected void onDraw() {
 		if (!drawMe)
 			return;
-
-		getCanvas().drawColor(Color.BLACK);
-		sss.draw(getCanvas(), 0, 0, sssc);
+		FGDraw.setAlpha(1);
+		FGDraw.setColor(Color.BLACK);
+		FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+				.getCurrentStage().getWidth(), FGStage.getCurrentStage()
+				.getHeight());
+		sss.draw(0, 0, sssc);
 	}
 
 	@Override

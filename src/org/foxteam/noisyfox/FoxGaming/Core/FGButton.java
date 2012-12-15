@@ -153,7 +153,7 @@ public abstract class FGButton extends FGPerformer {
 
 	@Override
 	protected final void onDraw() {
-		mySprite.draw(getCanvas(), (int) this.getX(), (int) this.getY(), mySC);
+		mySprite.draw((int) this.getX(), (int) this.getY(), mySC);
 	}
 
 	/**

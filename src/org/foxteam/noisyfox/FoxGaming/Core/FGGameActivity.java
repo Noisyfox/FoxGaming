@@ -159,7 +159,6 @@ public class FGGameActivity extends Activity {
 			onCreate();
 
 			prepareEngine();
-			onEngineReady();
 
 			// 创建引擎初始界面
 			(FGStage.targetStage = new FGSplashStage()).setStageIndex(0);

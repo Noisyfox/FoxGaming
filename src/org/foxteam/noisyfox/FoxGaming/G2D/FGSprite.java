@@ -16,12 +16,14 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
-import android.graphics.Canvas;
+import java.nio.FloatBuffer;
+
+import javax.microedition.khronos.opengles.GL10;
+
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
+
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 
 /**
  * @ClassName: Sprite
@@ -114,50 +116,62 @@ public final class FGSprite {
 		return 0;
 	}
 
-	public void draw(Canvas c, int x, int y) {
-		draw(c, x, y, null);
+	public final void draw(int x, int y) {
+		draw(x, y, null);
 	}
 
-	public void draw(Canvas c, int x, int y, FGSpriteConvertor spriteConvertor) {
+	public final void draw(int x, int y, FGSpriteConvertor spriteConvertor) {
 
-		draw(c, x, y, spriteConvertor, Color.WHITE);
+		draw(x, y, spriteConvertor, Color.WHITE);
 
 	}
 
-	public void draw(Canvas c, int x, int y, FGSpriteConvertor spriteConvertor,
+	public final void draw(int x, int y, FGSpriteConvertor spriteConvertor,
 			int color) {
 
 		if (frames == null) {
 			return;
 		}
 
-		Paint paint = new Paint();
+		float R = Color.red(color) / 255f;
+		float G = Color.green(color) / 255f;
+		float B = Color.blue(color) / 255f;
 
-		if (color != Color.WHITE) {
-			float hsv[] = new float[3];
-			Color.colorToHSV(color, hsv);
-			float k = (hsv[2] - hsv[1] + 1f) * 0.5f;
-			int R = Color.red(color);
-			int G = Color.green(color);
-			int B = Color.blue(color);
+		FloatBuffer coordBuffer = FGEGLHelper.fBuffer(new float[] { 0, 0,
+				frames.maxU, 0, 0, frames.maxV, frames.maxU, frames.maxV });
 
-			ColorMatrix cm = new ColorMatrix();
-			float carray[] = { k, 0, 0, 0, (1 - k) * (float) R, 0, k, 0, 0,
-					(1 - k) * (float) G, 0, 0, k, 0, (1 - k) * (float) B, 0, 0,
-					0, 1, 0 };
-			cm.set(carray);
-			paint.setColorFilter(new ColorMatrixColorFilter(cm));
-		}
+		float[] verticle = null;
 
 		if (spriteConvertor != null) {
+
+			verticle = new float[] { 0, 0, frames.srcFrameWidth, 0, 0,
+					frames.srcFrameHeight, frames.srcFrameWidth,
+					frames.srcFrameHeight };
+
 			Matrix m = spriteConvertor.getConvertMatrix(offsetX, offsetY);
 			m.postTranslate(x - offsetX, y - offsetY);
-			paint.setAlpha((int) (255.0 * spriteConvertor.getAlpha()));
-			c.drawBitmap(frames.getFrame(currentFrame), m, paint);
+			m.mapPoints(verticle);
+			frames.gl.glColor4f(R, G, B, (float) spriteConvertor.getAlpha());
 		} else {
-			c.drawBitmap(frames.getFrame(currentFrame), x - offsetX, y
-					- offsetY, paint);
+			verticle = new float[] { x - offsetX, y - offsetY,
+					frames.srcFrameWidth + x - offsetX, y - offsetY,
+					x - offsetX, frames.srcFrameHeight + y - offsetY,
+					frames.srcFrameWidth + x - offsetX,
+					frames.srcFrameHeight + y - offsetY };
+			frames.gl.glColor4f(R, G, B, 1f);
 		}
 
+		FloatBuffer verticleBuffer = FGEGLHelper.fBuffer(verticle);
+		FGEGLHelper.useTexture(true);
+		frames.gl.glBindTexture(GL10.GL_TEXTURE_2D,
+				frames.getFrameTexture(currentFrame));
+		frames.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, coordBuffer);
+		frames.gl.glVertexPointer(2, GL10.GL_FLOAT, 0, verticleBuffer);
+		frames.gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		frames.gl.glColor4f(1f, 1f, 1f, 1f);
+		FGEGLHelper.useTexture(false);
+		// frames.gl.gl
+
 	}
+
 }

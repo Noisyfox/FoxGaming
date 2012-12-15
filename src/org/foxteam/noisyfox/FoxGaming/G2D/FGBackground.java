@@ -16,14 +16,11 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
-import java.io.InputStream;
+import java.nio.FloatBuffer;
 
-import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
+import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 
 /**
  * @ClassName: Background
@@ -87,7 +84,7 @@ public class FGBackground {
 	/**
 	 * Source image
 	 */
-	private Bitmap sourceImage = null;
+	private FGFrame sourceImage = null;
 
 	private FGPoint anchorPointBitmap = new FGPoint(0, 0);
 	private FGPoint anchorPointScreen = new FGPoint(0, 0);
@@ -107,22 +104,8 @@ public class FGBackground {
 
 	}
 
-	public void loadFromBitmap(Bitmap bitmap) {
-		sourceImage = bitmap;
-	}
-
-	public void loadFromBitmap(int resId, boolean cDensityDpi) {
-		Bitmap b = null;
-		if (cDensityDpi) {
-			b = BitmapFactory.decodeResource(FGGameCore.getMainContext()
-					.getResources(), resId);
-		} else {
-			InputStream is = FGGameCore.getMainContext().getResources()
-					.openRawResource(resId);
-			b = BitmapFactory.decodeStream(is);
-		}
-
-		loadFromBitmap(b);
+	public void bindFrame(FGFrame frame) {
+		sourceImage = frame;
 	}
 
 	// 设置自适应方式
@@ -208,13 +191,13 @@ public class FGBackground {
 		anchorPointScreen = screen;
 	}
 
-	public void doAndDraw(Canvas c, int left, int top, int height, int width) {
+	public void doAndDraw(int left, int top, int height, int width) {
 
 		if (sourceImage == null)
 			return;
 
-		c.save();
-		c.clipRect(left, top, left + width, top + height);
+		// c.save();
+		// c.clipRect(left, top, left + width, top + height);
 
 		// 先计算缩放
 		float xScale = 1;
@@ -386,8 +369,14 @@ public class FGBackground {
 		y += yOffset;
 
 		// 绘制
-		Rect from = new Rect(0, 0, sourceImage.getWidth(),
-				sourceImage.getHeight());
+		FGEGLHelper.useTexture(true);
+		FloatBuffer coordBuffer = FGEGLHelper.fBuffer(new float[] { 0, 0,
+				sourceImage.maxU, 0, 0, sourceImage.maxV, sourceImage.maxU,
+				sourceImage.maxV, });
+		FloatBuffer verticleBuffer;
+		sourceImage.gl.glBindTexture(GL10.GL_TEXTURE_2D,
+				sourceImage.getFrameTexture(0));
+		sourceImage.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, coordBuffer);
 
 		if (option_draw == ADAPTATION_OPTION_DRAW_REPEATING) {
 			// 简化位置
@@ -422,22 +411,35 @@ public class FGBackground {
 
 			for (int i = 0; i < x1; i++) {
 				for (int j = 0; j < y1; j++) {
-					Rect to = new Rect(left + xt + i * imageWidth, top + yt + j
-							* imageHeight, left + xt + (i + 1) * imageWidth,
-							top + yt + (j + 1) * imageHeight);
-					c.drawBitmap(sourceImage, from, to, null);
+					verticleBuffer = FGEGLHelper.fBuffer(new float[] {
+							left + xt + i * imageWidth,
+							top + yt + j * imageHeight,
+							left + xt + (i + 1) * imageWidth + 1,
+							top + yt + j * imageHeight,
+							left + xt + i * imageWidth,
+							top + yt + (j + 1) * imageHeight + 1,
+							left + xt + (i + 1) * imageWidth + 1,
+							top + yt + (j + 1) * imageHeight + 1 });
+					sourceImage.gl.glVertexPointer(2, GL10.GL_FLOAT, 0,
+							verticleBuffer);
+					sourceImage.gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 				}
 			}
 
 		} else {
-			Rect to = new Rect(left + x, top + y, left + x + imageWidth, top
-					+ y + imageHeight);
-			c.drawBitmap(sourceImage, from, to, null);
+			verticleBuffer = FGEGLHelper.fBuffer(new float[] { left + x,
+					top + y, left + x + imageWidth, top + y, left + x,
+					top + y + imageHeight, left + x + imageWidth,
+					top + y + imageHeight });
+			sourceImage.gl.glVertexPointer(2, GL10.GL_FLOAT, 0, verticleBuffer);
+			sourceImage.gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		}
-		c.restore();
+		// c.restore();
 
 		xOffset += speed_x;
 		yOffset += speed_y;
+
+		FGEGLHelper.useTexture(false);
 
 	}
 }

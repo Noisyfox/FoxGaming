@@ -16,21 +16,23 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage.ManagedParticleSystem;
+import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
+import android.opengl.GLU;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
@@ -47,12 +49,10 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	public static long score = 0;// 内置变量-分数
 
-	protected static Canvas bufferCanvas = null;// 缓冲画布
-	protected static Bitmap bufferBitmap = null;// 缓冲画布对应的bitmap
 	protected static int width = 0;
 	protected static int height = 0;
 	protected static int screenRotation = 0;
-	protected static SurfaceHolder surfaceHolder;
+	protected static SurfaceView surfaceView;
 
 	// 线程状态标识
 	private static final int STATEFLAG_WAITING = 0;// 线程刚被创建，尚未开始运作
@@ -70,10 +70,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static List<Integer> actionedFingers = new ArrayList<Integer>();
 	private static List<Integer> registedKeys = new ArrayList<Integer>();
 	private static List<Integer> blockedKeys = new ArrayList<Integer>();
-	private static PaintFlagsDrawFilter paintFlagsDrawFilter = new PaintFlagsDrawFilter(
-			0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-	private static Matrix viewMatrix = new Matrix();
-	private static boolean antiAlias = true;
 
 	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
@@ -88,8 +84,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
 
-	protected FGGamingThread(SurfaceHolder surfaceHolder) {
-		FGGamingThread.surfaceHolder = surfaceHolder;
+	protected FGGamingThread(SurfaceView surfaceView) {
+		FGGamingThread.surfaceView = surfaceView;
 		currentState = STATEFLAG_WAITING;
 	}
 
@@ -136,11 +132,35 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	}
 
 	public static Bitmap getScreenshots() {
-		Bitmap canvasBmp = Bitmap.createBitmap(width, height,
-				Bitmap.Config.ARGB_8888);
-		Canvas cn = new Canvas(canvasBmp);
-		drawToCanvas(cn);
-		return canvasBmp;
+		IntBuffer PixelBuffer = IntBuffer.allocate(width * height);
+		PixelBuffer.position(0);
+		FGEGLHelper.getBufferGL().glReadPixels(0, 0, width, height,
+				GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, PixelBuffer);
+		PixelBuffer.position(0);// 这里要把读写位置重置下
+		int pix[] = new int[width * height];
+		int pix2[] = new int[width * height];
+		PixelBuffer.get(pix);// 这是将intbuffer中的数据赋值到pix数组中
+		int p = 0;
+		for (int i = 0; i < width * height; i++) {
+			p = pix[i];
+			int a = (p >> 24);
+			int b = ((p >> 16) & 0xFF); // green
+			int g = ((p >> 8) & 0xFF); // blue
+			int r = ((p) & 0xFF); // alpha
+
+			int x = i % width;
+			int y = (i - x) / width;
+			int n = width - 1 - x + y * width;
+			pix2[width * height - n - 1] = a << 24 | r << 16 | g << 8 | b;
+		}
+		Bitmap bmp = Bitmap.createBitmap(pix2, width, height,
+				Bitmap.Config.ARGB_8888);// pix是上面读到的像素
+
+		// Bitmap canvasBmp = Bitmap.createBitmap(width, height,
+		// Bitmap.Config.ARGB_8888);
+		// Canvas cn = new Canvas(canvasBmp);
+		// drawToCanvas(cn);
+		return bmp;
 
 	}
 
@@ -163,6 +183,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	@Override
 	public void run() {
+
 		while (currentState == STATEFLAG_WAITING) {// 等待游戏开始
 			try {
 				Thread.sleep(100);
@@ -171,6 +192,19 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 				e.printStackTrace();
 			}
 		}
+
+		while (!processing) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		FGEGLHelper.bindSurfaceView(surfaceView);
+
+		FGGameCore.getMainActivity().onEngineReady();
 
 		SPS_startTime = System.currentTimeMillis();
 
@@ -232,62 +266,83 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	 * @return: void
 	 */
 	public final void screenRefresh() {
-		Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
-		if (targetCanvas != null) {
-			drawToCanvas(targetCanvas);
-			surfaceHolder.unlockCanvasAndPost(targetCanvas);
-		}
+		// Canvas targetCanvas = surfaceHolder.lockCanvas();// 获取目标画布
+		// if (targetCanvas != null) {
+		// drawToCanvas(targetCanvas);
+		// surfaceHolder.unlockCanvasAndPost(targetCanvas);
+		// }
+		drawStage();
 	}
 
-	private static final void drawToCanvas(Canvas targetCanvas) {
-		if (targetCanvas != null) {
-			targetCanvas.drawARGB(0, 0, 0, 255);
-			// 处理视角
-			if (FGStage.currentStage.activatedViews.size() == 0) {
-				targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
-			} else {
-				for (FGViews v : FGStage.currentStage.activatedViews) {
-					targetCanvas.save();
-					targetCanvas.clipRect(v.targetView);
-					viewMatrix.reset();
-					viewMatrix.postScale(
-							v.targetView.width() / v.sourceView.width(),
-							v.targetView.height() / v.sourceView.height(),
-							v.sourceView.centerX(), v.sourceView.centerY());
-					viewMatrix.postRotate(v.sourceAngle,
-							v.sourceView.centerX(), v.sourceView.centerY());
-					viewMatrix.postTranslate(v.targetView.centerX()
-							- v.sourceView.centerX(), v.targetView.centerY()
-							- v.sourceView.centerY());
-					targetCanvas.setDrawFilter(antiAlias ? paintFlagsDrawFilter
-							: null);
-					targetCanvas.drawBitmap(bufferBitmap, viewMatrix, null);
-					targetCanvas.restore();
-				}
-			}
+	private void applyView() {
+		if (FGStage.currentStage.activatedView == null) {
+			FGEGLHelper.getBufferGL().glViewport(0, 0, width, height);
+
+			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_PROJECTION);
+			FGEGLHelper.getBufferGL().glLoadIdentity();
+
+			GLU.gluOrtho2D(FGEGLHelper.getBufferGL(), 0, width, height, 0);
+
+			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_MODELVIEW);
+			FGEGLHelper.getBufferGL().glLoadIdentity();
+
+		} else {
+			FGViews v = FGStage.currentStage.activatedView;
+
+			FGEGLHelper.getBufferGL().glViewport((int) v.getXFromScreen(),
+					(int) v.getYFromScreen(), (int) v.getWidthFromScreen(),
+					(int) v.getHeightFromScreen());
+
+			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_PROJECTION);
+			FGEGLHelper.getBufferGL().glLoadIdentity();
+
+			GLU.gluOrtho2D(FGEGLHelper.getBufferGL(), v.getXFromStage(),
+					v.getXFromStage() + v.getWidthFromStage(),
+					v.getYFromStage() + v.getHeightFromStage(),
+					v.getYFromStage());
+
+			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_MODELVIEW);
+			FGEGLHelper.getBufferGL().glLoadIdentity();
+
 		}
+
 	}
 
-	/**
-	 * @Title: prepareBufferBitmap
-	 * @Description: 准备缓冲画布
-	 * @param:
-	 * @return: void
-	 */
-	private void prepareBufferBitmap() {
-		if (bufferBitmap == null
-				|| bufferBitmap.getWidth() != FGStage.currentStage.width
-				|| bufferBitmap.getHeight() != FGStage.currentStage.height) {
-
-			bufferBitmap = Bitmap.createBitmap(FGStage.currentStage.width,
-					FGStage.currentStage.height, Bitmap.Config.ARGB_8888);
-			bufferCanvas = new android.graphics.Canvas(bufferBitmap);
-			bufferCanvas.drawARGB(0, 0, 0, 255);
-
-			FGDebug.print("Buffer bitmap recreated:" + bufferBitmap.getHeight()
-					+ "*" + bufferBitmap.getWidth());
-		}
+	public void drawStage() {
+		// GL10 gl = FGEGLHelper.getBindedGL();
+		// FGEGLHelper.getBufferGL().glClearColor(255f, 255f, 255f, 1f);
+		FGEGLHelper.renderOnScreen();
 	}
+
+	// private static final void drawToCanvas(Canvas targetCanvas) {
+	// if (targetCanvas != null) {
+	// targetCanvas.drawARGB(0, 0, 0, 255);
+	// // 处理视角
+	// if (FGStage.currentStage.activatedView == null) {
+	// targetCanvas.drawBitmap(bufferBitmap, 0, 0, null);
+	// } else {
+	// FGViews v = FGStage.currentStage.activatedView;
+	//
+	// targetCanvas.save();
+	// targetCanvas.clipRect(v.targetView);
+	// viewMatrix.reset();
+	// viewMatrix.postScale(
+	// v.targetView.width() / v.sourceView.width(),
+	// v.targetView.height() / v.sourceView.height(),
+	// v.sourceView.centerX(), v.sourceView.centerY());
+	// viewMatrix.postRotate(v.sourceAngle, v.sourceView.centerX(),
+	// v.sourceView.centerY());
+	// viewMatrix.postTranslate(
+	// v.targetView.centerX() - v.sourceView.centerX(),
+	// v.targetView.centerY() - v.sourceView.centerY());
+	// targetCanvas.setDrawFilter(antiAlias ? paintFlagsDrawFilter
+	// : null);
+	// targetCanvas.drawBitmap(bufferBitmap, viewMatrix, null);
+	// targetCanvas.restore();
+	//
+	// }
+	// }
+	// }
 
 	/**
 	 * @Title: gameLogic
@@ -328,8 +383,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 				FGStage.currentStage.onCreate();
 
 				FGStage.speed = FGStage.currentStage.stageSpeed;
-				// 准备缓冲画布
-				prepareBufferBitmap();
 
 				// 所有事件都必须在EVENT_ONCREATE之后
 				FGStage.currentStage.employPerformer();
@@ -347,11 +400,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 			} else {
 				FGStage.speed = FGStage.currentStage.stageSpeed;
-				prepareBufferBitmap();
 				FGStage.currentStage.employPerformer();
 			}
-
-			bufferCanvas.setDrawFilter(antiAlias ? paintFlagsDrawFilter : null);
 
 			// 处理当前场景的performer
 			// 最先广播EVENT_ONSTEPSTART事件
@@ -372,6 +422,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			if (width != lastScreenWidth || height != lastScreenHeight) {
 				lastScreenHeight = height;
 				lastScreenWidth = width;
+				FGEGLHelper.bindSurfaceView(surfaceView);
 				FGStage.currentStage.broadcastEvent(
 						FGEventsListener.EVENT_ONSCREENSIZECHANGED, width,
 						height);
@@ -440,11 +491,17 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			FGStage.currentStage.updateParticleSystems();
 
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-			bufferCanvas.drawColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
+			applyView();
+			FGEGLHelper.getBufferGL().glClear(
+					GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+			FGDraw.setColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
+			FGDraw.setAlpha(1);
+			FGDraw.drawRectFill(FGEGLHelper.mBinded_GL, 0, 0,
+					FGStage.currentStage.getWidth(),
+					FGStage.currentStage.getHeight());
 			if (FGStage.currentStage.background != null) {// 绘制背景
 				FGStage.currentStage.background
-						.doAndDraw(bufferCanvas, 0, 0,
-								FGStage.currentStage.height,
+						.doAndDraw(0, 0, FGStage.currentStage.height,
 								FGStage.currentStage.width);
 			}
 			if (FGStage.currentStage.managedParticleSystemSize == 0) {
@@ -461,7 +518,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 					if (p.depth <= nowDepth) {
 						while (p.depth <= nowDepth
 								&& index < FGStage.currentStage.managedParticleSystemSize) {
-							m.particleSystem.draw(bufferCanvas);
+							m.particleSystem.draw();
 							index++;
 							if (index < FGStage.currentStage.managedParticleSystemSize) {
 								m = FGStage.currentStage.managedParticleSystem
@@ -475,7 +532,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 				for (int i = index; i < FGStage.currentStage.managedParticleSystemSize; i++) {
 					FGStage.currentStage.managedParticleSystem.get(i).particleSystem
-							.draw(bufferCanvas);
+							.draw();
 				}
 
 			}

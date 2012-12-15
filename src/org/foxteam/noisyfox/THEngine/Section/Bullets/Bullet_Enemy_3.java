@@ -25,8 +25,6 @@ import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Hitable;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Player;
 
-import android.graphics.Canvas;
-
 /**
  * @ClassName: Bullet_Enemy_3
  * @Description: TODO
@@ -43,8 +41,7 @@ public class Bullet_Enemy_3 extends Bullet_Enemy {
 	@Override
 	protected void onDraw() {
 		if (this.getSprite() != null) {
-			Canvas c = getCanvas();
-			this.getSprite().draw(c, (int) getX(), (int) getY(), SpConvertor);
+			this.getSprite().draw((int) getX(), (int) getY(), SpConvertor);
 		}
 	}
 

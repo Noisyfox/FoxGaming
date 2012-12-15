@@ -16,8 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import javax.microedition.khronos.opengles.GL10;
+
+import android.graphics.Color;
 
 /**
  * @ClassName: Point
@@ -30,7 +31,6 @@ public class FGPoint {
 
 	int x = 0;
 	int y = 0;
-	protected static Paint paint = new Paint();
 
 	public FGPoint() {
 		this(0, 0);
@@ -72,9 +72,10 @@ public class FGPoint {
 		return x + "," + y;
 	}
 
-	public void draw(Canvas c) {
-		paint.reset();
-		c.drawPoint(x, y, paint);
+	public void draw(GL10 gl) {
+		FGDraw.setColor(Color.BLACK);
+		FGDraw.setAlpha(1);
+		FGDraw.drawPoint(gl, x, y);
 	}
 
 }

@@ -66,7 +66,7 @@ public final class GamingController extends FGPerformer {
 				0);
 
 		v.setAngleFromStage(0);
-		FGStage.getCurrentStage().addView(v);
+		FGStage.getCurrentStage().setView(v);
 
 		hud = new HUD();
 	}

@@ -16,8 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import javax.microedition.khronos.opengles.GL10;
+
+import android.graphics.Color;
 
 /**
  * @ClassName: Circle
@@ -50,16 +51,18 @@ public class FGCircle extends FGPoint {
 	}
 
 	@Override
-	public void draw(Canvas c) {
+	public void draw(GL10 gl) {
 
-		paint.reset();
-		paint.setAlpha(170);
+		FGDraw.setColor(Color.BLACK);
+		FGDraw.setAlpha(0.67f);
 
 		if (!fill) {
-			paint.setStyle(Paint.Style.STROKE);
+			FGDraw.drawCircle(gl, x, y, r);
+		} else {
+
+			FGDraw.drawCircleFill(gl, x, y, r);
 		}
 
-		c.drawCircle(x, y, r, paint);
 	}
 
 }

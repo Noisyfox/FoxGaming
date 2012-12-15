@@ -9,7 +9,6 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleEmitter.EmitType;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleType.ColorType;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
 
 /**
@@ -486,7 +485,7 @@ public final class FGParticleSystem {
 		}
 	}
 
-	public void draw(Canvas c) {
+	public void draw() {
 
 		if (_drawOrder_old2new) {
 
@@ -502,7 +501,7 @@ public final class FGParticleSystem {
 
 					p.shapeBaseType._particleSprite
 							.setCurrentFrame((int) p.frame);
-					p.shapeBaseType._particleSprite.draw(c, _position_x + p.x,
+					p.shapeBaseType._particleSprite.draw(_position_x + p.x,
 							_position_y + p.y, p.convertor, p.color);
 				}
 
@@ -522,7 +521,7 @@ public final class FGParticleSystem {
 
 					p.shapeBaseType._particleSprite
 							.setCurrentFrame((int) p.frame);
-					p.shapeBaseType._particleSprite.draw(c, _position_x + p.x,
+					p.shapeBaseType._particleSprite.draw(_position_x + p.x,
 							_position_y + p.y, p.convertor, p.color);
 				}
 			}
@@ -531,9 +530,9 @@ public final class FGParticleSystem {
 
 	}
 
-	public void updateAndDraw(Canvas c) {
+	public void updateAndDraw() {
 		update();
-		draw(c);
+		draw();
 	}
 
 	public void setDrawOrder(boolean old2new) {

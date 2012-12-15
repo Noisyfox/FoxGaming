@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
+import javax.microedition.khronos.opengles.GL10;
+
+import android.graphics.Color;
 
 /**
  * @ClassName: Polygon
@@ -33,7 +33,6 @@ public class FGPolygon {
 	int num_vertexs = 0;
 	boolean isLine = false;
 	boolean fill = false;
-	static Paint paint = new Paint();
 
 	public FGPolygon(FGPoint[] vertex, boolean fill) {
 		if (vertex.length <= 1) {
@@ -84,24 +83,23 @@ public class FGPolygon {
 		return isLine;
 	}
 
-	public void draw(Canvas c) {
+	public void draw(GL10 gl) {
 
-		paint.reset();
-		paint.setAlpha(170);
-		if (!fill) {
-			paint.setStyle(Paint.Style.STROKE);
-		}
+		FGDraw.setColor(Color.BLACK);
+		FGDraw.setAlpha(0.67f);
+		float[] _vertex = new float[vertex.length * 2];
 
-		Path path1 = new Path();
 		for (int i = 0; i < vertex.length; i++) {
-			if (i == 0) {
-				path1.moveTo(vertex[i].x, vertex[i].y);
-			} else {
-				path1.lineTo(vertex[i].x, vertex[i].y);
-			}
+			_vertex[i * 2] = vertex[i].x;
+			_vertex[i * 2 + 1] = vertex[i].y;
 		}
-		path1.close();
-		c.drawPath(path1, paint);
+
+		if (!fill) {
+			FGDraw.drawPolygon(gl, _vertex);
+		} else {
+			FGDraw.drawPolygonFill(gl, _vertex);
+		}
+
 	}
 
 }
