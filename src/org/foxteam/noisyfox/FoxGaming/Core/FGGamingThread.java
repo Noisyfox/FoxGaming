@@ -132,34 +132,23 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	}
 
 	public static Bitmap getScreenshots() {
-		IntBuffer PixelBuffer = IntBuffer.allocate(width * height);
-		PixelBuffer.position(0);
+		int b[] = new int[width * height];
+		int bt[] = new int[width * height];
+		IntBuffer ib = IntBuffer.wrap(b);
+		ib.position(0);
 		FGEGLHelper.getBufferGL().glReadPixels(0, 0, width, height,
-				GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, PixelBuffer);
-		PixelBuffer.position(0);// 这里要把读写位置重置下
-		int pix[] = new int[width * height];
-		int pix2[] = new int[width * height];
-		PixelBuffer.get(pix);// 这是将intbuffer中的数据赋值到pix数组中
-		int p = 0;
-		for (int i = 0; i < width * height; i++) {
-			p = pix[i];
-			int a = (p >> 24);
-			int b = ((p >> 16) & 0xFF); // green
-			int g = ((p >> 8) & 0xFF); // blue
-			int r = ((p) & 0xFF); // alpha
-
-			int x = i % width;
-			int y = (i - x) / width;
-			int n = width - 1 - x + y * width;
-			pix2[width * height - n - 1] = a << 24 | r << 16 | g << 8 | b;
+				GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, ib);
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				int pix = b[i * width + j];
+				int pb = (pix >> 16) & 0xff;
+				int pr = (pix << 16) & 0x00ff0000;
+				int pix1 = (pix & 0xff00ff00) | pr | pb;
+				bt[(height - i - 1) * width + j] = pix1;
+			}
 		}
-		Bitmap bmp = Bitmap.createBitmap(pix2, width, height,
-				Bitmap.Config.ARGB_8888);// pix是上面读到的像素
-
-		// Bitmap canvasBmp = Bitmap.createBitmap(width, height,
-		// Bitmap.Config.ARGB_8888);
-		// Canvas cn = new Canvas(canvasBmp);
-		// drawToCanvas(cn);
+		Bitmap bmp = Bitmap.createBitmap(bt, width, height,
+				Bitmap.Config.ARGB_8888);
 		return bmp;
 
 	}
