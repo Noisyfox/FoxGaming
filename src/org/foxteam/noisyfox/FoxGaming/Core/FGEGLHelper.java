@@ -48,10 +48,13 @@ public class FGEGLHelper {
 
 		if (mBinded_View == null) {
 			mBinded_View = view;
-
-			mBinded_EGL = (EGL10) GLDebugHelper.wrap(EGLContext.getEGL(),
-					GLDebugHelper.CONFIG_CHECK_GL_ERROR
-							| GLDebugHelper.CONFIG_CHECK_THREAD, null);
+			if (FGDebug.debugMode) {
+				mBinded_EGL = (EGL10) GLDebugHelper.wrap(EGLContext.getEGL(),
+						GLDebugHelper.CONFIG_CHECK_GL_ERROR
+								| GLDebugHelper.CONFIG_CHECK_THREAD, null);
+			} else {
+				mBinded_EGL = (EGL10) EGLContext.getEGL();
+			}
 
 			mBinded_GLDisplay = mBinded_EGL
 					.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
@@ -77,10 +80,17 @@ public class FGEGLHelper {
 
 			mBinded_EGL.eglMakeCurrent(mBinded_GLDisplay, mBinded_GLSurface,
 					mBinded_GLSurface, mBinded_GLContext);
-			mBinded_GL = (GL10) GLDebugHelper.wrap(mBinded_GLContext.getGL(),
-					GLDebugHelper.CONFIG_CHECK_GL_ERROR
-							| GLDebugHelper.CONFIG_CHECK_THREAD
-							| GLDebugHelper.CONFIG_LOG_ARGUMENT_NAMES, null);
+
+			if (FGDebug.debugMode) {
+				mBinded_GL = (GL10) GLDebugHelper
+						.wrap(mBinded_GLContext.getGL(),
+								GLDebugHelper.CONFIG_CHECK_GL_ERROR
+										| GLDebugHelper.CONFIG_CHECK_THREAD
+										| GLDebugHelper.CONFIG_LOG_ARGUMENT_NAMES,
+								null);
+			} else {
+				mBinded_GL = (GL10) mBinded_GLContext.getGL();
+			}
 
 			int width = mBinded_View.getWidth();
 			int height = mBinded_View.getHeight();

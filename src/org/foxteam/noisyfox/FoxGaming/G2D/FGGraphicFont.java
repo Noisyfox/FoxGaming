@@ -150,11 +150,7 @@ public final class FGGraphicFont {
 			float rY = (y - offsetY);
 			Integer charBitmap = fontMap.get(key);
 			if (charBitmap != null) {
-
-				FloatBuffer coordBuffer = FGEGLHelper.fBuffer(new float[] { 0,
-						0, frames.maxU, 0, 0, frames.maxV, frames.maxU,
-						frames.maxV, });
-				FloatBuffer verticleBuffer = FGEGLHelper.fBuffer(new float[] {
+				FloatBuffer verticleBuffer = frames.getFloatBuffer(new float[] {
 						rX, rY, rX + frameWidth * scale, rY, rX,
 						rY + frameHeight * scale, rX + frameWidth * scale,
 						rY + frameHeight * scale });
@@ -162,7 +158,8 @@ public final class FGGraphicFont {
 				FGEGLHelper.useTexture(true);
 				frames.gl.glBindTexture(GL10.GL_TEXTURE_2D,
 						frames.getFrameTexture(charBitmap));
-				frames.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, coordBuffer);
+				frames.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0,
+						frames.coordBuffer);
 				frames.gl.glVertexPointer(2, GL10.GL_FLOAT, 0, verticleBuffer);
 				frames.gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 				frames.gl.glColor4f(1f, 1f, 1f, 1f);

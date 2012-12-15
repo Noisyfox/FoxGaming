@@ -137,9 +137,6 @@ public final class FGSprite {
 		float G = Color.green(color) / 255f;
 		float B = Color.blue(color) / 255f;
 
-		FloatBuffer coordBuffer = FGEGLHelper.fBuffer(new float[] { 0, 0,
-				frames.maxU, 0, 0, frames.maxV, frames.maxU, frames.maxV });
-
 		float[] verticle = null;
 
 		if (spriteConvertor != null) {
@@ -161,11 +158,11 @@ public final class FGSprite {
 			frames.gl.glColor4f(R, G, B, 1f);
 		}
 
-		FloatBuffer verticleBuffer = FGEGLHelper.fBuffer(verticle);
+		FloatBuffer verticleBuffer = frames.getFloatBuffer(verticle);
 		FGEGLHelper.useTexture(true);
 		frames.gl.glBindTexture(GL10.GL_TEXTURE_2D,
 				frames.getFrameTexture(currentFrame));
-		frames.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, coordBuffer);
+		frames.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, frames.coordBuffer);
 		frames.gl.glVertexPointer(2, GL10.GL_FLOAT, 0, verticleBuffer);
 		frames.gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		frames.gl.glColor4f(1f, 1f, 1f, 1f);

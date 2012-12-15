@@ -2,10 +2,12 @@ package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import java.io.InputStream;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 
 import android.graphics.Bitmap;
@@ -57,6 +59,8 @@ public final class FGFrame {
 
 	protected GL10 gl;
 
+	protected FloatBuffer coordBuffer;
+
 	private void initializeFrames(Bitmap image, int horizontalNumber,
 			int verticalNumber) {
 
@@ -99,6 +103,9 @@ public final class FGFrame {
 				currentFrame++;
 			}
 		}
+
+		coordBuffer = FGEGLHelper.fBuffer(new float[] { 0, 0, maxU, 0, 0, maxV,
+				maxU, maxV });
 	}
 
 	public final void loadFromBitmap(GL10 gl, Bitmap bitmap) {
@@ -241,4 +248,21 @@ public final class FGFrame {
 		return colors;
 	}
 
+	FloatBuffer cachedFloatBuffer = null;
+	int cachedFloatBufferLength = 0;
+
+	public final FloatBuffer getFloatBuffer(float[] a) {
+		if (cachedFloatBuffer == null || a.length != cachedFloatBufferLength) {
+			cachedFloatBufferLength = a.length;
+			cachedFloatBuffer = FGEGLHelper.fBuffer(a);
+		} else {
+			cachedFloatBuffer.position(0);
+			for (int i = 0; i < cachedFloatBufferLength; i++) {
+				cachedFloatBuffer.put(a[i]);
+			}
+			cachedFloatBuffer.position(0);
+		}
+
+		return cachedFloatBuffer;
+	}
 }

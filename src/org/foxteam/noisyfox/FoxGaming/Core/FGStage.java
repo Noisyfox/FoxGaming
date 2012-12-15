@@ -56,6 +56,7 @@ public abstract class FGStage {
 	};
 
 	protected List<FGPerformer> performers = new ArrayList<FGPerformer>();
+	protected int performerCount = 0;
 	protected FGViews activatedView = null;
 	protected List<ManagedParticleSystem> managedParticleSystem = new ArrayList<ManagedParticleSystem>();
 	protected int managedParticleSystemSize = 0;
@@ -228,6 +229,7 @@ public abstract class FGStage {
 		}
 
 		performers.clear();
+		performerCount = 0;
 		activatedView = null;
 		width = 480;
 		height = 800;
@@ -261,6 +263,7 @@ public abstract class FGStage {
 				if (performers.contains(p))
 					continue;
 				performers.add(p);
+				performerCount++;
 				emploiedPerformer.add(p);
 			}
 			sortWithDepth();
@@ -294,7 +297,7 @@ public abstract class FGStage {
 				if (!performers.contains(p))
 					continue;
 				performers.remove(p);
-
+				performerCount--;
 				dismissedPerformer.add(p);
 			}
 			sortWithDepth();
@@ -313,9 +316,13 @@ public abstract class FGStage {
 		if (!available)
 			throw new RuntimeException("无法操作一个已经不存在的stage");
 
-		for (FGPerformer p : performers) {
+		for (int i = 0; i < performerCount; i++) {
+			FGPerformer p = performers.get(i);
 			p.callEvent(event, args);
 		}
+		// for (FGPerformer p : performers) {
+		// p.callEvent(event, args);
+		// }
 	}
 
 	public final void setView(FGViews view) {
@@ -405,6 +412,7 @@ public abstract class FGStage {
 				p.performing = false;
 			}
 			performers.clear();
+			performerCount = 0;
 
 			stages.remove(this);// 移除stage记录
 

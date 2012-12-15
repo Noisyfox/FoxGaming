@@ -370,13 +370,11 @@ public class FGBackground {
 
 		// 绘制
 		FGEGLHelper.useTexture(true);
-		FloatBuffer coordBuffer = FGEGLHelper.fBuffer(new float[] { 0, 0,
-				sourceImage.maxU, 0, 0, sourceImage.maxV, sourceImage.maxU,
-				sourceImage.maxV, });
 		FloatBuffer verticleBuffer;
 		sourceImage.gl.glBindTexture(GL10.GL_TEXTURE_2D,
 				sourceImage.getFrameTexture(0));
-		sourceImage.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, coordBuffer);
+		sourceImage.gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0,
+				sourceImage.coordBuffer);
 
 		if (option_draw == ADAPTATION_OPTION_DRAW_REPEATING) {
 			// 简化位置
@@ -411,7 +409,7 @@ public class FGBackground {
 
 			for (int i = 0; i < x1; i++) {
 				for (int j = 0; j < y1; j++) {
-					verticleBuffer = FGEGLHelper.fBuffer(new float[] {
+					verticleBuffer = sourceImage.getFloatBuffer(new float[] {
 							left + xt + i * imageWidth,
 							top + yt + j * imageHeight,
 							left + xt + (i + 1) * imageWidth + 1,
@@ -427,7 +425,7 @@ public class FGBackground {
 			}
 
 		} else {
-			verticleBuffer = FGEGLHelper.fBuffer(new float[] { left + x,
+			verticleBuffer = sourceImage.getFloatBuffer(new float[] { left + x,
 					top + y, left + x + imageWidth, top + y, left + x,
 					top + y + imageHeight, left + x + imageWidth,
 					top + y + imageHeight });
