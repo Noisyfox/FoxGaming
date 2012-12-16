@@ -38,10 +38,6 @@ public class FGEGLHelper {
 	protected static EGLContext mBinded_GLContext;
 	protected static SurfaceView mBinded_View;
 
-	public final static GL10 getBufferGL() {
-		return mBinded_GL;
-	}
-
 	public final static void bindSurfaceView(SurfaceView view) {
 		if (view == null)
 			return;
@@ -118,7 +114,6 @@ public class FGEGLHelper {
 															// Make Black
 															// Transparent)
 
-			// the only way to draw primitives with OpenGL ES
 			mBinded_GL.glEnable(GL10.GL_BLEND);
 			mBinded_GL.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 			mBinded_GL.glBlendFunc(GL10.GL_SRC_ALPHA,
@@ -153,11 +148,11 @@ public class FGEGLHelper {
 
 	public final static void useTexture(boolean useTexture) {
 		if (useTexture) {
-			getBindedGL().glEnable(GL10.GL_TEXTURE_2D);
-			getBindedGL().glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+			mBinded_GL.glEnable(GL10.GL_TEXTURE_2D);
+			mBinded_GL.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		} else {
-			getBindedGL().glDisable(GL10.GL_TEXTURE_2D);
-			getBindedGL().glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+			mBinded_GL.glDisable(GL10.GL_TEXTURE_2D);
+			mBinded_GL.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		}
 	}
 

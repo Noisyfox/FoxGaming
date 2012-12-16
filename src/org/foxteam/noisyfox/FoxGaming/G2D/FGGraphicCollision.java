@@ -503,7 +503,7 @@ public class FGGraphicCollision {
 	}
 
 	public void draw() {
-		GL10 gl = FGEGLHelper.getBufferGL();
+		GL10 gl = FGEGLHelper.getBindedGL();
 		for (FGPoint p : points_tmp) {
 			p.draw(gl);
 		}

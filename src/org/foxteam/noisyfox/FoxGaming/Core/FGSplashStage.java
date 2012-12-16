@@ -20,7 +20,7 @@ public final class FGSplashStage extends FGStage {
 
 		new splashController().perform(stageIndex);
 
-		logo.loadFromBitmap(FGEGLHelper.getBufferGL(),
+		logo.loadFromBitmap(FGEGLHelper.getBindedGL(),
 				org.foxteam.noisyfox.THEngine.R.drawable.foxgaming, true);
 		logoS.bindFrames(logo);
 		logoS.setOffset(logoS.getWidth() / 2, logoS.getHeight() / 2);

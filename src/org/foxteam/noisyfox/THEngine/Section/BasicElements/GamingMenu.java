@@ -91,7 +91,7 @@ public class GamingMenu extends FGPerformer {
 		menuType = type;
 		cStage = (SectionStage) FGStage.getCurrentStage();
 		Bitmap currentScreen = FGGamingThread.getScreenshots();
-		ssf.loadFromBitmap(FGEGLHelper.getBufferGL(), currentScreen);
+		ssf.loadFromBitmap(FGEGLHelper.getBindedGL(), currentScreen);
 		sss.bindFrames(ssf);
 		setDepth(-1001);
 		menuState = MenuState.showing;
@@ -114,7 +114,7 @@ public class GamingMenu extends FGPerformer {
 			return;
 		FGDraw.setAlpha(1);
 		FGDraw.setColor(Color.BLACK);
-		FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+		FGDraw.drawRectFill(FGEGLHelper.getBindedGL(), 0, 0, FGStage
 				.getCurrentStage().getWidth(), FGStage.getCurrentStage()
 				.getHeight());
 		sss.draw(0, 0, sssc);

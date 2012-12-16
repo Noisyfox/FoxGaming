@@ -136,7 +136,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		int bt[] = new int[width * height];
 		IntBuffer ib = IntBuffer.wrap(b);
 		ib.position(0);
-		FGEGLHelper.getBufferGL().glReadPixels(0, 0, width, height,
+		FGEGLHelper.getBindedGL().glReadPixels(0, 0, width, height,
 				GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, ib);
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
@@ -266,33 +266,33 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 	private void applyView() {
 		if (FGStage.currentStage.activatedView == null) {
-			FGEGLHelper.getBufferGL().glViewport(0, 0, width, height);
+			FGEGLHelper.getBindedGL().glViewport(0, 0, width, height);
 
-			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_PROJECTION);
-			FGEGLHelper.getBufferGL().glLoadIdentity();
+			FGEGLHelper.getBindedGL().glMatrixMode(GL10.GL_PROJECTION);
+			FGEGLHelper.getBindedGL().glLoadIdentity();
 
-			GLU.gluOrtho2D(FGEGLHelper.getBufferGL(), 0, width, height, 0);
+			GLU.gluOrtho2D(FGEGLHelper.getBindedGL(), 0, width, height, 0);
 
-			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_MODELVIEW);
-			FGEGLHelper.getBufferGL().glLoadIdentity();
+			FGEGLHelper.getBindedGL().glMatrixMode(GL10.GL_MODELVIEW);
+			FGEGLHelper.getBindedGL().glLoadIdentity();
 
 		} else {
 			FGViews v = FGStage.currentStage.activatedView;
 
-			FGEGLHelper.getBufferGL().glViewport((int) v.getXFromScreen(),
+			FGEGLHelper.getBindedGL().glViewport((int) v.getXFromScreen(),
 					(int) v.getYFromScreen(), (int) v.getWidthFromScreen(),
 					(int) v.getHeightFromScreen());
 
-			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_PROJECTION);
-			FGEGLHelper.getBufferGL().glLoadIdentity();
+			FGEGLHelper.getBindedGL().glMatrixMode(GL10.GL_PROJECTION);
+			FGEGLHelper.getBindedGL().glLoadIdentity();
 
-			GLU.gluOrtho2D(FGEGLHelper.getBufferGL(), v.getXFromStage(),
+			GLU.gluOrtho2D(FGEGLHelper.getBindedGL(), v.getXFromStage(),
 					v.getXFromStage() + v.getWidthFromStage(),
 					v.getYFromStage() + v.getHeightFromStage(),
 					v.getYFromStage());
 
-			FGEGLHelper.getBufferGL().glMatrixMode(GL10.GL_MODELVIEW);
-			FGEGLHelper.getBufferGL().glLoadIdentity();
+			FGEGLHelper.getBindedGL().glMatrixMode(GL10.GL_MODELVIEW);
+			FGEGLHelper.getBindedGL().glLoadIdentity();
 
 		}
 
@@ -482,7 +482,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 
 			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 			applyView();
-			FGEGLHelper.getBufferGL().glClear(
+			FGEGLHelper.getBindedGL().glClear(
 					GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 			FGDraw.setColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
 			FGDraw.setAlpha(1);

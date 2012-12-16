@@ -48,7 +48,7 @@ public final class WeiboShareProcessor extends FGPerformer {
 	protected void onDraw() {
 		FGDraw.setAlpha(1);
 		FGDraw.setColor(Color.BLACK);
-		FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+		FGDraw.drawRectFill(FGEGLHelper.getBindedGL(), 0, 0, FGStage
 				.getCurrentStage().getWidth(), FGStage.getCurrentStage()
 				.getHeight());
 		sss.draw(0, 0, sssc);
@@ -56,9 +56,9 @@ public final class WeiboShareProcessor extends FGPerformer {
 			FGDraw.setAlpha(1);
 			FGDraw.setColor(Color.WHITE);
 			int y = (int) (k * FGStage.getCurrentStage().getHeight() / 2);
-			FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+			FGDraw.drawRectFill(FGEGLHelper.getBindedGL(), 0, 0, FGStage
 					.getCurrentStage().getWidth(), y);
-			FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, FGStage
+			FGDraw.drawRectFill(FGEGLHelper.getBindedGL(), 0, FGStage
 					.getCurrentStage().getHeight() - y, FGStage
 					.getCurrentStage().getWidth(), FGStage.getCurrentStage()
 					.getHeight());
@@ -69,7 +69,7 @@ public final class WeiboShareProcessor extends FGPerformer {
 	protected void onCreate() {
 		p.setColor(Color.WHITE);
 		screenShot = FGGamingThread.getScreenshots();
-		ssf.loadFromBitmap(FGEGLHelper.getBufferGL(), screenShot);
+		ssf.loadFromBitmap(FGEGLHelper.getBindedGL(), screenShot);
 		sss.bindFrames(ssf);
 		sssc.setAlpha(1);
 		freezeAll(true, true);

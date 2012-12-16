@@ -145,7 +145,7 @@ public abstract class SectionStage extends FGStage {
 
 		Bitmap cache = FGGamingThread.getScreenshots();
 		FGFrame f = new FGFrame();
-		f.loadFromBitmap(FGEGLHelper.getBufferGL(), cache);
+		f.loadFromBitmap(FGEGLHelper.getBindedGL(), cache);
 		FGBackground bkg = new FGBackground();
 		bkg.bindFrame(f);
 		pauseCache_Background = getBackground();

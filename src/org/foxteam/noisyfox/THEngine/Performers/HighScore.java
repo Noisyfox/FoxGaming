@@ -128,7 +128,7 @@ public final class HighScore extends FGPerformer {
 					* i, highscoreTextPaint);
 		}
 
-		cachedFrame.loadFromBitmap(FGEGLHelper.getBufferGL(), tmpBitmap);
+		cachedFrame.loadFromBitmap(FGEGLHelper.getBindedGL(), tmpBitmap);
 		cachedSprite.bindFrames(cachedFrame);
 		cachedSprite.setOffset(0, cachedSprite.getHeight() / 2);
 		aniConvertor.setScale(1, hk);

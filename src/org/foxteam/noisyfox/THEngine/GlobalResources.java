@@ -90,7 +90,7 @@ public class GlobalResources {
 
 	public static void loadResources() {
 
-		GL10 gl = FGEGLHelper.getBufferGL();
+		GL10 gl = FGEGLHelper.getBindedGL();
 
 		// 初始化 敌机 玩偶怪 的移动路径
 		PATHBEZIER3_ENEMY_DOOL_BLUE = new FGPathBezier3();

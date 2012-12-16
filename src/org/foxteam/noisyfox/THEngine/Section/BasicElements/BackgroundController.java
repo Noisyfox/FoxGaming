@@ -24,7 +24,7 @@ public final class BackgroundController extends FGPerformer {
 				continue;
 
 			FGDraw.setColor(b.color);
-			FGDraw.drawRect(FGEGLHelper.getBufferGL(), b.x, b.y, b.x + b.width,
+			FGDraw.drawRect(FGEGLHelper.getBindedGL(), b.x, b.y, b.x + b.width,
 					b.y + b.height);
 		}
 	}

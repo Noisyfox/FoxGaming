@@ -35,7 +35,7 @@ public final class StageSwitchEffect extends FGPerformer {
 		if (alpha > 0.001f) {
 			FGDraw.setAlpha(alpha);
 			FGDraw.setColor(Color.BLACK);
-			FGDraw.drawRectFill(FGEGLHelper.getBufferGL(), 0, 0, FGStage
+			FGDraw.drawRectFill(FGEGLHelper.getBindedGL(), 0, 0, FGStage
 					.getCurrentStage().getWidth(), FGStage.getCurrentStage()
 					.getHeight());
 		}
