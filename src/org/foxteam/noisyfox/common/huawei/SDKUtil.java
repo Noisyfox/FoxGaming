@@ -1,5 +1,7 @@
 package org.foxteam.noisyfox.common.huawei;
 
+import java.util.HashMap;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -24,6 +26,8 @@ public final class SDKUtil {
 	private static Context context = null;
 	public static SDKUtil instance = new SDKUtil();
 
+	private static HashMap<String, OAuthDefination> oAuthDefination = new HashMap<String, OAuthDefination>();
+
 	// SDK的公共服务类
 	private static CommonService mCommon;
 	// SDK分享类
@@ -34,9 +38,38 @@ public final class SDKUtil {
 	private SDKUtil() {
 	}
 
+	/**
+	 * 设置华为 imax 平台参数
+	 * 
+	 * @param app_id
+	 *            APP在IMAX注册应用时分配的APP ID
+	 * @param app_key
+	 *            APP在IMAX注册应用时分配的APP ID
+	 */
 	public static final void setSDK(String app_id, String app_key) {
 		APPID = app_id;
 		APPKEY = app_key;
+	}
+
+	/**
+	 * 设置第三方 OAuth 鉴权参数
+	 * 
+	 * @param ep_id
+	 * @param app_key
+	 * @param app_secret
+	 * @param redirect_url
+	 */
+	public static final void addOAuthDefination(String ep_id, String app_key,
+			String app_secret, String redirect_url) {
+		if (oAuthDefination.containsKey(ep_id))
+			return;
+
+		OAuthDefination d = instance.new OAuthDefination();
+		d.ep_id = ep_id;
+		d.app_key = app_key;
+		d.app_secret = app_secret;
+		d.redirect_url = redirect_url;
+		oAuthDefination.put(ep_id, d);
 	}
 
 	// 第一步：初始化SDK
@@ -85,38 +118,13 @@ public final class SDKUtil {
 		// 用WebView控件打开OAuth鉴权页面
 		Intent it = new Intent(context, AuthActivity.class);
 		it.putExtra("ep_id", ep_id);
-		// APP在新浪微博开放平台注册应用时分配的参数
-		if (ep_id.equals("sina")) {
-			it.putExtra("app_key", "3179803434");
-			it.putExtra("app_secret", "3e98c5b102978db17d4e0b8e83a4dd1d");
-			it.putExtra("redirect_url", "http://nuaamstc.sinaapp.com");
-		}
-		// APP在腾讯微博开放平台注册应用时分配的参数
-		else if (ep_id.equals("tencent")) {
-			it.putExtra("app_key", "801268812");
-			it.putExtra("app_secret", "889af130d9db770cb372e91d0c590625");
-			it.putExtra("redirect_url", "http://www.baidu.com");
-		}
-		// APP在人人网开放平台注册应用时分配的参数
-		else if (ep_id.equals("renren")) {
-			it.putExtra("app_key", "763f986c6d1f41b0b7ec8cba28f8c530");
-			it.putExtra("app_secret", "436e0399ac684ff09a0b4dd6aa014cf7");
-			it.putExtra("redirect_url",
-					"http://graph.renren.com/oauth/login_success.html");
-		}
-		// APP在豆瓣开放平台注册应用时分配的参数
-		else if (ep_id.equals("douban")) {
-			it.putExtra("app_key", "06da0ba739b966ae148e22f5ad2c340a");
-			it.putExtra("app_secret", "83a7d621037944fa");
-			it.putExtra("redirect_url",
-					"http://192.168.8.12:8080/user/getBeanCode");
-		}
-		// APP在开心网开放平台注册应用时分配的参数
-		else if (ep_id.equals("kaixin")) {
-			it.putExtra("app_key", "689920286369b6fcdd10fd4e56ef55c9");
-			it.putExtra("app_secret", "a02ac05cb710b3daea1a09fd3585ae12");
-			it.putExtra("redirect_url",
-					"http://218.2.129.7:8080/user/getHappyCode");
+		if ((oAuthDefination.containsKey(ep_id))) {
+			OAuthDefination d = oAuthDefination.get(ep_id);
+			it.putExtra("app_key", d.app_key);
+			it.putExtra("app_secret", d.app_secret);
+			it.putExtra("redirect_url", d.redirect_url);
+		} else {
+			return;
 		}
 
 		((Activity) context).startActivityForResult(it, requestCode);
@@ -260,6 +268,13 @@ public final class SDKUtil {
 		public String temperature = "0C";
 		public String humidity = "0%";
 
+	}
+
+	public class OAuthDefination {
+		String ep_id = "";
+		String app_key = "";
+		String app_secret = "";
+		String redirect_url = "";
 	}
 
 	public static boolean isInited() {

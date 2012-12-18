@@ -53,6 +53,9 @@ public class THEngineMainActivity extends FGGameActivity {
 	@Override
 	public void onEngineReady() {
 		SDKUtil.setSDK("3405328418", "ced1496e8fc70f3c4bd6080731ae26d6");
+		SDKUtil.addOAuthDefination("sina", "3179803434",
+				"3e98c5b102978db17d4e0b8e83a4dd1d",
+				"http://nuaamstc.sinaapp.com");
 		SDKUtil.sdkInit(this, null);
 		GlobalResources.loadResources();
 		SectionStage.initSectionStage();
