@@ -1,26 +1,43 @@
 package org.foxteam.noisyfox.common.huawei;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.imax.vmall.sdk.android.common.adapter.ServiceCallback;
+import com.imax.vmall.sdk.android.entry.CapabilityService;
 import com.imax.vmall.sdk.android.entry.CommonService;
 import com.imax.vmall.sdk.android.huawei.share.ShareStatus;
+import com.imax.vmall.sdk.android.huawei.weather.WeatherService;
 
 public final class SDKUtil {
-	private static final String APPID = "3405328418";
-	private static final String APPKEY = "ced1496e8fc70f3c4bd6080731ae26d6";
+	private static String APPID = "";
+	private static String APPKEY = "";
 
 	private static boolean inited = false;
 
 	private static final String TAG = "SDKUtil";
 	private static Context context = null;
+	public static SDKUtil instance = new SDKUtil();
 
 	// SDK的公共服务类
 	private static CommonService mCommon;
 	// SDK分享类
 	private static ShareStatus mShare;
+	// SDK天气类
+	private static WeatherService mWeather;
+
+	private SDKUtil() {
+	}
+
+	public static final void setSDK(String app_id, String app_key) {
+		APPID = app_id;
+		APPKEY = app_key;
+	}
 
 	// 第一步：初始化SDK
 	public static void sdkInit(Context context, final ServiceCallback callBack) {
@@ -153,6 +170,96 @@ public final class SDKUtil {
 					callBack.onError(message);
 			}
 		});
+	}
+
+	public static void getWeather(String country, String province, String city,
+			String address, final ServiceCallback callBack) {
+		if (!inited)
+			return;
+
+		mWeather = CapabilityService.getWeatherServiceInstance();
+
+		// 国家名
+		// country = "china";
+		// 省份名
+		// province = "jiangsu";
+		// 城市名
+		// city = "nanjing";
+		// 地点名
+		// address = "jiangning";
+		// 调用getWeather根据地名获取天气信息
+		mWeather.getWeather(country, province, city, address,
+				new ServiceCallback() {
+
+					public void onError(String arg0) {
+						// api接口调用错误响应
+						Log.i(TAG, "getWeather error:" + arg0);
+
+						if (callBack != null)
+							callBack.onError(arg0);
+					}
+
+					public void onComplete(String arg0) {
+						// api接口调用成功响应
+						Log.i(TAG, "getWeather complete:" + arg0);
+
+						if (callBack != null)
+							callBack.onComplete(arg0);
+					}
+				});
+
+	}
+
+	public static WeatherDescription analyseWeatherJson(String jsonText) {
+		WeatherDescription w = instance.new WeatherDescription();
+		try {
+			JSONTokener jsonParser = new JSONTokener(jsonText);
+			JSONObject weatherB = (JSONObject) jsonParser.nextValue();
+			if (weatherB.getString("ret").equals("0")) {// 确保成功
+				// 获取weather code
+				JSONObject weatherDescription = weatherB
+						.getJSONObject("weather");
+				String weatherCode = weatherDescription.getString("code");
+				w.description = weatherDescription.getString("description");
+				w.code = Integer.parseInt(weatherCode);
+				w.codeDescription = decodeWeather(w.code);
+
+				// 获取温度和湿度
+				w.temperature = weatherB.getString("temperature");
+				w.humidity = weatherB.getString("humidity");
+
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return w;
+	}
+
+	private static final String[] weatherCodeMap = { "龙卷风", "热带风暴", "飓风",
+			"强雷暴", "雷暴", "雨转雪", "雨转雨夹雪", "雪转冻雨", "冻毛毛雨", "细雨", "冻雨", "骤雨",
+			"骤雨", "阵雪", "轻型阵雪", "吹雪", "雪", "冰雹", "雨夹雪", "灰尘", "有雾", "烟霾", "黑烟",
+			"狂风", "刮风", "冷", "多云", "晴转多云", "晴转多云", "晴转多云", "晴转多云", "晴朗", "晴",
+			"晴朗", "晴朗", "雨夹冰雹", "炎热", "局部雷暴", "局部雷暴", "局部雷暴", "局部阵雨", "大雪",
+			"局部阵雪", "大雪", "晴转多云", "雷阵雨", "阵雪", "局部雷阵雨" };
+
+	public static final String decodeWeather(int weatherCode) {
+		if (weatherCode < 0 || weatherCode > weatherCodeMap.length - 1) {
+			return "";
+		}
+
+		return weatherCodeMap[weatherCode];
+	}
+
+	public class WeatherDescription {
+
+		public String description = "";
+		public int code = -1;
+		public String codeDescription = "";
+		public String temperature = "0C";
+		public String humidity = "0%";
+
 	}
 
 	public static boolean isInited() {

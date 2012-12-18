@@ -52,6 +52,7 @@ public class THEngineMainActivity extends FGGameActivity {
 
 	@Override
 	public void onEngineReady() {
+		SDKUtil.setSDK("3405328418", "ced1496e8fc70f3c4bd6080731ae26d6");
 		SDKUtil.sdkInit(this, null);
 		GlobalResources.loadResources();
 		SectionStage.initSectionStage();
