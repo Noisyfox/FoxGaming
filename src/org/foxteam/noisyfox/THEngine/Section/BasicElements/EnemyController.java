@@ -66,6 +66,7 @@ public final class EnemyController extends FGPerformer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		ed.instance.prepareEnemy();
 		enemyList.add(ed);
 
 		if (step > maxStep)

@@ -54,8 +54,7 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 	private float baseY = 0;
 
 	@Override
-	protected void onCreate() {
-
+	public void prepareEnemy() {
 		dollSprite.bindFrames(GlobalResources.FRAMES_ENEMY_DOLL_BLUE);
 		dollSprite.setOffset(dollSprite.getWidth() / 2,
 				dollSprite.getHeight() / 2);
@@ -71,6 +70,10 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 		this.setHP(10);
 
 		this.requireCollisionDetection(Bullet_Player.class);
+	}
+
+	@Override
+	protected void onCreate() {
 
 		if (faceLeft) {
 			baseX = FGStage.getCurrentStage().getWidth()

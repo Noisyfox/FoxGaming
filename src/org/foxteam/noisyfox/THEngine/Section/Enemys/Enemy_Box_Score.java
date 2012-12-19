@@ -38,10 +38,11 @@ import org.foxteam.noisyfox.THEngine.Section.PowerUps.PowerUp_Score;
 public class Enemy_Box_Score extends EnemyOnGround {
 
 	int inX = 0;
+	FGSprite boxSprite;
 
 	@Override
-	protected void onCreate() {
-		FGSprite boxSprite = new FGSprite();
+	public void prepareEnemy() {
+		boxSprite = new FGSprite();
 		boxSprite.bindFrames(GlobalResources.FRAMES_ENEMY_BOX_SCORE);
 		boxSprite.setOffset(22, 13);
 		this.bindSprite(boxSprite);
@@ -54,9 +55,12 @@ public class Enemy_Box_Score extends EnemyOnGround {
 
 		this.requireCollisionDetection(Bullet_Player.class);
 
-		this.setPosition(inX, -boxSprite.getHeight() + boxSprite.getOffsetY());
-
 		this.motion_set(270, SectionStage.getScrollSpeedV());
+	}
+
+	@Override
+	protected void onCreate() {
+		this.setPosition(inX, -boxSprite.getHeight() + boxSprite.getOffsetY());
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
@@ -13,31 +10,35 @@ import android.graphics.Color;
 
 public final class BackgroundController extends FGPerformer {
 
-	private static List<BKG> bkgs = new ArrayList<BKG>();
-	private static int SQUARE_COUNT_MAX = 20;
+	private static final int SQUARE_COUNT_MAX = 40;
+	private static BKG[] bkgs = new BKG[SQUARE_COUNT_MAX * 2];
 
 	@Override
 	protected void onDraw() {
 
-		for (BKG b : bkgs) {
+		for (int i = 0; i < bkgs.length; i++) {
+			BKG b = bkgs[i];
+
 			if (b.y + b.height <= 0)
 				continue;
 
 			FGDraw.setColor(b.color);
-			FGDraw.drawRect(FGEGLHelper.getBindedGL(), b.x, b.y, b.x + b.width,
-					b.y + b.height);
+			FGDraw.setAlpha(1);
+			FGDraw.drawRectFill(FGEGLHelper.getBindedGL(), b.x, b.y, b.x
+					+ b.width, b.y + b.height);
 		}
 	}
 
 	@Override
 	protected void onCreate() {
-		for (int i = bkgs.size(); i < SQUARE_COUNT_MAX * 2; i++) {
+		for (int i = 0; i < bkgs.length; i++) {
 			BKG b = new BKG();
 			b.y = FGMathsHelper.random(-FGStage.getCurrentStage().getHeight(),
 					FGStage.getCurrentStage().getHeight());
 			randomBKG(b);
-			bkgs.add(b);
+			bkgs[i] = b;
 		}
+		this.setDepth(10000);
 	}
 
 	private void randomBKG(BKG bkg) {
@@ -46,20 +47,23 @@ public final class BackgroundController extends FGPerformer {
 		bkg.speed = (float) FGMathsHelper.random(20f / FGStage
 				.getCurrentStage().getStageSpeed(), 40f / FGStage
 				.getCurrentStage().getStageSpeed());
-		bkg.width = (float) FGMathsHelper.random(30.0, 70.0);
+		// bkg.width = (float) FGMathsHelper.random(30.0, 70.0);
+		bkg.width = 70;
 		bkg.height = bkg.width;
-		int value = FGMathsHelper.random(75, 130);
+		int value = FGMathsHelper.random(30, 100);
 		bkg.color = Color.rgb(value, value, value);
 	}
 
 	@Override
 	protected void onStep() {
-		for (BKG b : bkgs) {
+
+		for (int i = 0; i < bkgs.length; i++) {
+			BKG b = bkgs[i];
 			b.y += b.speed;
 			if (b.y >= FGStage.getCurrentStage().getHeight()) {
-				b.y = -FGMathsHelper.random(0, FGStage.getCurrentStage()
-						.getHeight());
 				randomBKG(b);
+				b.y = -FGMathsHelper.random(0, FGStage.getCurrentStage()
+						.getHeight() - (int) b.height);
 			}
 		}
 	}

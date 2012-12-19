@@ -51,21 +51,16 @@ public class Enemy_Fly extends EnemyInAir {
 	FGScreenPlay myMovement = new FGScreenPlay();
 
 	static final float STAYTIME = 2.0f;// 进入屏幕后停留的时间，单位秒
+	FGSprite flySprite;
 
 	@Override
-	protected void onCreate() {
-		FGSprite flySprite = new FGSprite();
+	public void prepareEnemy() {
+
+		flySprite = new FGSprite();
 		flySprite.bindFrames(GlobalResources.FRAMES_ENEMY_FLY);
 		flySprite
 				.setOffset(flySprite.getWidth() / 2, flySprite.getHeight() / 2);
 		this.bindSprite(flySprite);
-
-		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.1f), true);// 播放动画
-		this.startAlarm(0);
-		if (canFire) {
-			this.setAlarm(1, (int) (FGStage.getSpeed() * 2.5f), true);// 发射子弹
-			this.startAlarm(1);
-		}
 
 		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(0, 0, 12, true);
@@ -78,6 +73,18 @@ public class Enemy_Fly extends EnemyInAir {
 		this.setHP(10);
 
 		this.requireCollisionDetection(Bullet_Player.class);
+
+	}
+
+	@Override
+	protected void onCreate() {
+
+		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.1f), true);// 播放动画
+		this.startAlarm(0);
+		if (canFire) {
+			this.setAlarm(1, (int) (FGStage.getSpeed() * 2.5f), true);// 发射子弹
+			this.startAlarm(1);
+		}
 
 		this.setPosition(inX, -flySprite.getHeight() + flySprite.getOffsetY());
 

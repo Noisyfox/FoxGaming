@@ -47,27 +47,6 @@ public final class GamingController extends FGPerformer {
 				.loadBGM(org.foxteam.noisyfox.THEngine.R.raw.test_bgm);
 		FGSimpleBGM.play(bgmId, true);
 
-		// 计算缩放比率
-		float k = (float) FGGamingThread.getScreenWidth() * 1.15f / 320f;
-
-		FGStage.getCurrentStage().setSize(
-				(int) ((float) FGGamingThread.getScreenHeight() / k), 320);
-
-		FGViews v = new FGViews();
-
-		v.setSizeFromScreen(FGGamingThread.getScreenWidth(),
-				FGGamingThread.getScreenHeight());
-		v.setSizeFromStage((int) ((float) FGGamingThread.getScreenWidth() / k),
-				(int) ((float) FGGamingThread.getScreenHeight() / k));
-
-		v.setPositionFromScreen(0, 0);
-		v.setPositionFromStage(
-				(FGStage.getCurrentStage().getWidth() - v.getWidthFromStage()) / 2,
-				0);
-
-		v.setAngleFromStage(0);
-		FGStage.getCurrentStage().setView(v);
-
 		hud = new HUD();
 	}
 

@@ -40,17 +40,15 @@ import org.foxteam.noisyfox.THEngine.Section.PowerUps.PowerUp_Missile;
 public class Enemy_Butterfly extends EnemyInAir {
 
 	int inX = 0;// 从哪个位置进入屏幕
+	FGSprite butterflySprite;
 
 	@Override
-	protected void onCreate() {
-		FGSprite butterflySprite = new FGSprite();
+	public void prepareEnemy() {
+		butterflySprite = new FGSprite();
 		butterflySprite.bindFrames(GlobalResources.FRAMES_ENEMY_BUTTERFLY);
 		butterflySprite.setOffset(butterflySprite.getWidth() / 2,
 				butterflySprite.getHeight() / 2);
 		this.bindSprite(butterflySprite);
-
-		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.3f), true);// 播放动画
-		this.startAlarm(0);
 
 		FGGraphicCollision co = new FGGraphicCollision();
 		co.addCircle(-2, 4, 15, true);
@@ -65,6 +63,13 @@ public class Enemy_Butterfly extends EnemyInAir {
 		this.setHP(100);
 
 		this.requireCollisionDetection(Bullet_Player.class);
+	}
+
+	@Override
+	protected void onCreate() {
+
+		this.setAlarm(0, (int) (FGStage.getSpeed() * 0.3f), true);// 播放动画
+		this.startAlarm(0);
 
 		this.setPosition(inX,
 				-butterflySprite.getHeight() + butterflySprite.getOffsetY());

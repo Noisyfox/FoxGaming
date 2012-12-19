@@ -40,14 +40,35 @@ public class Enemy_Duck extends EnemyInAir {
 	private float speed = 0;
 
 	FGSpriteConvertor sc = new FGSpriteConvertor();
+	FGSprite duckSprite;
+	FGGraphicCollision co;
 
 	@Override
-	protected void onCreate() {
-		FGSprite duckSprite = new FGSprite();
+	public void prepareEnemy() {
+
+		duckSprite = new FGSprite();
 		duckSprite.bindFrames(GlobalResources.FRAMES_ENEMY_DUCK);
 		duckSprite.setOffset(duckSprite.getWidth() / 2,
 				duckSprite.getHeight() / 2);
 		this.bindSprite(duckSprite);
+
+		co = new FGGraphicCollision();
+		co.addCircle(-3, -5, 11, true);
+		co.addCircle(0, -11, 9, true);
+		co.addCircle(-2, 5, 11, true);
+		co.addCircle(-15, 1, 8, true);
+		co.addCircle(11, 1, 8, true);
+		co.addCircle(-20, -7, 4, true);
+		co.addCircle(18, -6, 4, true);
+		co.addCircle(-5, 16, 5, true);
+		this.bindCollisionMask(co);
+		this.setHP(10);
+
+		this.requireCollisionDetection(Bullet_Player.class);
+	}
+
+	@Override
+	protected void onCreate() {
 
 		this.setPosition(
 				frmL ? -(duckSprite.getWidth() - duckSprite.getOffsetX())
@@ -65,16 +86,6 @@ public class Enemy_Duck extends EnemyInAir {
 		this.setAlarm(1, (int) (FGStage.getSpeed() * 0.1f), true);// 播放动画
 		this.startAlarm(1);
 
-		FGGraphicCollision co = new FGGraphicCollision();
-		co.addCircle(-3, -5, 11, true);
-		co.addCircle(0, -11, 9, true);
-		co.addCircle(-2, 5, 11, true);
-		co.addCircle(-15, 1, 8, true);
-		co.addCircle(11, 1, 8, true);
-		co.addCircle(-20, -7, 4, true);
-		co.addCircle(18, -6, 4, true);
-		co.addCircle(-5, 16, 5, true);
-		this.bindCollisionMask(co);
 		if (frmL) {
 			sc.setScale(-1, 1);
 			FGConvertor GCConvertor = new FGConvertor();
@@ -82,9 +93,6 @@ public class Enemy_Duck extends EnemyInAir {
 			co.applyConvertor(GCConvertor);
 		}
 
-		this.setHP(10);
-
-		this.requireCollisionDetection(Bullet_Player.class);
 	}
 
 	@Override

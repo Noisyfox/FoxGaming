@@ -40,10 +40,16 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 	FGScreenPlay myAni = new FGScreenPlay();
 	boolean getReady = false;
 	boolean fire2 = true;
+	FGSprite pigSprite;
 
 	@Override
-	protected void onCreate() {
-		FGSprite pigSprite = new FGSprite();
+	public void createEnemy(int x, int y, int... extraConfig) {
+		this.perform(FGStage.getCurrentStage().getStageIndex());
+	}
+
+	@Override
+	public void prepareEnemy() {
+		pigSprite = new FGSprite();
 		pigSprite.bindFrames(GlobalResources.FRAMES_ENEMY_PIG);
 		pigSprite
 				.setOffset(pigSprite.getWidth() / 2, pigSprite.getHeight() / 2);
@@ -95,7 +101,6 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 		this.setPosition(FGStage.getCurrentStage().getWidth() / 2,
 				pigSprite.getOffsetY() - pigSprite.getHeight());
 		this.motion_set(270, myVSpeed);
-
 	}
 
 	@Override
@@ -152,11 +157,6 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 
 		FGGamingThread.score += 1000;
 
-	}
-
-	@Override
-	public void createEnemy(int x, int y, int... extraConfig) {
-		this.perform(FGStage.getCurrentStage().getStageIndex());
 	}
 
 }

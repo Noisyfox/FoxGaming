@@ -29,4 +29,6 @@ public abstract class Enemy extends Hitable {
 
 	public abstract void createEnemy(int x, int y, int... extraConfig);
 
+	public abstract void prepareEnemy();
+
 }

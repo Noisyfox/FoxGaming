@@ -30,6 +30,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 
 /**
@@ -222,6 +223,27 @@ public abstract class SectionStage extends FGStage {
 		paused = false;
 
 		setStageSpeed(30);
+		// 计算缩放比率
+		float k = (float) FGGamingThread.getScreenWidth() * 1.15f / 320f;
+
+		FGStage.getCurrentStage().setSize(
+				(int) ((float) FGGamingThread.getScreenHeight() / k), 320);
+
+		FGViews v = new FGViews();
+
+		v.setSizeFromScreen(FGGamingThread.getScreenWidth(),
+				FGGamingThread.getScreenHeight());
+		v.setSizeFromStage((int) ((float) FGGamingThread.getScreenWidth() / k),
+				(int) ((float) FGGamingThread.getScreenHeight() / k));
+
+		v.setPositionFromScreen(0, 0);
+		v.setPositionFromStage(
+				(FGStage.getCurrentStage().getWidth() - v.getWidthFromStage()) / 2,
+				0);
+
+		v.setAngleFromStage(0);
+		FGStage.getCurrentStage().setView(v);
+
 		gameController = new GamingController();
 
 		player = new Player();
@@ -237,6 +259,9 @@ public abstract class SectionStage extends FGStage {
 		enemyController.perform(this.getStageIndex());
 
 		menu.perform(this.getStageIndex());
+
+		setBackgroundColor(Color.BLACK);
+		new BackgroundController().perform(stageIndex);
 
 		new StageSwitchEffect();
 	}

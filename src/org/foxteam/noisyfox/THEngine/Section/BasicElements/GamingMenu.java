@@ -97,6 +97,10 @@ public class GamingMenu extends FGPerformer {
 		menuState = MenuState.showing;
 		sssc.setAlpha(1);
 		aniOK = false;
+
+		// 暂停所有
+		cStage.pauseSection(this);
+
 	}
 
 	public void hide() {
@@ -145,9 +149,6 @@ public class GamingMenu extends FGPerformer {
 
 		switch (menuState) {
 		case showing: {
-			// 暂停所有
-			cStage.pauseSection(this);
-
 			// 添加按钮
 			buttonGroup_current.performAll(FGStage.getCurrentStage()
 					.getStageIndex(), depth - 1);
