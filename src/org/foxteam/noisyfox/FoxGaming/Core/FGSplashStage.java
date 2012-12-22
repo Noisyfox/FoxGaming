@@ -4,6 +4,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 public final class FGSplashStage extends FGStage {
@@ -20,8 +21,14 @@ public final class FGSplashStage extends FGStage {
 
 		new splashController().perform(stageIndex);
 
-		logo.loadFromBitmap(FGEGLHelper.getBindedGL(),
-				org.foxteam.noisyfox.THEngine.R.drawable.foxgaming, true);
+		try {
+			logo.loadFromBitmap(FGEGLHelper.getBindedGL(), BitmapFactory
+					.decodeStream(FGGameCore.mainActivity.getAssets().open(
+							"foxgaming.png")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 		logoS.bindFrames(logo);
 		logoS.setOffset(logoS.getWidth() / 2, logoS.getHeight() / 2);
 	}

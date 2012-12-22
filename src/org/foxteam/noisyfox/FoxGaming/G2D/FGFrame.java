@@ -138,6 +138,16 @@ public final class FGFrame {
 		loadFromBitmap(gl, b, horizontalNumber, verticalNumber);
 	}
 
+	public void loadFromBitmap(GL10 gl, byte[] data) {
+		loadFromBitmap(gl, data, 1, 1);
+	}
+
+	public void loadFromBitmap(GL10 gl, byte[] data, int horizontalNumber,
+			int verticalNumber) {
+		Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
+		loadFromBitmap(gl, b, horizontalNumber, verticalNumber);
+	}
+
 	public final int getHeight() {
 		return srcFrameHeight;
 	}
