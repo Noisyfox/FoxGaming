@@ -120,15 +120,15 @@ public class FGEGLHelper {
 					GL10.GL_ONE_MINUS_SRC_ALPHA);
 			Log.i("GL", "GL initialized");
 		} else {
-
 			mBinded_View = view;
-
+			mBinded_EGL.eglDestroySurface(mBinded_GLDisplay, mBinded_GLSurface);
 			mBinded_GLSurface = mBinded_EGL.eglCreateWindowSurface(
 					mBinded_GLDisplay, mBinded_GLConfig,
 					mBinded_View.getHolder(), null);
-
 			mBinded_EGL.eglMakeCurrent(mBinded_GLDisplay, mBinded_GLSurface,
 					mBinded_GLSurface, mBinded_GLContext);
+
+			Log.i("GL", "GL reInited");
 
 		}
 	}

@@ -65,7 +65,7 @@ public class FGGameActivity extends Activity {
 	 * This will be applied each time the main Activity be created( or
 	 * recreated)
 	 */
-	public void forcePortrait() {
+	public final void forcePortrait() {
 		forcePortrait = true;
 		forceLandscape = false;
 	}
@@ -75,7 +75,7 @@ public class FGGameActivity extends Activity {
 	 * This will be applied each time the main Activity be created( or
 	 * recreated)
 	 */
-	public void forceLandscape() {
+	public final void forceLandscape() {
 		forcePortrait = false;
 		forceLandscape = true;
 	}
@@ -83,21 +83,21 @@ public class FGGameActivity extends Activity {
 	/**
 	 * @return TRUE if the engine is being forced into portrait mode
 	 */
-	public boolean isForcePortrait() {
+	public final boolean isForcePortrait() {
 		return forcePortrait;
 	}
 
 	/**
 	 * @return TRUE if the engine is being forced into landscape mode
 	 */
-	public boolean isForceLandscape() {
+	public final boolean isForceLandscape() {
 		return forceLandscape;
 	}
 
 	/**
 	 * Forces the Activity to be shown fullscreen ie, no titlebar
 	 */
-	public void forceFullscreen() {
+	public final void forceFullscreen() {
 		forceFullscreen = true;
 	}
 
@@ -120,7 +120,7 @@ public class FGGameActivity extends Activity {
 	/* ******************************************************** */
 	// System function
 
-	private void prepareEngine() {
+	private final void prepareEngine() {
 		FGDebug.print("prepareEngine()");
 		gameEngine = new FGGameCore(this);
 		setContentView(FGGameCore.gameView);
@@ -182,12 +182,12 @@ public class FGGameActivity extends Activity {
 		if (forcePortrait) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
-
 	}
 
 	@Override
 	protected void onDestroy() {
 		FGDebug.print("onDestroy()");
+		// FGGameCore.gameView.
 		super.onDestroy();
 		if (isFinishing()) {
 			dispose();

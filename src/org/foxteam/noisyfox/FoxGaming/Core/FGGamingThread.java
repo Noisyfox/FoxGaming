@@ -84,6 +84,8 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
 
+	private Boolean surfaceChanged = false;
+
 	protected FGGamingThread(SurfaceView surfaceView) {
 		FGGamingThread.surfaceView = surfaceView;
 		currentState = STATEFLAG_WAITING;
@@ -191,7 +193,10 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 			}
 		}
 
-		FGEGLHelper.bindSurfaceView(surfaceView);
+		synchronized (surfaceChanged) {
+			FGEGLHelper.bindSurfaceView(surfaceView);
+			surfaceChanged = false;
+		}
 
 		FGGameCore.getMainActivity().onEngineReady();
 
@@ -232,7 +237,6 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 				break;
 
 			case STATEFLAG_RESUME:
-				FGEGLHelper.bindSurfaceView(surfaceView);
 				if (FGStage.currentStage != null) {
 					FGStage.currentStage
 							.broadcastEvent(FGEventsListener.EVENT_ONGAMERESUME);
@@ -345,229 +349,237 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 		if (gameStartTime == 0)
 			gameStartTime = System.currentTimeMillis();
 
-		if (FGStage.targetStage != null) {
-			// 先处理 Stage
-			if (FGStage.switchStage) {// Stage 发生变化
-				FGStage.switchStage = false;
-				boolean gameStart = FGStage.currentStage == null;
-				if (FGStage.currentStage != null) {// 不是第一次进游戏
+		synchronized (surfaceChanged) {
+			if (surfaceChanged) {
+				FGEGLHelper.bindSurfaceView(surfaceView);
+				surfaceChanged = false;
+			}
+
+			if (FGStage.targetStage != null) {
+				// 先处理 Stage
+				if (FGStage.switchStage) {// Stage 发生变化
+					FGStage.switchStage = false;
+					boolean gameStart = FGStage.currentStage == null;
+					if (FGStage.currentStage != null) {// 不是第一次进游戏
+						FGStage.currentStage
+								.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
+						FGStage.currentStage
+								.broadcastEvent(FGEventsListener.EVENT_ONSTAGEEND);
+						FGStage.currentStage
+								.broadcastEvent(FGEventsListener.EVENT_ONDESTORY);
+
+						if (FGStage.currentStage.closed) {
+							FGStage s = FGStage.currentStage;
+							FGStage.currentStage = FGStage.targetStage;
+							s.closeStage();
+						} else {
+							FGStage.currentStage.initStage();
+						}
+					}
+
+					FGStage.currentStage = FGStage.targetStage;
+					// 执行 Stage 的初始化
+					FGDebug.print("Create new stage.");
+					FGStage.currentStage.onCreate();
+
+					FGStage.speed = FGStage.currentStage.stageSpeed;
+
+					// 所有事件都必须在EVENT_ONCREATE之后
+					FGStage.currentStage.employPerformer();
+
+					if (gameStart) {
+						// 第一次进游戏，广播EVENT_ONGAMESTART事件
+						FGStage.currentStage
+								.broadcastEvent(FGEventsListener.EVENT_ONGAMESTART);
+					}
+
 					FGStage.currentStage
 							.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
 					FGStage.currentStage
-							.broadcastEvent(FGEventsListener.EVENT_ONSTAGEEND);
-					FGStage.currentStage
-							.broadcastEvent(FGEventsListener.EVENT_ONDESTORY);
+							.broadcastEvent(FGEventsListener.EVENT_ONSTAGESTART);
 
-					if (FGStage.currentStage.closed) {
-						FGStage s = FGStage.currentStage;
-						FGStage.currentStage = FGStage.targetStage;
-						s.closeStage();
-					} else {
-						FGStage.currentStage.initStage();
-					}
+				} else {
+					FGStage.speed = FGStage.currentStage.stageSpeed;
+					FGStage.currentStage.employPerformer();
 				}
 
-				FGStage.currentStage = FGStage.targetStage;
-				// 执行 Stage 的初始化
-				FGDebug.print("Create new stage.");
-				FGStage.currentStage.onCreate();
-
-				FGStage.speed = FGStage.currentStage.stageSpeed;
-
-				// 所有事件都必须在EVENT_ONCREATE之后
-				FGStage.currentStage.employPerformer();
-
-				if (gameStart) {
-					// 第一次进游戏，广播EVENT_ONGAMESTART事件
-					FGStage.currentStage
-							.broadcastEvent(FGEventsListener.EVENT_ONGAMESTART);
-				}
-
+				// 处理当前场景的performer
+				// 最先广播EVENT_ONSTEPSTART事件
 				FGStage.currentStage
-						.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
-				FGStage.currentStage
-						.broadcastEvent(FGEventsListener.EVENT_ONSTAGESTART);
+						.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
+				// 处理定时器事件
+				FGStage.currentStage.operateAlarm();
+				// 计算碰撞
+				FGStage.currentStage.operateCollision();
+				// 计算离开 Stage
+				FGStage.currentStage.detectOutOfStage();
+				// 处理Performer的 ScreenPlay
+				FGStage.currentStage.playScreenPlay();
+				// 处理Performer的运动
+				FGStage.currentStage.updateMovement();
 
-			} else {
-				FGStage.speed = FGStage.currentStage.stageSpeed;
-				FGStage.currentStage.employPerformer();
-			}
-
-			// 处理当前场景的performer
-			// 最先广播EVENT_ONSTEPSTART事件
-			FGStage.currentStage
-					.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
-			// 处理定时器事件
-			FGStage.currentStage.operateAlarm();
-			// 计算碰撞
-			FGStage.currentStage.operateCollision();
-			// 计算离开 Stage
-			FGStage.currentStage.detectOutOfStage();
-			// 处理Performer的 ScreenPlay
-			FGStage.currentStage.playScreenPlay();
-			// 处理Performer的运动
-			FGStage.currentStage.updateMovement();
-
-			// 检测屏幕尺寸变化
-			if (width != lastScreenWidth || height != lastScreenHeight) {
-				lastScreenHeight = height;
-				lastScreenWidth = width;
-				FGEGLHelper.bindSurfaceView(surfaceView);
-				FGStage.currentStage.broadcastEvent(
-						FGEventsListener.EVENT_ONSCREENSIZECHANGED, width,
-						height);
-			}
-
-			// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
-			actionedFingers.clear();
-			synchronized (listTouchEvent) {
-				while (!listTouchEvent.isEmpty()) {
-					TouchEvent e = listTouchEvent.get(0);
-					listTouchEvent.remove(0);
-					actionedFingers.add(e.whichFinger);
-					switch (e.event) {
-					case MotionEvent.ACTION_DOWN:
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONTOUCHPRESS,
-								e.whichFinger, e.x, e.y);
-						break;
-					case MotionEvent.ACTION_UP:
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONTOUCHRELEASE,
-								e.whichFinger, e.x, e.y);
-						break;
-					default:
-					}
+				// 检测屏幕尺寸变化
+				if (width != lastScreenWidth || height != lastScreenHeight) {
+					lastScreenHeight = height;
+					lastScreenWidth = width;
+					FGStage.currentStage.broadcastEvent(
+							FGEventsListener.EVENT_ONSCREENSIZECHANGED, width,
+							height);
 				}
-			}
-			synchronized (registedFingers) {
-				for (Finger f : registedFingers) {
-					if (!actionedFingers.contains(f.id)) {
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONTOUCH, f.id, f.x, f.y);
-					}
-				}
-			}
-			// 处理按键事件队列并广播EVENT_ONKEY*事件
-			synchronized (queueKeyEvent) {
-				while (!queueKeyEvent.isEmpty()) {
-					KeyboardEvent e = queueKeyEvent.poll();
-					switch (e.getEvent()) {
-					case KeyboardEvent.KEY_PRESS:
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONKEYPRESS, e.getKey());
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONKEY, e.getKey());
-						break;
-					case KeyboardEvent.KEY_HOLD:
-						FGStage.currentStage.broadcastEvent(
-								FGEventsListener.EVENT_ONKEY, e.getKey());
-						break;
-					case KeyboardEvent.KEY_RELEASE:
-						FGStage.currentStage
-								.broadcastEvent(
-										FGEventsListener.EVENT_ONKEYRELEASE,
-										e.getKey());
-						break;
-					default:
-					}
-				}
-			}
 
-			// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
-			FGStage.currentStage.broadcastEvent(FGEventsListener.EVENT_ONSTEP);
-
-			// 更新粒子特效
-			FGStage.currentStage.updateParticleSystems();
-
-			// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
-			applyView();
-			FGEGLHelper.getBindedGL().glClear(
-					GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-			FGDraw.setColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
-			FGDraw.setAlpha(1);
-			FGDraw.drawRectFill(FGEGLHelper.mBinded_GL, 0, 0,
-					FGStage.currentStage.getWidth(),
-					FGStage.currentStage.getHeight());
-			if (FGStage.currentStage.background != null) {// 绘制背景
-				FGStage.currentStage.background
-						.doAndDraw(0, 0, FGStage.currentStage.height,
-								FGStage.currentStage.width);
-			}
-			if (FGStage.currentStage.managedParticleSystemSize == 0) {
-				FGStage.currentStage
-						.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
-			} else {
-				// 处理粒子和performer的绘制顺序
-				int index = 0;
-				ManagedParticleSystem m = FGStage.currentStage.managedParticleSystem
-						.get(index);
-				int nowDepth = m.depth;
-
-				for (FGPerformer p : FGStage.currentStage.performers) {
-					if (p.depth <= nowDepth) {
-						while (p.depth <= nowDepth
-								&& index < FGStage.currentStage.managedParticleSystemSize) {
-							m.particleSystem.draw();
-							index++;
-							if (index < FGStage.currentStage.managedParticleSystemSize) {
-								m = FGStage.currentStage.managedParticleSystem
-										.get(index);
-								nowDepth = m.depth;
-							}
+				// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
+				actionedFingers.clear();
+				synchronized (listTouchEvent) {
+					while (!listTouchEvent.isEmpty()) {
+						TouchEvent e = listTouchEvent.get(0);
+						listTouchEvent.remove(0);
+						actionedFingers.add(e.whichFinger);
+						switch (e.event) {
+						case MotionEvent.ACTION_DOWN:
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONTOUCHPRESS,
+									e.whichFinger, e.x, e.y);
+							break;
+						case MotionEvent.ACTION_UP:
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONTOUCHRELEASE,
+									e.whichFinger, e.x, e.y);
+							break;
+						default:
 						}
 					}
-					p.callEvent(FGEventsListener.EVENT_ONDRAW);
+				}
+				synchronized (registedFingers) {
+					for (Finger f : registedFingers) {
+						if (!actionedFingers.contains(f.id)) {
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONTOUCH, f.id, f.x,
+									f.y);
+						}
+					}
+				}
+				// 处理按键事件队列并广播EVENT_ONKEY*事件
+				synchronized (queueKeyEvent) {
+					while (!queueKeyEvent.isEmpty()) {
+						KeyboardEvent e = queueKeyEvent.poll();
+						switch (e.getEvent()) {
+						case KeyboardEvent.KEY_PRESS:
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONKEYPRESS,
+									e.getKey());
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONKEY, e.getKey());
+							break;
+						case KeyboardEvent.KEY_HOLD:
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONKEY, e.getKey());
+							break;
+						case KeyboardEvent.KEY_RELEASE:
+							FGStage.currentStage.broadcastEvent(
+									FGEventsListener.EVENT_ONKEYRELEASE,
+									e.getKey());
+							break;
+						default:
+						}
+					}
 				}
 
-				for (int i = index; i < FGStage.currentStage.managedParticleSystemSize; i++) {
-					FGStage.currentStage.managedParticleSystem.get(i).particleSystem
-							.draw();
+				// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
+				FGStage.currentStage
+						.broadcastEvent(FGEventsListener.EVENT_ONSTEP);
+
+				// 更新粒子特效
+				FGStage.currentStage.updateParticleSystems();
+
+				// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
+				applyView();
+				FGEGLHelper.getBindedGL().glClear(
+						GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+				FGDraw.setColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
+				FGDraw.setAlpha(1);
+				FGDraw.drawRectFill(FGEGLHelper.mBinded_GL, 0, 0,
+						FGStage.currentStage.getWidth(),
+						FGStage.currentStage.getHeight());
+				if (FGStage.currentStage.background != null) {// 绘制背景
+					FGStage.currentStage.background.doAndDraw(0, 0,
+							FGStage.currentStage.height,
+							FGStage.currentStage.width);
 				}
-
-			}
-			// 系统绘制
-			screenRefresh();
-
-			// 处理 performer 的 dismiss 操作
-			FGStage.currentStage.dismissPerformer();
-
-			// 最后广播EVENT_ONSTEPEND事件
-			FGStage.currentStage
-					.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
-		}
-
-		// 控制帧速
-		stepCount++;
-		allStepCount++;
-		long frameFinishTime = System.currentTimeMillis();
-		float speed = FGStage.speed;
-		long sleepTime = (long) (1.0f / speed * 1000.0f)
-				- (frameFinishTime - frameStartTime);
-		try {
-			if (sleepTime > 0) {
-				if (sleepTime - lessTime > 0) {
-					Thread.sleep(sleepTime - lessTime);
-					lessTime = 0;
+				if (FGStage.currentStage.managedParticleSystemSize == 0) {
+					FGStage.currentStage
+							.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
 				} else {
-					Thread.sleep(sleepTime / 2);
-					lessTime -= sleepTime / 2;
+					// 处理粒子和performer的绘制顺序
+					int index = 0;
+					ManagedParticleSystem m = FGStage.currentStage.managedParticleSystem
+							.get(index);
+					int nowDepth = m.depth;
+
+					for (FGPerformer p : FGStage.currentStage.performers) {
+						if (p.depth <= nowDepth) {
+							while (p.depth <= nowDepth
+									&& index < FGStage.currentStage.managedParticleSystemSize) {
+								m.particleSystem.draw();
+								index++;
+								if (index < FGStage.currentStage.managedParticleSystemSize) {
+									m = FGStage.currentStage.managedParticleSystem
+											.get(index);
+									nowDepth = m.depth;
+								}
+							}
+						}
+						p.callEvent(FGEventsListener.EVENT_ONDRAW);
+					}
+
+					for (int i = index; i < FGStage.currentStage.managedParticleSystemSize; i++) {
+						FGStage.currentStage.managedParticleSystem.get(i).particleSystem
+								.draw();
+					}
+
 				}
-			} else {
-				if (lessTime - sleepTime > MAXLESSTIME) {
-					lessTime = MAXLESSTIME;
-				} else {
-					lessTime -= sleepTime;
-				}
+				// 系统绘制
+				screenRefresh();
+
+				// 处理 performer 的 dismiss 操作
+				FGStage.currentStage.dismissPerformer();
+
+				// 最后广播EVENT_ONSTEPEND事件
+				FGStage.currentStage
+						.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		frameFinishTime = System.currentTimeMillis();
-		if (frameFinishTime - SPS_startTime >= SPS_COUNT_INTERVAL_MILLIS) {
-			SPS = (float) (stepCount / ((frameFinishTime - SPS_startTime) / 1000.0));
-			stepCount = 0;
-			SPS_startTime = frameFinishTime;
+
+			// 控制帧速
+			stepCount++;
+			allStepCount++;
+			long frameFinishTime = System.currentTimeMillis();
+			float speed = FGStage.speed;
+			long sleepTime = (long) (1.0f / speed * 1000.0f)
+					- (frameFinishTime - frameStartTime);
+			try {
+				if (sleepTime > 0) {
+					if (sleepTime - lessTime > 0) {
+						Thread.sleep(sleepTime - lessTime);
+						lessTime = 0;
+					} else {
+						Thread.sleep(sleepTime / 2);
+						lessTime -= sleepTime / 2;
+					}
+				} else {
+					if (lessTime - sleepTime > MAXLESSTIME) {
+						lessTime = MAXLESSTIME;
+					} else {
+						lessTime -= sleepTime;
+					}
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			frameFinishTime = System.currentTimeMillis();
+			if (frameFinishTime - SPS_startTime >= SPS_COUNT_INTERVAL_MILLIS) {
+				SPS = (float) (stepCount / ((frameFinishTime - SPS_startTime) / 1000.0));
+				stepCount = 0;
+				SPS_startTime = frameFinishTime;
+			}
 		}
 	}
 
@@ -760,7 +772,7 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	}
 
 	protected void gameResume() {
-		if (currentState != STATEFLAG_PAUSED) {
+		if (currentState != STATEFLAG_PAUSED && currentState != STATEFLAG_PAUSE) {
 			return;
 		}
 
@@ -775,17 +787,20 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		FGDebug.print("serface changed");
-		if (width != 0 && height != 0) {
-			processing = true;
-			if (FGGamingThread.width == 0 && FGGamingThread.height == 0) {
-				lastScreenHeight = height;
-				lastScreenWidth = width;
+		synchronized (surfaceChanged) {
+			FGDebug.print("serface changed");
+			if (width != 0 && height != 0) {
+				if (FGGamingThread.width == 0 && FGGamingThread.height == 0) {
+					lastScreenHeight = height;
+					lastScreenWidth = width;
+				}
+				FGGamingThread.width = width;
+				FGGamingThread.height = height;
+				processing = true;
 			}
-			FGGamingThread.width = width;
-			FGGamingThread.height = height;
+			FGDebug.print("Current view size:" + height + "x" + width);
+			surfaceChanged = true;
 		}
-		FGDebug.print("Current view size:" + height + "x" + width);
 	}
 
 	@Override
