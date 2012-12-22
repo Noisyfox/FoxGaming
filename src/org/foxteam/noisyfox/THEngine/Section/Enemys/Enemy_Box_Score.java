@@ -48,7 +48,7 @@ public class Enemy_Box_Score extends EnemyOnGround {
 		this.bindSprite(boxSprite);
 
 		FGGraphicCollision co = new FGGraphicCollision();
-		co.addRectangle(-32, -30, 35, 20, true);
+		co.addRectangle(-32, -30, 67, 50, true);
 		this.bindCollisionMask(co);
 
 		this.setHP(10);
