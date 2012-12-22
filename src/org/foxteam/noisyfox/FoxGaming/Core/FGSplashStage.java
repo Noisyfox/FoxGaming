@@ -64,7 +64,9 @@ public final class FGSplashStage extends FGStage {
 				}
 				break;
 			case 4:
-				nextStage();
+				if (getStageCount() > 1) {
+					nextStage();
+				}
 				tmp++;
 				break;
 			}

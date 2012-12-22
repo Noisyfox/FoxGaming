@@ -109,8 +109,6 @@ public abstract class FGStage {
 	 * 静态函数 跳转到指定舞台<br>
 	 */
 	public static final void switchToStage(int stage) {
-		// if (index2Stage(stage) == currentStage)
-		// return;
 		targetStage = index2Stage(stage);
 		switchStage = true;
 	}
@@ -127,6 +125,13 @@ public abstract class FGStage {
 	 */
 	public static final void previousStage() {
 		switchToStage(currentStage.stageIndex - 1);
+	}
+
+	/**
+	 * 静态函数 获取舞台总数<br>
+	 */
+	public static final int getStageCount() {
+		return stages.size();
 	}
 
 	/**
@@ -204,16 +209,6 @@ public abstract class FGStage {
 				}
 				i++;
 			}
-			// for (int i = 0; i < stages.size(); i++) {
-			// stages.get(i).stageIndex = i;
-			//
-			// synchronized (stages.get(i).performers) {
-			// for (FGPerformer p : stages.get(i).performers) {
-			// p.stage = i;
-			// }
-			// }
-			//
-			// }
 		}
 	}
 
