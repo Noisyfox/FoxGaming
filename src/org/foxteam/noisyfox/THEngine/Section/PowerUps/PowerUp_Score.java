@@ -34,11 +34,12 @@ import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
  * 
  */
 public class PowerUp_Score extends PowerUp {
+	FGSprite scoreSprite;
 
 	public PowerUp_Score(int x, int y) {
 		super(x, y);
 
-		FGSprite scoreSprite = new FGSprite();
+		scoreSprite = new FGSprite();
 		scoreSprite.bindFrames(GlobalResources.FRAMES_POWERUP_SCORE);
 		scoreSprite.setOffset(scoreSprite.getWidth() / 2,
 				scoreSprite.getHeight() / 2);
@@ -52,10 +53,13 @@ public class PowerUp_Score extends PowerUp {
 
 		setMovement(false, SectionStage.getScrollSpeedV(),
 				SectionStage.getScrollSpeedH());
+
+		this.defineTypes(5, 0.1f);
 	}
 
 	@Override
 	public void onTypeChange(int type) {
+		scoreSprite.nextFrame();
 	}
 
 	@Override

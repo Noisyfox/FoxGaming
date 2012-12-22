@@ -62,8 +62,8 @@ public final class BackgroundController extends FGPerformer {
 			b.y += b.speed;
 			if (b.y >= FGStage.getCurrentStage().getHeight()) {
 				randomBKG(b);
-				b.y = -FGMathsHelper.random(0, FGStage.getCurrentStage()
-						.getHeight() - (int) b.height);
+				b.y = -FGMathsHelper.random((int) b.height, FGStage
+						.getCurrentStage().getHeight());
 			}
 		}
 	}

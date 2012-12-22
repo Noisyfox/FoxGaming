@@ -44,11 +44,11 @@ public class Enemy_Box_Score extends EnemyOnGround {
 	public void prepareEnemy() {
 		boxSprite = new FGSprite();
 		boxSprite.bindFrames(GlobalResources.FRAMES_ENEMY_BOX_SCORE);
-		boxSprite.setOffset(22, 13);
+		boxSprite.setOffset(32, 30);
 		this.bindSprite(boxSprite);
 
 		FGGraphicCollision co = new FGGraphicCollision();
-		co.addRectangle(-22, -13, 43, 26, true);
+		co.addRectangle(-32, -30, 35, 20, true);
 		this.bindCollisionMask(co);
 
 		this.setHP(10);

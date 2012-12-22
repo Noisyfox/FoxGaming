@@ -134,10 +134,27 @@ public abstract class SectionStage extends FGStage {
 		savedState.putLong("THEA_score", FGGamingThread.score);
 		onSectionEnd(savedState);
 		StageSwitchEffect.switchToStage(stageIndex);
+		player.bindCollisionMask(null);
 	}
 
 	public final void restartSection() {
 		StageSwitchEffect.switchToStage(stageIndex);
+		player.bindCollisionMask(null);
+	}
+	
+
+	public static final void returnMainMenu() {
+		if (mainMenuStage != null) {
+			StageSwitchEffect.switchToStage(mainMenuStage.getStageIndex());
+			player.bindCollisionMask(null);
+		}
+	}
+
+	public static final void gameClear() {
+		if (gameClearStage != null) {
+			StageSwitchEffect.switchToStage(gameClearStage.getStageIndex());
+			player.bindCollisionMask(null);
+		}
 	}
 
 	public final void pauseSection(FGPerformer me) {
@@ -206,18 +223,6 @@ public abstract class SectionStage extends FGStage {
 		return false;
 	}
 
-	public static final void returnMainMenu() {
-		if (mainMenuStage != null) {
-			StageSwitchEffect.switchToStage(mainMenuStage.getStageIndex());
-		}
-	}
-
-	public static final void gameClear() {
-		if (gameClearStage != null) {
-			StageSwitchEffect.switchToStage(gameClearStage.getStageIndex());
-		}
-	}
-
 	@Override
 	protected final void onCreate() {
 		paused = false;
@@ -261,7 +266,7 @@ public abstract class SectionStage extends FGStage {
 		menu.perform(this.getStageIndex());
 
 		setBackgroundColor(Color.BLACK);
-		new BackgroundController().perform(stageIndex);
+		//new BackgroundController().perform(stageIndex);
 
 		new StageSwitchEffect();
 	}

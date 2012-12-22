@@ -46,9 +46,10 @@ public class PowerUp_Missile extends PowerUp {
 		this.bindSprite(missileSprite);
 
 		FGGraphicCollision co = new FGGraphicCollision();
-		co.addRectangle(-missileSprite.getWidth() / 2,
-				-missileSprite.getHeight() / 2, missileSprite.getWidth(),
-				missileSprite.getHeight());
+		// co.addRectangle(-missileSprite.getWidth() / 2,
+		// -missileSprite.getHeight() / 2, missileSprite.getWidth(),
+		// missileSprite.getHeight());
+		co.addCircle(0, 0, 10);
 		this.bindCollisionMask(co);
 
 		this.defineTypes(2, 2.5f);

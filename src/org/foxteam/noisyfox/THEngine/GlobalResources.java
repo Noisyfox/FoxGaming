@@ -255,7 +255,7 @@ public class GlobalResources {
 				false);
 		FRAMES_POWERUP_SCORE = new FGFrame();
 		FRAMES_POWERUP_SCORE.loadFromBitmap(gl,
-				org.foxteam.noisyfox.THEngine.R.drawable.powerup_score, 1, 1,
+				org.foxteam.noisyfox.THEngine.R.drawable.powerup_score, 5, 1,
 				false);
 		FRAMES_TOUCH_SCREEN_TO_CONTINUE = new FGFrame();
 		FRAMES_TOUCH_SCREEN_TO_CONTINUE

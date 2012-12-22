@@ -16,6 +16,8 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Stages;
 
+import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
+import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.EnemyController;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 import org.foxteam.noisyfox.THEngine.Section.Enemys.Enemy_Boss_Pig;
@@ -40,6 +42,15 @@ public final class _02_Section_01_TestStage extends SectionStage {
 	protected void prepareStage(Bundle savedState) {
 
 		setStageScrollSpeed(0, 30f / getStageSpeed());
+
+		FGBackground bkg = new FGBackground();
+		bkg.bindFrame(GlobalResources.FRAMES_BACKGROUND_TESTSTAGE);
+		bkg.setAdaptation(FGBackground.ADAPTATION_SMART);
+		bkg.setSpeed(getScrollSpeedH(), getScrollSpeedV());
+		bkg.setAlignment(FGBackground.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
+		bkg.setDrawMode(FGBackground.ADAPTATION_OPTION_DRAW_REPEATING);
+		bkg.setScaleMode(FGBackground.ADAPTATION_OPTION_SCALE_WIDTHFIRST);
+		setBackground(bkg);
 
 	}
 
