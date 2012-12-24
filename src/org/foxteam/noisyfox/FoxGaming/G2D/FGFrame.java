@@ -275,4 +275,12 @@ public final class FGFrame {
 
 		return cachedFloatBuffer;
 	}
+
+	public GL10 getTargetGl() {
+		return gl;
+	}
+
+	public FloatBuffer getCoordBuffer() {
+		return coordBuffer;
+	}
 }

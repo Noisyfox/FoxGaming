@@ -20,8 +20,8 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
-import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
+import org.foxteam.noisyfox.FoxGaming.G2D.Background.FGScreenAdaptatedBackground;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Performers.Button_GameStart;
 import org.foxteam.noisyfox.THEngine.Performers.Button_HighScore;
@@ -43,13 +43,23 @@ public class _00_MainMenu extends FGStage {
 		setSize(FGGamingThread.getScreenHeight(),
 				FGGamingThread.getScreenWidth());
 
-		FGBackground bkg = new FGBackground();
+		FGScreenAdaptatedBackground bkg = new FGScreenAdaptatedBackground();
 
 		bkg.bindFrame(GlobalResources.FRAMES_BACKGROUND_MAINMENU);
-		bkg.setAdaptation(FGBackground.ADAPTATION_SMART);
-		bkg.setDrawMode(FGBackground.ADAPTATION_OPTION_DRAW_SINGLE);
-		bkg.setAlignment(FGBackground.ADAPTATION_OPTION_ALIGNMENT_CENTER_HORIZONTAL_BOTTOM);
-		bkg.setScaleMode(FGBackground.ADAPTATION_OPTION_SCALE_MAXUSAGE);
+
+		if ((float) FGGamingThread.getScreenHeight()
+				/ (float) FGGamingThread.getScreenWidth() > (float) GlobalResources.FRAMES_BACKGROUND_MAINMENU
+				.getHeight()
+				/ (float) GlobalResources.FRAMES_BACKGROUND_MAINMENU.getWidth()) {
+			bkg.setAlignType(
+					FGScreenAdaptatedBackground.Horizon_Align_Type.Center,
+					FGScreenAdaptatedBackground.Vertical_Align_Type.Stretch);
+		} else {
+			bkg.setAlignType(
+					FGScreenAdaptatedBackground.Horizon_Align_Type.Stretch,
+					FGScreenAdaptatedBackground.Vertical_Align_Type.Top);
+		}
+
 		setBackground(bkg);
 
 		FGGamingThread.score = 0;

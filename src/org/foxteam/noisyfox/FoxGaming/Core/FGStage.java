@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
+import org.foxteam.noisyfox.FoxGaming.G2D.Background.FGBackground;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleSystem;
 
 import android.graphics.Color;

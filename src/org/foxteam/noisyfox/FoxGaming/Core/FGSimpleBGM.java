@@ -17,10 +17,10 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.util.SparseIntArray;
 
 /**
  * @ClassName: SimpleBGM
@@ -33,7 +33,7 @@ public final class FGSimpleBGM {
 
 	private static FGSimpleBGM simpleBGM = new FGSimpleBGM();
 	private static MediaPlayer mediaPlayer = null;
-	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
+	private static SparseIntArray sounds = new SparseIntArray();
 
 	private static int lastAudioId = -1;
 	private static boolean mustResume = false;

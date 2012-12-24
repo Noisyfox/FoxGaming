@@ -16,9 +16,9 @@
  */
 package org.foxteam.noisyfox.FoxGaming.Core;
 
-import java.util.HashMap;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.SparseIntArray;
 
 /**
  * @ClassName: SimpleSoundEffect
@@ -33,7 +33,7 @@ public final class FGSimpleSoundEffect {
 	public static final int AUDIO_SOUNDPOOL_QUALITY = 90;
 
 	private static FGSimpleSoundEffect simpleSoundEffect = new FGSimpleSoundEffect();
-	private static HashMap<Integer, Integer> sounds = new HashMap<Integer, Integer>();
+	private static SparseIntArray sounds = new SparseIntArray();
 	private static SoundPool soundPool = new SoundPool(
 			AUDIO_SOUNDPOOL_MAXSTREAMS, AudioManager.STREAM_MUSIC,
 			AUDIO_SOUNDPOOL_QUALITY);;
@@ -100,7 +100,7 @@ public final class FGSimpleSoundEffect {
 	 */
 	public static void free(int soundId) {
 		soundPool.unload(sounds.get(soundId));
-		sounds.remove(soundId);
+		sounds.delete(soundId);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public final class FGSimpleSoundEffect {
 	 */
 	public static void freeAll() {
 		for (int i = 0; i <= lastAudioId; i++) {
-			if (sounds.containsKey(i)) {
+			if (sounds.get(i, -1) != -1) {
 				free(i);
 			}
 		}

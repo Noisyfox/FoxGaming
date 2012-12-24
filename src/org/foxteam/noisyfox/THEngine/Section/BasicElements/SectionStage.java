@@ -25,8 +25,8 @@ import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGSimpleBGM;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.Core.FGViews;
-import org.foxteam.noisyfox.FoxGaming.G2D.FGBackground;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGFrame;
+import org.foxteam.noisyfox.FoxGaming.G2D.Background.FGAdvancedBackground;
 import org.foxteam.noisyfox.THEngine.Performers.StageSwitchEffect;
 
 import android.graphics.Bitmap;
@@ -55,7 +55,7 @@ public abstract class SectionStage extends FGStage {
 	private static FGStage gameClearStage = null;
 
 	private boolean paused = false;
-	private FGBackground pauseCache_Background = null;
+	private FGAdvancedBackground pauseCache_Background = null;
 	private int pauseCache_stageWidth = 0;
 	private int pauseCache_stageHeight = 0;
 	private FGViews pauseCache_View;
@@ -120,8 +120,11 @@ public abstract class SectionStage extends FGStage {
 	public final void gameOver() {
 		gameController.gameOver();
 		enemyController.pause();
-		if (background != null)
-			background.setSpeed(0, 0);
+		if (background != null) {
+			if (FGAdvancedBackground.class.isInstance(background)) {
+				((FGAdvancedBackground) background).setSpeed(0, 0);
+			}
+		}
 	}
 
 	public static final void startSection() {
@@ -141,7 +144,6 @@ public abstract class SectionStage extends FGStage {
 		StageSwitchEffect.switchToStage(stageIndex);
 		player.bindCollisionMask(null);
 	}
-	
 
 	public static final void returnMainMenu() {
 		if (mainMenuStage != null) {
@@ -164,9 +166,10 @@ public abstract class SectionStage extends FGStage {
 		Bitmap cache = FGGamingThread.getScreenshots();
 		FGFrame f = new FGFrame();
 		f.loadFromBitmap(FGEGLHelper.getBindedGL(), cache);
-		FGBackground bkg = new FGBackground();
+		FGAdvancedBackground bkg = new FGAdvancedBackground();
 		bkg.bindFrame(f);
-		pauseCache_Background = getBackground();
+		if (background != null)
+			pauseCache_Background = (FGAdvancedBackground) getBackground();
 		pauseCache_stageWidth = width;
 		pauseCache_stageHeight = height;
 		pauseCache_View = activatedView;
@@ -266,7 +269,7 @@ public abstract class SectionStage extends FGStage {
 		menu.perform(this.getStageIndex());
 
 		setBackgroundColor(Color.BLACK);
-		//new BackgroundController().perform(stageIndex);
+		// new BackgroundController().perform(stageIndex);
 
 		new StageSwitchEffect();
 	}
