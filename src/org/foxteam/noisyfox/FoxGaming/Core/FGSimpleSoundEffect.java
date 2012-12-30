@@ -28,7 +28,6 @@ import android.util.SparseIntArray;
  * 
  */
 public final class FGSimpleSoundEffect {
-
 	public static final int AUDIO_SOUNDPOOL_MAXSTREAMS = 10;
 	public static final int AUDIO_SOUNDPOOL_QUALITY = 90;
 
@@ -36,7 +35,7 @@ public final class FGSimpleSoundEffect {
 	private static SparseIntArray sounds = new SparseIntArray();
 	private static SoundPool soundPool = new SoundPool(
 			AUDIO_SOUNDPOOL_MAXSTREAMS, AudioManager.STREAM_MUSIC,
-			AUDIO_SOUNDPOOL_QUALITY);;
+			AUDIO_SOUNDPOOL_QUALITY);
 	private static int volume = 100;
 
 	private static int lastAudioId = -1;

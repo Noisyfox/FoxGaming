@@ -157,6 +157,7 @@ public final class WeiboShareProcessor extends FGPerformer {
 						}
 						if (!SDKUtil.isInited()) {
 							THEngineMainActivity.showToast("哎呀~好像出了点问题呢");
+							state = AniState.hiding;
 						} else {
 							shareStr = e.getText().toString();
 							SDKUtil.oauth("sina",
@@ -170,7 +171,7 @@ public final class WeiboShareProcessor extends FGPerformer {
 							public void onClick(DialogInterface arg0, int arg1) {
 								state = AniState.hiding;
 							}
-						}).show();
+						}).setCancelable(false).show();
 	}
 
 	public static void shareItHandled() {
