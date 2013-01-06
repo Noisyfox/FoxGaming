@@ -25,6 +25,7 @@ import java.util.Queue;
 import javax.microedition.khronos.opengles.GL10;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage.ManagedParticleSystem;
+import org.foxteam.noisyfox.FoxGaming.Core.LoopThread.FGLoopThread;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
 
 import android.graphics.Bitmap;
@@ -44,8 +45,8 @@ import android.view.View.OnTouchListener;
  * @date: 2012-6-19 下午8:12:06
  * 
  */
-public final class FGGamingThread extends Thread implements OnTouchListener,
-		OnKeyListener, SurfaceHolder.Callback {
+public final class FGGamingThread extends FGLoopThread implements
+		OnTouchListener, OnKeyListener, SurfaceHolder.Callback {
 
 	public static long score = 0;// 内置变量-分数
 
@@ -173,37 +174,9 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 	}
 
 	@Override
-	public void run() {
-
-		while (currentState == STATEFLAG_WAITING) {// 等待游戏开始
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		while (!processing) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		synchronized (surfaceChanged) {
-			FGEGLHelper.bindSurfaceView(surfaceView);
-			surfaceChanged = false;
-		}
-
-		FGGameCore.getMainActivity().onEngineReady();
-
-		SPS_startTime = System.currentTimeMillis();
-
+	protected void loop() {
 		// 游戏主循环
-		while (currentState != STATEFLAG_STOPED) {
+		if (currentState != STATEFLAG_STOPED) {
 			switch (currentState) {
 			case STATEFLAG_STOPING:// 准备结束游戏
 				if (FGStage.currentStage != null) {// 广播 ONGAMEEND 事件
@@ -244,13 +217,54 @@ public final class FGGamingThread extends Thread implements OnTouchListener,
 				currentState = STATEFLAG_RUNNING;
 				break;
 			}
+		} else {
+			exit();
 		}
+	}
+
+	@Override
+	protected void onLooperPrepared() {
+
+		while (currentState == STATEFLAG_WAITING) {// 等待游戏开始
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		while (!processing) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		synchronized (surfaceChanged) {
+			FGEGLHelper.bindSurfaceView(surfaceView);
+			surfaceChanged = false;
+		}
+
+		FGGameCore.getMainActivity().onEngineReady();
+
+		SPS_startTime = System.currentTimeMillis();
+
+	}
+
+	@Override
+	protected void onLooperExited() {
 		// 退出游戏主循环，即游戏结束
 		// 清理
 		FGSimpleSoundEffect.freeAll();
 		FGSimpleBGM.freeAll();
 
 		FGDebug.print("Gaming thread exit.");
+
+		// 主循环已经成功中指，关闭主activity
+		FGGameCore.mainActivity.finish();
 	}
 
 	/**

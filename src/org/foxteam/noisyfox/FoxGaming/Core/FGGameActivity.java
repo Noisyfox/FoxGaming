@@ -193,12 +193,13 @@ public class FGGameActivity extends Activity {
 			dispose();
 			// Debug.stopMethodTracing();
 
+			FGDebug.debugMode = true;
 			FGDebug.print(" ");
 			FGDebug.print("FoxGaming Engine finished!");
 			FGDebug.print("Thanks for using!");
 			FGDebug.print(" ");
 
-			FGDebug.forceExit();
+			FGDebug.forceExit();// 彻底结束程序
 		}
 	}
 

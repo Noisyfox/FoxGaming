@@ -106,7 +106,6 @@ public final class FGGameCore {
 
 	public void gameEnd() {
 		thread_Gaming.gameEnd();
-		mainActivity.finish();
 	}
 
 	public void gamePause() {

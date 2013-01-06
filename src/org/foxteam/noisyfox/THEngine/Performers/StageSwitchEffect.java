@@ -55,7 +55,7 @@ public final class StageSwitchEffect extends FGPerformer {
 					aniOK = true;
 				} else if (alpha > 0) {
 					if (!freezed) {
-						//freezeAll(true, true);
+						// freezeAll(true, true);
 						freezed = true;
 					}
 					alpha -= 0.1f;
@@ -63,7 +63,7 @@ public final class StageSwitchEffect extends FGPerformer {
 						alpha = 0;
 				} else {
 					aniOK = true;
-					//freezeAll(false, true);
+					// freezeAll(false, true);
 					freezed = false;
 				}
 			} else {
