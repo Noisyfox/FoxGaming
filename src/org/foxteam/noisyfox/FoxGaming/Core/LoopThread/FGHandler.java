@@ -45,7 +45,7 @@ public class FGHandler {
 		mLooper = FGLoopThread.myLooper();
 		if (mLooper == null) {
 			throw new RuntimeException(
-					"Can't create handler inside thread that has not called Looper.prepare()");
+					"Can't create FGHandler inside thread that is not a FGLoopThread!");
 		}
 		mQueue = mLooper.mQueue;
 		mCallback = null;
@@ -60,7 +60,7 @@ public class FGHandler {
 		mLooper = FGLoopThread.myLooper();
 		if (mLooper == null) {
 			throw new RuntimeException(
-					"Can't create handler inside thread that has not called Looper.prepare()");
+					"Can't create FGHandler inside thread that is not a FGLoopThread!");
 		}
 		mQueue = mLooper.mQueue;
 		mCallback = callback;
