@@ -79,6 +79,16 @@ public final class FGDebug {
 	}
 
 	/**
+	 * Prints to the debug stream of LogCat with information from the engine
+	 * 
+	 * @param message
+	 *            The message to be passed on
+	 */
+	public static void debug(String message) {
+		Log.d(tag, message);
+	}
+
+	/**
 	 * Prints to the verbose stream of LogCat with information from the engine
 	 * 
 	 * @param message

@@ -151,10 +151,10 @@ public class FGGameActivity extends Activity {
 		} else {
 			// Debug.startMethodTracing("fox.trace");
 
-			FGDebug.print(" ");
-			FGDebug.print("FoxGaming Engine started!");
-			FGDebug.print("Version 1.0 alpha");
-			FGDebug.print(" ");
+			FGDebug.debug(" ");
+			FGDebug.debug("FoxGaming Engine started!");
+			FGDebug.debug("Version " + FGEngineConfig.getVersion());
+			FGDebug.debug(" ");
 
 			onCreate();
 
@@ -193,11 +193,10 @@ public class FGGameActivity extends Activity {
 			dispose();
 			// Debug.stopMethodTracing();
 
-			FGDebug.debugMode = true;
-			FGDebug.print(" ");
-			FGDebug.print("FoxGaming Engine finished!");
-			FGDebug.print("Thanks for using!");
-			FGDebug.print(" ");
+			FGDebug.debug(" ");
+			FGDebug.debug("FoxGaming Engine finished!");
+			FGDebug.debug("Thanks for using!");
+			FGDebug.debug(" ");
 
 			FGDebug.forceExit();// 彻底结束程序
 		}
