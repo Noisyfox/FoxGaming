@@ -36,8 +36,7 @@ import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 public class PowerUp_Score extends PowerUp {
 	FGSprite scoreSprite;
 
-	public PowerUp_Score(int x, int y) {
-		super(x, y);
+	public PowerUp_Score() {
 
 		scoreSprite = new FGSprite();
 		scoreSprite.bindFrames(GlobalResources.FRAMES_POWERUP_SCORE);

@@ -39,30 +39,9 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 
 	@Override
 	protected void onCreate() {
-		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
-		pSystem.bindParticleEmitter(pEmitter);
 		FGStage.getCurrentStage().managedParticleSystem_requireManaged(pSystem,
 				depth + 1);
-
-		FGSprite bulletSprite = new FGSprite();
-		bulletSprite
-				.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_MISSILE_MANUAL);
-		bulletSprite.setOffset(4, 10);
-		this.bindSprite(bulletSprite);
-
-		FGGraphicCollision co = new FGGraphicCollision();
-		int[][] vertex1 = { { 0, -10 }, { -2, -8 }, { -3, 0 }, { 3, 0 },
-				{ 2, -8 } };
-		co.addPolygon(vertex1, true);
-		this.bindCollisionMask(co);
-
-		this.setDamage(10);
-
-	}
-
-	@Override
-	protected void onDestory() {
-		pSystem.unbindParticleEmitter(pEmitter);
+		pSystem.bindParticleEmitter(pEmitter);
 	}
 
 	@Override
@@ -94,9 +73,36 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 		}
 	}
 
-	public Bullet_Player_Missile_Manual(int x, int y) {
+	public Bullet_Player_Missile_Manual() {
+
+		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
+
+		FGSprite bulletSprite = new FGSprite();
+		bulletSprite
+				.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_MISSILE_MANUAL);
+		bulletSprite.setOffset(4, 10);
+		this.bindSprite(bulletSprite);
+
+		FGGraphicCollision co = new FGGraphicCollision();
+		int[][] vertex1 = { { 0, -10 }, { -2, -8 }, { -3, 0 }, { 3, 0 },
+				{ 2, -8 } };
+		co.addPolygon(vertex1, true);
+		this.bindCollisionMask(co);
+
+		this.setDamage(10);
+
+	}
+
+	@Override
+	public void createBullet(int x, int y, float speed, float direction,
+			float... extraConfig) {
 		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
+	}
+
+	@Override
+	public void recycleBullet() {
+		pSystem.unbindParticleEmitter(pEmitter);
 	}
 
 }

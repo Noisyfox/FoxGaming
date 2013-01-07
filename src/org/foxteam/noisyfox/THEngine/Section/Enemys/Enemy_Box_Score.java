@@ -22,6 +22,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.BulletPool;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.PowerUp;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
@@ -79,7 +80,8 @@ public class Enemy_Box_Score extends EnemyOnGround {
 	protected void Explosion(Bullet bullet) {
 		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
 				(int) this.getX(), (int) this.getY(), -1);
-		PowerUp p = new PowerUp_Score((int) getX(), (int) getY());
+		PowerUp p = (PowerUp) BulletPool.obtainBullet(PowerUp_Score.class);
+		p.createBullet((int) getX(), (int) getY(), 0, 0);
 		p.setDepth(getDepth());
 
 		this.dismiss();

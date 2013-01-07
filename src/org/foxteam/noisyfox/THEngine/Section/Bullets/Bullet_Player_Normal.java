@@ -35,6 +35,15 @@ public class Bullet_Player_Normal extends Bullet_Player {
 
 	@Override
 	protected void onCreate() {
+		this.motion_set(90, 300f / FGStage.getSpeed());
+	}
+
+	@Override
+	protected void onOutOfStage() {
+		this.dismiss();
+	}
+
+	public Bullet_Player_Normal() {
 
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_NORMAL);
@@ -48,17 +57,6 @@ public class Bullet_Player_Normal extends Bullet_Player {
 
 		this.setDamage(10);
 
-		this.motion_set(90, 300f / FGStage.getSpeed());
-	}
-
-	@Override
-	protected void onOutOfStage() {
-		this.dismiss();
-	}
-
-	public Bullet_Player_Normal(int x, int y) {
-		this.perform(FGStage.getCurrentStage().getStageIndex());
-		this.setPosition(x, y);
 	}
 
 	@Override
@@ -70,6 +68,17 @@ public class Bullet_Player_Normal extends Bullet_Player {
 							- this.getSprite().getOffsetY(), -1);
 			this.dismiss();
 		}
+	}
+
+	@Override
+	public void createBullet(int x, int y, float speed, float direction,
+			float... extraConfig) {
+		this.perform(FGStage.getCurrentStage().getStageIndex());
+		this.setPosition(x, y);
+	}
+
+	@Override
+	public void recycleBullet() {
 	}
 
 }

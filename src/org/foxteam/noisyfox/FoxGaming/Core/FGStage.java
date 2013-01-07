@@ -551,9 +551,9 @@ public abstract class FGStage {
 		if (!managedParticleSystem.contains(mps)) {
 			managedParticleSystem.add(mps);
 			managedParticleSystemSize++;
+			Collections.sort(managedParticleSystem, depthComparator2);
 		}
 
-		Collections.sort(managedParticleSystem, depthComparator2);
 	}
 
 	public int managedParticleSystem_managedCount() {

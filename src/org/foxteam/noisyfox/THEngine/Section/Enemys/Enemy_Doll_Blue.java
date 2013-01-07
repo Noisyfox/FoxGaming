@@ -24,6 +24,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.BulletPool;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_3;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
@@ -192,11 +193,11 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 		} else if (whichAlarm == 1) {// 等待进入以及等待返回
 			myStatus++;
 		} else if (whichAlarm == 2) {// 发射子弹
-			Bullet b = new Bullet_Enemy_3((int) this.getX(), (int) this.getY(),
-					FGMathsHelper.point_direction(getX(), getY(), FGStage
-							.getCurrentStage().getWidth() / 2, FGStage
-							.getCurrentStage().getHeight() / 2),
-					110f / FGStage.getSpeed());
+			Bullet b = BulletPool.obtainBullet(Bullet_Enemy_3.class);
+			b.createBullet((int) this.getX(), (int) this.getY(), 110f / FGStage
+					.getSpeed(), FGMathsHelper.point_direction(getX(), getY(),
+					FGStage.getCurrentStage().getWidth() / 2, FGStage
+							.getCurrentStage().getHeight() / 2));
 			b.setDepth(this.getDepth() - 1);
 		}
 	}

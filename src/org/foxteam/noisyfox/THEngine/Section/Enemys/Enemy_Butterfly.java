@@ -24,8 +24,10 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.BulletPool;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Player;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.PowerUp;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_1;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
 import org.foxteam.noisyfox.THEngine.Section.PowerUps.PowerUp_Missile;
@@ -122,18 +124,21 @@ public class Enemy_Butterfly extends EnemyInAir {
 				float playerDir = FGMathsHelper.degreeIn360(FGMathsHelper
 						.point_direction(getX(), getY(), p.getX(), p.getY()));
 
-				Bullet b = new Bullet_Enemy_1((int) this.getX(),
-						(int) this.getY(), playerDir, 110f / FGStage.getSpeed());
+				Bullet b = BulletPool.obtainBullet(Bullet_Enemy_1.class);
+				b.createBullet((int) this.getX(), (int) this.getY(),
+						110f / FGStage.getSpeed(), playerDir);
 				b.setDepth(this.getDepth() - 1);
 
-				b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY(),
-						FGMathsHelper.degreeIn360(playerDir + 30),
-						110f / FGStage.getSpeed());
+				b = BulletPool.obtainBullet(Bullet_Enemy_1.class);
+				b.createBullet((int) this.getX(), (int) this.getY(),
+						110f / FGStage.getSpeed(),
+						FGMathsHelper.degreeIn360(playerDir + 30));
 				b.setDepth(this.getDepth() - 1);
 
-				b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY(),
-						FGMathsHelper.degreeIn360(playerDir - 30),
-						110f / FGStage.getSpeed());
+				b = BulletPool.obtainBullet(Bullet_Enemy_1.class);
+				b.createBullet((int) this.getX(), (int) this.getY(),
+						110f / FGStage.getSpeed(),
+						FGMathsHelper.degreeIn360(playerDir - 30));
 				b.setDepth(this.getDepth() - 1);
 			}
 
@@ -157,8 +162,9 @@ public class Enemy_Butterfly extends EnemyInAir {
 		new Explosion(GlobalResources.FRAMES_EXPLOSION_NORMAL, 1, 0.5f,
 				(int) this.getX(), (int) this.getY(), -1);
 
-		new PowerUp_Missile((int) getX(), (int) getY())
-				.setDepth(getDepth() + 1);
+		PowerUp p = (PowerUp) BulletPool.obtainBullet(PowerUp_Missile.class);
+		p.createBullet((int) getX(), (int) getY(), 0, 0);
+		p.setDepth(getDepth() + 1);
 
 		this.dismiss();
 

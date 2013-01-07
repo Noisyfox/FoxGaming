@@ -35,7 +35,15 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 
 	@Override
 	protected void onCreate() {
+		this.motion_set(myDirection, mySpeed);
+	}
 
+	@Override
+	protected void onOutOfStage() {
+		this.dismiss();
+	}
+
+	public Bullet_Enemy_1() {
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite.bindFrames(GlobalResources.FRAMES_BULLET_ENEMY_1);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2,
@@ -48,19 +56,6 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		this.bindCollisionMask(co);
 
 		this.setDamage(11);
-		this.motion_set(myDirection, mySpeed);
-	}
-
-	@Override
-	protected void onOutOfStage() {
-		this.dismiss();
-	}
-
-	public Bullet_Enemy_1(int x, int y, float direction, float speed) {
-		this.perform(FGStage.getCurrentStage().getStageIndex());
-		this.setPosition(x, y);
-		mySpeed = speed;
-		myDirection = direction;
 	}
 
 	@Override
@@ -68,6 +63,21 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 		if (Player.class.isInstance(target)) {
 			this.dismiss();
 		}
+	}
+
+	@Override
+	public void recycleBullet() {
+		mySpeed = 0f;
+		myDirection = 0f;
+	}
+
+	@Override
+	public void createBullet(int x, int y, float speed, float direction,
+			float... extraConfig) {
+		this.perform(FGStage.getCurrentStage().getStageIndex());
+		this.setPosition(x, y);
+		mySpeed = speed;
+		myDirection = direction;
 	}
 
 }

@@ -48,6 +48,27 @@ public class Bullet_Enemy_3 extends Bullet_Enemy {
 	@Override
 	protected void onCreate() {
 
+		SpConvertor.setRotation(myDirection - 90);
+		GCConvertor.setRotation(myDirection - 90);
+		this.getCollisionMask().applyConvertor(GCConvertor);
+
+		this.motion_set(myDirection, mySpeed);
+	}
+
+	@Override
+	protected void onOutOfStage() {
+		this.dismiss();
+	}
+
+	@Override
+	public void hitOn(Hitable target) {
+		if (Player.class.isInstance(target)) {
+			this.dismiss();
+		}
+	}
+
+	public Bullet_Enemy_3() {
+
 		FGSprite bulletSprite = new FGSprite();
 		bulletSprite.bindFrames(GlobalResources.FRAMES_BULLET_ENEMY_3);
 		bulletSprite.setOffset(bulletSprite.getWidth() / 2,
@@ -60,33 +81,23 @@ public class Bullet_Enemy_3 extends Bullet_Enemy {
 		co.addPolygon(vertex1, true);
 		this.bindCollisionMask(co);
 
-		SpConvertor.setRotation(myDirection - 90);
-		GCConvertor.setRotation(myDirection - 90);
-		co.applyConvertor(GCConvertor);
-
 		this.setDamage(11);
-
-		this.motion_set(myDirection, mySpeed);
 	}
 
 	@Override
-	protected void onOutOfStage() {
-		this.dismiss();
-		this.bindCollisionMask(null);
-	}
-
-	@Override
-	public void hitOn(Hitable target) {
-		if (Player.class.isInstance(target)) {
-			this.dismiss();
-		}
-	}
-
-	public Bullet_Enemy_3(int x, int y, float direction, float speed) {
+	public void createBullet(int x, int y, float speed, float direction,
+			float... extraConfig) {
 		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
 		mySpeed = speed;
 		myDirection = direction;
+
+	}
+
+	@Override
+	public void recycleBullet() {
+		mySpeed = 0f;
+		myDirection = 0f;
 	}
 
 }

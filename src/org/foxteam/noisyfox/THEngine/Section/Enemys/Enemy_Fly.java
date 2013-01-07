@@ -27,6 +27,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.BulletPool;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Player;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_1;
@@ -145,14 +146,13 @@ public class Enemy_Fly extends EnemyInAir {
 			this.getSprite().nextFrame();
 
 		} else if (whichAlarm == 1) {// 发射子弹
-			Bullet b = new Bullet_Enemy_1(
-					(int) (this.getX() + FGMathsHelper.lengthdir_x(this
-							.getSprite().getHeight()
+			Bullet b = BulletPool.obtainBullet(Bullet_Enemy_1.class);
+			b.createBullet((int) (this.getX() + FGMathsHelper.lengthdir_x(this
+					.getSprite().getHeight() - this.getSprite().getOffsetY(),
+					myDirection)), (int) (this.getY() - FGMathsHelper
+					.lengthdir_y(this.getSprite().getHeight()
 							- this.getSprite().getOffsetY(), myDirection)),
-					(int) (this.getY() - FGMathsHelper.lengthdir_y(this
-							.getSprite().getHeight()
-							- this.getSprite().getOffsetY(), myDirection)),
-					myDirection, 110f / FGStage.getSpeed());
+					110f / FGStage.getSpeed(), myDirection);
 			b.setDepth(this.getDepth() + 1);
 
 		}

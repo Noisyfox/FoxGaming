@@ -37,8 +37,7 @@ public class PowerUp_Missile extends PowerUp {
 	private int missileType = 0;// 导弹种类，0跟踪导弹，1非跟踪导弹
 	FGSprite missileSprite = new FGSprite();
 
-	public PowerUp_Missile(int x, int y) {
-		super(x, y);
+	public PowerUp_Missile() {
 
 		missileSprite.bindFrames(GlobalResources.FRAMES_POWERUP_MISSILE);
 		missileSprite.setOffset(missileSprite.getWidth() / 2,

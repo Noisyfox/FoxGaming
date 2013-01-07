@@ -20,6 +20,7 @@ import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.BulletPool;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_1;
@@ -98,10 +99,11 @@ public class Enemy_Duck extends EnemyInAir {
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0) {// 发射子弹
-			Bullet b = new Bullet_Enemy_1((int) this.getX(), (int) this.getY()
+			Bullet b = BulletPool.obtainBullet(Bullet_Enemy_1.class);
+			b.createBullet((int) this.getX(), (int) this.getY()
 					- this.getSprite().getOffsetY()
-					+ this.getSprite().getHeight(), 270,
-					SectionStage.getScrollSpeedV());
+					+ this.getSprite().getHeight(),
+					SectionStage.getScrollSpeedV(), 270);
 			b.setDepth(this.getDepth() + 1);
 		} else if (whichAlarm == 1) {// 播放动画
 			this.getSprite().nextFrame();

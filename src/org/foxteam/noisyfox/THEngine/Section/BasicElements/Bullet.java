@@ -60,6 +60,16 @@ public abstract class Bullet extends FGPerformer {
 		return damage;
 	}
 
+	@Override
+	protected void onDestory() {
+		BulletPool.recycleBullet(this);
+	}
+
 	public abstract void hitOn(Hitable target);
+
+	public abstract void createBullet(int x, int y, float speed,
+			float direction, float... extraConfig);
+
+	public abstract void recycleBullet();
 
 }

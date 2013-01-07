@@ -23,6 +23,7 @@ import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Bullet;
+import org.foxteam.noisyfox.THEngine.Section.BasicElements.BulletPool;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.Explosion;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Enemy_2;
 import org.foxteam.noisyfox.THEngine.Section.Bullets.Bullet_Player;
@@ -123,9 +124,9 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 			} else if (step == 3 && fire2) {
 				// 发射第二种子弹
 				for (int i = 0; i < 8; i++) {
-					Bullet b = new Bullet_Enemy_2((int) this.getX(),
-							(int) this.getY(), 45 * i,
-							110f / FGStage.getSpeed());
+					Bullet b = BulletPool.obtainBullet(Bullet_Enemy_2.class);
+					b.createBullet((int) this.getX(), (int) this.getY(),
+							110f / FGStage.getSpeed(), 45 * i);
 					b.setDepth(this.getDepth() - 1);
 				}
 				fire2 = false;
@@ -139,10 +140,11 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 		if (whichAlarm == 0) {// 播放动画
 			this.getSprite().nextFrame();
 		} else if (whichAlarm == 1) {// 发射子弹
-			Bullet b = new Bullet_Enemy_2((int) this.getX(), (int) this.getY()
+			Bullet b = BulletPool.obtainBullet(Bullet_Enemy_2.class);
+			b.createBullet((int) this.getX(), (int) this.getY()
 					- this.getSprite().getOffsetY()
-					+ this.getSprite().getHeight(), 270,
-					110f / FGStage.getSpeed());
+					+ this.getSprite().getHeight(), 110f / FGStage.getSpeed(),
+					270);
 			b.setDepth(this.getDepth() + 1);
 		}
 	}

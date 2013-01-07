@@ -127,9 +127,7 @@ public abstract class PowerUp extends Bullet {
 		}
 	}
 
-	public PowerUp(int x, int y) {
-		this.perform(FGStage.getCurrentStage().getStageIndex());
-		this.setPosition(x, y);
+	public PowerUp() {
 	}
 
 	@Override
@@ -172,6 +170,20 @@ public abstract class PowerUp extends Bullet {
 		this.isManualSpeed = !randomSpeed;
 		this.myHspeed = hspeed;
 		this.myVSpeed = vspeed;
+	}
+
+	@Override
+	public void createBullet(int x, int y, float speed, float direction,
+			float... extraConfig) {
+		this.perform(FGStage.getCurrentStage().getStageIndex());
+		this.setPosition(x, y);
+
+	}
+
+	@Override
+	public void recycleBullet() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

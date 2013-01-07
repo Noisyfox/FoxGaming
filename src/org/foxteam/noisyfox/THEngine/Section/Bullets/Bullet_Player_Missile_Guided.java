@@ -62,34 +62,14 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 
 	@Override
 	protected void onCreate() {
-		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
-		pSystem.bindParticleEmitter(pEmitter);
 		FGStage.getCurrentStage().managedParticleSystem_requireManaged(pSystem,
 				depth + 1);
-
-		FGSprite bulletSprite = new FGSprite();
-		bulletSprite
-				.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_MISSILE_GUIDED);
-		bulletSprite.setOffset(4, 10);
-		this.bindSprite(bulletSprite);
-
-		FGGraphicCollision co = new FGGraphicCollision();
-		int[][] vertex1 = { { 0, -10 }, { -2, -8 }, { -3, 0 }, { 3, 0 },
-				{ 2, -8 } };
-		co.addPolygon(vertex1, true);
-		this.bindCollisionMask(co);
-
-		this.setDamage(5);
+		pSystem.bindParticleEmitter(pEmitter);
 
 		// 开始寻找敌机
 		this.setAlarm(0, (int) (FGStage.getSpeed() * TARGET_SEARCH_TIME), false);
 		this.startAlarm(0);
 
-	}
-
-	@Override
-	protected void onDestory() {
-		pSystem.unbindParticleEmitter(pEmitter);
 	}
 
 	@Override
@@ -151,7 +131,6 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 	@Override
 	protected void onOutOfStage() {
 		this.dismiss();
-		this.bindCollisionMask(null);
 	}
 
 	@Override
@@ -185,9 +164,39 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 								.getCurrentStage().getHeight(), this, false) == null;
 	}
 
-	public Bullet_Player_Missile_Guided(int x, int y) {
+	public Bullet_Player_Missile_Guided() {
+
+		pEmitter.stream(GlobalResources.PARTICLE_TYPE_MILLSILSMOKE, -1);
+
+		FGSprite bulletSprite = new FGSprite();
+		bulletSprite
+				.bindFrames(GlobalResources.FRAMES_BULLET_PLAYER_MISSILE_GUIDED);
+		bulletSprite.setOffset(4, 10);
+		this.bindSprite(bulletSprite);
+
+		FGGraphicCollision co = new FGGraphicCollision();
+		int[][] vertex1 = { { 0, -10 }, { -2, -8 }, { -3, 0 }, { 3, 0 },
+				{ 2, -8 } };
+		co.addPolygon(vertex1, true);
+		this.bindCollisionMask(co);
+
+		this.setDamage(5);
+	}
+
+	@Override
+	public void createBullet(int x, int y, float speed, float direction,
+			float... extraConfig) {
+
 		this.perform(FGStage.getCurrentStage().getStageIndex());
 		this.setPosition(x, y);
+
+	}
+
+	@Override
+	public void recycleBullet() {
+		searchingTarget = true;
+		lockedEnemy = null;
+		pSystem.unbindParticleEmitter(pEmitter);
 	}
 
 }

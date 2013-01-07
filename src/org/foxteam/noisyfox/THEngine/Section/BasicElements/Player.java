@@ -16,9 +16,6 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import org.foxteam.noisyfox.FoxGaming.Core.*;
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
@@ -275,8 +272,11 @@ public class Player extends Hitable {
 	@Override
 	protected void onAlarm(int whichAlarm) {
 		if (whichAlarm == 0 && fire) {
-			Bullet_Player b = new Bullet_Player_Normal((int) this.getX(),
-					(int) this.getY() - this.getSprite().getOffsetY());
+			Bullet_Player b = (Bullet_Player) BulletPool
+					.obtainBullet(Bullet_Player_Normal.class);
+
+			b.createBullet((int) this.getX(), (int) this.getY()
+					- this.getSprite().getOffsetY(), 0, 0);
 			b.setDepth(this.getDepth() + 1);
 
 		} else if (whichAlarm == 1) {// 无敌时间已到
@@ -301,47 +301,23 @@ public class Player extends Hitable {
 
 		} else if (whichAlarm == 4 && fire) {// 发射导弹
 			if (myMissile != null) {
-				try {
-					float dDeg = 0;
-					if (myMissile == Bullet_Player_Missile_Guided.class) {
-						dDeg = 30;
-					} else if (myMissile == Bullet_Player_Missile_Manual.class) {
-						dDeg = 0;
-					}
-
-					Class<?>[] pTypes = new Class[] { int.class, int.class };
-					Constructor<?> ctor = myMissile.getConstructor(pTypes);
-					Bullet_Player b = null;
-					Object[] arg = new Object[] { (int) this.getX() + 10,
-							(int) this.getY() };
-					b = (Bullet_Player) ctor.newInstance(arg);
-					b.setDepth(this.getDepth() + 1);
-					b.motion_set(90 - dDeg, 200f / FGStage.getSpeed());
-
-					Object[] arg2 = new Object[] { (int) this.getX() - 10,
-							(int) this.getY() };
-					b = (Bullet_Player) ctor.newInstance(arg2);
-					b.setDepth(this.getDepth() + 1);
-					b.motion_set(90 + dDeg, 200f / FGStage.getSpeed());
-				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				float dDeg = 0;
+				if (myMissile == Bullet_Player_Missile_Guided.class) {
+					dDeg = 30;
+				} else if (myMissile == Bullet_Player_Missile_Manual.class) {
+					dDeg = 0;
 				}
+
+				Bullet_Player b = (Bullet_Player) BulletPool
+						.obtainBullet(myMissile);
+				b.createBullet((int) this.getX() + 10, (int) this.getY(), 0, 0);
+				b.setDepth(this.getDepth() + 1);
+				b.motion_set(90 - dDeg, 200f / FGStage.getSpeed());
+
+				b = (Bullet_Player) BulletPool.obtainBullet(myMissile);
+				b.createBullet((int) this.getX() - 10, (int) this.getY(), 0, 0);
+				b.setDepth(this.getDepth() + 1);
+				b.motion_set(90 + dDeg, 200f / FGStage.getSpeed());
 			}
 
 		}
@@ -385,8 +361,9 @@ public class Player extends Hitable {
 		FGVibrator.vibrate(500);
 
 		// 丢下奖励
-		new PowerUp_Missile((int) getX(), (int) getY())
-				.setDepth(getDepth() + 1);
+		PowerUp p = (PowerUp) BulletPool.obtainBullet(PowerUp_Missile.class);
+		p.createBullet((int) getX(), (int) getY(), 0, 0);
+		p.setDepth(getDepth() + 1);
 
 		if (--remainLife < 0) {
 			this.dismiss();
