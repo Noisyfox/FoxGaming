@@ -62,7 +62,6 @@ public class PowerUp_Missile extends PowerUp {
 							: Bullet_Player_Missile_Manual.class);
 
 			this.dismiss();
-			this.bindCollisionMask(null);
 		}
 	}
 

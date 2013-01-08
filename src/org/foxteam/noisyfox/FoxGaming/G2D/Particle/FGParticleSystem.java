@@ -25,7 +25,6 @@ public final class FGParticleSystem {
 	private int _position_x = 0;
 	private int _position_y = 0;
 
-	private Particles[] particlePool;
 	private List<Emitters> particleEmitters = new ArrayList<Emitters>();
 	private List<FGParticleAttractor> particleAttractors = new ArrayList<FGParticleAttractor>();
 	private List<FGParticleDestroyer> particleDestroyers = new ArrayList<FGParticleDestroyer>();
@@ -34,7 +33,11 @@ public final class FGParticleSystem {
 	private static Random random = new Random();
 
 	private int maxParticleNumber = 200;
-	private int aliveParticlePoint = -1;
+	private int aliveParticleCount = 0;
+
+	private Particles particlePool_alive = null;
+	private Particles particlePool_alive_last = null;
+	private Particles particlePool_dead = new Particles();
 
 	public FGParticleSystem() {
 		setMaxParticleNumber(200);
@@ -47,23 +50,55 @@ public final class FGParticleSystem {
 
 	}
 
-	private final void removeParticle(int index) {
-		if (index > aliveParticlePoint) {
+	private final void removeParticle(Particles p) {
+		if (p == null) {
 			throw new IllegalArgumentException();
 		}
 
-		Particles p = particlePool[index];
-		for (int i = index; i < aliveParticlePoint; i++) {
-			particlePool[i] = particlePool[i + 1];
+		if (p == particlePool_alive) {// 解链
+			particlePool_alive = p.next;
 		}
-		particlePool[aliveParticlePoint] = p;
-		aliveParticlePoint--;
+		if (p == particlePool_alive_last) {
+			particlePool_alive_last = p.prev;
+		}
+		if (p.next != null) {
+			p.next.prev = p.prev;
+		}
+		if (p.prev != null) {
+			p.prev.next = p.next;
+		}
+
+		p.next = particlePool_dead;
+		if (particlePool_dead != null) {
+			particlePool_dead.prev = p;
+		}
+		particlePool_dead = p;
+
+		p.prev = null;
+
+		aliveParticleCount--;
 	}
 
 	private final Particles addParticle() {
-		if (aliveParticlePoint < particlePool.length - 1) {
-			aliveParticlePoint++;
-			return particlePool[aliveParticlePoint];
+		if (particlePool_dead != null) {
+			aliveParticleCount++;
+
+			Particles p = particlePool_dead;// 解链
+			particlePool_dead = p.next;
+			if (particlePool_dead != null) {
+				particlePool_dead.prev = null;
+			}
+
+			p.prev = particlePool_alive_last;
+			if (particlePool_alive == null) {
+				particlePool_alive = p;
+			}
+			if (particlePool_alive_last != null) {
+				particlePool_alive_last.next = p;
+			}
+			p.next = null;
+			particlePool_alive_last = p;
+			return p;
 		}
 		return null;
 	}
@@ -71,12 +106,15 @@ public final class FGParticleSystem {
 	public void update() {
 
 		// 先清除所有已经死亡的particle
-		int _poolSize = aliveParticlePoint + 1;// 统计所有上一轮剩余的粒子数量
+		int _poolSize = aliveParticleCount;// 统计所有上一轮剩余的粒子数量
+		Particles p = particlePool_alive;
+		Particles p_next = p;
 		for (int i = 0; i < _poolSize;) {
-			Particles p = particlePool[i];
+			p = p_next;
+			p_next = p.next;
 			if (p.stayTime > p.lifeTime) {
 				_poolSize--;
-				removeParticle(i);
+				removeParticle(p);
 				if (p.type._particleOnDeath_enabled) {
 					createParticle(p.type._particleOnDeath_type, p.x, p.y,
 							p.type._particleOnDeath_number);
@@ -87,8 +125,11 @@ public final class FGParticleSystem {
 		}
 
 		// 处理所有现存粒子，仅处理该step之前生成的粒子
+		p = particlePool_alive;
+		p_next = p;
 		for (int i = 0; i < _poolSize;) {
-			Particles p = particlePool[i];
+			p = p_next;
+			p_next = p.next;
 			p.stayTime++;
 			// 判断是否应被破坏器破坏
 			boolean needToChange = false;
@@ -97,7 +138,7 @@ public final class FGParticleSystem {
 						pd._region_x_min, pd._region_x_max, pd._region_y_min,
 						pd._region_y_max, pd._region_shape);
 				if (needToChange) {
-					removeParticle(i);
+					removeParticle(p);
 					_poolSize--;
 					break;
 				}
@@ -124,7 +165,7 @@ public final class FGParticleSystem {
 						break;
 					}
 					case all: {
-						removeParticle(i);
+						removeParticle(p);
 						_poolSize--;
 						createParticle(pc._changeType_final, p.x, p.y, 1);
 						needToChange = true;
@@ -327,7 +368,6 @@ public final class FGParticleSystem {
 
 			// 循环变量加1
 			i++;
-
 		}
 
 		// 最后由发射器发射粒子
@@ -486,12 +526,10 @@ public final class FGParticleSystem {
 	}
 
 	public void draw() {
-
+		Particles p;
 		if (_drawOrder_old2new) {
-
-			for (int i = 0; i < aliveParticlePoint + 1; i++) {
-
-				Particles p = particlePool[i];
+			p = particlePool_alive;
+			for (int i = 0; i < aliveParticleCount; i++) {
 
 				if (p.shapeBaseType._particleSprite != null) {
 					p.convertor.setAlpha(p.alpha);
@@ -504,14 +542,12 @@ public final class FGParticleSystem {
 					p.shapeBaseType._particleSprite.draw(_position_x + p.x,
 							_position_y + p.y, p.convertor, p.color);
 				}
-
+				p = p.next;
 			}
 
 		} else {
-
-			for (int i = aliveParticlePoint; i >= 0; i--) {
-
-				Particles p = particlePool[i];
+			p = particlePool_alive_last;
+			for (int i = aliveParticleCount - 1; i >= 0; i--) {
 
 				if (p.shapeBaseType._particleSprite != null) {
 					p.convertor.setAlpha(p.alpha);
@@ -524,6 +560,7 @@ public final class FGParticleSystem {
 					p.shapeBaseType._particleSprite.draw(_position_x + p.x,
 							_position_y + p.y, p.convertor, p.color);
 				}
+				p = p.prev;
 			}
 
 		}
@@ -616,7 +653,15 @@ public final class FGParticleSystem {
 
 	public void clear() {
 
-		aliveParticlePoint = -1;
+		aliveParticleCount = 0;// 确保链表初始化
+		Particles p = particlePool_alive;
+		Particles p_next;
+		while (p != null) {
+			p_next = p.next;
+			removeParticle(p);
+			p = p_next;
+		}
+
 		particleEmitters.clear();
 		particleAttractors.clear();
 		particleDestroyers.clear();
@@ -627,7 +672,7 @@ public final class FGParticleSystem {
 
 	public int count() {
 
-		return aliveParticlePoint + 1;
+		return aliveParticleCount;
 
 	}
 
@@ -699,24 +744,60 @@ public final class FGParticleSystem {
 
 		maxParticleNumber = number;
 
-		Particles[] p = particlePool;
-		particlePool = new Particles[maxParticleNumber];
+		int particleCount = 0;
+
+		Particles p = particlePool_alive;
+		particlePool_alive_last = p;
+
+		while (p != null && particleCount < maxParticleNumber) {
+			particleCount++;
+			particlePool_alive_last = p;
+			p = p.next;
+		}
+		aliveParticleCount = particleCount;
+
 		if (p != null) {
-			for (int i = 0; i < Math.min(maxParticleNumber, p.length); i++) {
-				particlePool[i] = p[i];
-			}
-			for (int i = Math.min(maxParticleNumber, p.length) - 1; i < maxParticleNumber; i++) {
-				particlePool[i] = new Particles();
-			}
-		} else {
-			for (int i = 0; i < maxParticleNumber; i++) {
-				particlePool[i] = new Particles();
-			}
+			p.next = null;
+			particlePool_dead = null;
+		} else if (particleCount == maxParticleNumber) {
+			particlePool_dead = null;
+		} else if (particlePool_dead == null) {
+			particlePool_dead = new Particles();
+			particleCount++;
 		}
 
-		if (aliveParticlePoint > maxParticleNumber - 1) {
-			aliveParticlePoint = maxParticleNumber - 1;
+		p = particlePool_dead;
+		for (int i = particleCount + 1; i <= maxParticleNumber; i++) {
+			if (p.next == null) {
+				p.next = new Particles();
+				p.next.prev = p.next;
+			}
+			p = p.next;
 		}
+
+		if (p != null) {
+			p.prev.next = null;
+		}
+
+		// Particles[] p = particlePool;
+		// particlePool = new Particles[maxParticleNumber];
+		// if (p != null) {
+		// for (int i = 0; i < Math.min(maxParticleNumber, p.length); i++) {
+		// particlePool[i] = p[i];
+		// }
+		// for (int i = Math.min(maxParticleNumber, p.length) - 1; i <
+		// maxParticleNumber; i++) {
+		// particlePool[i] = new Particles();
+		// }
+		// } else {
+		// for (int i = 0; i < maxParticleNumber; i++) {
+		// particlePool[i] = new Particles();
+		// }
+		// }
+		//
+		// if (aliveParticlePoint > maxParticleNumber - 1) {
+		// aliveParticlePoint = maxParticleNumber - 1;
+		// }
 	}
 
 	/**
@@ -756,6 +837,9 @@ public final class FGParticleSystem {
 
 		int counter = -1;
 		int trigger = 0;
+
+		Particles prev = null;
+		Particles next = null;
 
 	}
 

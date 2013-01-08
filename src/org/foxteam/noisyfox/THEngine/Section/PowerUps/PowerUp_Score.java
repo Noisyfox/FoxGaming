@@ -69,7 +69,6 @@ public class PowerUp_Score extends PowerUp {
 
 			FGGamingThread.score += 500;
 			this.dismiss();
-			this.bindCollisionMask(null);
 		}
 	}
 
