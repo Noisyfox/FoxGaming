@@ -46,6 +46,8 @@ public class FGScreenAdaptatedBackground implements FGBackground {
 				case Center:
 					yOffset = (float) (height - imageHeight) / 2;
 					break;
+				default:
+					break;
 				}
 			}
 		} else {
@@ -60,6 +62,8 @@ public class FGScreenAdaptatedBackground implements FGBackground {
 				case Center:
 					yOffset = (float) (height - imageHeight) / 2;
 					break;
+				default:
+					break;
 				}
 			}
 			switch (horizonAlignType) {
@@ -68,6 +72,8 @@ public class FGScreenAdaptatedBackground implements FGBackground {
 				break;
 			case Center:
 				xOffset = (float) (width - imageWidth) / 2;
+				break;
+			default:
 				break;
 			}
 		}

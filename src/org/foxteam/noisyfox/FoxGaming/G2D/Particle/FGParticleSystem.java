@@ -207,6 +207,8 @@ public final class FGParticleSystem {
 				}
 				break;
 			}
+			default:
+				break;
 			}
 
 			// 计算 alpha
@@ -227,6 +229,8 @@ public final class FGParticleSystem {
 				}
 				break;
 			}
+			default:
+				break;
 			}
 
 			float x = p.x;
@@ -255,6 +259,8 @@ public final class FGParticleSystem {
 							* (distance / fa._force_distance_max);
 					break;
 				}
+				default:
+					break;
 				}
 				// 计算力的x y分量
 				float dir = FGMathsHelper.point_direction(p.x, p.y,
