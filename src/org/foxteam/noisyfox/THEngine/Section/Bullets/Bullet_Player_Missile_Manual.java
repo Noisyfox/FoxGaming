@@ -60,7 +60,6 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 	@Override
 	protected void onOutOfStage() {
 		this.dismiss();
-		this.bindCollisionMask(null);
 	}
 
 	@Override

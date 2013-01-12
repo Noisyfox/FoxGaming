@@ -17,8 +17,6 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -39,8 +37,8 @@ public final class FGScreenPlay {
 
 	private FGPerformer bindPerformer = null;
 
-	private List<List<Float>> movements = new ArrayList<List<Float>>();
-	private Queue<Queue<Float>> movements_tmp = new ConcurrentLinkedQueue<Queue<Float>>();
+	private ArrayList<ArrayList<Float>> movements = new ArrayList<ArrayList<Float>>();
+	private ConcurrentLinkedQueue<ConcurrentLinkedQueue<Float>> movements_tmp = new ConcurrentLinkedQueue<ConcurrentLinkedQueue<Float>>();
 
 	private int wait_step_remain = 0;
 
@@ -78,7 +76,7 @@ public final class FGScreenPlay {
 			throw new IllegalArgumentException();
 		}
 
-		List<Float> m = new ArrayList<Float>();
+		ArrayList<Float> m = new ArrayList<Float>();
 		m.add(Float.valueOf(MOVEMETN_WAIT));
 		m.add(Float.valueOf(steps));
 		movements.add(m);
@@ -96,7 +94,7 @@ public final class FGScreenPlay {
 					"Can't change the activited screenplay!");
 		}
 
-		List<Float> m = new ArrayList<Float>();
+		ArrayList<Float> m = new ArrayList<Float>();
 		m.add(Float.valueOf(MOVEMETN_STOP));
 		movements.add(m);
 	}
@@ -114,7 +112,7 @@ public final class FGScreenPlay {
 					"Can't change the activited screenplay!");
 		}
 
-		List<Float> m = new ArrayList<Float>();
+		ArrayList<Float> m = new ArrayList<Float>();
 		m.add(Float.valueOf(MOVEMETN_JUMPTO));
 		m.add(Float.valueOf(x));
 		m.add(Float.valueOf(y));
@@ -134,7 +132,7 @@ public final class FGScreenPlay {
 					"Can't change the activited screenplay!");
 		}
 
-		List<Float> m = new ArrayList<Float>();
+		ArrayList<Float> m = new ArrayList<Float>();
 		m.add(Float.valueOf(MOVEMETN_MOVETOWARDS_DS));
 		m.add(Float.valueOf(dir));
 		m.add(Float.valueOf(speed));
@@ -155,7 +153,7 @@ public final class FGScreenPlay {
 					"Can't change the activited screenplay!");
 		}
 
-		List<Float> m = new ArrayList<Float>();
+		ArrayList<Float> m = new ArrayList<Float>();
 		m.add(Float.valueOf(MOVEMETN_MOVETOWARDS_XY));
 		m.add(Float.valueOf(x));
 		m.add(Float.valueOf(y));
@@ -182,7 +180,7 @@ public final class FGScreenPlay {
 			throw new IllegalArgumentException();
 		}
 
-		List<Float> m = new ArrayList<Float>();
+		ArrayList<Float> m = new ArrayList<Float>();
 		m.add(Float.valueOf(MOVEMETN_MOVETOWARDSWAIT));
 		m.add(Float.valueOf(x));
 		m.add(Float.valueOf(y));
@@ -206,8 +204,8 @@ public final class FGScreenPlay {
 		movements_tmp.clear();
 		wait_step_remain = 0;
 
-		for (List<Float> mv : movements) {
-			Queue<Float> mv_tmp = new ConcurrentLinkedQueue<Float>();
+		for (ArrayList<Float> mv : movements) {
+			ConcurrentLinkedQueue<Float> mv_tmp = new ConcurrentLinkedQueue<Float>();
 			for (Float v : mv) {
 				mv_tmp.offer(Float.valueOf(v.floatValue()));
 			}
@@ -219,7 +217,7 @@ public final class FGScreenPlay {
 	protected boolean play() {
 		isPlaying = true;
 		while (wait_step_remain <= 0 && !movements_tmp.isEmpty()) {
-			Queue<Float> mv_tmp = movements_tmp.poll();
+			ConcurrentLinkedQueue<Float> mv_tmp = movements_tmp.poll();
 
 			switch (mv_tmp.poll().intValue()) {
 			case MOVEMETN_WAIT:

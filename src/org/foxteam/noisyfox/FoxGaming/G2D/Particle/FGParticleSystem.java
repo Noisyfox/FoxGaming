@@ -1,7 +1,6 @@
 package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
@@ -25,11 +24,11 @@ public final class FGParticleSystem {
 	private int _position_x = 0;
 	private int _position_y = 0;
 
-	private List<Emitters> particleEmitters = new ArrayList<Emitters>();
-	private List<FGParticleAttractor> particleAttractors = new ArrayList<FGParticleAttractor>();
-	private List<FGParticleDestroyer> particleDestroyers = new ArrayList<FGParticleDestroyer>();
-	private List<FGParticleDeflector> particleDeflectors = new ArrayList<FGParticleDeflector>();
-	private List<FGParticleChanger> particleChangers = new ArrayList<FGParticleChanger>();
+	private ArrayList<Emitters> particleEmitters = new ArrayList<Emitters>();
+	private ArrayList<FGParticleAttractor> particleAttractors = new ArrayList<FGParticleAttractor>();
+	private ArrayList<FGParticleDestroyer> particleDestroyers = new ArrayList<FGParticleDestroyer>();
+	private ArrayList<FGParticleDeflector> particleDeflectors = new ArrayList<FGParticleDeflector>();
+	private ArrayList<FGParticleChanger> particleChangers = new ArrayList<FGParticleChanger>();
 	private static Random random = new Random();
 
 	private int maxParticleNumber = 200;
@@ -108,6 +107,7 @@ public final class FGParticleSystem {
 		int _poolSize = aliveParticleCount;// 统计所有上一轮剩余的粒子数量
 		Particles p = particlePool_alive;
 		Particles p_next = p;
+		boolean needToChange = false;
 		for (int i = 0; i < _poolSize;) {
 			p = p_next;
 			p_next = p.next;
@@ -126,7 +126,7 @@ public final class FGParticleSystem {
 			// 处理所有现存粒子，仅处理该step之前生成的粒子
 			p.stayTime++;
 			// 判断是否应被破坏器破坏
-			boolean needToChange = false;
+			needToChange = false;
 			for (FGParticleDestroyer pd : particleDestroyers) {
 				needToChange = pointInSpecifiedRegion(p.x, p.y,
 						pd._region_x_min, pd._region_x_max, pd._region_y_min,
@@ -371,7 +371,8 @@ public final class FGParticleSystem {
 		}
 
 		// 最后由发射器发射粒子
-		for (int i = 0; i < particleEmitters.size();) {
+		int size = particleEmitters.size();
+		for (int i = 0; i < size;) {
 			Emitters pe = particleEmitters.get(i);
 
 			if (pe.emitter._emit_particle_number < 0) {
@@ -387,6 +388,7 @@ public final class FGParticleSystem {
 					createParticlesRegion(pe);
 					if (pe.emitter.emitType == EmitType.burst) {
 						particleEmitters.remove(i);
+						size--;
 					} else {
 						i++;
 					}
@@ -399,6 +401,7 @@ public final class FGParticleSystem {
 				createParticlesRegion(pe);
 				if (pe.emitter.emitType == EmitType.burst) {
 					particleEmitters.remove(i);
+					size--;
 				} else {
 					i++;
 				}
@@ -447,9 +450,7 @@ public final class FGParticleSystem {
 
 	// 判断指定点是否在一个以a为长半轴长，b为短半轴长，中心在原点的菱形内部
 	private boolean pointInDiamond(float x, float y, float a, float b) {
-		x = Math.abs(x);
-		y = Math.abs(y);
-		return a != 0 && b != 0 && a * y + b * x <= a * b;
+		return a != 0 && b != 0 && a * Math.abs(y) + b * Math.abs(x) <= a * b;
 	}
 
 	// 判断指定点是否在一个以a为长半轴长，b为短半轴长，圆心在原点的椭圆形内部

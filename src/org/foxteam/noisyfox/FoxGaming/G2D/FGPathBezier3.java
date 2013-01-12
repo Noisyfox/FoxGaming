@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,9 +34,9 @@ public final class FGPathBezier3 {
 	float stepLength = 0.5f;// 最小距离间隔
 	float precision = 0.05f;// 近似计算误差
 
-	List<Node> nodes = new ArrayList<Node>();
+	ArrayList<Node> nodes = new ArrayList<Node>();
 	boolean computed = false;
-	List<FGPointF> pathPoints = new ArrayList<FGPointF>();
+	ArrayList<FGPointF> pathPoints = new ArrayList<FGPointF>();
 	boolean started = false;
 
 	public void reset() {

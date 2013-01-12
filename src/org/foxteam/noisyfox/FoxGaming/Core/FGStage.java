@@ -19,8 +19,6 @@ package org.foxteam.noisyfox.FoxGaming.Core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.Background.FGBackground;
@@ -37,7 +35,7 @@ import android.graphics.Color;
  */
 public abstract class FGStage {
 	// 全局参数
-	private static List<FGStage> stages = new ArrayList<FGStage>();
+	private static ArrayList<FGStage> stages = new ArrayList<FGStage>();
 	protected static FGStage currentStage = null;// 当前活动的stage
 	protected static FGStage targetStage = null;// 要跳转到的stage
 	protected static boolean switchStage = false;
@@ -55,10 +53,10 @@ public abstract class FGStage {
 		}
 	};
 
-	protected List<FGPerformer> performers = new ArrayList<FGPerformer>();
+	protected ArrayList<FGPerformer> performers = new ArrayList<FGPerformer>();
 	protected int performerCount = 0;
 	protected FGViews activatedView = null;
-	protected List<ManagedParticleSystem> managedParticleSystem = new ArrayList<ManagedParticleSystem>();
+	protected ArrayList<ManagedParticleSystem> managedParticleSystem = new ArrayList<ManagedParticleSystem>();
 	protected int managedParticleSystemSize = 0;
 	protected int width = 480;// stage 的宽
 	protected int height = 800;// stage 的高
@@ -68,11 +66,11 @@ public abstract class FGStage {
 	protected int stageIndex = -1;
 	protected boolean closed = false;
 	private boolean available = false;
-	private List<FGPerformer> employingPerformer = new ArrayList<FGPerformer>();
-	private List<FGPerformer> emploiedPerformer = new ArrayList<FGPerformer>();
-	private List<FGPerformer> dismissingPerformer = new ArrayList<FGPerformer>();
-	private List<FGPerformer> dismissedPerformer = new ArrayList<FGPerformer>();
-	private Queue<FGPerformer> collisions = new ConcurrentLinkedQueue<FGPerformer>();
+	private ArrayList<FGPerformer> employingPerformer = new ArrayList<FGPerformer>();
+	private ArrayList<FGPerformer> emploiedPerformer = new ArrayList<FGPerformer>();
+	private ArrayList<FGPerformer> dismissingPerformer = new ArrayList<FGPerformer>();
+	private ArrayList<FGPerformer> dismissedPerformer = new ArrayList<FGPerformer>();
+	private ConcurrentLinkedQueue<FGPerformer> collisions = new ConcurrentLinkedQueue<FGPerformer>();
 
 	/**
 	 * @Title: onCreate
@@ -174,7 +172,7 @@ public abstract class FGStage {
 	 * 静态函数 获取当前活动的 stage 的中所有属于 类型c 的 Performer
 	 */
 	public static final FGPerformer[] getPerformersByClass(Class<?> c) {
-		List<FGPerformer> per = new ArrayList<FGPerformer>();
+		ArrayList<FGPerformer> per = new ArrayList<FGPerformer>();
 
 		for (FGPerformer p : currentStage.performers) {
 			if (c.isInstance(p)) {

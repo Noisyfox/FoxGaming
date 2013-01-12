@@ -19,8 +19,7 @@ package org.foxteam.noisyfox.FoxGaming.Core;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -67,22 +66,22 @@ public final class FGGamingThread extends FGLoopThread implements
 	private static float SPS = 1f;// step per second,每秒循环的次数，也就是帧速
 	private static long allStepCount = 0;
 	private static long gameStartTime = 0;
-	private static List<Finger> registedFingers = new ArrayList<Finger>();
-	private static List<Integer> actionedFingers = new ArrayList<Integer>();
-	private static List<Integer> registedKeys = new ArrayList<Integer>();
-	private static List<Integer> blockedKeys = new ArrayList<Integer>();
+	private static ArrayList<Finger> registedFingers = new ArrayList<Finger>();
+	private static ArrayList<Integer> actionedFingers = new ArrayList<Integer>();
+	private static ArrayList<Integer> registedKeys = new ArrayList<Integer>();
+	private static ArrayList<Integer> blockedKeys = new ArrayList<Integer>();
 
-	private final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
+	private static final int SPS_COUNT_INTERVAL_MILLIS = 100;// SPS刷新的间隔,单位毫秒
 
 	private boolean processing = false;
 	private int lastScreenWidth = 0;
 	private int lastScreenHeight = 0;
-	private List<TouchEvent> listTouchEvent = new LinkedList<TouchEvent>();
-	private Queue<KeyboardEvent> queueKeyEvent = new LinkedList<KeyboardEvent>();
+	private LinkedList<TouchEvent> listTouchEvent = new LinkedList<TouchEvent>();
+	private ConcurrentLinkedQueue<KeyboardEvent> queueKeyEvent = new ConcurrentLinkedQueue<KeyboardEvent>();
 	private long stepCount = 0;
 	private long SPS_startTime;
 	private long lessTime = 0;// 当无法维持帧速时向别的帧借用的处理时间
-	private static long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
+	private static final long MAXLESSTIME = 1000;// 当无法维持帧速时向别的帧借用的处理时间上限
 	private int currentState = STATEFLAG_STOPED;
 
 	private Boolean surfaceChanged = false;
@@ -92,7 +91,7 @@ public final class FGGamingThread extends FGLoopThread implements
 		currentState = STATEFLAG_WAITING;
 	}
 
-	public static float getSPS() {
+	public final static float getSPS() {
 		return SPS;
 	}
 
@@ -102,7 +101,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	 * @param: @return
 	 * @return: long
 	 */
-	public static long getStepCount() {
+	public final static long getStepCount() {
 		return allStepCount;
 	}
 
@@ -112,7 +111,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	 * @param: @return
 	 * @return: long
 	 */
-	public static long getGameRunTime() {
+	public final static long getGameRunTime() {
 		return System.currentTimeMillis() - gameStartTime;
 	}
 
@@ -122,19 +121,19 @@ public final class FGGamingThread extends FGLoopThread implements
 	 * @param: @return
 	 * @return: int
 	 */
-	public static int getFingerCount() {
+	public final static int getFingerCount() {
 		return registedFingers.size();
 	}
 
-	public static int getScreenWidth() {
+	public final static int getScreenWidth() {
 		return width;
 	}
 
-	public static int getScreenHeight() {
+	public final static int getScreenHeight() {
 		return height;
 	}
 
-	public static Bitmap getScreenshots() {
+	public final static Bitmap getScreenshots() {
 		int b[] = new int[width * height];
 		int bt[] = new int[width * height];
 		IntBuffer ib = IntBuffer.wrap(b);
@@ -163,7 +162,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	 * @param: @param unblock 是否为取消屏蔽keyCode所指定的按键
 	 * @return: void
 	 */
-	public static void blockKeyFromSystem(int keyCode, boolean unblock) {
+	public final static void blockKeyFromSystem(int keyCode, boolean unblock) {
 		if (!unblock) {
 			if (!blockedKeys.contains(keyCode)) {
 				blockedKeys.add(keyCode);
@@ -174,7 +173,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	}
 
 	@Override
-	protected void loop() {
+	protected final void loop() {
 		// 游戏主循环
 		if (currentState != STATEFLAG_STOPED) {
 			switch (currentState) {
@@ -223,7 +222,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	}
 
 	@Override
-	protected void onLooperPrepared() {
+	protected final void onLooperPrepared() {
 
 		while (currentState == STATEFLAG_WAITING) {// 等待游戏开始
 			try {
@@ -255,7 +254,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	}
 
 	@Override
-	protected void onLooperExited() {
+	protected final void onLooperExited() {
 		// 退出游戏主循环，即游戏结束
 		// 清理
 		FGSimpleSoundEffect.freeAll();
@@ -282,7 +281,7 @@ public final class FGGamingThread extends FGLoopThread implements
 		drawStage();
 	}
 
-	private void applyView() {
+	private final void applyView() {
 		if (FGStage.currentStage.activatedView == null) {
 			FGEGLHelper.getBindedGL().glViewport(0, 0, width, height);
 
@@ -316,7 +315,7 @@ public final class FGGamingThread extends FGLoopThread implements
 
 	}
 
-	public void drawStage() {
+	public final void drawStage() {
 		// GL10 gl = FGEGLHelper.getBindedGL();
 		// FGEGLHelper.getBufferGL().glClearColor(255f, 255f, 255f, 1f);
 		FGEGLHelper.renderOnScreen();
@@ -358,7 +357,7 @@ public final class FGGamingThread extends FGLoopThread implements
 	 * @param:
 	 * @return: void
 	 */
-	private void gameLogic() {
+	private final void gameLogic() {
 		long frameStartTime = System.currentTimeMillis();
 		if (gameStartTime == 0)
 			gameStartTime = System.currentTimeMillis();
@@ -369,74 +368,68 @@ public final class FGGamingThread extends FGLoopThread implements
 				surfaceChanged = false;
 			}
 
+			FGStage cStage = FGStage.currentStage;
 			if (FGStage.targetStage != null) {
 				// 先处理 Stage
 				if (FGStage.switchStage) {// Stage 发生变化
 					FGStage.switchStage = false;
-					boolean gameStart = FGStage.currentStage == null;
-					if (FGStage.currentStage != null) {// 不是第一次进游戏
-						FGStage.currentStage
-								.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
-						FGStage.currentStage
-								.broadcastEvent(FGEventsListener.EVENT_ONSTAGEEND);
-						FGStage.currentStage
-								.broadcastEvent(FGEventsListener.EVENT_ONDESTORY);
+					boolean gameStart = cStage == null;
+					if (cStage != null) {// 不是第一次进游戏
+						cStage.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
+						cStage.broadcastEvent(FGEventsListener.EVENT_ONSTAGEEND);
+						cStage.broadcastEvent(FGEventsListener.EVENT_ONDESTORY);
 
-						if (FGStage.currentStage.closed) {
-							FGStage s = FGStage.currentStage;
+						if (cStage.closed) {
 							FGStage.currentStage = FGStage.targetStage;
-							s.closeStage();
+							cStage.closeStage();
+							cStage = FGStage.currentStage;
 						} else {
-							FGStage.currentStage.initStage();
+							cStage.initStage();
 						}
 					}
 
-					FGStage.currentStage = FGStage.targetStage;
+					cStage = FGStage.currentStage = FGStage.targetStage;
 					// 执行 Stage 的初始化
 					FGDebug.print("Create new stage.");
-					FGStage.currentStage.onCreate();
+					cStage.onCreate();
 
-					FGStage.speed = FGStage.currentStage.stageSpeed;
+					FGStage.speed = cStage.stageSpeed;
 
 					// 所有事件都必须在EVENT_ONCREATE之后
-					FGStage.currentStage.employPerformer();
+					cStage.employPerformer();
 
 					if (gameStart) {
 						// 第一次进游戏，广播EVENT_ONGAMESTART事件
-						FGStage.currentStage
-								.broadcastEvent(FGEventsListener.EVENT_ONGAMESTART);
+						cStage.broadcastEvent(FGEventsListener.EVENT_ONGAMESTART);
 					}
 
-					FGStage.currentStage
-							.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
-					FGStage.currentStage
-							.broadcastEvent(FGEventsListener.EVENT_ONSTAGESTART);
+					cStage.broadcastEvent(FGEventsListener.EVENT_ONSTAGECHANGE);
+					cStage.broadcastEvent(FGEventsListener.EVENT_ONSTAGESTART);
 
 				} else {
-					FGStage.speed = FGStage.currentStage.stageSpeed;
-					FGStage.currentStage.employPerformer();
+					FGStage.speed = cStage.stageSpeed;
+					cStage.employPerformer();
 				}
 
 				// 处理当前场景的performer
 				// 最先广播EVENT_ONSTEPSTART事件
-				FGStage.currentStage
-						.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
+				cStage.broadcastEvent(FGEventsListener.EVENT_ONSTEPSTART);
 				// 处理定时器事件
-				FGStage.currentStage.operateAlarm();
+				cStage.operateAlarm();
 				// 计算碰撞
-				FGStage.currentStage.operateCollision();
+				cStage.operateCollision();
 				// 计算离开 Stage
-				FGStage.currentStage.detectOutOfStage();
+				cStage.detectOutOfStage();
 				// 处理Performer的 ScreenPlay
-				FGStage.currentStage.playScreenPlay();
+				cStage.playScreenPlay();
 				// 处理Performer的运动
-				FGStage.currentStage.updateMovement();
+				cStage.updateMovement();
 
 				// 检测屏幕尺寸变化
 				if (width != lastScreenWidth || height != lastScreenHeight) {
 					lastScreenHeight = height;
 					lastScreenWidth = width;
-					FGStage.currentStage.broadcastEvent(
+					cStage.broadcastEvent(
 							FGEventsListener.EVENT_ONSCREENSIZECHANGED, width,
 							height);
 				}
@@ -444,18 +437,20 @@ public final class FGGamingThread extends FGLoopThread implements
 				// 处理触屏事件队列并广播EVENT_ONTOUCH*事件
 				actionedFingers.clear();
 				synchronized (listTouchEvent) {
-					while (!listTouchEvent.isEmpty()) {
+					int length = listTouchEvent.size();
+					while (length > 0) {
 						TouchEvent e = listTouchEvent.get(0);
 						listTouchEvent.remove(0);
+						length--;
 						actionedFingers.add(e.whichFinger);
 						switch (e.event) {
 						case MotionEvent.ACTION_DOWN:
-							FGStage.currentStage.broadcastEvent(
+							cStage.broadcastEvent(
 									FGEventsListener.EVENT_ONTOUCHPRESS,
 									e.whichFinger, e.x, e.y);
 							break;
 						case MotionEvent.ACTION_UP:
-							FGStage.currentStage.broadcastEvent(
+							cStage.broadcastEvent(
 									FGEventsListener.EVENT_ONTOUCHRELEASE,
 									e.whichFinger, e.x, e.y);
 							break;
@@ -466,7 +461,7 @@ public final class FGGamingThread extends FGLoopThread implements
 				synchronized (registedFingers) {
 					for (Finger f : registedFingers) {
 						if (!actionedFingers.contains(f.id)) {
-							FGStage.currentStage.broadcastEvent(
+							cStage.broadcastEvent(
 									FGEventsListener.EVENT_ONTOUCH, f.id, f.x,
 									f.y);
 						}
@@ -474,22 +469,24 @@ public final class FGGamingThread extends FGLoopThread implements
 				}
 				// 处理按键事件队列并广播EVENT_ONKEY*事件
 				synchronized (queueKeyEvent) {
-					while (!queueKeyEvent.isEmpty()) {
+					int size = queueKeyEvent.size();
+					while (size > 0) {
 						KeyboardEvent e = queueKeyEvent.poll();
+						size--;
 						switch (e.getEvent()) {
 						case KeyboardEvent.KEY_PRESS:
-							FGStage.currentStage.broadcastEvent(
+							cStage.broadcastEvent(
 									FGEventsListener.EVENT_ONKEYPRESS,
 									e.getKey());
-							FGStage.currentStage.broadcastEvent(
-									FGEventsListener.EVENT_ONKEY, e.getKey());
+							cStage.broadcastEvent(FGEventsListener.EVENT_ONKEY,
+									e.getKey());
 							break;
 						case KeyboardEvent.KEY_HOLD:
-							FGStage.currentStage.broadcastEvent(
-									FGEventsListener.EVENT_ONKEY, e.getKey());
+							cStage.broadcastEvent(FGEventsListener.EVENT_ONKEY,
+									e.getKey());
 							break;
 						case KeyboardEvent.KEY_RELEASE:
-							FGStage.currentStage.broadcastEvent(
+							cStage.broadcastEvent(
 									FGEventsListener.EVENT_ONKEYRELEASE,
 									e.getKey());
 							break;
@@ -499,45 +496,41 @@ public final class FGGamingThread extends FGLoopThread implements
 				}
 
 				// 在EVENT_ONDRAW事件之前广播EVENT_ONSTEP事件
-				FGStage.currentStage
-						.broadcastEvent(FGEventsListener.EVENT_ONSTEP);
+				cStage.broadcastEvent(FGEventsListener.EVENT_ONSTEP);
 
 				// 更新粒子特效
-				FGStage.currentStage.updateParticleSystems();
+				cStage.updateParticleSystems();
 
 				// 绘制stage的title等并且广播EVENT_ONDRAW事件,统一绘制图像
 				applyView();
 				FGEGLHelper.getBindedGL().glClear(
 						GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-				FGDraw.setColor(FGStage.currentStage.backgroundColor);// 绘制stage背景色
+				FGDraw.setColor(cStage.backgroundColor);// 绘制stage背景色
 				FGDraw.setAlpha(1);
 				FGDraw.drawRectFill(FGEGLHelper.mBinded_GL, 0, 0,
-						FGStage.currentStage.getWidth(),
-						FGStage.currentStage.getHeight());
-				if (FGStage.currentStage.background != null) {// 绘制背景
-					FGStage.currentStage.background.doAndDraw(0, 0,
-							FGStage.currentStage.height,
-							FGStage.currentStage.width);
+						cStage.getWidth(), cStage.getHeight());
+				if (cStage.background != null) {// 绘制背景
+					cStage.background.doAndDraw(0, 0, cStage.height,
+							cStage.width);
 				}
-				if (FGStage.currentStage.managedParticleSystemSize == 0) {
-					FGStage.currentStage
-							.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
+				if (cStage.managedParticleSystemSize == 0) {
+					cStage.broadcastEvent(FGEventsListener.EVENT_ONDRAW);
 				} else {
 					// 处理粒子和performer的绘制顺序
 					int index = 0;
-					ManagedParticleSystem m = FGStage.currentStage.managedParticleSystem
+					ManagedParticleSystem m = cStage.managedParticleSystem
 							.get(index);
+					int managedParticleSystemSize = cStage.managedParticleSystemSize;
 					int nowDepth = m.depth;
 
-					for (FGPerformer p : FGStage.currentStage.performers) {
+					for (FGPerformer p : cStage.performers) {
 						if (p.depth <= nowDepth) {
 							while (p.depth <= nowDepth
-									&& index < FGStage.currentStage.managedParticleSystemSize) {
+									&& index < managedParticleSystemSize) {
 								m.particleSystem.draw();
 								index++;
-								if (index < FGStage.currentStage.managedParticleSystemSize) {
-									m = FGStage.currentStage.managedParticleSystem
-											.get(index);
+								if (index < managedParticleSystemSize) {
+									m = cStage.managedParticleSystem.get(index);
 									nowDepth = m.depth;
 								}
 							}
@@ -545,8 +538,8 @@ public final class FGGamingThread extends FGLoopThread implements
 						p.callEvent(FGEventsListener.EVENT_ONDRAW);
 					}
 
-					for (int i = index; i < FGStage.currentStage.managedParticleSystemSize; i++) {
-						FGStage.currentStage.managedParticleSystem.get(i).particleSystem
+					for (int i = index; i < managedParticleSystemSize; i++) {
+						cStage.managedParticleSystem.get(i).particleSystem
 								.draw();
 					}
 
@@ -555,11 +548,10 @@ public final class FGGamingThread extends FGLoopThread implements
 				screenRefresh();
 
 				// 处理 performer 的 dismiss 操作
-				FGStage.currentStage.dismissPerformer();
+				cStage.dismissPerformer();
 
 				// 最后广播EVENT_ONSTEPEND事件
-				FGStage.currentStage
-						.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
+				cStage.broadcastEvent(FGEventsListener.EVENT_ONSTEPEND);
 			}
 
 			// 控制帧速

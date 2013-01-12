@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.FoxGaming.Core;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.*;
 
@@ -52,9 +51,9 @@ public class FGPerformer extends FGEventsListener {
 	protected boolean performing = false;
 	protected int stage = -1;
 	protected FGGraphicCollision collisionMask = null;
-	protected List<FGPerformer> requiredCollisionDetection = new ArrayList<FGPerformer>();
+	protected ArrayList<FGPerformer> requiredCollisionDetection = new ArrayList<FGPerformer>();
 
-	protected List<Class<?>> requiredClassCollisionDetection = new ArrayList<Class<?>>();
+	protected ArrayList<Class<?>> requiredClassCollisionDetection = new ArrayList<Class<?>>();
 	protected FGScreenPlay myScreenPlay = null;
 	private static FGGraphicCollision gc_tmp = new FGGraphicCollision();
 

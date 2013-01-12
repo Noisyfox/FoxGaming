@@ -17,7 +17,6 @@
 package org.foxteam.noisyfox.FoxGaming.G2D;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -36,15 +35,15 @@ import android.graphics.Rect;
  */
 public class FGGraphicCollision {
 
-	List<FGPolygon> polygons = new ArrayList<FGPolygon>();
-	List<FGCircle> circles = new ArrayList<FGCircle>();
-	List<FGPoint> points = new ArrayList<FGPoint>();
+	ArrayList<FGPolygon> polygons = new ArrayList<FGPolygon>();
+	ArrayList<FGCircle> circles = new ArrayList<FGCircle>();
+	ArrayList<FGPoint> points = new ArrayList<FGPoint>();
 	Rect reducedArea = new Rect(0, 0, 0, 0);
-	List<FGPolygon> polygons_tmp = new ArrayList<FGPolygon>();
+	ArrayList<FGPolygon> polygons_tmp = new ArrayList<FGPolygon>();
 	int polygons_tmp_size = 0;
-	List<FGCircle> circles_tmp = new ArrayList<FGCircle>();
+	ArrayList<FGCircle> circles_tmp = new ArrayList<FGCircle>();
 	int circles_tmp_size = 0;
-	List<FGPoint> points_tmp = new ArrayList<FGPoint>();
+	ArrayList<FGPoint> points_tmp = new ArrayList<FGPoint>();
 	int points_tmp_size = 0;
 	Rect reducedArea_tmp = new Rect(0, 0, 0, 0);
 
@@ -71,16 +70,14 @@ public class FGGraphicCollision {
 	}
 
 	public final void addCircle(int x, int y, int r, boolean fill) {
-		FGCircle c = new FGCircle(x, y, r, fill);
-		circles.add(c);
+		circles.add(new FGCircle(x, y, r, fill));
 
 		reducedArea.left = Math.min(x - r, reducedArea.left);
 		reducedArea.top = Math.min(y - r, reducedArea.top);
 		reducedArea.right = Math.max(x + r, reducedArea.right);
 		reducedArea.bottom = Math.max(y + r, reducedArea.bottom);
 
-		FGCircle c_tmp = new FGCircle(x, y, r, fill);
-		circles_tmp.add(c_tmp);
+		circles_tmp.add(new FGCircle(x, y, r, fill));
 		circles_tmp_size++;
 
 		reducedArea_tmp.left = reducedArea.left;
@@ -95,8 +92,7 @@ public class FGGraphicCollision {
 
 	public final void addTriangle(int x1, int y1, int x2, int y2, int x3,
 			int y3, boolean fill) {
-		int[][] vertex = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
-		addPolygon(vertex, fill);
+		addPolygon(new int[][] { { x1, y1 }, { x2, y2 }, { x3, y3 } }, fill);
 	}
 
 	public final void addRectangle(int left, int top, int width, int height) {
@@ -105,28 +101,24 @@ public class FGGraphicCollision {
 
 	public final void addRectangle(int left, int top, int width, int height,
 			boolean fill) {
-		int[][] vertex = { { left, top }, { left, top + height },
-				{ left + width, top + height }, { left + width, top } };
-		addPolygon(vertex, fill);
+		addPolygon(new int[][] { { left, top }, { left, top + height },
+				{ left + width, top + height }, { left + width, top } }, fill);
 	}
 
 	public final void addLine(int x1, int y1, int x2, int y2) {
-		int[][] vertex = { { x1, y1 }, { x2, y2 } };
-		addPolygon(vertex, false);
+		addPolygon(new int[][] { { x1, y1 }, { x2, y2 } }, false);
 	}
 
 	// 点只能用于与点以及实心圆、多边形进行碰撞检测，自动忽略线段与轮廓
 	public final void addPoint(int x, int y) {
-		FGPoint p = new FGPoint(x, y);
-		points.add(p);
+		points.add(new FGPoint(x, y));
 
 		reducedArea.left = Math.min(x, reducedArea.left);
 		reducedArea.top = Math.min(y, reducedArea.top);
 		reducedArea.right = Math.max(x, reducedArea.right);
 		reducedArea.bottom = Math.max(y, reducedArea.bottom);
 
-		FGPoint p_tmp = new FGPoint(x, y);
-		points_tmp.add(p_tmp);
+		points_tmp.add(new FGPoint(x, y));
 		points_tmp_size++;
 
 		reducedArea_tmp.left = reducedArea.left;
@@ -151,8 +143,7 @@ public class FGGraphicCollision {
 	}
 
 	public final void addPolygon(FGPoint[] vertex, boolean fill) {
-		FGPolygon p = new FGPolygon(vertex, fill);
-		polygons.add(p);
+		polygons.add(new FGPolygon(vertex, fill));
 
 		FGPoint[] v_tmp = new FGPoint[vertex.length];
 
@@ -166,8 +157,7 @@ public class FGGraphicCollision {
 			v_tmp[i] = new FGPoint(v.getX(), v.getY());
 		}
 
-		FGPolygon p_tmp = new FGPolygon(v_tmp, fill);
-		polygons_tmp.add(p_tmp);
+		polygons_tmp.add(new FGPolygon(v_tmp, fill));
 		polygons_tmp_size++;
 
 		reducedArea_tmp.left = reducedArea.left;

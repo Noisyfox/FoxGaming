@@ -39,7 +39,7 @@ public final class FGMathsHelper {
 	private static Random random = new Random();
 
 	// 生成一个高斯分布数列
-	public static void generateGaussianDistribution() {
+	public final static void generateGaussianDistribution() {
 		GaussianDistributionList = new double[GaussianDistributionListLength];
 
 		for (int i = 0; i < GaussianDistributionListLength; i++) {
@@ -51,11 +51,11 @@ public final class FGMathsHelper {
 	}
 
 	// 生成一个介于 0 和 1 之间的符合高斯分布的随机数
-	public static double randomGaussian() {
+	public final static double randomGaussian() {
 
 		int index = random.nextInt(GaussianDistributionListLength);
 
-		if (GaussianDistributionMax < 0.00000001) {
+		if (GaussianDistributionMax < 0.0001) {
 			return 0;
 		}
 
@@ -63,7 +63,7 @@ public final class FGMathsHelper {
 	}
 
 	// 判断一个点是否在一个圆内
-	public static boolean pointInCircle(FGPoint p, FGCircle c) {
+	public final static boolean pointInCircle(FGPoint p, FGCircle c) {
 		int d2 = p.squareDistance(c);
 		if (d2 <= (c.getR() * c.getR())) {
 			return true;
@@ -72,7 +72,7 @@ public final class FGMathsHelper {
 	}
 
 	// 判断一个点是否在一个夹角内
-	public static boolean pointInAngle(FGPoint point, FGPoint vertex,
+	public final static boolean pointInAngle(FGPoint point, FGPoint vertex,
 			FGPoint p1, FGPoint p2) {
 		int x = point.getX() - vertex.getX();
 		int y = point.getY() - vertex.getY();
@@ -90,14 +90,14 @@ public final class FGMathsHelper {
 	}
 
 	// 判断两条线段是否相交
-	public static boolean lineVSline(FGPoint l1P1, FGPoint l1P2, FGPoint l2P1,
-			FGPoint l2P2) {
+	public final static boolean lineVSline(FGPoint l1P1, FGPoint l1P2,
+			FGPoint l2P1, FGPoint l2P2) {
 		return pointInAngle(l1P2, l1P1, l2P1, l2P2)
 				&& pointInAngle(l2P2, l2P1, l1P1, l1P2);
 	}
 
 	// 判断点是否在多边形内
-	public static boolean pointInPolygon(FGPoint p, FGPolygon pol) {
+	public final static boolean pointInPolygon(FGPoint p, FGPolygon pol) {
 		if (!pol.isLine()) {
 			int nVertex = pol.getVertexNumber();
 			boolean collision = true;
@@ -116,7 +116,7 @@ public final class FGMathsHelper {
 	}
 
 	// 向量数量积
-	public static int dotProduct(FGPoint vertex, FGPoint p1, FGPoint p2) {
+	public final static int dotProduct(FGPoint vertex, FGPoint p1, FGPoint p2) {
 		// int x1, y1;
 		// int x2, y2;
 
@@ -130,8 +130,8 @@ public final class FGMathsHelper {
 	}
 
 	// 点到直线距离平方
-	public static int squareDistanceFromPointToLine(FGPoint point, FGPoint p1,
-			FGPoint p2) {
+	public final static int squareDistanceFromPointToLine(FGPoint point,
+			FGPoint p1, FGPoint p2) {
 		int dp = dotProduct(p1, point, p2);
 		int dp2 = dp * dp;
 		int p1p22 = p1.squareDistance(p2);
@@ -140,8 +140,8 @@ public final class FGMathsHelper {
 	}
 
 	// 判断圆与直线（线段）有无交点
-	public static boolean circleVSline(FGCircle c, FGPoint p1, FGPoint p2,
-			boolean segment) {
+	public final static boolean circleVSline(FGCircle c, FGPoint p1,
+			FGPoint p2, boolean segment) {
 		if (segment) {// 线段
 			boolean hasIn = false;
 			boolean hasOut = false;
@@ -172,7 +172,7 @@ public final class FGMathsHelper {
 	}
 
 	// 判断两个 Rect 是否相交
-	public static boolean rectVSrect(Rect rect1, Rect rect2) {
+	public final static boolean rectVSrect(Rect rect1, Rect rect2) {
 		int x1 = rect1.left;
 		int y1 = rect1.top;
 		int w1 = rect1.width();
@@ -195,17 +195,17 @@ public final class FGMathsHelper {
 	}
 
 	// 返回指定长度及方向的矢量线在 x 轴上的投影长度.
-	public static float lengthdir_x(float len, float dir) {
-		return len * (float) Math.cos(Math.toRadians((double) dir));
+	public final static float lengthdir_x(float len, float dir) {
+		return (float) (len * Math.cos(Math.toRadians(dir)));
 	}
 
 	// 返回指定长度及方向的矢量线在 y 轴上的投影长度.
-	public static float lengthdir_y(float len, float dir) {
-		return len * (float) Math.sin(Math.toRadians((double) dir));
+	public final static float lengthdir_y(float len, float dir) {
+		return (float) (len * Math.sin(Math.toRadians(dir)));
 	}
 
 	// 获取一个 >= min && <= max 的随机整数
-	public static int random(int min, int max) {
+	public final static int random(int min, int max) {
 		if (max < min) {
 			throw new IllegalArgumentException("MAX can't be smaller than MIN!");
 		}
@@ -214,7 +214,7 @@ public final class FGMathsHelper {
 	}
 
 	// 获取一个 >= min && < max 的随机浮点数
-	public static double random(double min, double max) {
+	public final static double random(double min, double max) {
 		if (min > max) {
 			throw new IllegalArgumentException("MAX can't be smaller than MIN!");
 		}
@@ -223,17 +223,19 @@ public final class FGMathsHelper {
 	}
 
 	// 返回位置1(x1,y1)到位置2(x2,y2)的距离.
-	public static float point_distance(float x1, float y1, float x2, float y2) {
+	public final static float point_distance(float x1, float y1, float x2,
+			float y2) {
 		return (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 
 	// 返回从位置1(x1,y1)到位置2(x2,y2)的方向角度
-	public static float point_direction(float x1, float y1, float x2, float y2) {
+	public final static float point_direction(float x1, float y1, float x2,
+			float y2) {
 		return (float) Math.toDegrees(Math.atan2(y1 - y2, x2 - x1));
 	}
 
 	// 返回从 from 角度转向 to 角度所经过的最少角度，正值逆时针旋转，负值顺时针旋转
-	public static float directionTo(float from, float to) {
+	public final static float directionTo(float from, float to) {
 		// 旋转坐标系使 from 对应的终边落在X轴正方向上
 		to -= from;
 		// 转化到360度以内
@@ -242,7 +244,7 @@ public final class FGMathsHelper {
 		return to <= 180 ? to : 180 - to;
 	}
 
-	public static float degreeIn360(float deg) {
+	public final static float degreeIn360(float deg) {
 		if (deg >= 0) {
 			deg %= 360;
 		} else {
