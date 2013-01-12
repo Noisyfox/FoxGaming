@@ -79,7 +79,7 @@ public final class FGParticleSystem {
 		aliveParticleCount--;
 	}
 
-	private final Particles addParticle() {
+	private final Particles obtainParticle() {
 		if (particlePool_dead != null) {
 			aliveParticleCount++;
 
@@ -105,13 +105,14 @@ public final class FGParticleSystem {
 
 	public void update() {
 
-		// 先清除所有已经死亡的particle
 		int _poolSize = aliveParticleCount;// 统计所有上一轮剩余的粒子数量
 		Particles p = particlePool_alive;
 		Particles p_next = p;
 		for (int i = 0; i < _poolSize;) {
 			p = p_next;
 			p_next = p.next;
+
+			// 先判断该粒子是否还在存活期内
 			if (p.stayTime > p.lifeTime) {
 				_poolSize--;
 				removeParticle(p);
@@ -119,17 +120,10 @@ public final class FGParticleSystem {
 					createParticle(p.type._particleOnDeath_type, p.x, p.y,
 							p.type._particleOnDeath_number);
 				}
-			} else {
-				i++;
+				continue;
 			}
-		}
 
-		// 处理所有现存粒子，仅处理该step之前生成的粒子
-		p = particlePool_alive;
-		p_next = p;
-		for (int i = 0; i < _poolSize;) {
-			p = p_next;
-			p_next = p.next;
+			// 处理所有现存粒子，仅处理该step之前生成的粒子
 			p.stayTime++;
 			// 判断是否应被破坏器破坏
 			boolean needToChange = false;
@@ -586,7 +580,7 @@ public final class FGParticleSystem {
 			int number) {
 
 		for (int i = 0; i < number; i++) {
-			Particles p = addParticle();
+			Particles p = obtainParticle();
 			if (p == null) {
 				continue;
 			}
