@@ -17,6 +17,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := foxgaming
-LOCAL_SRC_FILES := hello-jni.c
+LOCAL_SRC_FILES := foxgaming.c ParticleSystem.c ArrayList.c
 
 include $(BUILD_SHARED_LIBRARY)
