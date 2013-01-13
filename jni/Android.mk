@@ -16,7 +16,9 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_LDLIBS += -L$(SYSROOT)/usr/lib -llog
+
 LOCAL_MODULE    := foxgaming
-LOCAL_SRC_FILES := foxgaming.c ParticleSystem.c ArrayList.c
+LOCAL_SRC_FILES := foxgaming.cpp ParticleSystem.cpp ArrayList.cpp
 
 include $(BUILD_SHARED_LIBRARY)

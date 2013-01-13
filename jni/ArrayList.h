@@ -8,6 +8,10 @@
 #ifndef ARRAYLIST_H_
 #define ARRAYLIST_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //检查是否成功申请内存
 #define Asert(par) if(par==NULL) {\
                 return NULL;}
@@ -122,5 +126,9 @@ int arrLstIndexof(ArrayList *arr, Element elm);
  **************************
  */
 int removeElement(ArrayList *arr, Element elm);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ARRAYLIST_H_ */

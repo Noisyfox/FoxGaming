@@ -28,7 +28,7 @@ import android.view.WindowManager;
  * @date: 2012-7-17 下午12:40:34
  * 
  */
-public class FGGameActivity extends Activity {
+public abstract class FGGameActivity extends Activity {
 	private static boolean activityCreated = false;// 只允许有一个GameActivity
 	private static boolean forcePortrait = false;
 	private static boolean forceLandscape = false;
