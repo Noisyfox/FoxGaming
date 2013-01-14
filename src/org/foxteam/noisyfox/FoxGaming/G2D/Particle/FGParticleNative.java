@@ -25,17 +25,17 @@ public class FGParticleNative {
 	// ParticleSystem
 	protected static native long PScreateParticleSystemNative();
 
-	protected static native void PSremoveParticleNative(long particleSystem,
+	protected static native boolean PSremoveParticleNative(long particleSystem,
 			long particle);
 
 	protected static native long PSobtainParticleNative(long particleSystem);
 
-	protected static native void PSupdateNative(long particleSystem);
+	protected static native boolean PSupdateNative(long particleSystem);
 
 	protected static native long PScreateParticleNative(long particleSystem,
 			long[] arg);
 
-	protected static native void PSclearNative(long particleSystem);
+	protected static native boolean PSclearNative(long particleSystem);
 
 	protected static native int PScountNative(long particleSystem);
 
@@ -72,78 +72,79 @@ public class FGParticleNative {
 	protected static native boolean PSunbindParticleChangerNative(
 			long particleSystem, long changer);
 
-	protected static native void PSremoveParticleSystemNative(
+	protected static native boolean PSremoveParticleSystemNative(
 			long particleSystem);
 
-	protected static native void PSfinalizeParticleSystemNative();
+	protected static native boolean PSfinalizeParticleSystemNative();
 
 	// End of ParticleSystem
 
 	// ParticleType
 	protected static native long PTcreateParticleTypeNative();
 
-	protected static native void PTsetSpriteFrameAnimationNative(
+	protected static native boolean PTsetSpriteFrameAnimationNative(
 			long particleType, boolean enableFrameAni, double speed,
 			boolean startWithRandomFrame);
 
-	protected static native void PTsetSizeNative(long particleType,
+	protected static native boolean PTsetSizeNative(long particleType,
 			double minSize, double maxSize, double incrementPerStep,
 			double wiggle);
 
-	protected static native void PTsetScaleNative(long particleType,
+	protected static native boolean PTsetScaleNative(long particleType,
 			float xScale, float yScale);
 
-	protected static native void PTsetOrientationNative(long particleType,
+	protected static native boolean PTsetOrientationNative(long particleType,
 			float minAngle, float maxAngle, double incrementPerStep,
 			double wiggle, boolean relative);
 
-	protected static native void PTsetColorNative(long particleType, int color);
+	protected static native boolean PTsetColorNative(long particleType,
+			int color);
 
-	protected static native void PTsetColorNative(long particleType,
+	protected static native boolean PTsetColorNative(long particleType,
 			int color1, int color2);
 
-	protected static native void PTsetColorNative(long particleType,
+	protected static native boolean PTsetColorNative(long particleType,
 			int color1, int color2, int color3);
 
-	protected static native void PTsetColorRGBNative(long particleType,
+	protected static native boolean PTsetColorRGBNative(long particleType,
 			int minR, int minG, int minB, int maxR, int maxG, int maxB);
 
-	protected static native void PTsetColorHSVNative(long particleType,
+	protected static native boolean PTsetColorHSVNative(long particleType,
 			int minH, double minS, double minV, int maxH, double maxS,
 			double maxV);
 
-	protected static native void PTsetAlphaNative(long particleType,
+	protected static native boolean PTsetAlphaNative(long particleType,
 			double alpha);
 
-	protected static native void PTsetAlphaNative(long particleType,
+	protected static native boolean PTsetAlphaNative(long particleType,
 			double alpha1, double alpha2);
 
-	protected static native void PTsetAlphaNative(long particleType,
+	protected static native boolean PTsetAlphaNative(long particleType,
 			double alpha1, double alpha2, double alpha3);
 
-	protected static native void PTsetLifeTimeNative(long particleType,
+	protected static native boolean PTsetLifeTimeNative(long particleType,
 			int min, int max);
 
-	protected static native void PTcreateNewParticleOnStepNative(
+	protected static native boolean PTcreateNewParticleOnStepNative(
 			long particleType, boolean enabled, long particleType2, int number);
 
-	protected static native void PTcreateNewParticleOnDeathNative(
+	protected static native boolean PTcreateNewParticleOnDeathNative(
 			long particleType, boolean enabled, long particleType2, int number);
 
-	protected static native void PTsetSpeedNative(long particleType,
+	protected static native boolean PTsetSpeedNative(long particleType,
 			double minSpeed, double maxSpeed, double incrementPerStep,
 			double wiggle);
 
-	protected static native void PTsetDirectionNative(long particleType,
+	protected static native boolean PTsetDirectionNative(long particleType,
 			double minDirection, double maxDirection, double incrementPerStep,
 			double wiggle);
 
-	protected static native void PTsetGravityNative(long particleType,
+	protected static native boolean PTsetGravityNative(long particleType,
 			double amount, double direction);
 
-	protected static native void PTremoveParticleTypeNative(long particleType);
+	protected static native boolean PTremoveParticleTypeNative(long particleType);
 
-	protected static native void PTfinalizeParticleTypeNative();
+	protected static native boolean PTfinalizeParticleTypeNative();
 	// End of ParticleType
 
 }
