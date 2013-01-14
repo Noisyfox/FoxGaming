@@ -30,6 +30,10 @@ int alpha(int color);
 int red(int color);
 int green(int color);
 int blue(int color);
+void RGBToHSV(int red, int green, int blue, float hsv[]);
+void colorToHSV(int color, float hsv[]);
+int HSVToColor(float hsv[]);
+int aHSVToColor(int alpha, float hsv[]);
 
 #ifdef __cplusplus
 }
