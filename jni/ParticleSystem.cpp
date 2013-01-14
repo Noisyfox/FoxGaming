@@ -22,11 +22,11 @@
 	LOGE(__VA_ARGS__);return NULL;}
 
 typedef enum {
-	color1, color2, color3, RGB, HSV
+	Tcolor1, Tcolor2, Tcolor3, TRGB, THSV
 } ColorType;
 
 typedef enum {
-	alpha1, alpha2, alpha3
+	Talpha1, Talpha2, Talpha3
 } AlphaType;
 
 typedef struct _ParticleType {
@@ -353,8 +353,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSremoveParticleSystemNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem) {
 	ParticleSystem* ps = (ParticleSystem*) (long) particleSystem;
-	removeElement(particleSystemList, (void*) ps);
-	return JNI_TRUE;
+	return removeElement(particleSystemList, (void*) ps);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSfinalizeParticleSystemNative(
@@ -371,7 +370,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	}
 	return JNI_TRUE;
 }
-/*******************************************************************************************************/
+//----------------------------------------------------------------------------------------------------------------------
 //ParticleType
 JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTcreateParticleTypeNative(
 		JNIEnv *env, jclass clazz) {
@@ -381,98 +380,113 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 				"Failed to create particle type list!");
 	}
 
-	ParticleType *p;
-	Asert(p = (ParticleType *)malloc(sizeof(ParticleType)),
+	ParticleType *pt;
+	Asert(pt = (ParticleType *)malloc(sizeof(ParticleType)),
 			"Failed to malloc new particle type!");
 
 	//初始化
-	p->_frameAni_enabled = false;
-	p->_frameAni_speed = 0.0;
-	p->_frameAni_startWithRandomFrame = false;
+	pt->_frameAni_enabled = false;
+	pt->_frameAni_speed = 0.0;
+	pt->_frameAni_startWithRandomFrame = false;
 
-	p->_size_min = 1.0;
-	p->_size_max = 1.0;
-	p->_size_incrementPerStep = 0.0;
-	p->_size_wiggle = 0.0;
+	pt->_size_min = 1.0;
+	pt->_size_max = 1.0;
+	pt->_size_incrementPerStep = 0.0;
+	pt->_size_wiggle = 0.0;
 
-	p->_scale_x = 1;
-	p->_scale_y = 1;
+	pt->_scale_x = 1;
+	pt->_scale_y = 1;
 
-	p->_orientation_angle_min = 0;
-	p->_orientation_angle_max = 0;
-	p->_orientation_incrementPerStep = 0.0;
-	p->_orientation_wiggle = 0.0;
-	p->_orientation_relative = false;
+	pt->_orientation_angle_min = 0;
+	pt->_orientation_angle_max = 0;
+	pt->_orientation_incrementPerStep = 0.0;
+	pt->_orientation_wiggle = 0.0;
+	pt->_orientation_relative = false;
 
-	p->_color_type = color1;
-	p->_color_color1 = WHITE;
-	p->_color_color2 = WHITE;
-	p->_color_color3 = WHITE;
-	p->_color_RGB_R_min = -1;
-	p->_color_RGB_R_max = -1;
-	p->_color_RGB_G_min = -1;
-	p->_color_RGB_G_max = -1;
-	p->_color_RGB_B_min = -1;
-	p->_color_RGB_B_max = -1;
-	p->_color_HSV_H_min = -1;
-	p->_color_HSV_H_max = -1;
-	p->_color_HSV_S_min = -1;
-	p->_color_HSV_S_max = -1;
-	p->_color_HSV_V_min = -1;
-	p->_color_HSV_V_max = -1;
+	pt->_color_type = Tcolor1;
+	pt->_color_color1 = WHITE;
+	pt->_color_color2 = WHITE;
+	pt->_color_color3 = WHITE;
+	pt->_color_RGB_R_min = -1;
+	pt->_color_RGB_R_max = -1;
+	pt->_color_RGB_G_min = -1;
+	pt->_color_RGB_G_max = -1;
+	pt->_color_RGB_B_min = -1;
+	pt->_color_RGB_B_max = -1;
+	pt->_color_HSV_H_min = -1;
+	pt->_color_HSV_H_max = -1;
+	pt->_color_HSV_S_min = -1;
+	pt->_color_HSV_S_max = -1;
+	pt->_color_HSV_V_min = -1;
+	pt->_color_HSV_V_max = -1;
 
-	p->_alpha_type = alpha1;
-	p->_alpha_1 = 1.0;
-	p->_alpha_2 = 1.0;
-	p->_alpha_3 = 1.0;
+	pt->_alpha_type = Talpha1;
+	pt->_alpha_1 = 1.0;
+	pt->_alpha_2 = 1.0;
+	pt->_alpha_3 = 1.0;
 
-	p->_lifeTime_min = 100;
-	p->_lifeTime_max = 100;
+	pt->_lifeTime_min = 100;
+	pt->_lifeTime_max = 100;
 
-	p->_particleOnStep_enabled = false;
-	p->_particleOnStep_type = NULL;
-	p->_particleOnStep_number = 0;
+	pt->_particleOnStep_enabled = false;
+	pt->_particleOnStep_type = NULL;
+	pt->_particleOnStep_number = 0;
 
-	p->_particleOnDeath_enabled = false;
-	p->_particleOnDeath_type = NULL;
-	p->_particleOnDeath_number = 0;
+	pt->_particleOnDeath_enabled = false;
+	pt->_particleOnDeath_type = NULL;
+	pt->_particleOnDeath_number = 0;
 
-	p->_speed_min = 0.0;
-	p->_speed_max = 0.0;
-	p->_speed_incrementPerStep = 0.0;
-	p->_speed_wiggle = 0.0;
+	pt->_speed_min = 0.0;
+	pt->_speed_max = 0.0;
+	pt->_speed_incrementPerStep = 0.0;
+	pt->_speed_wiggle = 0.0;
 
-	p->_direction_min = 0.0;
-	p->_direction_max = 0.0;
-	p->_direction_incrementPerStep = 0.0;
-	p->_direction_wiggle = 0.0;
+	pt->_direction_min = 0.0;
+	pt->_direction_max = 0.0;
+	pt->_direction_incrementPerStep = 0.0;
+	pt->_direction_wiggle = 0.0;
 
-	p->_gravity_amount = 0.0;
-	p->_gravity_direction = 0.0;
+	pt->_gravity_amount = 0.0;
+	pt->_gravity_direction = 0.0;
 
-	LOGI("Create particle type success! id:%u", ( long)p);
+	LOGI("Create particle type success! id:%u", ( long)pt);
 
-	return (jlong) (long) p;
+	return (jlong) (long) pt;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetSpriteFrameAnimationNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jboolean enableFrameAni,
 		jdouble speed, jboolean startWithRandomFrame) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_frameAni_enabled = enableFrameAni;
+	pt->_frameAni_speed = speed;
+	pt->_frameAni_startWithRandomFrame = startWithRandomFrame;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetSizeNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble minSize,
 		jdouble maxSize, jdouble incrementPerStep, jdouble wiggle) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_size_min = minSize;
+	pt->_size_max = maxSize;
+	pt->_size_incrementPerStep = incrementPerStep;
+	pt->_size_wiggle = wiggle;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetScaleNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jfloat xScale,
 		jfloat yScale) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_scale_x = xScale;
+	pt->_scale_y = yScale;
+
 	return JNI_TRUE;
 }
 
@@ -480,109 +494,196 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		JNIEnv *env, jclass clazz, jlong particleType, jfloat minAngle,
 		jfloat maxAngle, jdouble incrementPerStep, jdouble wiggle,
 		jboolean relative) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_orientation_angle_min = minAngle;
+	pt->_orientation_angle_max = maxAngle;
+	pt->_orientation_incrementPerStep = incrementPerStep;
+	pt->_orientation_wiggle = wiggle;
+	pt->_orientation_relative = relative;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetColorNative__JI(
 		JNIEnv *env, jclass clazz, jlong particleType, jint color) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_color_type = Tcolor1;
+	pt->_color_color1 = color;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetColorNative__JII(
 		JNIEnv *env, jclass clazz, jlong particleType, jint color1,
 		jint color2) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_color_type = Tcolor2;
+	pt->_color_color1 = color1;
+	pt->_color_color2 = color2;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetColorNative__JIII(
 		JNIEnv *env, jclass clazz, jlong particleType, jint color1, jint color2,
 		jint color3) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_color_type = Tcolor3;
+	pt->_color_color1 = color1;
+	pt->_color_color2 = color2;
+	pt->_color_color3 = color3;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetColorRGBNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jint minR, jint minG,
 		jint minB, jint maxR, jint maxG, jint maxB) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_color_type = TRGB;
+	pt->_color_RGB_R_min = minR;
+	pt->_color_RGB_R_max = maxR;
+	pt->_color_RGB_G_min = minG;
+	pt->_color_RGB_G_max = maxG;
+	pt->_color_RGB_B_min = minB;
+	pt->_color_RGB_B_max = maxB;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetColorHSVNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jint minH, jdouble minS,
 		jdouble minV, jint maxH, jdouble maxS, jdouble maxV) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_color_type = THSV;
+	pt->_color_HSV_H_min = minH;
+	pt->_color_HSV_H_max = maxH;
+	pt->_color_HSV_S_min = minS;
+	pt->_color_HSV_S_max = maxS;
+	pt->_color_HSV_V_min = minV;
+	pt->_color_HSV_V_max = maxV;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetAlphaNative__JD(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble alpha) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_alpha_type = Talpha1;
+	pt->_alpha_1 = alpha;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetAlphaNative__JDD(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble alpha1,
 		jdouble alpha2) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_alpha_type = Talpha2;
+	pt->_alpha_1 = alpha1;
+	pt->_alpha_2 = alpha2;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetAlphaNative__JDDD(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble alpha1,
 		jdouble alpha2, jdouble alpha3) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_alpha_type = Talpha3;
+	pt->_alpha_1 = alpha1;
+	pt->_alpha_2 = alpha2;
+	pt->_alpha_3 = alpha3;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetLifeTimeNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jint min, jint max) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_lifeTime_min = min;
+	pt->_lifeTime_max = max;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTcreateNewParticleOnStepNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jboolean enabled,
 		jlong particleType2, jint number) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_particleOnStep_enabled = enabled;
+	pt->_particleOnStep_type = (ParticleType*) (unsigned long) particleType;
+	pt->_particleOnStep_number = number;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTcreateNewParticleOnDeathNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jboolean enabled,
 		jlong particleType2, jint number) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_particleOnDeath_enabled = enabled;
+	pt->_particleOnDeath_type = (ParticleType*) (unsigned long) particleType;
+	pt->_particleOnDeath_number = number;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetSpeedNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble minSpeed,
 		jdouble maxSpeed, jdouble incrementPerStep, jdouble wiggle) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_speed_min = minSpeed;
+	pt->_speed_max = maxSpeed;
+	pt->_speed_incrementPerStep = incrementPerStep;
+	pt->_speed_wiggle = wiggle;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetDirectionNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble minDirection,
 		jdouble maxDirection, jdouble incrementPerStep, jdouble wiggle) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_direction_min = minDirection;
+	pt->_direction_max = maxDirection;
+	pt->_direction_incrementPerStep = incrementPerStep;
+	pt->_direction_wiggle = wiggle;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetGravityNative(
 		JNIEnv *env, jclass clazz, jlong particleType, jdouble amount,
 		jdouble direction) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+	pt->_gravity_amount = amount;
+	pt->_gravity_direction = direction;
+
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTremoveParticleTypeNative(
 		JNIEnv *env, jclass clazz, jlong particleType) {
-	ParticleType *p = (ParticleType*) (unsigned long) particleType;
-	return JNI_TRUE;
+
+	ParticleType *pt = (ParticleType*) (unsigned long) particleType;
+
+	return removeElement(particleSystemList, (void*) pt);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTfinalizeParticleTypeNative(
@@ -595,5 +696,6 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		}
 		desrotyArrList(particleTypeList);
 	}
+
 	return JNI_TRUE;
 }
