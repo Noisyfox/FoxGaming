@@ -654,15 +654,15 @@ public final class FGParticleSystem {
 
 	public void clear() {
 
-		aliveParticleCount = 0;// 确保链表初始化
-		Particles p = particlePool_alive;
+		Particles p = particlePool_alive;// 确保链表初始化
 		Particles p_next;
 		while (p != null) {
 			p_next = p.next;
 			removeParticle(p);
 			p = p_next;
 		}
-
+		aliveParticleCount = 0;
+		
 		particleEmitters.clear();
 		particleAttractors.clear();
 		particleDestroyers.clear();
