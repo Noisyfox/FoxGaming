@@ -662,7 +662,7 @@ public final class FGParticleSystem {
 			p = p_next;
 		}
 		aliveParticleCount = 0;
-		
+
 		particleEmitters.clear();
 		particleAttractors.clear();
 		particleDestroyers.clear();

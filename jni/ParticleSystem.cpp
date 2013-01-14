@@ -15,6 +15,10 @@
 #define  LOG_TAG    "libfoxgaming_particle_system"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+//检查是否成功申请内存
+#undef Asert
+#define Asert(par,...) if((par)==NULL) {\
+	LOGE(__VA_ARGS__);return NULL;}
 
 typedef struct _Particles {
 	struct _Particles *next;
@@ -29,7 +33,7 @@ typedef struct {
 	Particles* particlePool_dead;
 } ParticleSystem;
 
-ArrayList * particleSystem = NULL;
+ArrayList * particleSystemList = NULL;
 
 void freeParticles(Particles** startFrom) {
 	Particles** curr = startFrom;
@@ -40,33 +44,28 @@ void freeParticles(Particles** startFrom) {
 	}
 }
 
-JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_createParticleSystemNative(
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleSystemNative(
 		JNIEnv *env, jclass clazz) {
-	if (particleSystem == NULL) {
+	if (particleSystemList == NULL) {
 		LOGI("Create new particle system list.");
-		if ((particleSystem = createArrayList(NULL, NULL)) == NULL) {
-			LOGE("Failed to create particle system list!");
-			return -1;
-		}
+		Asert(particleSystemList = createArrayList(NULL, NULL),
+				"Failed to create particle system list!");
 	}
 
-	ParticleSystem *p = (ParticleSystem *) malloc(sizeof(ParticleSystem));
-
-	if (p == NULL) {
-		LOGE("Failed to malloc new particle system!");
-		return -1;
-	}
+	ParticleSystem *p;
+	Asert(p = (ParticleSystem *) malloc(sizeof(ParticleSystem)),
+			"Failed to malloc new particle system!");
 
 	if ((p->particlePool_dead = (Particles*) malloc(sizeof(Particles))) == NULL) {
 		LOGE("Failed to initialize particle system!");
 		free(p);
-		return -1;
+		return NULL;
 	}
 
-	if (!addElement(particleSystem, (void*) p)) {
+	if (!addElement(particleSystemList, (void*) p)) {
 		LOGE("Failed to add particle system to list!");
 		free(p);
-		return -1;
+		return NULL;
 	}
 
 	LOGI("Create particle system success! id:%u", (unsigned long)p);
@@ -74,7 +73,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	return (jlong) (unsigned long) p;
 }
 
-JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_removeParticleNative(
+JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSremoveParticleNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem, jlong particle) {
 	ParticleSystem* ps = (ParticleSystem*) (unsigned long) particleSystem;
 	Particles* p = (Particles*) (unsigned long) particle;
@@ -101,7 +100,7 @@ JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPartic
 	ps->aliveParticleCount--;
 }
 
-JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_obtainParticleNative(
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSobtainParticleNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem) {
 	ParticleSystem* ps = (ParticleSystem*) (unsigned long) particleSystem;
 	if (ps->particlePool_dead != NULL) {
@@ -130,23 +129,23 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	return 0;
 }
 
-JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_updateNative(
+JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSupdateNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem) {
 }
 
-JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_createParticleNative(
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem, jlongArray arg) {
 	return -1;
 }
 
-JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_clearNative(
+JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSclearNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem) {
 	ParticleSystem* ps = (ParticleSystem*) (unsigned long) particleSystem;
 	Particles *p = ps->particlePool_alive;
 	Particles *p_next;
 	while (p != NULL) {
 		p_next = p->next;
-		Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_removeParticleNative(
+		Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSremoveParticleNative(
 				env, clazz, particleSystem, (jlong) (unsigned long) p);
 		p = p_next;
 	}
@@ -154,13 +153,13 @@ JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPartic
 
 }
 
-JNIEXPORT jint JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_countNative(
+JNIEXPORT jint JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScountNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem) {
 	ParticleSystem* ps = (ParticleSystem*) (unsigned long) particleSystem;
 	return ps->aliveParticleCount;
 }
 
-JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_setMaxParticleNumberNative(
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSsetMaxParticleNumberNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem, jint number) {
 	ParticleSystem* ps = (ParticleSystem*) (unsigned long) particleSystem;
 	ps->maxParticleNumber = number;
@@ -210,16 +209,22 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	return JNI_TRUE;
 }
 
-JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_finalizeNative(
+JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSremoveParticleSystemNative(
+		JNIEnv *env, jclass clazz, jlong particleSystem) {
+	ParticleSystem* ps = (ParticleSystem*) (unsigned long) particleSystem;
+	removeElement(particleSystemList, (void*) ps);
+}
+
+JNIEXPORT void JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSfinalizeParticleSystemNative(
 		JNIEnv *env, jclass clazz) {
 	//回收内存
-	if (particleSystem != NULL) {
-		for (int i = 0; i < particleSystem->index; i++) {
-			ParticleSystem *ps = (ParticleSystem*) particleSystem->data[i];
+	if (particleSystemList != NULL) {
+		for (int i = 0; i < particleSystemList->index; i++) {
+			ParticleSystem *ps = (ParticleSystem*) particleSystemList->data[i];
 			freeParticles(&ps->particlePool_alive);
 			freeParticles(&ps->particlePool_dead);
 			free(ps);
 		}
-		desrotyArrList(particleSystem);
+		desrotyArrList(particleSystemList);
 	}
 }

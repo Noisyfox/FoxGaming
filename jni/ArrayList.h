@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 //检查是否成功申请内存
+#undef Asert
 #define Asert(par) if(par==NULL) {\
                 return NULL;}
 #define INIT_SIZE 10    //默认的数组大小
