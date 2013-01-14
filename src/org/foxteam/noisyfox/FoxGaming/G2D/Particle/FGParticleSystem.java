@@ -771,7 +771,7 @@ public final class FGParticleSystem {
 		for (int i = particleCount + 1; i <= maxParticleNumber; i++) {
 			if (p.next == null) {
 				p.next = new Particles();
-				p.next.prev = p.next;
+				p.next.prev = p;
 			}
 			p = p.next;
 		}
