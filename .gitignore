@@ -2,6 +2,7 @@
 bin/
 gen/
 obj/
+*/libfoxgaming.so
 
 # Local configuration file (sdk path, etc)
 proguard.cfg

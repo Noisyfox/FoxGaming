@@ -38,7 +38,7 @@ public class FGParticleNative {
 
 	protected static native int countNative(long particleSystem);
 
-	protected static native void setMaxParticleNumberNative(
+	protected static native boolean setMaxParticleNumberNative(
 			long particleSystem, int number);
 
 	protected static native void finalizeNative();
