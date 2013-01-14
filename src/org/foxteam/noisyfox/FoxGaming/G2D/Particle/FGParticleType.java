@@ -35,7 +35,7 @@ public final class FGParticleType {
 	protected boolean _orientation_relative = false;
 
 	protected enum ColorType {
-		color1, color2, color3, RGB, HSV;
+		color1, color2, color3, RGB, HSV
 	}
 
 	protected ColorType _color_type = ColorType.color1;
@@ -56,7 +56,7 @@ public final class FGParticleType {
 	protected double _color_HSV_V_max = -1;
 
 	protected enum AlphaType {
-		alpha1, alpha2, alpha3;
+		alpha1, alpha2, alpha3
 	}
 
 	protected AlphaType _alpha_type = AlphaType.alpha1;
