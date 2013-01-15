@@ -161,5 +161,24 @@ public class FGParticleNative {
 			long particleAttractor);
 
 	protected static native boolean PAfinalizeParticleAttractorNative();
+
 	// End of ParticleAttractor
+
+	// ParticleChanger
+	protected static native long PCcreateParticleChangerNative();
+
+	protected static native boolean PCsetRegionNative(long particleChanger,
+			int minX, int minY, int maxX, int maxY, int shape);
+
+	protected static native boolean PCsetParticleTypesNative(
+			long particleChanger, long targetType, long finalType);
+
+	protected static native boolean PCsetChangerKindNative(
+			long particleChanger, int kind);
+
+	protected static native boolean PCremoveParticleChangerNative(
+			long particleChanger);
+
+	protected static native boolean PCfinalizeParticleChangerNative();
+	// End of ParticleChanger
 }
