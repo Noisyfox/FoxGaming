@@ -29,6 +29,10 @@ typedef enum {
 	Talpha1, Talpha2, Talpha3
 } AlphaType;
 
+typedef enum {
+	Tbrust, Tstream
+} EmitType;
+
 typedef struct _ParticleType {
 	bool _frameAni_enabled;
 	double _frameAni_speed;
@@ -126,12 +130,24 @@ typedef struct _ParticleDestroyer {
 	int _region_shape;
 } ParticleDestroyer;
 
+typedef struct _ParticleEmitter {
+	int _region_x_min;
+	int _region_x_max;
+	int _region_y_min;
+	int _region_y_max;
+	int _region_shape;
+	int _region_distribution;
+	EmitType emitType;
+	ParticleType * _emit_particle_type;
+	int _emit_particle_number;
+} ParticleEmitter;
+
 typedef struct _Particles {
 	struct _Particles *next;
 	struct _Particles *prev;
 } Particles;
 
-typedef struct {
+typedef struct _ParticleSystem {
 	int maxParticleNumber;
 	int aliveParticleCount;
 	Particles* particlePool_alive;
@@ -143,6 +159,7 @@ ArrayList * particleSystemList = NULL;
 ArrayList * particleAttractorList = NULL;
 ArrayList * particleChangerList = NULL;
 ArrayList * particleDestoryerList = NULL;
+ArrayList * particleEmitterList = NULL;
 ArrayList * particleTypeList = NULL;
 
 void freeParticles(Particles** startFrom) {
@@ -930,7 +947,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 
 	ParticleDestroyer *pd;
 	Asert(pd = (ParticleDestroyer *)malloc(sizeof(ParticleDestroyer)),
-			"Failed to malloc new destroyer changer!");
+			"Failed to malloc new particle destroyer!");
 
 	if (!addElement(particleDestoryerList, (void*) pd)) {
 		LOGE("Failed to add particle destroyer to list!");
@@ -985,6 +1002,105 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 			free(pd);
 		}
 		desrotyArrList(particleDestoryerList);
+	}
+	return JNI_TRUE;
+}
+
+//----------------------------------------------------------------------------------------------------------------
+//ParticleEmitter
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEcreateParticleEmitterNative(
+		JNIEnv * env, jclass clazz) {
+
+	if (particleEmitterList == NULL) {
+		LOGI("Create new particle emitter list.");
+		Asert(particleEmitterList = createArrayList(NULL, NULL),
+				"Failed to create particle emitter list!");
+	}
+
+	ParticleEmitter *pe;
+	Asert(pe = (ParticleEmitter *)malloc(sizeof(ParticleEmitter)),
+			"Failed to malloc new particle emitter!");
+
+	if (!addElement(particleEmitterList, (void*) pe)) {
+		LOGE("Failed to add particle emitter to list!");
+		free(pe);
+		return NULL;
+	}
+
+	//初始化
+	pe->_region_x_min = 0;
+	pe->_region_x_max = 0;
+	pe->_region_y_min = 0;
+	pe->_region_y_max = 0;
+	pe->_region_shape =
+			org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_SHAPE_RECTANGLE;
+	pe->_region_distribution =
+			org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_DISTRIBUTION_LINEAR;
+	pe->emitType = Tstream;
+	pe->_emit_particle_type = NULL;
+	pe->_emit_particle_number = 0;
+
+	LOGI("Create particle emitter success! id:%u", (long)pe);
+
+	return (jlong) (long) pe;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEsetRegionNative(
+		JNIEnv * env, jclass clazz, jlong particleEmitter, jint minX, jint minY,
+		jint maxX, jint maxY, jint shape) {
+
+	ParticleEmitter *pe = (ParticleEmitter*) (unsigned long) particleEmitter;
+	pe->_region_x_min = minX;
+	pe->_region_x_max = maxX;
+	pe->_region_y_min = minY;
+	pe->_region_y_max = maxY;
+	pe->_region_shape = shape;
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEbrustNative(
+		JNIEnv * env, jclass clazz, jlong particleEmitter, jlong particleType,
+		jint number) {
+
+	ParticleEmitter *pe = (ParticleEmitter*) (unsigned long) particleEmitter;
+	pe->emitType = Tbrust;
+	pe->_emit_particle_type = (ParticleType*) (unsigned long) particleType;
+	pe->_emit_particle_number = number;
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEstreamNative(
+		JNIEnv * env, jclass clazz, jlong particleEmitter, jlong particleType,
+		jint number) {
+
+	ParticleEmitter *pe = (ParticleEmitter*) (unsigned long) particleEmitter;
+	pe->emitType = Tstream;
+	pe->_emit_particle_type = (ParticleType*) (unsigned long) particleType;
+	pe->_emit_particle_number = number;
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEremoveParticleEmitterNative(
+		JNIEnv * env, jclass clazz, jlong particleEmitter) {
+
+	ParticleEmitter *pe = (ParticleEmitter*) (unsigned long) particleEmitter;
+
+	return removeElement(particleEmitterList, (void*) pe);
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEfinalizeParticleEmitterNative(
+		JNIEnv * env, jclass clazz) {
+	//回收内存
+	if (particleEmitterList != NULL) {
+		for (int i = 0; i < particleEmitterList->index; i++) {
+			ParticleEmitter *pe =
+					(ParticleEmitter*) particleEmitterList->data[i];
+			free(pe);
+		}
+		desrotyArrList(particleEmitterList);
 	}
 	return JNI_TRUE;
 }

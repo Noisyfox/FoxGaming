@@ -193,5 +193,24 @@ public class FGParticleNative {
 			long particleDestroyer);
 
 	protected static native boolean PDfinalizeParticleDestroyerNative();
+
 	// End of ParticleDestroyer
+
+	// ParticleEmitter
+	protected static native long PEcreateParticleEmitterNative();
+
+	protected static native boolean PEsetRegionNative(long particleEmitter,
+			int minX, int minY, int maxX, int maxY, int shape);
+
+	protected static native boolean PEbrustNative(long particleEmitter,
+			long particleType, int number);
+
+	protected static native boolean PEstreamNative(long particleEmitter,
+			long particleType, int number);
+
+	protected static native boolean PEremoveParticleEmitterNative(
+			long particleEmitter);
+
+	protected static native boolean PEfinalizeParticleEmitterNative();
+	// End of ParticleEmitter
 }

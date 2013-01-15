@@ -479,6 +479,54 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDfinalizeParticleDestroyerNative
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PEcreateParticleEmitterNative
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEcreateParticleEmitterNative
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PEsetRegionNative
+ * Signature: (JIIIII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEsetRegionNative
+  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PEbrustNative
+ * Signature: (JJI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEbrustNative
+  (JNIEnv *, jclass, jlong, jlong, jint);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PEstreamNative
+ * Signature: (JJI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEstreamNative
+  (JNIEnv *, jclass, jlong, jlong, jint);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PEremoveParticleEmitterNative
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEremoveParticleEmitterNative
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PEfinalizeParticleEmitterNative
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEfinalizeParticleEmitterNative
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif
