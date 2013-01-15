@@ -447,6 +447,38 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PCfinalizeParticleChangerNative
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PDcreateParticleDestroyerNative
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDcreateParticleDestroyerNative
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PDsetRegionNative
+ * Signature: (JIIIII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDsetRegionNative
+  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PDremoveParticleDestroyerNative
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDremoveParticleDestroyerNative
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PDfinalizeParticleDestroyerNative
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDfinalizeParticleDestroyerNative
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

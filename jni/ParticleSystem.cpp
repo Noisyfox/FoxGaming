@@ -118,6 +118,14 @@ typedef struct _ParticleChanger {
 	int _changeKind;
 } ParticleChanger;
 
+typedef struct _ParticleDestroyer {
+	int _region_x_min;
+	int _region_x_max;
+	int _region_y_min;
+	int _region_y_max;
+	int _region_shape;
+} ParticleDestroyer;
+
 typedef struct _Particles {
 	struct _Particles *next;
 	struct _Particles *prev;
@@ -134,6 +142,7 @@ typedef struct {
 ArrayList * particleSystemList = NULL;
 ArrayList * particleAttractorList = NULL;
 ArrayList * particleChangerList = NULL;
+ArrayList * particleDestoryerList = NULL;
 ArrayList * particleTypeList = NULL;
 
 void freeParticles(Particles** startFrom) {
@@ -905,6 +914,77 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 			free(pc);
 		}
 		desrotyArrList(particleChangerList);
+	}
+	return JNI_TRUE;
+}
+
+//---------------------------------------------------------------------------------------------------------------
+//ParticleDestroyer
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDcreateParticleDestroyerNative(
+		JNIEnv * env, jclass clazz) {
+	if (particleDestoryerList == NULL) {
+		LOGI("Create new particle destroyer list.");
+		Asert(particleDestoryerList = createArrayList(NULL, NULL),
+				"Failed to create particle destroyer list!");
+	}
+
+	ParticleDestroyer *pd;
+	Asert(pd = (ParticleDestroyer *)malloc(sizeof(ParticleDestroyer)),
+			"Failed to malloc new destroyer changer!");
+
+	if (!addElement(particleDestoryerList, (void*) pd)) {
+		LOGE("Failed to add particle destroyer to list!");
+		free(pd);
+		return NULL;
+	}
+
+	//初始化
+	pd->_region_x_min = 0;
+	pd->_region_x_max = 0;
+	pd->_region_y_min = 0;
+	pd->_region_y_max = 0;
+	pd->_region_shape =
+			org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_SHAPE_RECTANGLE;
+
+	LOGI("Create particle destroyer success! id:%u", (long)pd);
+
+	return (jlong) (long) pd;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDsetRegionNative(
+		JNIEnv * env, jclass clazz, jlong particleDestroyer, jint minX,
+		jint minY, jint maxX, jint maxY, jint shape) {
+
+	ParticleDestroyer *pd =
+			(ParticleDestroyer*) (unsigned long) particleDestroyer;
+	pd->_region_x_min = minX;
+	pd->_region_x_max = maxX;
+	pd->_region_y_min = minY;
+	pd->_region_y_max = maxY;
+	pd->_region_shape = shape;
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDremoveParticleDestroyerNative(
+		JNIEnv * env, jclass clazz, jlong particleDestroyer) {
+
+	ParticleDestroyer *pd =
+			(ParticleDestroyer*) (unsigned long) particleDestroyer;
+
+	return removeElement(particleDestoryerList, (void*) pd);
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDfinalizeParticleDestroyerNative(
+		JNIEnv * env, jclass clazz) {
+	//回收内存
+	if (particleDestoryerList != NULL) {
+		for (int i = 0; i < particleDestoryerList->index; i++) {
+			ParticleDestroyer *pd =
+					(ParticleDestroyer*) particleDestoryerList->data[i];
+			free(pd);
+		}
+		desrotyArrList(particleDestoryerList);
 	}
 	return JNI_TRUE;
 }

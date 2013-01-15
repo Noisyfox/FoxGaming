@@ -180,5 +180,18 @@ public class FGParticleNative {
 			long particleChanger);
 
 	protected static native boolean PCfinalizeParticleChangerNative();
+
 	// End of ParticleChanger
+
+	// ParticleDestroyer
+	protected static native long PDcreateParticleDestroyerNative();
+
+	protected static native boolean PDsetRegionNative(long particleDestroyer,
+			int minX, int minY, int maxX, int maxY, int shape);
+
+	protected static native boolean PDremoveParticleDestroyerNative(
+			long particleDestroyer);
+
+	protected static native boolean PDfinalizeParticleDestroyerNative();
+	// End of ParticleDestroyer
 }
