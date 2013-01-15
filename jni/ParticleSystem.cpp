@@ -29,6 +29,16 @@ typedef enum {
 	Talpha1, Talpha2, Talpha3
 } AlphaType;
 
+typedef struct _ParticleAttractor {
+	int _position_x;
+	int _position_y;
+
+	int _force_kind;
+	float _force_force;
+	float _force_distance_max;
+	bool _force_additive;
+} ParticleAttractor;
+
 typedef struct _ParticleType {
 	bool _frameAni_enabled;
 	double _frameAni_speed;
@@ -109,6 +119,7 @@ typedef struct {
 } ParticleSystem;
 
 ArrayList * particleSystemList = NULL;
+ArrayList * particleAttractorList = NULL;
 ArrayList * particleTypeList = NULL;
 
 void freeParticles(Particles** startFrom) {
@@ -383,6 +394,12 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	ParticleType *pt;
 	Asert(pt = (ParticleType *)malloc(sizeof(ParticleType)),
 			"Failed to malloc new particle type!");
+
+	if (!addElement(particleTypeList, (void*) pt)) {
+		LOGE("Failed to add particle type to list!");
+		free(pt);
+		return NULL;
+	}
 
 	//初始化
 	pt->_frameAni_enabled = false;
@@ -695,6 +712,89 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 			free(pt);
 		}
 		desrotyArrList(particleTypeList);
+	}
+
+	return JNI_TRUE;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//ParticleAttractor
+JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAcreateParticleAttractorNative(
+		JNIEnv * env, jclass clazz) {
+	if (particleAttractorList == NULL) {
+		LOGI("Create new particle attractor list.");
+		Asert(particleAttractorList = createArrayList(NULL, NULL),
+				"Failed to create particle attractor list!");
+	}
+
+	ParticleAttractor *pa;
+	Asert(pa = (ParticleAttractor *)malloc(sizeof(ParticleAttractor)),
+			"Failed to malloc new particle attractor!");
+
+	if (!addElement(particleAttractorList, (void*) pa)) {
+		LOGE("Failed to add particle attractor to list!");
+		free(pa);
+		return NULL;
+	}
+
+	//初始化
+	pa->_position_x = 0;
+	pa->_position_y = 0;
+	pa->_force_kind =
+			org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_FORCE_CONSTANT;
+	pa->_force_force = 0;
+	pa->_force_distance_max = 100;
+	pa->_force_additive = false;
+
+	LOGI("Create particle attractor success! id:%u", ( long)pa);
+
+	return (jlong) (long) pa;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAsetPositionNative(
+		JNIEnv * env, jclass clazz, jlong particleAttractor, jint x, jint y) {
+
+	ParticleAttractor *pa =
+			(ParticleAttractor*) (unsigned long) particleAttractor;
+	pa->_position_x = x;
+	pa->_position_y = y;
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAsetForceNative(
+		JNIEnv * env, jclass clazz, jlong particleAttractor, jint kind,
+		jfloat force, jfloat maxDistance, jboolean additive) {
+
+	ParticleAttractor *pa =
+			(ParticleAttractor*) (unsigned long) particleAttractor;
+	pa->_force_kind = kind;
+	pa->_force_force = force;
+	pa->_force_distance_max = maxDistance;
+	pa->_force_additive = additive;
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAremoveParticleAttractorNative(
+		JNIEnv * env, jclass clazz, jlong particleAttractor) {
+
+	ParticleAttractor *pa =
+			(ParticleAttractor*) (unsigned long) particleAttractor;
+
+	return removeElement(particleAttractorList, (void*) pa);
+}
+
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAfinalizeParticleAttractorNative(
+		JNIEnv * env, jclass clazz) {
+	//回收内存
+	if (particleAttractorList != NULL) {
+		for (int i = 0; i < particleAttractorList->index; i++) {
+			ParticleAttractor *pa =
+					(ParticleAttractor*) particleAttractorList->data[i];
+			free(pa);
+		}
+		desrotyArrList(particleAttractorList);
 	}
 
 	return JNI_TRUE;

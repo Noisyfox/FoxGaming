@@ -145,6 +145,21 @@ public class FGParticleNative {
 	protected static native boolean PTremoveParticleTypeNative(long particleType);
 
 	protected static native boolean PTfinalizeParticleTypeNative();
+
 	// End of ParticleType
 
+	// ParticleAttractor
+	protected static native long PAcreateParticleAttractorNative();
+
+	protected static native boolean PAsetPositionNative(long particleAttractor,
+			int x, int y);
+
+	protected static native boolean PAsetForceNative(long particleAttractor,
+			int kind, float force, float maxDistance, boolean additive);
+
+	protected static native boolean PAremoveParticleAttractorNative(
+			long particleAttractor);
+
+	protected static native boolean PAfinalizeParticleAttractorNative();
+	// End of ParticleAttractor
 }
