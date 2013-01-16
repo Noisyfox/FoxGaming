@@ -76,10 +76,6 @@ void generateGaussianDistribution() {
 // 生成一个介于 0 和 1 之间的符合高斯分布的随机数
 double randomGaussian() {
 
-	while (GaussianDistributionMax < 0.0001) {
-		generateGaussianDistribution();
-	}
-
 	int index = randomInt(GaussianDistributionListLength);
 
 	if (GaussianDistributionMax < 0.0001) {

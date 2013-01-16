@@ -19,6 +19,6 @@ include $(CLEAR_VARS)
 LOCAL_LDLIBS += -L$(SYSROOT)/usr/lib -llog
 
 LOCAL_MODULE    := foxgaming
-LOCAL_SRC_FILES := foxgaming.cpp ParticleSystem.cpp ArrayList.cpp Color.cpp MathsHelper.cpp
+LOCAL_SRC_FILES := FoxGaming.cpp ParticleSystem.cpp ArrayList.cpp Color.cpp MathsHelper.cpp
 
 include $(BUILD_SHARED_LIBRARY)

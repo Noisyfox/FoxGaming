@@ -2,10 +2,6 @@ package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
 public class FGParticleNative {
 
-	static {
-		System.loadLibrary("foxgaming");
-	}
-
 	public static final int PAR_REGION_DISTRIBUTION_LINEAR = 1;
 	public static final int PAR_REGION_DISTRIBUTION_GAUSSIAN = 2;
 	public static final int PAR_REGION_DISTRIBUTION_INVGAUSSIAN = 3;

@@ -125,6 +125,7 @@ public abstract class FGGameActivity extends Activity {
 		gameEngine = new FGGameCore(this);
 		setContentView(FGGameCore.gameView);
 
+		FGNativeHelper.loadNativeLibrary();
 		FGMathsHelper.generateGaussianDistribution();
 	}
 
