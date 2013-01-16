@@ -32,7 +32,7 @@ typedef enum {
 } AlphaType;
 
 typedef enum {
-	Tbrust, Tstream
+	Tburst, Tstream
 } EmitType;
 
 typedef struct _ParticleType {
@@ -457,6 +457,95 @@ bool pointInSpecifiedRegion(float x, float y, int minX, int minY, int maxX,
 	return isIn;
 }
 
+int colorGradation(int color1, int color2, float k) {
+	int r =
+			(int) ((float) (red(color2) - red(color1)) * k + (float) red(color1));
+
+	int g = (int) ((float) (green(color2) - green(color1)) * k
+			+ (float) green(color1));
+
+	int b = (int) ((float) (blue(color2) - blue(color1)) * k
+			+ (float) blue(color1));
+
+	return rgb(r, g, b);
+
+}
+
+void createParticlesRegion(ParticleSystem *particleSystem, Emitters * emitter) {
+
+	int number = emitter->emitter->_emit_particle_number;
+	if (number < 0) {
+		number = 1;
+	}
+
+	for (int i = 0; i < number; i++) {
+		double _degree = randomDouble(1) * 360.0;
+		double _length = 0.0;
+
+		switch (emitter->emitter->_region_distribution) {
+		case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_DISTRIBUTION_LINEAR:
+			_length = randomDouble(1);
+			break;
+		case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_DISTRIBUTION_GAUSSIAN:
+			_length = randomGaussian();
+			break;
+		case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_DISTRIBUTION_INVGAUSSIAN:
+			_length = 1.0 - randomGaussian();
+			break;
+		}
+
+		// 计算最远距离
+		double _lengthMax = 0.0;
+		double a = (emitter->emitter->_region_x_max
+				- emitter->emitter->_region_x_min) / 2.0;
+		double b = (emitter->emitter->_region_y_max
+				- emitter->emitter->_region_y_min) / 2.0;
+		double sin1 = fabs(sin(toRadians(_degree)));
+		double cos1 = fabs(cos(toRadians(_degree)));
+
+		switch (emitter->emitter->_region_shape) {
+		case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_SHAPE_RECTANGLE: {
+			if (sin1 < 0.00001) {
+				_lengthMax = a;
+			} else if (cos1 < 0.00001) {
+				_lengthMax = b;
+			} else {
+				double l1 = a / cos1;
+				double l2 = b / sin1;
+				_lengthMax = fmin(l1, l2);
+			}
+			break;
+		}
+		case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_SHAPE_ELLIPSE: {
+			_lengthMax = sqrt(
+					a * a * b * b
+							/ (a * a * sin1 * sin1 + b * b * cos1 * cos1));
+			break;
+		}
+		case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_REGION_SHAPE_DIAMOND: {
+			_lengthMax = sqrt(
+					a * a * b * b * (sin1 * sin1 + cos1 * cos1)
+							/ ((a * sin1 + b * cos1) * (a * sin1 + b * cos1)));
+			break;
+		}
+		}
+
+		_length *= _lengthMax;
+
+		// 计算坐标
+		int x = lengthdir_x(_length, _degree)
+				+ (emitter->emitter->_region_x_max
+						+ emitter->emitter->_region_x_min) / 2.0;
+		int y = lengthdir_y(_length, _degree)
+				+ (emitter->emitter->_region_y_max
+						+ emitter->emitter->_region_y_min) / 2.0;
+
+		createParticle(particleSystem, emitter->emitter->_emit_particle_type, x,
+				y, 1);
+
+	}
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 //ParticleSystem
 JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleSystemNative(
@@ -543,7 +632,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	Particles *p = ps->particlePool_alive;
 	Particles *p_next = p;
 	bool needToChange = false;
-	for (int i = 0; i < _poolSize;) {
+	for (int i2 = 0; i2 < _poolSize;) {
 		p = p_next;
 		p_next = p->next;
 
@@ -580,6 +669,261 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 
 		// 如果没有破坏，则判断有无被转换
 		needToChange = false;
+		for (int i = 0; i < (ps->particleChangers)->index; i++) {
+			ParticleChanger * pc =
+					(ParticleChanger *) (ps->particleChangers)->data[i];
+			if (pointInSpecifiedRegion(p->x, p->y, pc->_region_x_min,
+					pc->_region_x_max, pc->_region_y_min, pc->_region_y_max,
+					pc->_region_shape) && p->type == pc->_changeType_target) {
+
+				switch (pc->_changeKind) {
+				case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_MOTION: {
+					p->motionBaseType = pc->_changeType_final;
+					break;
+				}
+				case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_SHAPE: {
+					p->shapeBaseType = pc->_changeType_final;
+					break;
+				}
+				case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_ALL: {
+					removeParticle(ps, p);
+					_poolSize--;
+					createParticle(ps, pc->_changeType_final, p->x, p->y, 1);
+					needToChange = true;
+					break;
+				}
+				}
+
+			}
+		}
+		if (needToChange) {
+			continue;
+		}
+
+		needToChange = false;
+
+		// 计算形状
+		if ((p->shapeBaseType)->_frameAni_enabled) {
+			p->frame += (p->shapeBaseType)->_frameAni_speed;
+		} else {
+			p->frame = 0;
+		}
+
+		p->size += (p->shapeBaseType)->_size_incrementPerStep
+				+ randomDoubleR(-(p->shapeBaseType)->_size_wiggle,
+						(p->shapeBaseType)->_size_wiggle);
+		if (p->size < 0) {
+			p->size = 0;
+		}
+
+		double k = (double) p->stayTime / (double) p->lifeTime;
+		// 计算颜色
+		switch ((p->type)->_color_type) {
+		case Tcolor2: {
+			p->color = colorGradation((p->type)->_color_color1,
+					(p->type)->_color_color2, (float) k);
+			break;
+		}
+		case Tcolor3: {
+			if (k <= 0.5) {
+				p->color = colorGradation((p->type)->_color_color1,
+						(p->type)->_color_color2, (float) (k * 2.0));
+			} else {
+				p->color = colorGradation((p->type)->_color_color2,
+						(p->type)->_color_color3, (float) (k * 2.0 - 1.0));
+			}
+			break;
+		}
+		default:
+			break;
+		}
+
+		// 计算 alpha
+		switch (p->type->_alpha_type) {
+		case Talpha2: {
+			p->alpha = k * (p->type->_alpha_2 - p->type->_alpha_1)
+					+ p->type->_alpha_1;
+			break;
+		}
+		case Talpha3: {
+			if (k <= 0.5) {
+				p->alpha = k * 2.0 * (p->type->_alpha_2 - p->type->_alpha_1)
+						+ p->type->_alpha_1;
+			} else {
+				p->alpha = (k * 2.0 + 1.0)
+						* (p->type->_alpha_3 - p->type->_alpha_2)
+						+ p->type->_alpha_2;
+			}
+			break;
+		}
+		default:
+			break;
+		}
+
+		float x = p->x;
+		float y = p->y;
+		double speedx = lengthdir_x(p->speed, p->direction);
+		double speedy = -lengthdir_y(p->speed, p->direction);
+
+		//计算吸引器
+		for (int i = 0; i < (ps->particleAttractors)->index; i++) {
+			ParticleAttractor * pa =
+					(ParticleAttractor *) (ps->particleAttractors)->data[i];
+			float distance = point_distance(p->x, p->y, pa->_position_x,
+					pa->_position_y);
+			if (distance > pa->_force_distance_max)
+				continue;
+
+			// 计算力大小
+			double force = pa->_force_force;
+			switch (pa->_force_kind) {
+			case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_FORCE_LINEAR: {
+				force *= 1.0 - distance / pa->_force_distance_max;
+				break;
+			}
+			case org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_FORCE_QUADRATIC: {
+				force *= 1.0
+						- (distance / pa->_force_distance_max)
+								* (distance / pa->_force_distance_max);
+				break;
+			}
+			default:
+				break;
+			}
+			// 计算力的x y分量
+			float dir = point_direction(p->x, p->y, pa->_position_x,
+					pa->_position_y);
+			float fx = lengthdir_x(force, dir);
+			float fy = -lengthdir_y(force, dir);
+
+			// 应用力
+			if (pa->_force_additive) {
+				speedx += fx;
+				speedy += fy;
+			} else {
+				x += fx;
+				y += fy;
+			}
+		}
+
+		// 计算重力
+		speedx += lengthdir_x((p->motionBaseType)->_gravity_amount,
+				(p->motionBaseType)->_gravity_direction);
+		speedy += -lengthdir_y((p->motionBaseType)->_gravity_amount,
+				(p->motionBaseType)->_gravity_direction);
+
+		// 计算速度
+		double direction = toDegrees(atan2(-speedy, speedx));
+
+		if (sqrt(speedx * speedx + speedy * speedy)
+				+ (p->motionBaseType)->_speed_incrementPerStep <= 0) {
+			speedx = 0;
+			speedy = 0;
+		} else {
+			speedx += lengthdir_x((p->motionBaseType)->_speed_incrementPerStep,
+					direction);
+			speedy += -lengthdir_y((p->motionBaseType)->_speed_incrementPerStep,
+					direction);
+			direction = toDegrees(atan2(-speedy, speedx));
+		}
+
+		// 计算角度
+		direction = direction
+				+ (p->motionBaseType)->_direction_incrementPerStep;
+		float speed = sqrt(speedx * speedx + speedy * speedy);
+
+		if (speedx != 0 || speedy != 0) {
+			speedx = lengthdir_x(speed, (float) direction);
+			speedy = -lengthdir_y(speed, (float) direction);
+		}
+
+		// 计算位置
+		x += speedx;
+		y += speedy;
+
+		// 计算偏转器
+
+		// 最后完成所有计算
+		direction += randomDoubleR(-(p->shapeBaseType)->_direction_wiggle,
+				(p->shapeBaseType)->_direction_wiggle);
+		p->x = (int) x;
+		p->y = (int) y;
+		p->speed = speed;
+		// 计算图像旋转角度
+		if ((p->shapeBaseType)->_orientation_relative) {
+			p->angle = p->baseAngle + direction
+					+ randomDoubleR(-(p->shapeBaseType)->_orientation_wiggle,
+							(p->shapeBaseType)->_orientation_wiggle);
+		} else {
+			p->angle += (p->shapeBaseType)->_orientation_incrementPerStep
+					+ randomDoubleR(-(p->shapeBaseType)->_orientation_wiggle,
+							(p->shapeBaseType)->_orientation_wiggle);
+		}
+		p->angle = degreeIn360((float) p->angle);
+		p->direction = degreeIn360((float) direction);
+
+		// 发射每步都会生成的粒子
+		if (p->type->_particleOnStep_enabled) {
+			if (p->type->_particleOnStep_number < 0) {
+
+				if (p->counter >= -p->type->_particleOnStep_number) {
+					p->trigger = randomInt(-p->type->_particleOnStep_number);
+					p->counter = 0;
+				} else {
+					p->counter++;
+				}
+
+				if (p->trigger == p->counter) {
+					createParticle(ps, p->type->_particleOnStep_type, p->x,
+							p->y, 1);
+				}
+			} else {
+				p->counter = -1;
+				p->trigger = 0;
+				createParticle(ps, p->type->_particleOnStep_type, p->x, p->y,
+						p->type->_particleOnStep_number);
+			}
+		}
+
+		// 循环变量加1
+		i2++;
+	}
+
+	// 最后由发射器发射粒子
+	int size = ps->particleEmitters->index;
+	for (int i = 0; i < size;) {
+		Emitters * pe = (Emitters *) ps->particleEmitters->data[i];
+
+		if (pe->emitter->_emit_particle_number < 0) {
+			if (pe->counter >= -pe->emitter->_emit_particle_number) {
+				pe->trigger = randomInt(-pe->emitter->_emit_particle_number);
+				pe->counter = 0;
+			} else {
+				pe->counter++;
+			}
+
+			if (pe->trigger == pe->counter) {
+				createParticlesRegion(ps, pe);
+				if (pe->emitter->emitType == Tburst) {
+					removeElementAt(ps->particleEmitters, i);
+					size--;
+				} else {
+					i++;
+				}
+			} else {
+				i++;
+			}
+		} else {
+			pe->counter = -1;
+			pe->trigger = 0;
+			createParticlesRegion(ps, pe);
+			if (pe->emitter->emitType == Tburst) {
+				removeElementAt(ps->particleEmitters, i);
+				size--;
+			} else {
+				i++;
+			}
+		}
 
 	}
 
@@ -1354,12 +1698,12 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	return JNI_TRUE;
 }
 
-JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEbrustNative(
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEburstNative(
 		JNIEnv * env, jclass clazz, jlong particleEmitter, jlong particleType,
 		jint number) {
 
 	ParticleEmitter *pe = (ParticleEmitter*) (unsigned long) particleEmitter;
-	pe->emitType = Tbrust;
+	pe->emitType = Tburst;
 	pe->_emit_particle_type = (ParticleType*) (unsigned long) particleType;
 	pe->_emit_particle_number = number;
 

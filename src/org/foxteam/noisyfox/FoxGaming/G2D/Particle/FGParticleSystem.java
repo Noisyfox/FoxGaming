@@ -241,22 +241,22 @@ public final class FGParticleSystem {
 					(float) p.direction);
 
 			// 计算吸引器
-			for (FGParticleAttractor fa : particleAttractors) {
+			for (FGParticleAttractor pa : particleAttractors) {
 				float distance = FGMathsHelper.point_distance(p.x, p.y,
-						fa._position_x, fa._position_y);
-				if (distance > fa._force_distance_max)
+						pa._position_x, pa._position_y);
+				if (distance > pa._force_distance_max)
 					continue;
 
 				// 计算力大小
-				double force = fa._force_force;
-				switch (fa._force_kind) {
+				double force = pa._force_force;
+				switch (pa._force_kind) {
 				case linear: {
-					force *= 1.0 - distance / fa._force_distance_max;
+					force *= 1.0 - distance / pa._force_distance_max;
 					break;
 				}
 				case quadratic: {
-					force *= 1.0 - (distance / fa._force_distance_max)
-							* (distance / fa._force_distance_max);
+					force *= 1.0 - (distance / pa._force_distance_max)
+							* (distance / pa._force_distance_max);
 					break;
 				}
 				default:
@@ -264,12 +264,12 @@ public final class FGParticleSystem {
 				}
 				// 计算力的x y分量
 				float dir = FGMathsHelper.point_direction(p.x, p.y,
-						fa._position_x, fa._position_y);
+						pa._position_x, pa._position_y);
 				float fx = FGMathsHelper.lengthdir_x((float) force, dir);
 				float fy = -FGMathsHelper.lengthdir_y((float) force, dir);
 
 				// 应用力
-				if (fa._force_additive) {
+				if (pa._force_additive) {
 					speedx += fx;
 					speedy += fy;
 				} else {

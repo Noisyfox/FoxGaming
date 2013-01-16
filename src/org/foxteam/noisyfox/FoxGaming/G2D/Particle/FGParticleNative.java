@@ -200,7 +200,7 @@ public class FGParticleNative {
 	protected static native boolean PEsetRegionNative(long particleEmitter,
 			int minX, int minY, int maxX, int maxY, int shape);
 
-	protected static native boolean PEbrustNative(long particleEmitter,
+	protected static native boolean PEburstNative(long particleEmitter,
 			long particleType, int number);
 
 	protected static native boolean PEstreamNative(long particleEmitter,

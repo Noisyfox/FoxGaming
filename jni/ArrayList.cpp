@@ -132,3 +132,16 @@ int removeElement(ArrayList *arr, Element elm) {
 	}
 	return 0;
 }
+
+int removeElementAt(ArrayList *arr, int index) {
+	if (index > arr->index)
+		return 0;
+
+	arr->index--;
+	for (int i = index; i < arr->index; i++) {
+		arr->data[i] = arr->data[i + 1];
+	}
+
+	return 1;
+}
+

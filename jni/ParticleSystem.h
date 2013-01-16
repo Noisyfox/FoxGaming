@@ -489,10 +489,10 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
- * Method:    PEbrustNative
+ * Method:    PEburstNative
  * Signature: (JJI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEbrustNative
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEburstNative
   (JNIEnv *, jclass, jlong, jlong, jint);
 
 /*

@@ -122,11 +122,19 @@ int arrLstIndexof(ArrayList *arr, Element elm);
  *@desc:移除指定的元素
  *@param:arr->待操作的列表
  *@param:elm->要移除的元素
- *@param:fun->比较函数
  *@return:0->失败1->成功
  **************************
  */
 int removeElement(ArrayList *arr, Element elm);
+
+/************************
+ *@desc:移除指定位置上的元素
+ *@param:arr->待操作的列表
+ *@param:index->要移除的元素位置
+ *@return:0->失败1->成功
+ **************************
+ */
+int removeElementAt(ArrayList *arr, int index);
 
 #ifdef __cplusplus
 }
