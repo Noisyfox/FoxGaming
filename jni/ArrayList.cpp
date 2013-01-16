@@ -29,7 +29,7 @@ ArrayList *createArrayList(CmpFun cmp, PrtFun pfun) {
 	return arr;
 }
 
-void desrotyArrList(ArrayList *arr) {
+void destroyArrayList(ArrayList *arr) {
 	if (arr != NULL) {
 		free(arr->data); //释放数组占用的内存
 		free(arr);       //释放结构体占用的内存

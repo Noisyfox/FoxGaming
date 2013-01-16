@@ -42,7 +42,7 @@ ArrayList *createArrayList(CmpFun cmp, PrtFun pfun);
  *@desc: 释放ArrayList占有的内存
  ******************************
  */
-void desrotyArrList(ArrayList *arr);
+void destroyArrayList(ArrayList *arr);
 
 /*************************************
  *@desc: 检查链表的剩余空间,不够则申请

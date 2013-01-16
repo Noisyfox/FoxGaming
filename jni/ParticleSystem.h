@@ -41,22 +41,6 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
- * Method:    PSremoveParticleNative
- * Signature: (JJ)Z
- */
-JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSremoveParticleNative
-  (JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
- * Method:    PSobtainParticleNative
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSobtainParticleNative
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
  * Method:    PSupdateNative
  * Signature: (J)Z
  */
@@ -198,6 +182,14 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
  */
 JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTcreateParticleTypeNative
   (JNIEnv *, jclass);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PTsetSpriteParameterNative
+ * Signature: (JI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTsetSpriteParameterNative
+  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative

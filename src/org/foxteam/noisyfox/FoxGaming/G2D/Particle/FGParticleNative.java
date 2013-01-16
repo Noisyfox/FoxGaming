@@ -25,11 +25,6 @@ public class FGParticleNative {
 	// ParticleSystem
 	protected static native long PScreateParticleSystemNative();
 
-	protected static native boolean PSremoveParticleNative(long particleSystem,
-			long particle);
-
-	protected static native long PSobtainParticleNative(long particleSystem);
-
 	protected static native boolean PSupdateNative(long particleSystem);
 
 	protected static native long PScreateParticleNative(long particleSystem,
@@ -81,6 +76,9 @@ public class FGParticleNative {
 
 	// ParticleType
 	protected static native long PTcreateParticleTypeNative();
+
+	protected static native boolean PTsetSpriteParameterNative(
+			long particleType, int frameCount);
 
 	protected static native boolean PTsetSpriteFrameAnimationNative(
 			long particleType, boolean enableFrameAni, double speed,
