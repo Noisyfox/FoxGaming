@@ -35,13 +35,14 @@ public final class FGParticleSystem {
 	protected long nid = -1;
 
 	public FGParticleSystem() {
-		Log.d("sss", "wwwwwwwwwwww");
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// 调试用代码
+		// Log.d("sss", "wwwwwwwwwwww");
+		// try {
+		// Thread.sleep(10000);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 		nid = FGParticleNative.PScreateParticleSystemNative();
 		// setMaxParticleNumber(200);
 	}

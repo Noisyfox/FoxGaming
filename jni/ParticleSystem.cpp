@@ -399,6 +399,8 @@ bool setMaxParticleNumber(ParticleSystem* particleSystem, int number) {
 			LOGE("Can't malloc new particle!");
 			return JNI_FALSE;
 		}
+		(particleSystem->particlePool_dead)->next = NULL;
+		(particleSystem->particlePool_dead)->prev = NULL;
 		particleCount++;
 	}
 
@@ -410,6 +412,7 @@ bool setMaxParticleNumber(ParticleSystem* particleSystem, int number) {
 				LOGE("Can't malloc new particle!");
 				return JNI_FALSE;
 			}
+			(p->next)->next = NULL;
 			(p->next)->prev = p;
 		}
 		p = p->next;
@@ -567,6 +570,17 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	Asert(ps = (ParticleSystem *) malloc(sizeof(ParticleSystem)),
 			"Failed to malloc new particle system!");
 
+	ps->aliveParticleCount = 0;
+	ps->maxParticleNumber = 0;
+	ps->particleAttractors = NULL;
+	ps->particleChangers = NULL;
+	ps->particleDeflectors = NULL;
+	ps->particleDestroyers = NULL;
+	ps->particleEmitters = NULL;
+	ps->particlePool_alive = NULL;
+	ps->particlePool_alive_last = NULL;
+	ps->particlePool_dead = NULL;
+
 	//初始化
 	if ((ps->particlePool_dead = (Particles*) malloc(sizeof(Particles))) == NULL) {
 		LOGE("Failed to initialize particle system!");
@@ -574,6 +588,9 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		free(ps);
 		return NULL;
 	}
+
+	(ps->particlePool_dead)->next = NULL;
+	(ps->particlePool_dead)->prev = NULL;
 
 	if ((ps->particleAttractors = createArrayList(NULL, NULL)) == NULL) {
 		LOGE("Failed to initialize particle system!");
@@ -1004,6 +1021,9 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	}
 
 	e->emitter = pe;
+	e->counter = -1;
+	e->trigger = 0;
+
 	if (pe != NULL && !contains(ps->particleEmitters, (void*) e)) {
 		if (addElement(ps->particleEmitters, (void*) e)) {
 			return JNI_TRUE;
@@ -1112,6 +1132,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(ps);
 
+	LOGI("ParticleSystem freed!Id:%u", particleSystem);
 	return JNI_TRUE;
 }
 
@@ -1461,6 +1482,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pt);
 
+	LOGI("ParticleType freed!Id:%u", particleType);
 	return JNI_TRUE;
 }
 
@@ -1546,6 +1568,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pa);
 
+	LOGI("ParticleAttractor freed!Id:%u", particleAttractor);
 	return JNI_TRUE;
 }
 
@@ -1645,6 +1668,7 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pc);
 
+	LOGI("ParticleChanger freed!Id:%u", particleChanger);
 	return JNI_TRUE;
 }
 
@@ -1718,6 +1742,8 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	if (!removeElement(particleDestoryerList, (void*) pd))
 		return JNI_FALSE;
 	free(pd);
+
+	LOGI("ParticleDestroyer freed!Id:%u", particleDestroyer);
 
 	return JNI_TRUE;
 }
@@ -1821,6 +1847,8 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 	if (!removeElement(particleEmitterList, (void*) pe))
 		return JNI_FALSE;
 	free(pe);
+
+	LOGI("ParticleEmitter freed!Id:%u", particleEmitter);
 
 	return JNI_TRUE;
 }
