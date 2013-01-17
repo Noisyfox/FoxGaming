@@ -18,10 +18,24 @@ public final class FGParticleAttractor {
 	protected float _force_distance_max = 100f;
 	protected boolean _force_additive = false;
 
+	protected long nid = -1;
+
+	public FGParticleAttractor() {
+		nid = FGParticleNative.PAcreateParticleAttractorNative();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		FGParticleNative.PAremoveParticleAttractorNative(nid);
+		super.finalize();
+	}
+
 	public void setPosition(int x, int y) {
 
 		_position_x = x;
 		_position_y = y;
+
+		FGParticleNative.PAsetPositionNative(nid, x, y);
 
 	}
 
@@ -36,6 +50,24 @@ public final class FGParticleAttractor {
 		_force_force = force;
 		_force_distance_max = maxDistance;
 		_force_additive = additive;
+
+		int kind2 = FGParticleNative.PAR_FORCE_CONSTANT;
+
+		switch (kind) {
+		case constant:
+			kind2 = FGParticleNative.PAR_FORCE_CONSTANT;
+			break;
+		case linear:
+			kind2 = FGParticleNative.PAR_FORCE_LINEAR;
+			break;
+		case quadratic:
+			kind2 = FGParticleNative.PAR_FORCE_QUADRATIC;
+			break;
+		default:
+			break;
+		}
+		FGParticleNative.PAsetForceNative(nid, kind2, force, maxDistance,
+				additive);
 
 	}
 

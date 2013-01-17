@@ -50,10 +50,18 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
  * Method:    PScreateParticleNative
- * Signature: (J[J)J
+ * Signature: (JJIII)Z
  */
-JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleNative
-  (JNIEnv *, jclass, jlong, jlongArray);
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleNative__JJIII
+  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint);
+
+/*
+ * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
+ * Method:    PScreateParticleNative
+ * Signature: (JJIIII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleNative__JJIIII
+  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint);
 
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
@@ -482,10 +490,10 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
  * Method:    PEsetRegionNative
- * Signature: (JIIIII)Z
+ * Signature: (JIIIIII)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEsetRegionNative
-  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint);
+  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative

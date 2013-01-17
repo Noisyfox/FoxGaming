@@ -19,6 +19,8 @@ public final class FGParticleDeflector {
 
 	protected double _friction = 0.0;
 
+	protected long nid = -1;
+
 	public void setRegion(int minX, int minY, int maxX, int maxY) {
 
 		if (minX > maxX || minY > maxY) {

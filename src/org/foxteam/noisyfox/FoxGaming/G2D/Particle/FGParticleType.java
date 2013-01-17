@@ -88,9 +88,24 @@ public final class FGParticleType {
 	protected double _gravity_amount = 0.0;
 	protected double _gravity_direction = 0.0;
 
+	protected long nid = -1;
+
+	public FGParticleType() {
+		nid = FGParticleNative.PTcreateParticleTypeNative();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		FGParticleNative.PTremoveParticleTypeNative(nid);
+		super.finalize();
+	}
+
 	public void setSprite(FGSprite sprite) {
 
 		_particleSprite = sprite;
+
+		FGParticleNative
+				.PTsetSpriteParameterNative(nid, sprite.getFrameCount());
 
 	}
 
@@ -100,6 +115,9 @@ public final class FGParticleType {
 		_frameAni_enabled = enableFrameAni;
 		_frameAni_speed = speed;
 		_frameAni_startWithRandomFrame = startWithRandomFrame;
+
+		FGParticleNative.PTsetSpriteFrameAnimationNative(nid, enableFrameAni,
+				speed, startWithRandomFrame);
 
 	}
 
@@ -114,12 +132,17 @@ public final class FGParticleType {
 		_size_incrementPerStep = incrementPerStep;
 		_size_wiggle = wiggle;
 
+		FGParticleNative.PTsetSizeNative(nid, minSize, maxSize,
+				incrementPerStep, wiggle);
+
 	}
 
 	public void setScale(float xScale, float yScale) {
 
 		_scale_x = xScale;
 		_scale_y = yScale;
+
+		FGParticleNative.PTsetScaleNative(nid, xScale, yScale);
 
 	}
 
@@ -137,12 +160,17 @@ public final class FGParticleType {
 		_orientation_wiggle = wiggle;
 		_orientation_relative = relative;
 
+		FGParticleNative.PTsetOrientationNative(nid, minAngle, maxAngle,
+				incrementPerStep, wiggle, relative);
+
 	}
 
 	public void setColor(int color) {
 
 		_color_type = ColorType.color1;
 		_color_color1 = color;
+
+		FGParticleNative.PTsetColorNative(nid, color);
 
 	}
 
@@ -152,6 +180,8 @@ public final class FGParticleType {
 		_color_color1 = color1;
 		_color_color2 = color2;
 
+		FGParticleNative.PTsetColorNative(nid, color1, color2);
+
 	}
 
 	public void setColor(int color1, int color2, int color3) {
@@ -160,6 +190,8 @@ public final class FGParticleType {
 		_color_color1 = color1;
 		_color_color2 = color2;
 		_color_color3 = color3;
+
+		FGParticleNative.PTsetColorNative(nid, color1, color2, color3);
 
 	}
 
@@ -179,6 +211,9 @@ public final class FGParticleType {
 		_color_RGB_B_min = minB;
 		_color_RGB_B_max = maxB;
 
+		FGParticleNative.PTsetColorRGBNative(nid, minR, minG, minB, maxR, maxG,
+				maxB);
+
 	}
 
 	public void setColorHSV(int minH, double minS, double minV, int maxH,
@@ -197,6 +232,9 @@ public final class FGParticleType {
 		_color_HSV_V_min = minV;
 		_color_HSV_V_max = maxV;
 
+		FGParticleNative.PTsetColorHSVNative(nid, minH, minS, minV, maxH, maxS,
+				maxV);
+
 	}
 
 	public void setAlpha(double alpha) {
@@ -207,6 +245,8 @@ public final class FGParticleType {
 
 		_alpha_type = AlphaType.alpha1;
 		_alpha_1 = alpha;
+
+		FGParticleNative.PTsetAlphaNative(nid, alpha);
 
 	}
 
@@ -219,6 +259,8 @@ public final class FGParticleType {
 		_alpha_type = AlphaType.alpha2;
 		_alpha_1 = alpha1;
 		_alpha_2 = alpha2;
+
+		FGParticleNative.PTsetAlphaNative(nid, alpha1, alpha2);
 
 	}
 
@@ -234,6 +276,8 @@ public final class FGParticleType {
 		_alpha_2 = alpha2;
 		_alpha_3 = alpha3;
 
+		FGParticleNative.PTsetAlphaNative(nid, alpha1, alpha2, alpha3);
+
 	}
 
 	public void setLifeTime(int min, int max) {
@@ -244,6 +288,8 @@ public final class FGParticleType {
 
 		_lifeTime_min = min;
 		_lifeTime_max = max;
+
+		FGParticleNative.PTsetLifeTimeNative(nid, min, max);
 
 	}
 
@@ -258,6 +304,9 @@ public final class FGParticleType {
 		_particleOnStep_type = type;
 		_particleOnStep_number = number;
 
+		FGParticleNative.PTcreateNewParticleOnStepNative(nid, enabled,
+				type.nid, number);
+
 	}
 
 	public void createNewParticleOnDeath(boolean enabled, FGParticleType type,
@@ -270,6 +319,9 @@ public final class FGParticleType {
 		_particleOnDeath_enabled = enabled;
 		_particleOnDeath_type = type;
 		_particleOnDeath_number = number;
+
+		FGParticleNative.PTcreateNewParticleOnDeathNative(nid, enabled,
+				type.nid, number);
 
 	}
 
@@ -284,6 +336,9 @@ public final class FGParticleType {
 		_speed_max = maxSpeed;
 		_speed_incrementPerStep = incrementPerStep;
 		_speed_wiggle = wiggle;
+
+		FGParticleNative.PTsetSpeedNative(nid, minSpeed, maxSpeed,
+				incrementPerStep, wiggle);
 
 	}
 
@@ -300,12 +355,17 @@ public final class FGParticleType {
 		_direction_incrementPerStep = incrementPerStep;
 		_direction_wiggle = wiggle;
 
+		FGParticleNative.PTsetDirectionNative(nid, minDirection, maxDirection,
+				incrementPerStep, wiggle);
+
 	}
 
 	public void setGravity(double amount, double direction) {
 
 		_gravity_amount = amount;
 		_gravity_direction = direction;
+
+		FGParticleNative.PTsetGravityNative(nid, amount, direction);
 
 	}
 }

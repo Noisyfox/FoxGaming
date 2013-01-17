@@ -23,8 +23,11 @@ public class FGParticleNative {
 
 	protected static native boolean PSupdateNative(long particleSystem);
 
-	protected static native long PScreateParticleNative(long particleSystem,
-			long[] arg);
+	protected static native boolean PScreateParticleNative(long particleSystem,
+			long particleType, int x, int y, int number);
+
+	protected static native boolean PScreateParticleNative(long particleSystem,
+			long particleType, int x, int y, int color, int number);
 
 	protected static native boolean PSclearNative(long particleSystem);
 
@@ -194,7 +197,7 @@ public class FGParticleNative {
 	protected static native long PEcreateParticleEmitterNative();
 
 	protected static native boolean PEsetRegionNative(long particleEmitter,
-			int minX, int minY, int maxX, int maxY, int shape);
+			int minX, int minY, int maxX, int maxY, int shape,int distribution);
 
 	protected static native boolean PEburstNative(long particleEmitter,
 			long particleType, int number);
