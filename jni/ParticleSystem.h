@@ -31,6 +31,8 @@ extern "C" {
 #define org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_SHAPE 11L
 #undef org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_ALL
 #define org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_ALL 12L
+#undef org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_RESULT_REMOVEEMITTER
+#define org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_RESULT_REMOVEEMITTER 13L
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
  * Method:    PScreateParticleSystemNative
@@ -42,9 +44,9 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
  * Method:    PSupdateNative
- * Signature: (J)Z
+ * Signature: (J)[J
  */
-JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSupdateNative
+JNIEXPORT jlongArray JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSupdateNative
   (JNIEnv *, jclass, jlong);
 
 /*

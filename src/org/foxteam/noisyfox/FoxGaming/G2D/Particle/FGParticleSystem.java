@@ -61,7 +61,16 @@ public final class FGParticleSystem {
 	}
 
 	public void update() {
-		FGParticleNative.PSupdateNative(nid);
+		long[] result = FGParticleNative.PSupdateNative(nid);
+		for (int i = 0; i < result.length / 2; i++) {
+			switch ((int) result[i * 2]) {
+			case FGParticleNative.PAR_RESULT_REMOVEEMITTER:
+				particleEmitters.remove(Long.valueOf(result[i * 2 + 1]));
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	public void draw() {

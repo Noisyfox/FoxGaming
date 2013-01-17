@@ -18,10 +18,12 @@ public class FGParticleNative {
 	public static final int PAR_CHANGE_SHAPE = 11;
 	public static final int PAR_CHANGE_ALL = 12;
 
+	public static final int PAR_RESULT_REMOVEEMITTER = 13;
+
 	// ParticleSystem
 	protected static native long PScreateParticleSystemNative();
 
-	protected static native boolean PSupdateNative(long particleSystem);
+	protected static native long[] PSupdateNative(long particleSystem);
 
 	protected static native boolean PScreateParticleNative(long particleSystem,
 			long particleType, int x, int y, int number);
@@ -197,7 +199,7 @@ public class FGParticleNative {
 	protected static native long PEcreateParticleEmitterNative();
 
 	protected static native boolean PEsetRegionNative(long particleEmitter,
-			int minX, int minY, int maxX, int maxY, int shape,int distribution);
+			int minX, int minY, int maxX, int maxY, int shape, int distribution);
 
 	protected static native boolean PEburstNative(long particleEmitter,
 			long particleType, int number);

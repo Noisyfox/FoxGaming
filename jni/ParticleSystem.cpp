@@ -642,14 +642,18 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		return NULL;
 	}
 
-	LOGI("Create particle system success! id:%u", (long)ps);
+	LOGI("Create particle system success! id:%u", (unsigned long)ps);
 
 	return (jlong) (long) ps;
 
 }
 
-JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSupdateNative(
+JNIEXPORT jlongArray JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSupdateNative(
 		JNIEnv *env, jclass clazz, jlong particleSystem) {
+
+	int result_count = 0;
+	ArrayList * results = createArrayList(NULL, NULL);
+	jlongArray resultsf = 0;
 
 	ParticleSystem* ps = (ParticleSystem*) (long) particleSystem;
 	int _poolSize = ps->aliveParticleCount;
@@ -930,6 +934,12 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 				createParticlesRegion(ps, pe);
 				if (pe->emitter->emitType == Tburst) {
 					removeElementAt(ps->particleEmitters, i);
+					if (results != NULL) {
+						result_count++;
+						addElement(results,
+								(void*) org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_RESULT_REMOVEEMITTER);
+						addElement(results, (void*) pe->emitter);
+					}
 					size--;
 				} else {
 					i++;
@@ -943,6 +953,12 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 			createParticlesRegion(ps, pe);
 			if (pe->emitter->emitType == Tburst) {
 				removeElementAt(ps->particleEmitters, i);
+				if (results != NULL) {
+					result_count++;
+					addElement(results,
+							(void*) org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_RESULT_REMOVEEMITTER);
+					addElement(results, (void*) pe->emitter);
+				}
 				size--;
 			} else {
 				i++;
@@ -950,8 +966,15 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		}
 
 	}
-
-	return JNI_TRUE;
+	if (results == NULL) {
+		resultsf = env->NewLongArray(0);
+	} else {
+		resultsf = env->NewLongArray(results->index + 1);
+		env->SetLongArrayRegion(resultsf, 0, results->index,
+				(jlong*) results->data);
+	}
+	destroyArrayList(results);
+	return resultsf;
 }
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleNative__JJIII(
 		JNIEnv *env, jclass clazz, jlong particleSystem, jlong particleType,
@@ -1132,13 +1155,13 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(ps);
 
-	LOGI("ParticleSystem freed!Id:%u", particleSystem);
+	LOGI("ParticleSystem freed!Id:%u", (unsigned long)particleSystem);
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSfinalizeParticleSystemNative(
 		JNIEnv *env, jclass clazz) {
-	//回收内存
+//回收内存
 	if (particleSystemList != NULL) {
 		for (int i = 0; i < particleSystemList->index; i++) {
 			ParticleSystem *ps = (ParticleSystem*) particleSystemList->data[i];
@@ -1169,7 +1192,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		return NULL;
 	}
 
-	//初始化
+//初始化
 	pt->_sprite_frameCount = 0;
 
 	pt->_frameAni_enabled = false;
@@ -1236,7 +1259,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	pt->_gravity_amount = 0.0;
 	pt->_gravity_direction = 0.0;
 
-	LOGI("Create particle type success! id:%u", (long)pt);
+	LOGI("Create particle type success! id:%u", (unsigned long)pt);
 
 	return (jlong) (long) pt;
 }
@@ -1482,13 +1505,13 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pt);
 
-	LOGI("ParticleType freed!Id:%u", particleType);
+	LOGI("ParticleType freed!Id:%u", (unsigned long)particleType);
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PTfinalizeParticleTypeNative(
 		JNIEnv *env, jclass clazz) {
-	//回收内存
+//回收内存
 	if (particleTypeList != NULL) {
 		for (int i = 0; i < particleTypeList->index; i++) {
 			ParticleType *pt = (ParticleType*) particleTypeList->data[i];
@@ -1520,7 +1543,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		return NULL;
 	}
 
-	//初始化
+//初始化
 	pa->_position_x = 0;
 	pa->_position_y = 0;
 	pa->_force_kind =
@@ -1529,7 +1552,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	pa->_force_distance_max = 100;
 	pa->_force_additive = false;
 
-	LOGI("Create particle attractor success! id:%u", (long)pa);
+	LOGI("Create particle attractor success! id:%u", (unsigned long)pa);
 
 	return (jlong) (long) pa;
 }
@@ -1568,13 +1591,13 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pa);
 
-	LOGI("ParticleAttractor freed!Id:%u", particleAttractor);
+	LOGI("ParticleAttractor freed!Id:%u", (unsigned long)particleAttractor);
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAfinalizeParticleAttractorNative(
 		JNIEnv * env, jclass clazz) {
-	//回收内存
+//回收内存
 	if (particleAttractorList != NULL) {
 		for (int i = 0; i < particleAttractorList->index; i++) {
 			ParticleAttractor *pa =
@@ -1607,7 +1630,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		return NULL;
 	}
 
-	//初始化
+//初始化
 	pc->_region_x_min = 0;
 	pc->_region_x_max = 0;
 	pc->_region_y_min = 0;
@@ -1621,7 +1644,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	pc->_changeKind =
 			org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PAR_CHANGE_ALL;
 
-	LOGI("Create particle changer success! id:%u", (long)pc);
+	LOGI("Create particle changer success! id:%u", (unsigned long)pc);
 
 	return (jlong) (long) pc;
 }
@@ -1668,13 +1691,13 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pc);
 
-	LOGI("ParticleChanger freed!Id:%u", particleChanger);
+	LOGI("ParticleChanger freed!Id:%u", (unsigned long)particleChanger);
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PCfinalizeParticleChangerNative(
 		JNIEnv * env, jclass clazz) {
-	//回收内存
+//回收内存
 	if (particleChangerList != NULL) {
 		for (int i = 0; i < particleChangerList->index; i++) {
 			ParticleChanger *pc =
@@ -1706,7 +1729,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		return NULL;
 	}
 
-	//初始化
+//初始化
 	pd->_region_x_min = 0;
 	pd->_region_x_max = 0;
 	pd->_region_y_min = 0;
@@ -1743,14 +1766,14 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pd);
 
-	LOGI("ParticleDestroyer freed!Id:%u", particleDestroyer);
+	LOGI("ParticleDestroyer freed!Id:%u", (unsigned long)particleDestroyer);
 
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PDfinalizeParticleDestroyerNative(
 		JNIEnv * env, jclass clazz) {
-	//回收内存
+//回收内存
 	if (particleDestoryerList != NULL) {
 		for (int i = 0; i < particleDestoryerList->index; i++) {
 			ParticleDestroyer *pd =
@@ -1783,7 +1806,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 		return NULL;
 	}
 
-	//初始化
+//初始化
 	pe->_region_x_min = 0;
 	pe->_region_x_max = 0;
 	pe->_region_y_min = 0;
@@ -1848,14 +1871,14 @@ JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPa
 		return JNI_FALSE;
 	free(pe);
 
-	LOGI("ParticleEmitter freed!Id:%u", particleEmitter);
+	LOGI("ParticleEmitter freed!Id:%u", (unsigned long)particleEmitter);
 
 	return JNI_TRUE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEfinalizeParticleEmitterNative(
 		JNIEnv * env, jclass clazz) {
-	//回收内存
+//回收内存
 	if (particleEmitterList != NULL) {
 		for (int i = 0; i < particleEmitterList->index; i++) {
 			ParticleEmitter *pe =
