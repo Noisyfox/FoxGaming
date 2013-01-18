@@ -1,12 +1,14 @@
 package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.LongBuffer;
 import java.util.HashMap;
 
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
 
 import android.graphics.Color;
+import android.util.Log;
 
 /**
  * 
@@ -21,8 +23,10 @@ public final class FGParticleSystem {
 	private boolean _drawOrder_old2new = true;
 	private int _position_x = 0;
 	private int _position_y = 0;
-	
-	protected static HashMap<Long,FGParticleType>registedParticleTypes = new HashMap<Long,FGParticleType>();
+
+	protected static HashMap<Long, FGParticleType> registedParticleTypes = new HashMap<Long, FGParticleType>();
+
+	protected static FGSpriteConvertor convertor = new FGSpriteConvertor();
 
 	private HashMap<Long, Emitters> particleEmitters = new HashMap<Long, Emitters>();
 	private HashMap<Long, FGParticleAttractor> particleAttractors = new HashMap<Long, FGParticleAttractor>();
@@ -63,7 +67,7 @@ public final class FGParticleSystem {
 		result.position(0);
 		LongBuffer lennr = result.asLongBuffer();
 		long lenth = lennr.get();
-		for (long i = 0; i < lenth/2; i++) {
+		for (long i = 0; i < lenth / 2; i++) {
 			switch ((int) lennr.get()) {
 			case FGParticleNative.PAR_RESULT_REMOVEEMITTER:
 				particleEmitters.remove(Long.valueOf(lennr.get()));
@@ -113,6 +117,39 @@ public final class FGParticleSystem {
 		// }
 		//
 		// }
+
+		ByteBuffer particles = FGParticleNative.PSgetParticlesNative(nid,
+				_drawOrder_old2new);
+		particles.position(0);
+		DoubleBuffer dbf = particles.asDoubleBuffer();
+		int pnum = (int) dbf.get();
+		int plen = (int) dbf.get();
+		
+		Log.d("aa", ""+pnum);
+
+		for (int i = 0; i < pnum; i++) {
+			FGParticleType pt = registedParticleTypes.get(Long
+					.valueOf((long) dbf.get()));
+			double frame = dbf.get();
+			double angle = dbf.get();
+			double size = dbf.get();
+			int x = (int) dbf.get();
+			int y = (int) dbf.get();
+			int color = (int) dbf.get();
+			double alpha = dbf.get();
+
+			if (pt != null) {
+				if (pt._particleSprite != null) {
+					convertor.setAlpha(alpha);
+					convertor.setRotation(angle);
+					convertor.setScale(pt._scale_x * size, pt._scale_y * size);
+
+					pt._particleSprite.setCurrentFrame((int) frame);
+					pt._particleSprite.draw(_position_x + x, _position_y + y,
+							convertor, color);
+				}
+			}
+		}
 
 	}
 

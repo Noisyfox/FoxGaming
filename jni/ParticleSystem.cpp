@@ -152,6 +152,16 @@ typedef struct _ParticleEmitter {
 	int _emit_particle_number;
 } ParticleEmitter;
 
+/*
+ * 对于绘制来说，需要以下参数
+ *
+ * shapBaseType->nid
+ * frame,angle,size,x,y,color,alpha共8个参数
+ *
+ */
+
+#define PARDESCRIPTION_ARGCOUNT 8
+
 typedef struct _Particles {
 	ParticleType * type;
 	ParticleType * motionBaseType;
@@ -204,6 +214,8 @@ typedef struct _ParticleSystem {
 	Particles* particlePool_dead;
 
 	jlong* results;
+
+	jdouble* particlesDescription;
 } ParticleSystem;
 
 ArrayList * particleSystemList = NULL;
@@ -368,6 +380,7 @@ void freeParticleSystem(ParticleSystem* particleSystem) {
 	}
 
 	free(particleSystem->results);
+	free(particleSystem->particlesDescription);
 
 	destroyArrayList(particleSystem->particleAttractors);
 	destroyArrayList(particleSystem->particleChangers);
@@ -426,6 +439,15 @@ bool setMaxParticleNumber(ParticleSystem* particleSystem, int number) {
 
 	if (p != NULL) {
 		freeParticles(&p->prev);
+	}
+
+	if (particleSystem->particlesDescription != NULL)
+		free(particleSystem->particlesDescription);
+
+	if ((particleSystem->particlesDescription = (jdouble*) malloc(
+			sizeof(jdouble) * (PARDESCRIPTION_ARGCOUNT * number + 2))) == NULL) {
+		LOGE("Can't malloc new particlesDescription!");
+		return JNI_FALSE;
 	}
 
 	return true;
@@ -587,6 +609,7 @@ JNIEXPORT jlong JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParti
 	ps->particlePool_alive_last = NULL;
 	ps->particlePool_dead = NULL;
 	ps->results = NULL;
+	ps->particlesDescription = NULL;
 
 	//初始化
 	if ((ps->particlePool_dead = (Particles*) malloc(sizeof(Particles))) == NULL) {
@@ -991,9 +1014,65 @@ JNIEXPORT jobject JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPar
 }
 
 JNIEXPORT jobject JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSgetParticlesNative(
-		JNIEnv * env, jclass clazz, jlong particleSystem) {
+		JNIEnv * env, jclass clazz, jlong particleSystem, jboolean old2new) {
 
 	ParticleSystem* ps = (ParticleSystem*) (long) particleSystem;
+	if (ps->particlesDescription != NULL) {
+		ps->particlesDescription[0] = (jdouble)(double)ps->aliveParticleCount;
+		ps->particlesDescription[1] = (jdouble)(double)PARDESCRIPTION_ARGCOUNT;
+
+		/*
+		 * 对于绘制来说，需要以下参数
+		 *
+		 * 依照该顺序插入数据
+		 * shapBaseType->nid
+		 * frame,angle,size,x,y,color,alpha共8个参数
+		 *
+		 */
+
+		if (old2new) {
+			Particles*p = ps->particlePool_alive;
+			int i;
+			for (i = 0; i < ps->aliveParticleCount; i++) {
+				int pp = i * PARDESCRIPTION_ARGCOUNT + 2;
+				ps->particlesDescription[pp++] =
+						(jdouble) (unsigned long) p->shapeBaseType;
+				ps->particlesDescription[pp++] = p->frame;
+				ps->particlesDescription[pp++] = p->angle;
+				ps->particlesDescription[pp++] = p->size;
+				ps->particlesDescription[pp++] = p->x;
+				ps->particlesDescription[pp++] = p->y;
+				ps->particlesDescription[pp++] = p->color;
+				ps->particlesDescription[pp++] = p->alpha;
+
+				p = p->next;
+			}
+		} else {
+			Particles*p = ps->particlePool_alive_last;
+			int i;
+			for (i = 0; i < ps->aliveParticleCount; i++) {
+				int pp = i * PARDESCRIPTION_ARGCOUNT + 2;
+				ps->particlesDescription[pp++] =
+						(jdouble) (unsigned long) p->shapeBaseType;
+				ps->particlesDescription[pp++] = p->frame;
+				ps->particlesDescription[pp++] = p->angle;
+				ps->particlesDescription[pp++] = p->size;
+				ps->particlesDescription[pp++] = p->x;
+				ps->particlesDescription[pp++] = p->y;
+				ps->particlesDescription[pp++] = p->color;
+				ps->particlesDescription[pp++] = p->alpha;
+
+				p = p->prev;
+			}
+		}
+
+		jobject directBuffer =
+				env->NewDirectByteBuffer((void*) ps->particlesDescription,
+						(jlong) (sizeof(jdouble)
+								* (PARDESCRIPTION_ARGCOUNT
+										* ps->maxParticleNumber + 2)));
+		return directBuffer;
+	}
 
 	return NULL;
 }

@@ -27,7 +27,8 @@ public class FGParticleNative {
 
 	protected static native ByteBuffer PSupdateNative(long particleSystem);
 
-	protected static native ByteBuffer PSgetParticlesNative(long particleSystem);
+	protected static native ByteBuffer PSgetParticlesNative(
+			long particleSystem, boolean order_old2new);
 
 	protected static native boolean PScreateParticleNative(long particleSystem,
 			long particleType, int x, int y, int number);

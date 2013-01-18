@@ -52,10 +52,10 @@ JNIEXPORT jobject JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGPar
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
  * Method:    PSgetParticlesNative
- * Signature: (J)Ljava/nio/ByteBuffer;
+ * Signature: (JZ)Ljava/nio/ByteBuffer;
  */
 JNIEXPORT jobject JNICALL Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSgetParticlesNative
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jclass, jlong, jboolean);
 
 /*
  * Class:     org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative
