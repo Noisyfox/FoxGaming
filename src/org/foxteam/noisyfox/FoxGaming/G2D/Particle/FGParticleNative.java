@@ -1,5 +1,7 @@
 package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
+import java.nio.ByteBuffer;
+
 public class FGParticleNative {
 
 	public static final int PAR_REGION_DISTRIBUTION_LINEAR = 1;
@@ -23,7 +25,9 @@ public class FGParticleNative {
 	// ParticleSystem
 	protected static native long PScreateParticleSystemNative();
 
-	protected static native long[] PSupdateNative(long particleSystem);
+	protected static native ByteBuffer PSupdateNative(long particleSystem);
+
+	protected static native ByteBuffer PSgetParticlesNative(long particleSystem);
 
 	protected static native boolean PScreateParticleNative(long particleSystem,
 			long particleType, int x, int y, int number);

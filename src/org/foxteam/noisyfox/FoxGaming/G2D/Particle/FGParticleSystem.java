@@ -1,16 +1,12 @@
 package org.foxteam.noisyfox.FoxGaming.G2D.Particle;
 
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
+import java.nio.LongBuffer;
 import java.util.HashMap;
-import java.util.Random;
 
-import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSpriteConvertor;
-import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleEmitter.EmitType;
-import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleType.ColorType;
 
 import android.graphics.Color;
-import android.util.Log;
 
 /**
  * 
@@ -25,6 +21,8 @@ public final class FGParticleSystem {
 	private boolean _drawOrder_old2new = true;
 	private int _position_x = 0;
 	private int _position_y = 0;
+	
+	protected static HashMap<Long,FGParticleType>registedParticleTypes = new HashMap<Long,FGParticleType>();
 
 	private HashMap<Long, Emitters> particleEmitters = new HashMap<Long, Emitters>();
 	private HashMap<Long, FGParticleAttractor> particleAttractors = new HashMap<Long, FGParticleAttractor>();
@@ -61,11 +59,14 @@ public final class FGParticleSystem {
 	}
 
 	public void update() {
-		long[] result = FGParticleNative.PSupdateNative(nid);
-		for (int i = 0; i < result.length / 2; i++) {
-			switch ((int) result[i * 2]) {
+		ByteBuffer result = FGParticleNative.PSupdateNative(nid);
+		result.position(0);
+		LongBuffer lennr = result.asLongBuffer();
+		long lenth = lennr.get();
+		for (long i = 0; i < lenth/2; i++) {
+			switch ((int) lennr.get()) {
 			case FGParticleNative.PAR_RESULT_REMOVEEMITTER:
-				particleEmitters.remove(Long.valueOf(result[i * 2 + 1]));
+				particleEmitters.remove(Long.valueOf(lennr.get()));
 				break;
 			default:
 				break;

@@ -18,8 +18,10 @@ JNINativeMethod gMethods_ParticleSystem[] =
 		{
 				{ "PScreateParticleSystemNative", "()J",
 						(void*) Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleSystemNative },
-				{ "PSupdateNative", "(J)[J",
+				{ "PSupdateNative", "(J)Ljava/nio/ByteBuffer;",
 						(void*) Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSupdateNative },
+				{ "PSgetParticlesNative", "(J)Ljava/nio/ByteBuffer;",
+						(void*) Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PSgetParticlesNative },
 				{ "PScreateParticleNative", "(JJIII)Z",
 						(void*) Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PScreateParticleNative__JJIII },
 				{ "PScreateParticleNative", "(JJIIII)Z",
@@ -140,7 +142,6 @@ JNINativeMethod gMethods_ParticleSystem[] =
 						(void*) Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEremoveParticleEmitterNative },
 				{ "PEfinalizeParticleEmitterNative", "()Z",
 						(void*) Java_org_foxteam_noisyfox_FoxGaming_G2D_Particle_FGParticleNative_PEfinalizeParticleEmitterNative }, };
-
 #ifdef __cplusplus
 }
 #endif

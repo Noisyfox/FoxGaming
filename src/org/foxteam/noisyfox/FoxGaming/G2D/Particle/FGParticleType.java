@@ -92,11 +92,13 @@ public final class FGParticleType {
 
 	public FGParticleType() {
 		nid = FGParticleNative.PTcreateParticleTypeNative();
+		FGParticleSystem.registedParticleTypes.put(Long.valueOf(nid), this);
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		FGParticleNative.PTremoveParticleTypeNative(nid);
+		FGParticleSystem.registedParticleTypes.remove(Long.valueOf(nid));
 		super.finalize();
 	}
 

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include <jni.h>
 #include <android/log.h>
 
 #include <FoxGaming.h>
@@ -47,6 +48,10 @@ bool initalizeJNI(JNIEnv * env) {
 
 	LOGI("JNI initalize success!");
 	return true;
+}
+
+jint JNI_OnLoad(JavaVM* vm, void* reserved){
+	return JNI_VERSION_1_4;
 }
 
 //--------------------------------------------------------------------------------------------
