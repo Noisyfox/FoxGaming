@@ -1,6 +1,8 @@
 # generated files
 bin/
 gen/
+obj/
+*libfoxgaming.so
 
 # Local configuration file (sdk path, etc)
 proguard.cfg
@@ -8,3 +10,5 @@ proguard-project.txt
 .settings/
 .classpath
 .project
+.cproject
+*gdb*
