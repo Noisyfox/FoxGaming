@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Enemys;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -104,6 +105,10 @@ public class Enemy_Doll_Blue extends EnemyInAir {
 				false);// 等待进入
 		this.startAlarm(1);
 
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

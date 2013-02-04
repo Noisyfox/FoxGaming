@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Enemys;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGScreenPlay;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -102,6 +103,9 @@ public class Enemy_Boss_Pig extends EnemyInAir {
 		this.setPosition(FGStage.getCurrentStage().getWidth() / 2,
 				pigSprite.getOffsetY() - pigSprite.getHeight());
 		this.motion_set(270, myVSpeed);
+
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONALARM);
 	}
 
 	@Override

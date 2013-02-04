@@ -55,6 +55,9 @@ public class HUD extends FGPerformer {
 
 		setAlarm(0, (int) (FGStage.getSpeed() * 0.7f), true);
 		startAlarm(0);
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONALARM);
 	}
 
 	@Override

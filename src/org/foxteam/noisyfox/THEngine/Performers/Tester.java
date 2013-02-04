@@ -1,5 +1,6 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
 import org.foxteam.noisyfox.FoxGaming.G2D.Particle.FGParticleEmitter;
@@ -34,6 +35,9 @@ public class Tester extends FGPerformer {
 		pEmitter.setRegion(100, 100, 120, 120, FGParticleRegionShape.rectangle,
 				FGParticleRegionDistribution.linear);
 		pSystem.bindParticleEmitter(pEmitter);
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONSTEP);
 	}
 
 	@Override

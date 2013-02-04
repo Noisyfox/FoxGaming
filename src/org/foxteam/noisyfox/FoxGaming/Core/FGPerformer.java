@@ -44,6 +44,8 @@ public class FGPerformer extends FGEventsListener {
 	protected static float gravity = 0;// 当前重力（像素每步）
 	protected static float gravity_direction = 270; // 重力方向（ 270 朝下）
 
+	protected int eventFeature = 0x0;
+
 	protected int depth = 0;
 	protected boolean frozen = false;
 	private FGSprite sprite = null;
@@ -64,6 +66,8 @@ public class FGPerformer extends FGEventsListener {
 		for (int i = 0; i < ALARM_COUNT_MAX; i++) {
 			alarms[i] = new Alarm();
 		}
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW);
 	}
 
 	// 没有重载前负责绘制默认精灵，重载后如果不手动调用绘图则会使该performer不绘制默认精灵
@@ -72,6 +76,14 @@ public class FGPerformer extends FGEventsListener {
 		if (sprite != null) {
 			sprite.draw((int) x, (int) y);
 		}
+	}
+
+	public final void requireEventFeature(int eventFeature) {
+		this.eventFeature |= eventFeature;
+	}
+
+	public final void refuseEventFeature(int eventFeature) {
+		this.eventFeature &= ~eventFeature;
 	}
 
 	/**
@@ -84,86 +96,91 @@ public class FGPerformer extends FGEventsListener {
 	public final void callEvent(int event, Object... args) {
 		if (frozen || !employed || !performing)
 			return;
-		switch (event) {
-		case FGEventsListener.EVENT_ONCREATE:
-			this.onCreate();
-			break;
-		case FGEventsListener.EVENT_ONDESTORY:
-			this.onDestory();
-			break;
-		case FGEventsListener.EVENT_ONTOUCH:
-			this.onTouch((Integer) args[0], (Integer) args[1],
-					(Integer) args[2]);
-			break;
-		case FGEventsListener.EVENT_ONTOUCHPRESS:
-			this.onTouchPress((Integer) args[0], (Integer) args[1],
-					(Integer) args[2]);
-			break;
-		case FGEventsListener.EVENT_ONTOUCHRELEASE:
-			this.onTouchRelease((Integer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONKEY:
-			this.onKey((Integer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONKEYPRESS:
-			this.onKeyPress((Integer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONKEYRELEASE:
-			this.onKeyRelease((Integer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONALARM:
-			this.onAlarm((Integer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONGAMESTART:
-			this.onGameStart();
-			break;
-		case FGEventsListener.EVENT_ONGAMEPAUSE:
-			this.onGamePause();
-			break;
-		case FGEventsListener.EVENT_ONGAMERESUME:
-			this.onGameResume();
-			break;
-		case FGEventsListener.EVENT_ONGAMEEND:
-			this.onGameEnd();
-			break;
-		case FGEventsListener.EVENT_ONSTAGECHANGE:
-			this.onStageChange();
-			break;
-		case FGEventsListener.EVENT_ONSTAGESTART:
-			this.onStageStart();
-			break;
-		case FGEventsListener.EVENT_ONSTAGEEND:
-			this.onStageEnd();
-			break;
-		case FGEventsListener.EVENT_ONDRAW:
-			if (visible) {
-				onDraw();
+
+		eventFeature |= FGEventsListener.EVENT_ONCREATE;
+
+		if ((event & eventFeature) != 0) {
+			switch (event) {
+			case FGEventsListener.EVENT_ONCREATE:
+				this.onCreate();
+				break;
+			case FGEventsListener.EVENT_ONDESTORY:
+				this.onDestory();
+				break;
+			case FGEventsListener.EVENT_ONTOUCH:
+				this.onTouch((Integer) args[0], (Integer) args[1],
+						(Integer) args[2]);
+				break;
+			case FGEventsListener.EVENT_ONTOUCHPRESS:
+				this.onTouchPress((Integer) args[0], (Integer) args[1],
+						(Integer) args[2]);
+				break;
+			case FGEventsListener.EVENT_ONTOUCHRELEASE:
+				this.onTouchRelease((Integer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONKEY:
+				this.onKey((Integer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONKEYPRESS:
+				this.onKeyPress((Integer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONKEYRELEASE:
+				this.onKeyRelease((Integer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONALARM:
+				this.onAlarm((Integer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONGAMESTART:
+				this.onGameStart();
+				break;
+			case FGEventsListener.EVENT_ONGAMEPAUSE:
+				this.onGamePause();
+				break;
+			case FGEventsListener.EVENT_ONGAMERESUME:
+				this.onGameResume();
+				break;
+			case FGEventsListener.EVENT_ONGAMEEND:
+				this.onGameEnd();
+				break;
+			case FGEventsListener.EVENT_ONSTAGECHANGE:
+				this.onStageChange();
+				break;
+			case FGEventsListener.EVENT_ONSTAGESTART:
+				this.onStageStart();
+				break;
+			case FGEventsListener.EVENT_ONSTAGEEND:
+				this.onStageEnd();
+				break;
+			case FGEventsListener.EVENT_ONDRAW:
+				if (visible) {
+					onDraw();
+				}
+				if (FGDebug.debugMode && collisionMask != null) {// 便于调试
+					collisionMask.draw();
+				}
+				break;
+			case FGEventsListener.EVENT_ONSTEP:
+				this.onStep();
+				break;
+			case FGEventsListener.EVENT_ONSTEPSTART:
+				this.onStepStart();
+				break;
+			case FGEventsListener.EVENT_ONSTEPEND:
+				this.onStepEnd();
+				break;
+			case FGEventsListener.EVENT_ONCOLLISIONWITH:
+				this.onCollisionWith((FGPerformer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONUSERDEFINEDEVENT:
+				this.onUserDefinedEvent((Integer) args[0]);
+				break;
+			case FGEventsListener.EVENT_ONSCREENSIZECHANGED:
+				this.onScreenSizeChanged((Integer) args[0], (Integer) args[1]);
+				break;
+			case FGEventsListener.EVENT_ONOUTOFSTAGE:
+				this.onOutOfStage();
+				break;
 			}
-			if (FGDebug.debugMode && collisionMask != null) {// 便于调试
-				collisionMask.draw();
-			}
-			break;
-		case FGEventsListener.EVENT_ONSTEP:
-			this.onStep();
-			break;
-		case FGEventsListener.EVENT_ONSTEPSTART:
-			this.onStepStart();
-			break;
-		case FGEventsListener.EVENT_ONSTEPEND:
-			this.onStepEnd();
-			break;
-		case FGEventsListener.EVENT_ONCOLLISIONWITH:
-			this.onCollisionWith((FGPerformer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONUSERDEFINEDEVENT:
-			this.onUserDefinedEvent((Integer) args[0]);
-			break;
-		case FGEventsListener.EVENT_ONSCREENSIZECHANGED:
-			this.onScreenSizeChanged((Integer) args[0], (Integer) args[1]);
-			break;
-		case FGEventsListener.EVENT_ONOUTOFSTAGE:
-			this.onOutOfStage();
-			break;
 		}
 	}
 

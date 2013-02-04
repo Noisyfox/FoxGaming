@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Section.Bullets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -70,6 +71,10 @@ public class Bullet_Player_Missile_Guided extends Bullet_Player {
 		this.setAlarm(0, (int) (FGStage.getSpeed() * TARGET_SEARCH_TIME), false);
 		this.startAlarm(0);
 
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.THEngine.Section.Enemys.Enemy;
@@ -41,6 +42,10 @@ public final class EnemyController extends FGPerformer {
 	private int bossCount = 0;
 	private int maxStep = 0;
 	private boolean cleared = false;
+
+	public EnemyController() {
+		requireEventFeature(FGEventsListener.EVENT_ONSTEPEND);
+	}
 
 	public void addEnemy(int step, boolean isBoss, Class<?> enemyType, int x,
 			int y, int... extraConfig) {

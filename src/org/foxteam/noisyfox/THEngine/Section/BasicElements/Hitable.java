@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 
 /**
@@ -29,6 +30,10 @@ public class Hitable extends FGPerformer {
 
 	private float hp = 0f;
 	protected boolean invincible = false;
+
+	public Hitable() {
+		requireEventFeature(FGEventsListener.EVENT_ONCOLLISIONWITH);
+	}
 
 	public final void setHP(float hp) {
 		this.hp = hp;

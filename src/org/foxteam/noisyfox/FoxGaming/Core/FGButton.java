@@ -57,6 +57,11 @@ public abstract class FGButton extends FGPerformer {
 		this.bindCollisionMask(myMask);
 		setSize(width, height);
 		setTouchSize(width, height);
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONTOUCH
+				| FGEventsListener.EVENT_ONTOUCHPRESS
+				| FGEventsListener.EVENT_ONTOUCHRELEASE);
 	}
 
 	/**

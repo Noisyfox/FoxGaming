@@ -36,6 +36,8 @@ public class Bullet_Enemy_1 extends Bullet_Enemy {
 	@Override
 	protected void onCreate() {
 		this.motion_set(myDirection, mySpeed);
+
+		requireEventFeature(FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

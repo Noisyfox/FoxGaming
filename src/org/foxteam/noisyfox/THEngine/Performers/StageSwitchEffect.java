@@ -1,6 +1,7 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGDraw;
@@ -28,6 +29,10 @@ public final class StageSwitchEffect extends FGPerformer {
 		setDepth(-10000);
 		activatedInstance = this;
 		exitStage = false;
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONSTAGESTART
+				| FGEventsListener.EVENT_ONSTEPSTART);
 	}
 
 	@Override

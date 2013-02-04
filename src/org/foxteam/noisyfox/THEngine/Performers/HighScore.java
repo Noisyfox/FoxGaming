@@ -2,6 +2,7 @@ package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -61,6 +62,10 @@ public final class HighScore extends FGPerformer {
 	public HighScore() {
 		highscoreTextPaint.setTypeface(GlobalResources.FONT_VINERITC);
 		highscoreTextPaint.setColor(highscoreTextColor);
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONDESTORY);
 	}
 
 	@Override

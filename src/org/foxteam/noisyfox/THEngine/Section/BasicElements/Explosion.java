@@ -36,6 +36,9 @@ public class Explosion extends FGPerformer {
 	protected void onCreate() {
 		this.setAlarm(0, (int) frameSpeed, true);
 		this.startAlarm(0);
+
+		requireEventFeature(FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONSTEP);
 	}
 
 	@Override

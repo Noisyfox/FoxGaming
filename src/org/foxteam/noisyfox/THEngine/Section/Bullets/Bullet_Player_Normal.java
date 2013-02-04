@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Bullets;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
@@ -36,6 +37,8 @@ public class Bullet_Player_Normal extends Bullet_Player {
 	@Override
 	protected void onCreate() {
 		this.motion_set(90, 300f / FGStage.getSpeed());
+
+		requireEventFeature(FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

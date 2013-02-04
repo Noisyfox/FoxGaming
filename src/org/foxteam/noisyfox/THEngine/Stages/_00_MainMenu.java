@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -113,6 +114,10 @@ public class _00_MainMenu extends FGStage {
 
 			setAlarm(0, (int) (0.5 * getSpeed()), true);
 			startAlarm(0);
+
+			requireEventFeature(FGEventsListener.EVENT_ONTOUCHPRESS
+					| FGEventsListener.EVENT_ONALARM
+					| FGEventsListener.EVENT_ONDRAW);
 		}
 
 		@Override

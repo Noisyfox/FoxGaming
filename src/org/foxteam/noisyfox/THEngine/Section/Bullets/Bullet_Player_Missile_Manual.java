@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Bullets;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
@@ -42,6 +43,10 @@ public class Bullet_Player_Missile_Manual extends Bullet_Player {
 		FGStage.getCurrentStage().managedParticleSystem_requireManaged(pSystem,
 				depth + 1);
 		pSystem.bindParticleEmitter(pEmitter);
+
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

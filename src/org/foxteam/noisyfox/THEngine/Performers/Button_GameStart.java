@@ -17,6 +17,7 @@
 package org.foxteam.noisyfox.THEngine.Performers;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameActivity;
 import org.foxteam.noisyfox.THEngine.GlobalResources;
 import org.foxteam.noisyfox.THEngine.Section.BasicElements.SectionStage;
@@ -35,6 +36,8 @@ public class Button_GameStart extends FGButton {
 	public Button_GameStart() {
 		super(170, 53, GlobalResources.FRAMES_BUTTON_GAMESTART);
 		setTouchSize(200, 100);
+
+		requireEventFeature(FGEventsListener.EVENT_ONKEYRELEASE);
 	}
 
 	@Override

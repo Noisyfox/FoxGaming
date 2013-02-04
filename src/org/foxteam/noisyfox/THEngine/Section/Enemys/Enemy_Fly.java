@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Enemys;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
@@ -102,6 +103,11 @@ public class Enemy_Fly extends EnemyInAir {
 			myMovement.moveTowards(270, mySpeed);
 		}
 		this.playAScreenPlay(myMovement);
+
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

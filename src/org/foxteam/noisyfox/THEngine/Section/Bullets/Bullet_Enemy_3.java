@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Bullets;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGConvertor;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
@@ -53,6 +54,9 @@ public class Bullet_Enemy_3 extends Bullet_Enemy {
 		this.getCollisionMask().applyConvertor(GCConvertor);
 
 		this.motion_set(myDirection, mySpeed);
+
+		requireEventFeature(FGEventsListener.EVENT_ONOUTOFSTAGE
+				| FGEventsListener.EVENT_ONDRAW);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGameCore;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
@@ -82,6 +83,10 @@ public final class WeiboShareProcessor extends FGPerformer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONDESTORY);
 	}
 
 	@Override

@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 
@@ -60,6 +61,9 @@ public abstract class PowerUp extends Bullet {
 			this.motion_set(FGMathsHelper.random(0, 359),
 					50f / FGStage.getSpeed());
 		}
+		requireEventFeature(FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

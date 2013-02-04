@@ -48,6 +48,11 @@ public final class GamingController extends FGPerformer {
 		FGSimpleBGM.play(bgmId, true);
 
 		hud = new HUD();
+
+		requireEventFeature(FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONSTAGEEND
+				| FGEventsListener.EVENT_ONTOUCHRELEASE
+				| FGEventsListener.EVENT_ONKEYRELEASE);
 	}
 
 	@Override

@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Enemys;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
@@ -62,6 +63,8 @@ public class Enemy_Box_Score extends EnemyOnGround {
 	@Override
 	protected void onCreate() {
 		this.setPosition(inX, -boxSprite.getHeight() + boxSprite.getOffsetY());
+
+		requireEventFeature(FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

@@ -484,7 +484,9 @@ public abstract class FGStage {
 	// 检测 Performer 是否离开 Stage
 	protected final void detectOutOfStage() {
 		for (FGPerformer p : performers) {
-			if (!p.frozen && p.isOutOfStage()) {
+			if (!p.frozen
+					&& ((p.eventFeature & FGEventsListener.EVENT_ONOUTOFSTAGE) != 0)
+					&& p.isOutOfStage()) {
 				p.callEvent(FGEventsListener.EVENT_ONOUTOFSTAGE);
 			}
 		}

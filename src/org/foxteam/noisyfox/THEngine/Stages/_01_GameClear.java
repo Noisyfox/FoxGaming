@@ -1,6 +1,7 @@
 package org.foxteam.noisyfox.THEngine.Stages;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
@@ -66,6 +67,11 @@ public final class _01_GameClear extends FGStage {
 
 			managedParticleSystem_requireManaged(fireWorkParticleSystem,
 					depth - 10);
+
+			requireEventFeature(FGEventsListener.EVENT_ONDESTORY
+					| FGEventsListener.EVENT_ONKEYRELEASE
+					| FGEventsListener.EVENT_ONTOUCHRELEASE
+					| FGEventsListener.EVENT_ONALARM);
 		}
 
 		@Override
@@ -137,6 +143,10 @@ public final class _01_GameClear extends FGStage {
 			this.motion_set(90, 35);
 
 			boomSpeed = (float) FGMathsHelper.random(-10.0, 10.0);
+
+			requireEventFeature(FGEventsListener.EVENT_ONSTEP
+					| FGEventsListener.EVENT_ONDESTORY
+					| FGEventsListener.EVENT_ONOUTOFSTAGE);
 		}
 
 		@Override

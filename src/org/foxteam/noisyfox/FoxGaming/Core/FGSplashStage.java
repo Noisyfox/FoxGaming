@@ -39,6 +39,11 @@ public final class FGSplashStage extends FGStage {
 		protected void onCreate() {
 			this.setPosition(width / 2, height / 2);
 			c.setAlpha(0);
+
+			requireEventFeature(FGEventsListener.EVENT_ONDRAW
+					| FGEventsListener.EVENT_ONSTEP
+					| FGEventsListener.EVENT_ONALARM
+					| FGEventsListener.EVENT_ONSTAGEEND);
 		}
 
 		int tmp = 0;

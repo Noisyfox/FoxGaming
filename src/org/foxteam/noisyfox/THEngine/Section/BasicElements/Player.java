@@ -125,6 +125,12 @@ public class Player extends Hitable {
 
 		birth();
 
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONTOUCH
+				| FGEventsListener.EVENT_ONTOUCHPRESS
+				| FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONCOLLISIONWITH);
 	}
 
 	@Override

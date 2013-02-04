@@ -24,30 +24,30 @@ package org.foxteam.noisyfox.FoxGaming.Core;
  * 
  */
 public class FGEventsListener {
-	public final static int EVENT_ONCREATE = 1;
-	public final static int EVENT_ONDESTORY = 2;
-	public final static int EVENT_ONTOUCH = 3;
-	public final static int EVENT_ONTOUCHPRESS = 4;
-	public final static int EVENT_ONTOUCHRELEASE = 5;
-	public final static int EVENT_ONKEY = 6;
-	public final static int EVENT_ONKEYPRESS = 7;
-	public final static int EVENT_ONKEYRELEASE = 8;
-	public final static int EVENT_ONALARM = 9;
-	public final static int EVENT_ONGAMESTART = 10;
-	public final static int EVENT_ONGAMEPAUSE = 11;
-	public final static int EVENT_ONGAMERESUME = 12;
-	public final static int EVENT_ONGAMEEND = 13;
-	public final static int EVENT_ONSTAGECHANGE = 14;
-	public final static int EVENT_ONSTAGESTART = 15;
-	public final static int EVENT_ONSTAGEEND = 16;
-	public final static int EVENT_ONDRAW = 17;
-	public final static int EVENT_ONSTEP = 18;
-	public final static int EVENT_ONSTEPSTART = 19;
-	public final static int EVENT_ONSTEPEND = 20;
-	public final static int EVENT_ONCOLLISIONWITH = 21;
-	public final static int EVENT_ONUSERDEFINEDEVENT = 22;
-	public final static int EVENT_ONSCREENSIZECHANGED = 23;
-	public final static int EVENT_ONOUTOFSTAGE = 24;
+	public final static int EVENT_ONCREATE = 0x1;
+	public final static int EVENT_ONDESTORY = 0x2;
+	public final static int EVENT_ONTOUCH = 0x4;
+	public final static int EVENT_ONTOUCHPRESS = 0x8;
+	public final static int EVENT_ONTOUCHRELEASE = 0x10;
+	public final static int EVENT_ONKEY = 0x20;
+	public final static int EVENT_ONKEYPRESS = 0x40;
+	public final static int EVENT_ONKEYRELEASE = 0x80;
+	public final static int EVENT_ONALARM = 0x100;
+	public final static int EVENT_ONGAMESTART = 0x200;
+	public final static int EVENT_ONGAMEPAUSE = 0x400;
+	public final static int EVENT_ONGAMERESUME = 0x800;
+	public final static int EVENT_ONGAMEEND = 0x1000;
+	public final static int EVENT_ONSTAGECHANGE = 0x2000;
+	public final static int EVENT_ONSTAGESTART = 0x4000;
+	public final static int EVENT_ONSTAGEEND = 0x8000;
+	public final static int EVENT_ONDRAW = 0x10000;
+	public final static int EVENT_ONSTEP = 0x20000;
+	public final static int EVENT_ONSTEPSTART = 0x40000;
+	public final static int EVENT_ONSTEPEND = 0x80000;
+	public final static int EVENT_ONCOLLISIONWITH = 0x100000;
+	public final static int EVENT_ONUSERDEFINEDEVENT = 0x200000;
+	public final static int EVENT_ONSCREENSIZECHANGED = 0x400000;
+	public final static int EVENT_ONOUTOFSTAGE = 0x800000;
 
 	protected void onCreate() {
 	}// 当一个performer被创建时接收到的第一个事件，优先于其它所有事件

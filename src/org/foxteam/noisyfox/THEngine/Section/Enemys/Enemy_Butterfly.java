@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Enemys;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
@@ -75,6 +76,10 @@ public class Enemy_Butterfly extends EnemyInAir {
 
 		this.setPosition(inX,
 				-butterflySprite.getHeight() + butterflySprite.getOffsetY());
+
+		requireEventFeature(FGEventsListener.EVENT_ONSTEP
+				| FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 
 	}
 

@@ -94,6 +94,9 @@ public class Enemy_Duck extends EnemyInAir {
 			co.applyConvertor(GCConvertor);
 		}
 
+		requireEventFeature(FGEventsListener.EVENT_ONALARM
+				| FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

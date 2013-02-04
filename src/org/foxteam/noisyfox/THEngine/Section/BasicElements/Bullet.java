@@ -37,9 +37,11 @@ public abstract class Bullet extends FGPerformer {
 	// this.getY() + MathsHelper.lengthdir_y(speed, angle));
 	// }
 	//
-	// public Bullet() {
-	//
-	// }
+
+	public Bullet() {
+		requireEventFeature(FGEventsListener.EVENT_ONDESTORY);
+	}
+
 	//
 	// @Override
 	// protected void onStep() {

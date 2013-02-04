@@ -1,6 +1,7 @@
 package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGMathsHelper;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -39,6 +40,9 @@ public final class BackgroundController extends FGPerformer {
 			bkgs[i] = b;
 		}
 		this.setDepth(10000);
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONSTEP);
 	}
 
 	private void randomBKG(BKG bkg) {

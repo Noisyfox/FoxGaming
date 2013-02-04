@@ -16,6 +16,7 @@
  */
 package org.foxteam.noisyfox.THEngine.Section.Bullets;
 
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGGraphicCollision;
 import org.foxteam.noisyfox.FoxGaming.G2D.FGSprite;
@@ -38,6 +39,8 @@ public class Bullet_Enemy_2 extends Bullet_Enemy {
 	@Override
 	protected void onCreate() {
 		this.motion_set(myDirection, mySpeed);
+
+		requireEventFeature(FGEventsListener.EVENT_ONOUTOFSTAGE);
 	}
 
 	@Override

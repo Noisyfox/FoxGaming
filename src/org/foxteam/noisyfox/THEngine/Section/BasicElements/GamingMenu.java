@@ -2,6 +2,7 @@ package org.foxteam.noisyfox.THEngine.Section.BasicElements;
 
 import org.foxteam.noisyfox.FoxGaming.Core.FGButton;
 import org.foxteam.noisyfox.FoxGaming.Core.FGEGLHelper;
+import org.foxteam.noisyfox.FoxGaming.Core.FGEventsListener;
 import org.foxteam.noisyfox.FoxGaming.Core.FGGamingThread;
 import org.foxteam.noisyfox.FoxGaming.Core.FGPerformer;
 import org.foxteam.noisyfox.FoxGaming.Core.FGStage;
@@ -126,6 +127,12 @@ public class GamingMenu extends FGPerformer {
 
 	@Override
 	protected void onCreate() {
+
+		requireEventFeature(FGEventsListener.EVENT_ONDRAW
+				| FGEventsListener.EVENT_ONSTEPSTART
+				| FGEventsListener.EVENT_ONDESTORY
+				| FGEventsListener.EVENT_ONKEYRELEASE
+				| FGEventsListener.EVENT_ONTOUCHRELEASE);
 	}
 
 	@Override
